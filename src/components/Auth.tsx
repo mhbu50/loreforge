@@ -74,7 +74,15 @@ export default function Auth() {
       toast.success('Welcome to StoryCraft!');
     } catch (error: any) {
       console.error(error);
-      toast.error(error.message);
+      const friendlyMessages: Record<string, string> = {
+        'auth/popup-closed-by-user': 'Sign-in was cancelled.',
+        'auth/cancelled-popup-request': 'Sign-in was cancelled.',
+        'auth/popup-blocked': 'Popup was blocked by your browser. Please allow popups for this site.',
+        'auth/network-request-failed': 'Network error. Please check your connection.',
+        'auth/too-many-requests': 'Too many attempts. Please wait a moment and try again.',
+        'auth/user-disabled': 'This account has been disabled. Contact support.',
+      };
+      toast.error(friendlyMessages[error?.code] ?? 'Google sign-in failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -108,7 +116,22 @@ export default function Auth() {
       }
     } catch (error: any) {
       console.error(error);
-      toast.error(error.message);
+      const friendlyMessages: Record<string, string> = {
+        'auth/email-already-in-use': 'This email is already registered.',
+        'auth/invalid-email': 'Please enter a valid email address.',
+        'auth/weak-password': 'Password must be at least 6 characters.',
+        'auth/user-not-found': 'No account found with this email.',
+        'auth/wrong-password': 'Incorrect password. Please try again.',
+        'auth/invalid-credential': 'Incorrect email or password.',
+        'auth/too-many-requests': 'Too many attempts. Please wait a moment and try again.',
+        'auth/network-request-failed': 'Network error. Please check your connection.',
+        'auth/user-disabled': 'This account has been disabled. Contact support.',
+      };
+      const msg = friendlyMessages[error?.code] ?? 'Something went wrong. Please try again.';
+      toast.error(msg);
+      if (error?.code === 'auth/email-already-in-use') {
+        setIsLogin(true);
+      }
     } finally {
       setLoading(false);
     }
