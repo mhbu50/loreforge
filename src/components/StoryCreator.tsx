@@ -255,7 +255,7 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
 
   const handleSurpriseMe = async () => {
     const randomIdea = SURPRISE_IDEAS[Math.floor(Math.random() * SURPRISE_IDEAS.length)];
-    const randomStyles = ['watercolor', 'oil-painting', 'cartoon', 'manga', 'digital-art'];
+    const randomStyles = ['watercolor', 'oil-painting', 'cartoon', 'anime', 'cinematic', 'sketch', 'comic', 'watercolor-dream', 'enchanted-forest', 'kawaii-cute'];
     const randomAges = ['3-5', '6-8', '9-12', 'YA'];
     const randomStyle = randomStyles[Math.floor(Math.random() * randomStyles.length)] as any;
     const randomAge = randomAges[Math.floor(Math.random() * randomAges.length)];

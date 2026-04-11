@@ -36,6 +36,9 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    // Safety fallback: if loading hasn't resolved in 8s, force it off
+    const safetyTimer = setTimeout(() => setLoading(false), 8000);
+
     const path = 'settings/global';
     const unsubscribeSettings = onSnapshot(doc(db, 'settings', 'global'), (snapshot) => {
       if (snapshot.exists()) {
@@ -45,39 +48,52 @@ export default function App() {
       handleFirestoreError(error, OperationType.GET, path);
     });
 
+    // Track the profile subscription so we can cancel it when the user changes
+    let unsubProfile: (() => void) | null = null;
+
     const unsubscribeAuth = onAuthStateChanged(auth, (authUser) => {
+      // Always cancel any previous profile subscription first
+      if (unsubProfile) {
+        unsubProfile();
+        unsubProfile = null;
+      }
+
       if (authUser) {
         setUser(authUser);
         const userPath = `users/${authUser.uid}`;
-        
-        // Use onSnapshot for real-time profile updates
-        const unsubProfile = onSnapshot(doc(db, 'users', authUser.uid), (snapshot) => {
+
+        unsubProfile = onSnapshot(doc(db, 'users', authUser.uid), (snapshot) => {
           if (snapshot.exists()) {
             const profile = snapshot.data() as UserProfile;
             setUserProfile(profile);
-            
-            // Run system health check for head admins
+
             if (profile.role === 'headadmin' || authUser.email === 'alaa.abukhamseen@gmail.com') {
               SystemHealthService.getInstance().runFullCheck();
             }
+          } else {
+            // Profile doc doesn't exist yet (new user race condition) — clear it
+            setUserProfile(null);
           }
+          clearTimeout(safetyTimer);
           setLoading(false);
         }, (error) => {
           handleFirestoreError(error, OperationType.GET, userPath);
+          clearTimeout(safetyTimer);
           setLoading(false);
         });
-
-        return unsubProfile;
       } else {
         setUser(null);
         setUserProfile(null);
+        clearTimeout(safetyTimer);
         setLoading(false);
       }
     });
 
     return () => {
+      clearTimeout(safetyTimer);
       unsubscribeSettings();
       unsubscribeAuth();
+      if (unsubProfile) unsubProfile();
     };
   }, []);
 
@@ -169,9 +185,26 @@ export default function App() {
             path="/login" 
             element={user ? <Navigate to="/" /> : <Auth />} 
           />
-          <Route 
-            path="/" 
-            element={user ? <Dashboard userProfile={userProfile} /> : <Landing />} 
+          <Route
+            path="/"
+            element={
+              user
+                ? userProfile
+                  ? <Dashboard userProfile={userProfile} />
+                  : (
+                    // User is authenticated but profile not loaded yet — show brief spinner
+                    <div className="min-h-screen flex items-center justify-center luxury-bg">
+                      <div className="atmosphere" />
+                      <div className="flex flex-col items-center gap-6">
+                        <div className="w-16 h-16 bg-gold rounded-full flex items-center justify-center text-night animate-float">
+                          <Loader2 className="animate-spin" size={32} />
+                        </div>
+                        <p className="small-caps text-gold animate-pulse">Setting up your studio...</p>
+                      </div>
+                    </div>
+                  )
+                : <Landing />
+            }
           />
           <Route 
             path="/marketplace" 
