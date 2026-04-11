@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Sparkles, FileText, Loader2, ImageIcon, Plus, Trash2, Wand2, ChevronLeft, ChevronRight, X, Edit3, Mic, MicOff, Languages, Layout, Zap, Type, Image as ImageIconLucide, AlignLeft, AlignCenter, AlignRight, Bold, Italic, Underline, Settings, Sliders, Brain } from 'lucide-react';
+import { Sparkles, FileText, Loader2, ImageIcon, Plus, Trash2, Wand2, ChevronLeft, ChevronRight, X, Edit3, Mic, MicOff, Languages, Layout, Zap, Type, Image as ImageIconLucide, AlignLeft, AlignCenter, AlignRight, Bold, Italic, Underline, Settings, Sliders, Brain, Upload, Grid } from 'lucide-react';
 import { AIService, GenerationMode, AIProgress } from '../services/AIService';
 import { StoryStyle, StoryPage, SubscriptionTier, ImageAdjustments } from '../types';
 import ImageEditor from './ImageEditor';
+import PhotoPicker from './PhotoPicker';
 import { getSubscriptionLimits, STORY_STYLES, STORY_CATEGORIES, FONTS } from '../constants';
 import { toast } from 'sonner';
 import { cn } from '../lib/utils';
@@ -70,6 +71,9 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
   const [showMetadataEditor, setShowMetadataEditor] = useState(false);
   const [showImageEditor, setShowImageEditor] = useState(false);
   const [editingImageIndex, setEditingImageIndex] = useState<number | 'cover' | null>(null);
+  const [showImageSource, setShowImageSource] = useState(false);
+  const [imageSourceTarget, setImageSourceTarget] = useState<number | 'cover'>(0);
+  const [showPhotoPicker, setShowPhotoPicker] = useState(false);
   const [isForgingTransition, setIsForgingTransition] = useState(false);
   const [isFinalForging, setIsFinalForging] = useState(false);
   const [isAIGenerating, setIsAIGenerating] = useState(false);
@@ -167,6 +171,19 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
       }
     };
     input.click();
+  };
+
+  const openImageSource = (target: number | 'cover') => {
+    setImageSourceTarget(target);
+    setShowImageSource(true);
+  };
+
+  const handlePhotoSelected = (url: string) => {
+    if (imageSourceTarget === 'cover') {
+      setCoverImage(url);
+    } else {
+      handleUpdatePage(imageSourceTarget as number, { imageUrl: url });
+    }
   };
 
   const runAIGeneration = async (mode: GenerationMode, overrideIdea?: string) => {
@@ -370,7 +387,7 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                   initial={{ rotateY: -20 }}
                   animate={{ rotateY: -5 }}
                   whileHover={{ rotateY: 0 }}
-                  onClick={() => handleImageUpload('cover')}
+                  onClick={() => openImageSource('cover')}
                   className="aspect-[3/4] bg-night rounded-r-[2rem] shadow-2xl relative overflow-hidden border-l-8 border-gold/40 preserve-3d transition-all duration-700 cursor-pointer group/cover"
                 >
                   {coverImage ? (
@@ -413,8 +430,8 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
 
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/cover:opacity-100 transition-opacity bg-black/60 backdrop-blur-sm z-20">
                     <div className="flex gap-4">
-                      <button 
-                        onClick={(e) => { e.stopPropagation(); handleImageUpload('cover'); }}
+                      <button
+                        onClick={(e) => { e.stopPropagation(); openImageSource('cover'); }}
                         className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white hover:bg-white/40 transition-all"
                         title="Change Cover"
                       >
@@ -830,12 +847,12 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                       <div className="space-y-2">
                         <label className="text-[10px] font-bold uppercase tracking-widest text-black/40">Cover Image</label>
                         <div className="flex gap-2">
-                          <button 
-                            onClick={() => handleImageUpload('cover')}
+                          <button
+                            onClick={() => openImageSource('cover')}
                             className="flex-1 py-3 bg-black/5 rounded-xl border border-black/5 flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-widest hover:bg-black hover:text-white transition-all"
                           >
                             <ImageIcon size={16} />
-                            {coverImage ? 'Change' : 'Upload'}
+                            {coverImage ? 'Change' : 'Add Image'}
                           </button>
                           {coverImage && (
                             <button 
@@ -966,8 +983,8 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                 <div className="w-full max-w-5xl flex items-stretch justify-center relative">
                   {/* Left Side: Illustration */}
                   <div className="flex-1">
-                    <div 
-                      onClick={() => handleImageUpload(currentPageIndex)}
+                    <div
+                      onClick={() => openImageSource(currentPageIndex)}
                       className="aspect-[4/5] bg-white rounded-l-2xl shadow-2xl flex flex-col items-center justify-center gap-4 cursor-pointer hover:bg-silk transition-all group overflow-hidden relative"
                       style={{ 
                         backgroundImage: 'url("https://www.transparenttextures.com/patterns/paper-fibers.png")',
@@ -990,8 +1007,8 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                           />
                           <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center transition-opacity gap-4">
                             <div className="flex gap-4">
-                              <button 
-                                onClick={(e) => { e.stopPropagation(); handleImageUpload(currentPageIndex); }}
+                              <button
+                                onClick={(e) => { e.stopPropagation(); openImageSource(currentPageIndex); }}
                                 className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white hover:bg-white/40 transition-all"
                                 title="Change Image"
                               >
@@ -1021,11 +1038,11 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                             <p className="text-sm font-bold text-black/40 group-hover:text-black transition-colors">Add Illustration</p>
                             <p className="text-[10px] uppercase tracking-widest text-black/20">Click to upload image</p>
                           </div>
-                          <button 
-                            onClick={(e) => { e.stopPropagation(); handleImageUpload(currentPageIndex); }}
+                          <button
+                            onClick={(e) => { e.stopPropagation(); openImageSource(currentPageIndex); }}
                             className="mt-4 px-6 py-2 bg-night text-white rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-gold hover:text-night transition-all shadow-lg"
                           >
-                            Select Image
+                            Add Image
                           </button>
                         </>
                       )}
@@ -1222,7 +1239,7 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
 
       <AnimatePresence>
         {showImageEditor && editingImageIndex !== null && (
-          <ImageEditor 
+          <ImageEditor
             imageUrl={editingImageIndex === 'cover' ? coverImage : (draftPages[editingImageIndex as number].imageUrl || '')}
             adjustments={(editingImageIndex === 'cover' ? coverImageAdjustments : draftPages[editingImageIndex as number].imageAdjustments) || {
               brightness: 100, contrast: 100, saturation: 100, sepia: 0, grayscale: 0, blur: 0, hueRotate: 0, rotate: 0, flipX: false, flipY: false
@@ -1232,6 +1249,93 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
               setShowImageEditor(false);
               setEditingImageIndex(null);
             }}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* ── Image Source Chooser ──────────────────────────────────────────────── */}
+      <AnimatePresence>
+        {showImageSource && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[90] flex items-center justify-center p-4"
+            style={{ backgroundColor: 'rgba(10,10,10,0.75)' }}
+            onClick={(e) => { if (e.target === e.currentTarget) setShowImageSource(false); }}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 16 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 16 }}
+              transition={{ type: 'spring', damping: 24, stiffness: 280 }}
+              className="bg-white rounded-[2.5rem] shadow-2xl p-8 w-full max-w-sm space-y-6"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-xl font-serif font-bold text-night">Add Image</h3>
+                  <p className="text-xs text-black/35 mt-0.5">
+                    {imageSourceTarget === 'cover' ? 'Choose a cover image' : `Page ${(imageSourceTarget as number) + 1} illustration`}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setShowImageSource(false)}
+                  className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-black/5 transition-colors"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              <div className="space-y-3">
+                {/* Upload from device */}
+                <button
+                  onClick={() => {
+                    setShowImageSource(false);
+                    handleImageUpload(imageSourceTarget);
+                  }}
+                  className="w-full flex items-center gap-4 p-5 bg-black/5 hover:bg-night hover:text-white rounded-2xl border-2 border-transparent hover:border-gold/30 transition-all group text-left"
+                >
+                  <div className="w-12 h-12 rounded-2xl bg-white group-hover:bg-gold/20 flex items-center justify-center text-black/50 group-hover:text-gold transition-all shadow-sm flex-shrink-0">
+                    <Upload size={22} />
+                  </div>
+                  <div>
+                    <p className="font-bold text-sm">Upload from Device</p>
+                    <p className="text-[11px] text-black/40 group-hover:text-white/50 mt-0.5">Pick a photo from your computer</p>
+                  </div>
+                </button>
+
+                {/* Browse stock photos */}
+                <button
+                  onClick={() => {
+                    setShowImageSource(false);
+                    setShowPhotoPicker(true);
+                  }}
+                  className="w-full flex items-center gap-4 p-5 bg-gold/5 hover:bg-gold hover:text-night rounded-2xl border-2 border-gold/20 hover:border-gold transition-all group text-left"
+                >
+                  <div className="w-12 h-12 rounded-2xl bg-gold/20 group-hover:bg-night/20 flex items-center justify-center text-gold group-hover:text-night transition-all shadow-sm flex-shrink-0">
+                    <Grid size={22} />
+                  </div>
+                  <div>
+                    <p className="font-bold text-sm">Browse Stock Photos</p>
+                    <p className="text-[11px] text-black/40 group-hover:text-night/50 mt-0.5">Unsplash, Pexels, Pixabay, Vecteezy &amp; Pinterest</p>
+                  </div>
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── Photo Picker Modal ────────────────────────────────────────────────── */}
+      <AnimatePresence>
+        {showPhotoPicker && (
+          <PhotoPicker
+            initialQuery={idea || draftTitle || ''}
+            onSelect={(url) => {
+              handlePhotoSelected(url);
+              setShowPhotoPicker(false);
+            }}
+            onClose={() => setShowPhotoPicker(false)}
           />
         )}
       </AnimatePresence>

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Shield, User, Star, Trash2, Search, Filter, CheckCircle, XCircle, Settings, BookOpen, Zap, AlertTriangle, Bug, MessageSquare, Clock, Crown, Send, Sparkles, Code, Terminal, Bot, Activity, Database, Cpu, ShieldCheck, RefreshCw, Wand2, Plus, FileText, Brain, Key, Eye, EyeOff, ToggleLeft, ToggleRight, ChevronDown, Save } from 'lucide-react';
+import { Shield, User, Star, Trash2, Search, Filter, CheckCircle, XCircle, Settings, BookOpen, Zap, AlertTriangle, Bug, MessageSquare, Clock, Crown, Send, Sparkles, Code, Terminal, Bot, Activity, Database, Cpu, ShieldCheck, RefreshCw, Wand2, Plus, FileText, Brain, Key, Eye, EyeOff, ToggleLeft, ToggleRight, ChevronDown, Save, Image as ImageIconLucide } from 'lucide-react';
 import { AIService, AIProviderSettings, DEFAULT_AI_SETTINGS, AVAILABLE_MODELS } from '../services/AIService';
+import { PhotoPickerService, PhotoServiceSettings, DEFAULT_PHOTO_SETTINGS } from '../services/PhotoPickerService';
 import { db, auth } from '../firebase';
 import { collection, query, onSnapshot, doc, updateDoc, deleteDoc, getDocs, setDoc, getDoc, orderBy, addDoc } from 'firebase/firestore';
 import { handleFirestoreError, OperationType } from '../lib/firestore-utils';
@@ -15,7 +16,7 @@ export default function HeadAdminPanel() {
   const [stories, setStories] = useState<Story[]>([]);
   const [feedback, setFeedback] = useState<Feedback[]>([]);
   const [subscriptionCodes, setSubscriptionCodes] = useState<SubscriptionCode[]>([]);
-  const [activeTab, setActiveTab] = useState<'users' | 'stories' | 'settings' | 'feedback' | 'subscription' | 'codes' | 'legal' | 'ai'>('users');
+  const [activeTab, setActiveTab] = useState<'users' | 'stories' | 'settings' | 'feedback' | 'subscription' | 'codes' | 'legal' | 'ai' | 'photos'>('users');
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState<'all' | 'admin' | 'user'>('all');
   
@@ -71,6 +72,10 @@ export default function HeadAdminPanel() {
   const [aiSettings, setAiSettings] = useState<AIProviderSettings>(DEFAULT_AI_SETTINGS);
   const [aiSaving, setAiSaving] = useState(false);
   const [visibleKeys, setVisibleKeys] = useState<Record<string, boolean>>({});
+
+  const [photoSettings, setPhotoSettings] = useState<PhotoServiceSettings>(DEFAULT_PHOTO_SETTINGS);
+  const [photoSaving, setPhotoSaving] = useState(false);
+  const [visiblePhotoKeys, setVisiblePhotoKeys] = useState<Record<string, boolean>>({});
 
   const defaultUISettings = {
     showParticles: true,
@@ -239,6 +244,15 @@ export default function HeadAdminPanel() {
             providers: { ...DEFAULT_AI_SETTINGS.providers, ...(data.providers || {}) }
           } as AIProviderSettings);
         }
+        const photoDoc = await getDoc(doc(db, 'settings', 'photo_services'));
+        if (photoDoc.exists()) {
+          const d = photoDoc.data();
+          setPhotoSettings({
+            unsplash: { ...DEFAULT_PHOTO_SETTINGS.unsplash, ...(d.unsplash || {}) },
+            pexels:   { ...DEFAULT_PHOTO_SETTINGS.pexels,   ...(d.pexels   || {}) },
+            pixabay:  { ...DEFAULT_PHOTO_SETTINGS.pixabay,  ...(d.pixabay  || {}) },
+          });
+        }
       } catch (error) {
         handleFirestoreError(error, OperationType.GET, 'settings');
       }
@@ -292,6 +306,25 @@ export default function HeadAdminPanel() {
     } finally {
       setAiSaving(false);
     }
+  };
+
+  const savePhotoSettings = async () => {
+    setPhotoSaving(true);
+    try {
+      await PhotoPickerService.saveSettings(photoSettings);
+      toast.success('Photo service settings saved!');
+    } catch (error) {
+      toast.error('Failed to save photo settings');
+    } finally {
+      setPhotoSaving(false);
+    }
+  };
+
+  const updatePhotoService = (service: keyof PhotoServiceSettings, field: string, value: any) => {
+    setPhotoSettings(prev => ({
+      ...prev,
+      [service]: { ...prev[service], [field]: value }
+    }));
   };
 
   const updateProvider = (key: keyof AIProviderSettings['providers'], field: string, value: any) => {
@@ -392,6 +425,7 @@ export default function HeadAdminPanel() {
           { id: 'codes', label: 'Codes', icon: <Zap size={14} /> },
           { id: 'legal', label: 'Legal', icon: <FileText size={14} /> },
           { id: 'ai', label: 'AI', icon: <Brain size={14} /> },
+          { id: 'photos', label: 'Photos', icon: <ImageIconLucide size={14} /> },
         ] as const).map(({ id, label, icon }) => (
           <button
             key={id}
@@ -1465,6 +1499,192 @@ export default function HeadAdminPanel() {
                 <Save size={20} />
               )}
               {aiSaving ? 'Saving...' : 'Save AI Settings'}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'photos' && (
+        <div className="space-y-8">
+          {/* Header */}
+          <div className="bg-night text-white rounded-[2.5rem] p-8 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-gold/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
+            <div className="relative z-10 flex items-center gap-4">
+              <div className="w-14 h-14 bg-gold/20 rounded-2xl flex items-center justify-center text-gold">
+                <ImageIconLucide size={28} />
+              </div>
+              <div>
+                <h3 className="text-2xl font-serif font-bold">Stock Photo Services</h3>
+                <p className="text-white/40 text-sm">Configure API keys so users can browse free photos inside the Story Creator.</p>
+              </div>
+            </div>
+          </div>
+
+          {/* How it works */}
+          <div className="bg-gold/5 border border-gold/15 rounded-[2rem] p-6 flex gap-4">
+            <div className="w-10 h-10 bg-gold/20 rounded-xl flex items-center justify-center text-gold flex-shrink-0 mt-0.5">
+              <Sparkles size={20} />
+            </div>
+            <div className="space-y-1">
+              <p className="text-sm font-bold text-night">How this works</p>
+              <p className="text-[13px] text-black/50 leading-relaxed">
+                When users add images to their story pages they can pick from <strong className="text-gold">Unsplash</strong>, <strong className="text-gold">Pexels</strong>, or <strong className="text-gold">Pixabay</strong> using the API keys you add below.
+                <strong className="text-night"> Vecteezy</strong> and <strong className="text-night">Pinterest</strong> open in a new tab (no key needed).
+                Free API keys are available on each service's website.
+              </p>
+            </div>
+          </div>
+
+          {/* Service Cards */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {([
+              {
+                key: 'unsplash' as const,
+                name: 'Unsplash',
+                logo: 'U',
+                color: '#111111',
+                desc: 'The largest library of high-quality free photos. Requires a free developer account at unsplash.com/developers.',
+                docsUrl: 'https://unsplash.com/developers',
+              },
+              {
+                key: 'pexels' as const,
+                name: 'Pexels',
+                logo: 'P',
+                color: '#05A081',
+                desc: 'Thousands of free stock photos and videos. Get a free API key at pexels.com/api.',
+                docsUrl: 'https://www.pexels.com/api/',
+              },
+              {
+                key: 'pixabay' as const,
+                name: 'Pixabay',
+                logo: 'X',
+                color: '#2EC66B',
+                desc: 'Over 2.5 million free images, videos, and music. Register at pixabay.com/api/docs.',
+                docsUrl: 'https://pixabay.com/api/docs/',
+              },
+            ]).map(({ key, name, logo, color, desc, docsUrl }) => {
+              const service = photoSettings[key];
+              const showKey = visiblePhotoKeys[key];
+              return (
+                <div
+                  key={key}
+                  className={cn(
+                    "bg-white rounded-[2rem] border-2 p-8 space-y-6 transition-all",
+                    service.enabled ? "border-gold/30 shadow-lg shadow-gold/5" : "border-gray-100"
+                  )}
+                >
+                  {/* Card Header */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div
+                        className="w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-xl text-white shadow-lg"
+                        style={{ backgroundColor: color }}
+                      >
+                        {logo}
+                      </div>
+                      <div>
+                        <h4 className="text-lg font-bold">{name}</h4>
+                        <a
+                          href={docsUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[10px] text-gold hover:underline flex items-center gap-1"
+                        >
+                          Get free API key
+                          <ChevronDown size={10} className="-rotate-90" />
+                        </a>
+                      </div>
+                    </div>
+                    {/* Enable Toggle */}
+                    <button
+                      onClick={() => updatePhotoService(key, 'enabled', !service.enabled)}
+                      className={cn(
+                        "flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all",
+                        service.enabled
+                          ? "bg-gold/10 text-gold hover:bg-gold/20"
+                          : "bg-gray-100 text-gray-400 hover:bg-gray-200"
+                      )}
+                    >
+                      {service.enabled ? <ToggleRight size={16} /> : <ToggleLeft size={16} />}
+                      {service.enabled ? 'Enabled' : 'Disabled'}
+                    </button>
+                  </div>
+
+                  <p className="text-xs text-gray-400 leading-relaxed">{desc}</p>
+
+                  {/* API Key */}
+                  <div className="space-y-2">
+                    <label className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                      <Key size={12} />
+                      API Key
+                    </label>
+                    <div className="relative">
+                      <input
+                        type={showKey ? 'text' : 'password'}
+                        value={service.apiKey}
+                        onChange={(e) => updatePhotoService(key, 'apiKey', e.target.value)}
+                        placeholder={`Paste your ${name} API key…`}
+                        className="w-full pr-12 pl-4 py-3 bg-gray-50 border border-gray-100 rounded-xl font-mono text-sm outline-none focus:border-gold/40 focus:bg-gold/5 transition-all placeholder:text-gray-300"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setVisiblePhotoKeys(prev => ({ ...prev, [key]: !prev[key] }))}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 hover:text-gray-500 transition-colors"
+                      >
+                        {showKey ? <EyeOff size={16} /> : <Eye size={16} />}
+                      </button>
+                    </div>
+                    {service.apiKey && (
+                      <p className="text-[10px] text-green-500 font-bold flex items-center gap-1">
+                        <CheckCircle size={10} /> Key entered — {service.apiKey.length} characters
+                      </p>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* External services info */}
+          <div className="bg-white rounded-[2rem] border border-gray-100 p-8 space-y-4">
+            <h4 className="text-lg font-bold text-night flex items-center gap-3">
+              <span className="w-8 h-8 bg-black/5 rounded-xl flex items-center justify-center text-sm">🔗</span>
+              External Browse (No API Key Required)
+            </h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {[
+                { name: 'Vecteezy', color: '#FF5F5F', desc: 'Free vectors, photos, and videos. Opens in a new tab.' },
+                { name: 'Pinterest', color: '#E60023', desc: 'Visual discovery platform. Opens in a new tab.' },
+              ].map(s => (
+                <div key={s.name} className="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white text-sm font-bold shadow" style={{ backgroundColor: s.color }}>
+                    {s.name[0]}
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold">{s.name}</p>
+                    <p className="text-xs text-gray-400">{s.desc}</p>
+                  </div>
+                  <div className="ml-auto">
+                    <span className="text-[10px] font-bold bg-green-100 text-green-600 px-2 py-1 rounded-full uppercase tracking-widest">Always On</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Save Button */}
+          <div className="flex justify-end">
+            <button
+              onClick={savePhotoSettings}
+              disabled={photoSaving}
+              className="flex items-center gap-3 px-10 py-5 bg-gold text-night rounded-2xl font-bold hover:scale-105 transition-all shadow-xl shadow-gold/20 disabled:opacity-50"
+            >
+              {photoSaving ? (
+                <RefreshCw size={20} className="animate-spin" />
+              ) : (
+                <Save size={20} />
+              )}
+              {photoSaving ? 'Saving…' : 'Save Photo Settings'}
             </button>
           </div>
         </div>
