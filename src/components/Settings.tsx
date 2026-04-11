@@ -87,7 +87,7 @@ export default function Settings({ onRedeem }: SettingsProps) {
         {/* Writing Environment */}
         <section className="bg-white p-8 rounded-[2.5rem] border border-black/5 shadow-sm">
           <div className="flex items-center gap-3 mb-8">
-            <div className="p-3 bg-purple-50 text-purple-500 rounded-2xl">
+            <div className="p-3 bg-gold/10 text-gold rounded-2xl">
               <Zap size={24} />
             </div>
             <h2 className="text-2xl font-serif font-bold">Writing Flow</h2>

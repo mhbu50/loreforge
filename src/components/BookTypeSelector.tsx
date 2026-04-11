@@ -29,7 +29,7 @@ export default function BookTypeSelector({ onSelect, onCancel }: BookTypeSelecto
       title: 'Anime Book', 
       description: 'Cinematic experience with motion, sound, and vibrant aesthetics.', 
       icon: <Play size={32} />, 
-      color: 'bg-purple-500' 
+      color: 'bg-night'
     },
     { 
       id: 'novel', 
@@ -75,7 +75,7 @@ export default function BookTypeSelector({ onSelect, onCancel }: BookTypeSelecto
         exit={{ opacity: 0, scale: 0.9, y: 20 }}
         className="relative w-full max-w-4xl bg-night-light border border-gold/20 rounded-[2.5rem] p-12 shadow-2xl overflow-hidden"
       >
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-orange-500 to-purple-500" />
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-gold/60 via-gold to-gold/60" />
         
         <div className="flex items-center justify-between mb-12">
           <div>

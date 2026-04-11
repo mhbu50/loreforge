@@ -421,13 +421,13 @@ export default function HeadAdminPanel() {
                 placeholder="Search users..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none transition-all w-full"
+                className="pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all w-full"
               />
             </div>
             <select
               value={filter}
               onChange={(e) => setFilter(e.target.value as any)}
-              className="px-4 py-2 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none transition-all"
+              className="px-4 py-2 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
             >
               <option value="all">All Roles</option>
               <option value="admin">Admins</option>
@@ -451,7 +451,7 @@ export default function HeadAdminPanel() {
                   <tr key={user.uid} className="hover:bg-gray-50/50 transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-bold">
+                        <div className="w-10 h-10 rounded-full bg-gold/10 text-gold flex items-center justify-center font-bold">
                           {user.displayName?.[0] || 'U'}
                         </div>
                         <div>
@@ -463,7 +463,7 @@ export default function HeadAdminPanel() {
                     <td className="px-6 py-4">
                       <div className="flex flex-col gap-1">
                         <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest w-fit ${
-                          user.role === 'headadmin' ? 'bg-purple-100 text-purple-600' :
+                          user.role === 'headadmin' ? 'bg-gold/10 text-gold' :
                           user.role === 'admin' ? 'bg-red-100 text-red-600' :
                           'bg-gray-100 text-gray-600'
                         }`}>
@@ -493,13 +493,13 @@ export default function HeadAdminPanel() {
                     <td className="px-6 py-4">
                       <div className="flex flex-wrap gap-1">
                         {user.badges?.map(badge => (
-                          <span key={badge} className="bg-purple-50 text-purple-600 text-[10px] px-2 py-0.5 rounded-full border border-purple-100">
+                          <span key={badge} className="bg-gold/10 text-gold text-[10px] px-2 py-0.5 rounded-full border border-gold/20">
                             {badge}
                           </span>
                         ))}
                         <button 
                           onClick={() => awardBadge(user, 'Elite Author')}
-                          className="text-[10px] text-purple-400 hover:text-purple-600 font-bold"
+                          className="text-[10px] text-gold/60 hover:text-gold font-bold"
                         >
                           + Award
                         </button>
@@ -517,7 +517,7 @@ export default function HeadAdminPanel() {
                           </button>
                           <button
                             onClick={() => toggleSubscription(user, 'standard')}
-                            className={cn("p-2 rounded-md transition-all", user.subscriptionTier === 'standard' ? "bg-white shadow-sm text-purple-600" : "text-gray-400 hover:text-purple-600")}
+                            className={cn("p-2 rounded-md transition-all", user.subscriptionTier === 'standard' ? "bg-white shadow-sm text-gold" : "text-gray-400 hover:text-gold")}
                             title="Set to Standard"
                           >
                             <span className="text-[10px] font-bold">S</span>
@@ -541,7 +541,7 @@ export default function HeadAdminPanel() {
                           <button
                             onClick={() => toggleAdmin(user)}
                             className={`p-2 rounded-lg transition-all ${
-                              user.role === 'admin' ? 'bg-red-50 text-red-600 hover:bg-red-100' : 'bg-purple-50 text-purple-600 hover:bg-purple-100'
+                              user.role === 'admin' ? 'bg-red-50 text-red-600 hover:bg-red-100' : 'bg-gold/10 text-gold hover:bg-gold/20'
                             }`}
                             title={user.role === 'admin' ? 'Revoke Admin' : 'Make Admin'}
                           >
@@ -681,7 +681,7 @@ export default function HeadAdminPanel() {
                       ...subscriptionSettings,
                       free: { ...subscriptionSettings.free, maxStoriesTotal: parseInt(e.target.value) }
                     })}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none transition-all"
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                   />
                 </div>
                 <div className="space-y-2">
@@ -693,7 +693,7 @@ export default function HeadAdminPanel() {
                       ...subscriptionSettings,
                       free: { ...subscriptionSettings.free, maxPagesPerStory: parseInt(e.target.value) }
                     })}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none transition-all"
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
@@ -706,7 +706,7 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         free: { ...subscriptionSettings.free, tokensPerMonth: parseInt(e.target.value) }
                       })}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                     />
                   </div>
                   <div className="space-y-2">
@@ -718,7 +718,7 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         free: { ...subscriptionSettings.free, bookTokenCost: parseInt(e.target.value) }
                       })}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                     />
                   </div>
                 </div>
@@ -728,7 +728,7 @@ export default function HeadAdminPanel() {
             {/* Standard Tier */}
             <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm space-y-8">
               <div className="flex items-center gap-3">
-                <Star className="text-purple-400" />
+                <Star className="text-gold" />
                 <h3 className="text-xl font-bold">Standard Tier Settings</h3>
               </div>
               
@@ -743,7 +743,7 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         standard: { ...subscriptionSettings.standard, monthlyPrice: parseFloat(e.target.value) }
                       })}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                     />
                   </div>
                   <div className="space-y-2">
@@ -755,7 +755,7 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         standard: { ...subscriptionSettings.standard, yearlyPrice: parseFloat(e.target.value) }
                       })}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                     />
                   </div>
                 </div>
@@ -768,7 +768,7 @@ export default function HeadAdminPanel() {
                       ...subscriptionSettings,
                       standard: { ...subscriptionSettings.standard, maxStoriesPerMonth: parseInt(e.target.value) }
                     })}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none transition-all"
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                   />
                 </div>
                 <div className="space-y-2">
@@ -780,7 +780,7 @@ export default function HeadAdminPanel() {
                       ...subscriptionSettings,
                       standard: { ...subscriptionSettings.standard, maxPagesPerStory: parseInt(e.target.value) }
                     })}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none transition-all"
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
@@ -793,7 +793,7 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         standard: { ...subscriptionSettings.standard, tokensPerMonth: parseInt(e.target.value) }
                       })}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                     />
                   </div>
                   <div className="space-y-2">
@@ -805,7 +805,7 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         standard: { ...subscriptionSettings.standard, bookTokenCost: parseInt(e.target.value) }
                       })}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                     />
                   </div>
                 </div>
@@ -830,7 +830,7 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         premium: { ...subscriptionSettings.premium, monthlyPrice: parseFloat(e.target.value) }
                       })}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                     />
                   </div>
                   <div className="space-y-2">
@@ -842,7 +842,7 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         premium: { ...subscriptionSettings.premium, yearlyPrice: parseFloat(e.target.value) }
                       })}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                     />
                   </div>
                 </div>
@@ -855,7 +855,7 @@ export default function HeadAdminPanel() {
                       ...subscriptionSettings,
                       premium: { ...subscriptionSettings.premium, maxPagesPerStory: parseInt(e.target.value) }
                     })}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none transition-all"
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
@@ -868,7 +868,7 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         premium: { ...subscriptionSettings.premium, tokensPerMonth: parseInt(e.target.value) }
                       })}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                     />
                   </div>
                   <div className="space-y-2">
@@ -880,7 +880,7 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         premium: { ...subscriptionSettings.premium, bookTokenCost: parseInt(e.target.value) }
                       })}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                     />
                   </div>
                 </div>
@@ -905,7 +905,7 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         ultimate: { ...subscriptionSettings.ultimate, monthlyPrice: parseFloat(e.target.value) }
                       })}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                     />
                   </div>
                   <div className="space-y-2">
@@ -917,7 +917,7 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         ultimate: { ...subscriptionSettings.ultimate, yearlyPrice: parseFloat(e.target.value) }
                       })}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                     />
                   </div>
                 </div>
@@ -930,7 +930,7 @@ export default function HeadAdminPanel() {
                       ...subscriptionSettings,
                       ultimate: { ...subscriptionSettings.ultimate, maxPagesPerStory: parseInt(e.target.value) }
                     })}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none transition-all"
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
@@ -943,7 +943,7 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         ultimate: { ...subscriptionSettings.ultimate, tokensPerMonth: parseInt(e.target.value) }
                       })}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                     />
                   </div>
                   <div className="space-y-2">
@@ -955,7 +955,7 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         ultimate: { ...subscriptionSettings.ultimate, bookTokenCost: parseInt(e.target.value) }
                       })}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                     />
                   </div>
                 </div>
@@ -969,7 +969,7 @@ export default function HeadAdminPanel() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm space-y-6">
             <div className="flex items-center gap-3 mb-2">
-              <Settings className="text-purple-600" />
+              <Settings className="text-gold" />
               <h3 className="text-xl font-bold">Global Configuration</h3>
             </div>
             
@@ -994,7 +994,7 @@ export default function HeadAdminPanel() {
               <textarea 
                 value={globalSettings.termsOfConditions}
                 onChange={(e) => updateGlobalSettings({ termsOfConditions: e.target.value })}
-                className="w-full h-64 px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none transition-all font-serif text-sm resize-none"
+                className="w-full h-64 px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all font-serif text-sm resize-none"
                 placeholder="Enter the long terms and conditions here..."
               />
               <p className="text-[10px] text-gray-400 italic">This text will be displayed on the login page.</p>
@@ -1116,9 +1116,9 @@ export default function HeadAdminPanel() {
               <h3 className="text-xl font-bold">Platform Stats</h3>
             </div>
             <div className="grid grid-cols-2 gap-4">
-              <div className="p-6 bg-purple-50 rounded-2xl border border-purple-100">
-                <div className="text-xs font-bold text-purple-400 uppercase tracking-widest mb-1">Total Users</div>
-                <div className="text-3xl font-serif font-bold text-purple-600">{users.length}</div>
+              <div className="p-6 bg-gold/10 rounded-2xl border border-gold/20">
+                <div className="text-xs font-bold text-gold/60 uppercase tracking-widest mb-1">Total Users</div>
+                <div className="text-3xl font-serif font-bold text-gold">{users.length}</div>
               </div>
               <div className="p-6 bg-blue-50 rounded-2xl border border-blue-100">
                 <div className="text-xs font-bold text-blue-400 uppercase tracking-widest mb-1">Stories Forged</div>
@@ -1146,7 +1146,7 @@ export default function HeadAdminPanel() {
                 </button>
                 <button 
                   onClick={() => generateSubscriptionCode('premium')}
-                  className="px-6 py-2 bg-purple-50 text-purple-600 rounded-xl font-bold text-xs hover:bg-purple-100 transition-all"
+                  className="px-6 py-2 bg-gold/10 text-gold rounded-xl font-bold text-xs hover:bg-gold/20 transition-all"
                 >
                   + Premium Code
                 </button>
@@ -1181,7 +1181,7 @@ export default function HeadAdminPanel() {
                         <span className={cn(
                           "px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest",
                           code.tier === 'ultimate' ? "bg-gold/20 text-gold" :
-                          code.tier === 'premium' ? "bg-purple-100 text-purple-600" :
+                          code.tier === 'premium' ? "bg-gold/10 text-gold" :
                           "bg-blue-100 text-blue-600"
                         )}>
                           {code.tier}

@@ -48,7 +48,7 @@ export const ProgressWidget = () => (
         <span>42%</span>
       </div>
       <div className="w-full h-2 bg-black/5 rounded-full overflow-hidden">
-        <motion.div initial={{ width: 0 }} animate={{ width: '42%' }} className="h-full bg-purple-500" />
+        <motion.div initial={{ width: 0 }} animate={{ width: '42%' }} className="h-full bg-gold" />
       </div>
     </div>
     <div className="pt-4 border-t border-black/5 flex items-center justify-between">

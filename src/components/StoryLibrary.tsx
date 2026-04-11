@@ -270,7 +270,7 @@ function StoryCard({ story, index, viewMode, onSelect, onPublish, onDelete, onAd
             </div>
           )}
           {story.seriesId && (
-            <div className="bg-purple-500/50 backdrop-blur-md px-2 py-1 rounded-lg flex items-center gap-1 border border-white/10">
+            <div className="bg-gold/30 backdrop-blur-md px-2 py-1 rounded-lg flex items-center gap-1 border border-gold/20">
               <Layers size={10} className="text-white" />
               <span className="text-[8px] font-bold uppercase tracking-widest text-white">Series</span>
             </div>
@@ -297,7 +297,7 @@ function StoryCard({ story, index, viewMode, onSelect, onPublish, onDelete, onAd
           <div className="flex gap-1.5 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
             <button
               onClick={(e) => onAddPartner(story, e)}
-              className="p-2.5 bg-blue-500/10 text-blue-500 rounded-xl hover:bg-blue-500 hover:text-white transition-all"
+              className="p-2.5 bg-gold/10 text-gold rounded-xl hover:bg-gold hover:text-night transition-all"
               title="Add Partner"
             >
               <UserPlus size={16} />
