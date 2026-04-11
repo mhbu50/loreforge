@@ -181,16 +181,16 @@ export default function App() {
         {globalSettings?.uiSettings?.showGrain && <div className="grain-overlay" />}
         {globalSettings?.uiSettings?.showVignette && <div className="vignette-overlay" />}
         <Routes>
-          <Route 
-            path="/login" 
-            element={user ? <Navigate to="/" /> : <Auth />} 
+          <Route
+            path="/login"
+            element={user ? <Navigate to="/" /> : <Auth globalSettings={globalSettings} />}
           />
           <Route
             path="/"
             element={
               user
                 ? userProfile
-                  ? <Dashboard userProfile={userProfile} />
+                  ? <Dashboard userProfile={userProfile} globalSettings={globalSettings} />
                   : (
                     // User is authenticated but profile not loaded yet — show brief spinner
                     <div className="min-h-screen flex items-center justify-center luxury-bg">
@@ -203,7 +203,7 @@ export default function App() {
                       </div>
                     </div>
                   )
-                : <Landing />
+                : <Landing globalSettings={globalSettings} />
             }
           />
           <Route 

@@ -7,7 +7,13 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Sparkles, LogIn, UserPlus, Loader2, X, FileText } from 'lucide-react';
 import { toast } from 'sonner';
 
-export default function Auth() {
+interface AuthProps {
+  globalSettings?: any;
+}
+
+export default function Auth({ globalSettings }: AuthProps) {
+  const appName = globalSettings?.appName || 'StoryCraft';
+  const appIcon = globalSettings?.appIcon || '';
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -149,10 +155,16 @@ export default function Auth() {
           className="relative z-10"
         >
           <div className="flex items-center gap-4 mb-12">
-            <div className="w-16 h-16 bg-gold rounded-full flex items-center justify-center text-night animate-float">
-              <Sparkles size={32} />
+            <div className="w-16 h-16 bg-gold rounded-full flex items-center justify-center text-night animate-float overflow-hidden">
+              {appIcon?.startsWith('http') ? (
+                <img src={appIcon} className="w-full h-full object-cover" alt="icon" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+              ) : appIcon ? (
+                <span className="text-3xl">{appIcon}</span>
+              ) : (
+                <Sparkles size={32} />
+              )}
             </div>
-            <span className="small-caps text-gold">StoryCraft</span>
+            <span className="small-caps text-gold">{appName}</span>
           </div>
           
           <h1 className="title-text mb-8">

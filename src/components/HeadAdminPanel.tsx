@@ -53,6 +53,8 @@ export default function HeadAdminPanel() {
   const [globalSettings, setGlobalSettings] = useState({
     maintenanceMode: false,
     featuredStoryId: '',
+    appName: 'StoryCraft',
+    appIcon: '',
     termsOfConditions: 'Default Terms of Conditions...',
     privacyPolicy: 'Default Privacy Policy...',
     uiSettings: {
@@ -352,63 +354,59 @@ export default function HeadAdminPanel() {
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-3xl font-serif font-bold text-gray-900">Head Admin Control</h2>
-          <p className="text-gray-500">Manage administrators, stories, and global settings</p>
+      {/* Admin Header */}
+      <div className="relative bg-night rounded-[2rem] p-8 overflow-hidden mb-2">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 right-0 w-96 h-96 translate-x-1/2 -translate-y-1/2 rounded-full" style={{background: 'radial-gradient(circle, rgba(212,175,55,0.08) 0%, transparent 70%)'}} />
         </div>
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="flex items-center gap-5">
+            <div className="w-14 h-14 bg-gold/10 border border-gold/20 rounded-2xl flex items-center justify-center text-gold">
+              <ShieldCheck size={28} />
+            </div>
+            <div>
+              <h2 className="text-3xl font-serif font-bold text-white">Control Center</h2>
+              <p className="text-white/40 text-sm mt-0.5">Full platform management & configuration</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest">
+            <div className="px-4 py-2 bg-green-500/10 text-green-400 border border-green-500/20 rounded-xl flex items-center gap-2">
+              <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
+              System Online
+            </div>
+            <div className="px-4 py-2 bg-gold/10 text-gold border border-gold/20 rounded-xl">
+              {users.length} Users
+            </div>
+          </div>
+        </div>
+      </div>
 
-        <div className="flex items-center gap-2 bg-gray-100 p-1 rounded-2xl">
-          <button 
-            onClick={() => setActiveTab('users')}
-            className={cn("px-6 py-2 rounded-xl text-sm font-bold transition-all", activeTab === 'users' ? "bg-white shadow-sm text-black" : "text-gray-500 hover:text-black")}
-          >
-            Users
-          </button>
-          <button 
-            onClick={() => setActiveTab('stories')}
-            className={cn("px-6 py-2 rounded-xl text-sm font-bold transition-all", activeTab === 'stories' ? "bg-white shadow-sm text-black" : "text-gray-500 hover:text-black")}
-          >
-            Stories
-          </button>
-          <button 
-            onClick={() => setActiveTab('feedback')}
-            className={cn("px-6 py-2 rounded-xl text-sm font-bold transition-all", activeTab === 'feedback' ? "bg-white shadow-sm text-black" : "text-gray-500 hover:text-black")}
-          >
-            Feedback
-          </button>
-          <button 
-            onClick={() => setActiveTab('settings')}
-            className={cn("px-6 py-2 rounded-xl text-sm font-bold transition-all", activeTab === 'settings' ? "bg-white shadow-sm text-black" : "text-gray-500 hover:text-black")}
-          >
-            Settings
-          </button>
-          <button 
-            onClick={() => setActiveTab('subscription')}
-            className={cn("px-6 py-2 rounded-xl text-sm font-bold transition-all", activeTab === 'subscription' ? "bg-white shadow-sm text-black" : "text-gray-500 hover:text-black")}
-          >
-            Subscription
-          </button>
-          <button 
-            onClick={() => setActiveTab('codes')}
-            className={cn("px-6 py-2 rounded-xl text-sm font-bold transition-all", activeTab === 'codes' ? "bg-white shadow-sm text-black" : "text-gray-500 hover:text-black")}
-          >
-            Codes
-          </button>
+      {/* Tab Bar */}
+      <div className="flex flex-wrap items-center gap-2 p-1 bg-black/5 rounded-2xl">
+        {([
+          { id: 'users', label: 'Users', icon: <User size={14} /> },
+          { id: 'stories', label: 'Stories', icon: <BookOpen size={14} /> },
+          { id: 'feedback', label: 'Feedback', icon: <MessageSquare size={14} /> },
+          { id: 'settings', label: 'Settings', icon: <Settings size={14} /> },
+          { id: 'subscription', label: 'Subscription', icon: <Crown size={14} /> },
+          { id: 'codes', label: 'Codes', icon: <Zap size={14} /> },
+          { id: 'legal', label: 'Legal', icon: <FileText size={14} /> },
+          { id: 'ai', label: 'AI', icon: <Brain size={14} /> },
+        ] as const).map(({ id, label, icon }) => (
           <button
-            onClick={() => setActiveTab('legal')}
-            className={cn("px-6 py-2 rounded-xl text-sm font-bold transition-all", activeTab === 'legal' ? "bg-white shadow-sm text-black" : "text-gray-500 hover:text-black")}
+            key={id}
+            onClick={() => setActiveTab(id)}
+            className={cn(
+              "flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all",
+              activeTab === id
+                ? "bg-night text-gold shadow-lg shadow-black/20"
+                : "text-black/40 hover:text-black hover:bg-white/60"
+            )}
           >
-            Legal
+            {icon}
+            {label}
           </button>
-          <button
-            onClick={() => setActiveTab('ai')}
-            className={cn("px-6 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2", activeTab === 'ai' ? "bg-gold text-night shadow-sm" : "text-gray-500 hover:text-black")}
-          >
-            <Brain size={14} />
-            AI
-          </button>
-        </div>
+        ))}
       </div>
 
       {activeTab === 'users' && (
@@ -999,6 +997,61 @@ export default function HeadAdminPanel() {
               />
               <p className="text-[10px] text-gray-400 italic">This text will be displayed on the login page.</p>
             </div>
+          </div>
+
+          {/* Branding Card */}
+          <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm space-y-6 md:col-span-2">
+            <div className="flex items-center gap-3 mb-2">
+              <Sparkles className="text-gold" />
+              <h3 className="text-xl font-bold">App Branding</h3>
+            </div>
+
+            {/* Live preview */}
+            <div className="flex items-center gap-5 p-6 bg-night rounded-2xl border border-white/5">
+              <div className="w-14 h-14 bg-gold rounded-2xl flex items-center justify-center text-night overflow-hidden flex-shrink-0 shadow-lg shadow-gold/30">
+                {globalSettings.appIcon?.startsWith('http') ? (
+                  <img src={globalSettings.appIcon} className="w-full h-full object-cover" alt="app icon" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                ) : globalSettings.appIcon ? (
+                  <span className="text-2xl">{globalSettings.appIcon}</span>
+                ) : (
+                  <Sparkles size={28} />
+                )}
+              </div>
+              <div>
+                <div className="font-serif text-2xl font-bold text-white">{globalSettings.appName || 'StoryCraft'}</div>
+                <div className="text-[10px] text-gold/50 uppercase tracking-widest font-bold mt-1">Live Preview</div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label className="text-xs font-bold uppercase tracking-widest text-gray-400">App Name</label>
+                <input
+                  value={globalSettings.appName || 'StoryCraft'}
+                  onChange={(e) => setGlobalSettings(prev => ({ ...prev, appName: e.target.value }))}
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all font-serif text-lg"
+                  placeholder="StoryCraft"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-xs font-bold uppercase tracking-widest text-gray-400">App Icon (emoji or image URL)</label>
+                <input
+                  value={globalSettings.appIcon || ''}
+                  onChange={(e) => setGlobalSettings(prev => ({ ...prev, appIcon: e.target.value }))}
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                  placeholder="✨  or  https://example.com/icon.png"
+                />
+                <p className="text-[10px] text-gray-400 italic">Enter an emoji like ✨ or a direct image URL</p>
+              </div>
+            </div>
+
+            <button
+              onClick={() => updateGlobalSettings({ appName: globalSettings.appName, appIcon: globalSettings.appIcon })}
+              className="px-8 py-3 bg-gold text-night font-bold rounded-xl hover:bg-gold/90 transition-all text-sm flex items-center gap-2"
+            >
+              <Save size={16} />
+              Save Branding
+            </button>
           </div>
 
           <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm space-y-6">

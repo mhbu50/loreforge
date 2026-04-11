@@ -3,7 +3,13 @@ import { motion } from 'motion/react';
 import { Sparkles, BookOpen, Wand2, ShoppingBag, ChevronRight, Star, Heart, ShieldCheck, FileText, Image as ImageIcon, Mic2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-export default function Landing() {
+interface LandingProps {
+  globalSettings?: any;
+}
+
+export default function Landing({ globalSettings }: LandingProps) {
+  const appName = globalSettings?.appName || 'StoryCraft';
+  const appIcon = globalSettings?.appIcon || '';
   return (
     <div className="min-h-screen bg-[#050505] text-white selection:bg-gold selection:text-night overflow-x-hidden">
       <div className="atmosphere" />
@@ -11,10 +17,16 @@ export default function Landing() {
       {/* Navigation */}
       <nav className="px-8 py-6 flex items-center justify-between sticky top-0 z-50 bg-black/50 backdrop-blur-xl border-b border-white/5">
         <div className="flex items-center gap-4 group">
-          <div className="w-10 h-10 bg-gold rounded-xl flex items-center justify-center text-night group-hover:scale-110 transition-transform">
-            <Sparkles size={20} />
+          <div className="w-10 h-10 bg-gold rounded-xl flex items-center justify-center text-night group-hover:scale-110 transition-transform overflow-hidden">
+            {appIcon?.startsWith('http') ? (
+              <img src={appIcon} className="w-full h-full object-cover" alt="icon" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+            ) : appIcon ? (
+              <span className="text-lg">{appIcon}</span>
+            ) : (
+              <Sparkles size={20} />
+            )}
           </div>
-          <span className="font-serif text-2xl tracking-tight">StoryCraft</span>
+          <span className="font-serif text-2xl tracking-tight">{appName}</span>
         </div>
         
         <div className="hidden md:flex items-center gap-12">
@@ -205,10 +217,16 @@ export default function Landing() {
       {/* Footer */}
       <footer className="py-24 border-t border-white/5 text-center px-6">
         <div className="flex items-center justify-center gap-4 mb-8">
-          <div className="w-10 h-10 bg-gold rounded-xl flex items-center justify-center text-night">
-            <Sparkles size={20} />
+          <div className="w-10 h-10 bg-gold rounded-xl flex items-center justify-center text-night overflow-hidden">
+            {appIcon?.startsWith('http') ? (
+              <img src={appIcon} className="w-full h-full object-cover" alt="icon" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+            ) : appIcon ? (
+              <span className="text-lg">{appIcon}</span>
+            ) : (
+              <Sparkles size={20} />
+            )}
           </div>
-          <span className="font-serif font-bold text-2xl">StoryCraft</span>
+          <span className="font-serif font-bold text-2xl">{appName}</span>
         </div>
         <div className="flex justify-center gap-12 mb-12">
           {['Twitter', 'Discord', 'Instagram'].map(social => (

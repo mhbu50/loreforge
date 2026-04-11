@@ -29,9 +29,12 @@ import { ConfigService } from '../services/ConfigService';
 
 interface DashboardProps {
   userProfile: UserProfile | null;
+  globalSettings?: any;
 }
 
-export default function Dashboard({ userProfile }: DashboardProps) {
+export default function Dashboard({ userProfile, globalSettings }: DashboardProps) {
+  const appName = globalSettings?.appName || 'StoryCraft';
+  const appIcon = globalSettings?.appIcon || '';
   const [stories, setStories] = useState<Story[]>([]);
   const [books, setBooks] = useState<BookEntity[]>([]);
   const [currentStory, setCurrentStory] = useState<Story | null>(null);
@@ -692,41 +695,50 @@ export default function Dashboard({ userProfile }: DashboardProps) {
         )}
       >
         <div className="p-8 flex items-center gap-4 border-b border-black/5 group/logo cursor-pointer">
-          <div className="w-12 h-12 bg-night rounded-2xl flex items-center justify-center text-gold shadow-2xl shadow-gold/20 group-hover/logo:rotate-12 transition-transform duration-500">
-            <Sparkles size={24} />
+          <div className="w-12 h-12 bg-night rounded-2xl flex items-center justify-center text-gold shadow-2xl shadow-gold/20 group-hover/logo:rotate-12 transition-transform duration-500 overflow-hidden">
+            {appIcon?.startsWith('http') ? (
+              <img src={appIcon} className="w-full h-full object-cover" alt="icon" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+            ) : appIcon ? (
+              <span className="text-xl">{appIcon}</span>
+            ) : (
+              <Sparkles size={24} />
+            )}
           </div>
           <div className="flex flex-col">
-            <span className="text-xl font-serif font-bold tracking-tight">StoryCraft</span>
+            <span className="text-xl font-serif font-bold tracking-tight">{appName}</span>
             <span className="text-[10px] font-bold text-gold uppercase tracking-[0.2em]">Studio</span>
           </div>
         </div>
 
-        <nav className="flex-1 p-4 space-y-2 overflow-y-auto custom-scrollbar">
+        <nav className="flex-1 p-4 space-y-1 overflow-y-auto custom-scrollbar">
           {([
-            { view: 'library', icon: <Layout size={20} />, label: 'Library' },
-            { view: 'workspace', icon: <Edit3 size={20} />, label: 'Workspace' },
-            { view: 'themes', icon: <Palette size={20} />, label: 'Themes' },
-            { view: 'forge-settings', icon: <SettingsIcon size={20} />, label: 'Settings' },
-            { view: 'support', icon: <LifeBuoy size={20} />, label: 'Support' },
-            { view: 'publish', icon: <Share2 size={20} />, label: 'Publish' },
+            { view: 'library', icon: <Layout size={18} />, label: 'Library' },
+            { view: 'workspace', icon: <Edit3 size={18} />, label: 'Workspace' },
+            { view: 'themes', icon: <Palette size={18} />, label: 'Themes' },
+            { view: 'forge-settings', icon: <SettingsIcon size={18} />, label: 'Settings' },
+            { view: 'support', icon: <LifeBuoy size={18} />, label: 'Support' },
+            { view: 'publish', icon: <Share2 size={18} />, label: 'Publish' },
           ] as const).map(({ view, icon, label }) => (
             <button
               key={view}
               onClick={() => { setCurrentStory(null); setIsCreating(false); setShowAdmin(false); setActiveView(view); }}
               className={cn(
-                "w-full flex items-center gap-4 px-6 py-4 rounded-2xl transition-all group relative overflow-hidden",
+                "w-full flex items-center gap-3 px-5 py-3.5 rounded-2xl transition-all group relative overflow-hidden",
                 activeView === view
-                  ? "bg-black text-white shadow-xl"
-                  : "text-black/40 hover:bg-black/5 hover:text-black"
+                  ? "bg-night text-white shadow-lg shadow-black/10"
+                  : "text-black/35 hover:bg-black/5 hover:text-black"
               )}
             >
               {activeView === view && (
-                <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-gold rounded-r-full" />
+                <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-7 bg-gold rounded-r-full" />
               )}
-              <span className={cn("transition-colors", activeView === view ? "text-gold" : "")}>
+              <span className={cn("transition-colors flex-shrink-0", activeView === view ? "text-gold" : "group-hover:text-black/60")}>
                 {icon}
               </span>
-              <span className="text-sm font-bold uppercase tracking-widest">{label}</span>
+              <span className="text-[11px] font-bold uppercase tracking-[0.15em]">{label}</span>
+              {activeView === view && (
+                <span className="ml-auto w-1.5 h-1.5 bg-gold rounded-full" />
+              )}
             </button>
           ))}
         </nav>
@@ -764,15 +776,21 @@ export default function Dashboard({ userProfile }: DashboardProps) {
       <div className="flex-1 flex flex-col min-w-0 transition-all duration-500" style={{ marginLeft: isZenMode ? 0 : sidebarWidth }}>
         {/* Header */}
         <header className={cn(
-          "h-24 border-b border-black/5 bg-white/80 backdrop-blur-xl flex items-center justify-between px-12 sticky top-0 z-40 transition-all duration-500",
+          "h-20 border-b border-black/5 bg-white/90 backdrop-blur-xl flex items-center justify-between px-10 sticky top-0 z-40 transition-all duration-500 shadow-sm",
           isZenMode && "-translate-y-full"
         )}>
           <div className="flex items-center gap-12">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center text-white">
-                <Sparkles size={16} />
+              <div className="w-8 h-8 bg-gold rounded-lg flex items-center justify-center text-night overflow-hidden">
+                {appIcon?.startsWith('http') ? (
+                  <img src={appIcon} className="w-full h-full object-cover" alt="icon" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                ) : appIcon ? (
+                  <span className="text-sm">{appIcon}</span>
+                ) : (
+                  <Sparkles size={16} />
+                )}
               </div>
-              <span className="text-lg font-serif font-bold">StoryCraft</span>
+              <span className="text-lg font-serif font-bold">{appName}</span>
             </div>
           </div>
           
