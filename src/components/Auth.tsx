@@ -4,7 +4,7 @@ import { signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, create
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { handleFirestoreError, OperationType } from '../lib/firestore-utils';
 import { motion, AnimatePresence } from 'motion/react';
-import { Sparkles, LogIn, UserPlus, Loader2, X, FileText } from 'lucide-react';
+import { Sparkles, LogIn, UserPlus, Loader2, X, FileText, Eye, EyeOff, Wand2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface AuthProps {
@@ -14,23 +14,24 @@ interface AuthProps {
 export default function Auth({ globalSettings }: AuthProps) {
   const appName = globalSettings?.appName || 'StoryCraft';
   const appIcon = globalSettings?.appIcon || '';
+
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showLegal, setShowLegal] = useState<{ show: boolean, type: 'terms' | 'privacy' }>({ show: false, type: 'terms' });
   const [legalContent, setLegalContent] = useState({ terms: '', privacy: '' });
 
   useEffect(() => {
     const fetchLegal = async () => {
-      const path = 'settings/global';
       try {
         const settingsDoc = await getDoc(doc(db, 'settings', 'global'));
         if (settingsDoc.exists()) {
           const data = settingsDoc.data();
           setLegalContent({
-            terms: data.termsOfConditions || 'Terms of conditions are currently being updated.',
-            privacy: data.privacyPolicy || 'Privacy policy is currently being updated.'
+            terms: data.termsOfConditions || 'Welcome to StoryCraft. By using our service, you agree to craft responsibly.',
+            privacy: data.privacyPolicy || 'Your privacy is important to us. We protect your data with cinematic precision.'
           });
         } else {
           setLegalContent({
@@ -38,12 +39,11 @@ export default function Auth({ globalSettings }: AuthProps) {
             privacy: 'Your privacy is important to us. We protect your data with cinematic precision.'
           });
         }
-      } catch (error) {
+      } catch {
         setLegalContent({
-          terms: 'Welcome to StoryCraft. By using our service, you agree to craft responsibly and respect the creative rights of others.',
+          terms: 'Welcome to StoryCraft. By using our service, you agree to craft responsibly.',
           privacy: 'Your privacy is important to us.'
         });
-        handleFirestoreError(error, OperationType.GET, path);
       }
     };
     fetchLegal();
@@ -55,38 +55,35 @@ export default function Auth({ globalSettings }: AuthProps) {
       setLoading(true);
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
-      
-      // Check if user exists in Firestore
-      const path = `users/${user.uid}`;
+      // Best-effort — App.tsx self-heals if this write fails
       try {
         const userDoc = await getDoc(doc(db, 'users', user.uid));
         if (!userDoc.exists()) {
           await setDoc(doc(db, 'users', user.uid), {
             uid: user.uid,
             email: user.email,
-            displayName: user.displayName || 'Anonymous',
+            displayName: user.displayName || user.email?.split('@')[0] || 'User',
             role: user.email === 'alaa.abukhamseen@gmail.com' ? 'headadmin' : 'user',
             subscriptionTier: 'free',
             subscriptionStatus: 'active',
             subscriptionCycle: 'none',
             streak: 0,
             tokens: 5,
-            createdAt: Date.now()
+            createdAt: Date.now(),
           });
         }
-      } catch (error) {
-        handleFirestoreError(error, OperationType.WRITE, path);
+      } catch (err) {
+        console.warn('Profile write failed in Auth (will be retried):', err);
       }
-      toast.success('Welcome to StoryCraft!');
+      toast.success('Welcome to ' + appName + '!');
     } catch (error: any) {
-      console.error(error);
       const friendlyMessages: Record<string, string> = {
         'auth/popup-closed-by-user': 'Sign-in was cancelled.',
         'auth/cancelled-popup-request': 'Sign-in was cancelled.',
-        'auth/popup-blocked': 'Popup was blocked by your browser. Please allow popups for this site.',
+        'auth/popup-blocked': 'Popup was blocked. Please allow popups for this site.',
         'auth/network-request-failed': 'Network error. Please check your connection.',
         'auth/too-many-requests': 'Too many attempts. Please wait a moment and try again.',
-        'auth/user-disabled': 'This account has been disabled. Contact support.',
+        'auth/user-disabled': 'This account has been disabled.',
       };
       toast.error(friendlyMessages[error?.code] ?? 'Google sign-in failed. Please try again.');
     } finally {
@@ -97,7 +94,6 @@ export default function Auth({ globalSettings }: AuthProps) {
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) return toast.error('Please fill in all fields');
-    
     try {
       setLoading(true);
       if (isLogin) {
@@ -106,38 +102,38 @@ export default function Auth({ globalSettings }: AuthProps) {
       } else {
         const result = await createUserWithEmailAndPassword(auth, email, password);
         const user = result.user;
-        await setDoc(doc(db, 'users', user.uid), {
-          uid: user.uid,
-          email: user.email,
-          displayName: email.split('@')[0],
-          role: email === 'alaa.abukhamseen@gmail.com' ? 'headadmin' : 'user',
-          subscriptionTier: 'free',
-          subscriptionStatus: 'active',
-          subscriptionCycle: 'none',
-          streak: 0,
-          tokens: 5,
-          createdAt: Date.now()
-        });
-        toast.success('Account created successfully!');
+        try {
+          await setDoc(doc(db, 'users', user.uid), {
+            uid: user.uid,
+            email: user.email,
+            displayName: email.split('@')[0],
+            role: email === 'alaa.abukhamseen@gmail.com' ? 'headadmin' : 'user',
+            subscriptionTier: 'free',
+            subscriptionStatus: 'active',
+            subscriptionCycle: 'none',
+            streak: 0,
+            tokens: 5,
+            createdAt: Date.now(),
+          });
+        } catch (err) {
+          console.warn('Profile write failed in Auth (will be retried):', err);
+        }
+        toast.success('Account created! Setting up your studio...');
       }
     } catch (error: any) {
-      console.error(error);
       const friendlyMessages: Record<string, string> = {
-        'auth/email-already-in-use': 'This email is already registered.',
+        'auth/email-already-in-use': 'This email is already registered. Try signing in.',
         'auth/invalid-email': 'Please enter a valid email address.',
         'auth/weak-password': 'Password must be at least 6 characters.',
         'auth/user-not-found': 'No account found with this email.',
         'auth/wrong-password': 'Incorrect password. Please try again.',
         'auth/invalid-credential': 'Incorrect email or password.',
-        'auth/too-many-requests': 'Too many attempts. Please wait a moment and try again.',
+        'auth/too-many-requests': 'Too many attempts. Please wait a moment.',
         'auth/network-request-failed': 'Network error. Please check your connection.',
-        'auth/user-disabled': 'This account has been disabled. Contact support.',
+        'auth/user-disabled': 'This account has been disabled.',
       };
-      const msg = friendlyMessages[error?.code] ?? 'Something went wrong. Please try again.';
-      toast.error(msg);
-      if (error?.code === 'auth/email-already-in-use') {
-        setIsLogin(true);
-      }
+      toast.error(friendlyMessages[error?.code] ?? 'Something went wrong. Please try again.');
+      if (error?.code === 'auth/email-already-in-use') setIsLogin(true);
     } finally {
       setLoading(false);
     }
@@ -145,156 +141,230 @@ export default function Auth({ globalSettings }: AuthProps) {
 
   return (
     <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2 luxury-bg overflow-hidden">
-      {/* Left Pane: Branding */}
-      <div className="hidden lg:flex flex-col justify-center p-20 relative border-r border-white/10">
+
+      {/* ── Left Pane: Branding ── */}
+      <div className="hidden lg:flex flex-col justify-between p-16 relative border-r border-white/5 overflow-hidden">
         <div className="atmosphere" />
-        <motion.div 
-          initial={{ opacity: 0, x: -50 }}
+
+        {/* Background decorative circles */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute -top-40 -left-40 w-96 h-96 rounded-full border border-gold/5" />
+          <div className="absolute -top-20 -left-20 w-64 h-64 rounded-full border border-gold/10" />
+          <div className="absolute bottom-32 right-8 w-80 h-80 rounded-full"
+            style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.04) 0%, transparent 70%)' }} />
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0, x: -40 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 1 }}
+          transition={{ duration: 0.8 }}
           className="relative z-10"
         >
-          <div className="flex items-center gap-4 mb-12">
-            <div className="w-16 h-16 bg-gold rounded-full flex items-center justify-center text-night animate-float overflow-hidden">
+          <div className="flex items-center gap-4 mb-16">
+            <div className="w-14 h-14 bg-gold rounded-2xl flex items-center justify-center text-night shadow-lg shadow-gold/30 overflow-hidden">
               {appIcon?.startsWith('http') ? (
                 <img src={appIcon} className="w-full h-full object-cover" alt="icon" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
               ) : appIcon ? (
-                <span className="text-3xl">{appIcon}</span>
+                <span className="text-2xl">{appIcon}</span>
               ) : (
-                <Sparkles size={32} />
+                <Sparkles size={28} />
               )}
             </div>
-            <span className="small-caps text-gold">{appName}</span>
+            <div>
+              <span className="block font-serif text-xl font-bold text-white">{appName}</span>
+              <span className="text-[9px] font-bold uppercase tracking-[0.4em] text-gold/50">Creative Studio</span>
+            </div>
           </div>
-          
-          <h1 className="title-text mb-8">
+
+          <h1 className="text-6xl font-serif font-light leading-[1.05] mb-8 tracking-tighter">
             Craft <br />
-            <span className="italic font-serif text-gold">Eternal</span> <br />
+            <span className="italic font-bold" style={{
+              background: 'linear-gradient(135deg, #d4af37, #f0d060)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}>Eternal</span> <br />
             Tales.
           </h1>
-          
-          <p className="text-white/40 max-w-md text-lg leading-relaxed font-light">
-            Step into the immersive world of storytelling. 
-            Create, illustrate, and narrate your own masterpieces in seconds.
+
+          <p className="text-white/35 max-w-xs text-base leading-relaxed font-light">
+            The world's most immersive story studio.
+            Write, illustrate, and publish your masterpieces.
           </p>
         </motion.div>
-        
-        <div className="absolute bottom-20 left-20">
-          <div className="flex gap-8">
-            <div>
-              <div className="text-3xl font-serif text-gold">10k+</div>
-              <div className="small-caps text-[9px]">Stories Crafted</div>
-            </div>
-            <div>
-              <div className="text-3xl font-serif text-gold">50+</div>
-              <div className="small-caps text-[9px]">Artistic Styles</div>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      {/* Right Pane: Auth Form */}
-      <div className="flex items-center justify-center p-8 bg-night relative">
-        <motion.div 
+        {/* Stats row */}
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-md space-y-8 glass-surface p-10 rounded-[2rem] border border-white/5 border-t-gold/20"
+          transition={{ duration: 0.8, delay: 0.3 }}
+          className="relative z-10 flex gap-10"
         >
-          <div className="text-center">
-            <h2 className="text-4xl font-serif mb-2">{isLogin ? 'Welcome Back' : 'Join the Studio'}</h2>
-            <p className="text-white/40 text-sm">{isLogin ? 'Enter your credentials to continue your journey' : 'Create an account to start crafting your tales'}</p>
-          </div>
-
-          <form onSubmit={handleEmailAuth} className="space-y-6">
-            <div className="space-y-2">
-              <label className="small-caps text-[10px] text-white/60">Email Address</label>
-              <input 
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-gold/50 transition-all input-focus-underline"
-                placeholder="you@example.com"
-              />
+          {[{ val: '10k+', label: 'Stories Crafted' }, { val: '50+', label: 'Art Styles' }, { val: '4.9★', label: 'Rating' }].map(s => (
+            <div key={s.label}>
+              <div className="text-2xl font-serif font-bold text-gold">{s.val}</div>
+              <div className="text-[9px] font-bold uppercase tracking-[0.3em] text-white/25 mt-1">{s.label}</div>
             </div>
-            <div className="space-y-2">
-              <label className="small-caps text-[10px] text-white/60">Password</label>
-              <input 
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-gold/50 transition-all input-focus-underline"
-                placeholder="••••••••"
-              />
+          ))}
+        </motion.div>
+      </div>
+
+      {/* ── Right Pane: Form ── */}
+      <div className="flex items-center justify-center p-6 lg:p-12 bg-night relative overflow-hidden">
+        {/* Subtle background glow */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute bottom-0 right-0 w-96 h-96 translate-x-1/2 translate-y-1/2 rounded-full"
+            style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.04) 0%, transparent 70%)' }} />
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7 }}
+          className="w-full max-w-md relative z-10"
+        >
+          {/* Card */}
+          <div className="bg-white/[0.03] border border-white/8 rounded-[2rem] p-8 lg:p-10 shadow-2xl"
+            style={{ boxShadow: '0 0 0 1px rgba(212,175,55,0.08), 0 32px 64px -16px rgba(0,0,0,0.6)' }}>
+
+            {/* Mobile logo */}
+            <div className="flex lg:hidden items-center gap-3 mb-8 justify-center">
+              <div className="w-10 h-10 bg-gold rounded-xl flex items-center justify-center text-night overflow-hidden">
+                {appIcon?.startsWith('http') ? (
+                  <img src={appIcon} className="w-full h-full object-cover" alt="" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                ) : appIcon ? <span className="text-lg">{appIcon}</span> : <Sparkles size={18} />}
+              </div>
+              <span className="font-serif text-lg font-bold text-gold">{appName}</span>
             </div>
 
-            <button 
-              type="submit"
-              disabled={loading}
-              className="w-full bg-gold text-night font-bold py-4 rounded-xl hover:bg-gold/90 transition-all flex items-center justify-center gap-2 disabled:opacity-50 btn-ripple shadow-lg shadow-gold/20 hover:shadow-gold/40"
-            >
-              {loading ? <Loader2 className="animate-spin" /> : isLogin ? <LogIn size={20} /> : <UserPlus size={20} />}
-              <span>{isLogin ? 'Sign In' : 'Create Account'}</span>
-            </button>
-          </form>
-
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/10"></div></div>
-            <div className="relative flex justify-center text-xs uppercase"><span className="bg-night px-2 text-white/20">Or continue with</span></div>
-          </div>
-
-          <button 
-            onClick={handleGoogleSignIn}
-            disabled={loading}
-            className="w-full bg-white/5 border border-white/10 text-white font-medium py-4 rounded-xl hover:bg-white/10 transition-all flex items-center justify-center gap-3 btn-ripple"
-          >
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" className="w-5 h-5" alt="Google" />
-            <span>Google Account</span>
-          </button>
-
-          <div className="text-center">
-            <button 
-              onClick={() => setIsLogin(!isLogin)}
-              className="text-gold/60 hover:text-gold text-sm transition-colors"
-            >
-              {isLogin ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
-            </button>
-          </div>
-
-          <div className="text-center pt-4 border-t border-white/5">
-            <p className="text-[10px] text-white/20 uppercase tracking-widest leading-relaxed">
-              By logging in you accept <br />
-              <button 
-                onClick={() => setShowLegal({ show: true, type: 'terms' })}
-                className="text-gold/40 hover:text-gold transition-colors underline underline-offset-4"
+            {/* Tab toggle */}
+            <div className="flex bg-white/5 rounded-2xl p-1 mb-8">
+              <button
+                onClick={() => setIsLogin(true)}
+                className={`flex-1 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${isLogin ? 'bg-gold text-night shadow-lg' : 'text-white/40 hover:text-white/70'}`}
               >
-                terms of conditions
+                Sign In
               </button>
-              <span className="mx-2">and</span>
-              <button 
-                onClick={() => setShowLegal({ show: true, type: 'privacy' })}
-                className="text-gold/40 hover:text-gold transition-colors underline underline-offset-4"
+              <button
+                onClick={() => setIsLogin(false)}
+                className={`flex-1 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${!isLogin ? 'bg-gold text-night shadow-lg' : 'text-white/40 hover:text-white/70'}`}
               >
-                privacy policy
+                Sign Up
+              </button>
+            </div>
+
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={isLogin ? 'login' : 'signup'}
+                initial={{ opacity: 0, x: isLogin ? -12 : 12 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: isLogin ? 12 : -12 }}
+                transition={{ duration: 0.2 }}
+              >
+                <div className="mb-6">
+                  <h2 className="text-2xl font-serif font-bold text-white">
+                    {isLogin ? 'Welcome back' : 'Create account'}
+                  </h2>
+                  <p className="text-white/35 text-xs mt-1">
+                    {isLogin ? 'Enter your credentials to continue your journey' : 'Start crafting your tales today'}
+                  </p>
+                </div>
+
+                <form onSubmit={handleEmailAuth} className="space-y-4">
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-white/40">Email</label>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full bg-white/5 border border-white/8 rounded-xl px-4 py-3.5 outline-none focus:border-gold/50 focus:bg-gold/5 transition-all text-sm text-white placeholder:text-white/20"
+                      placeholder="you@example.com"
+                      autoComplete="email"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-white/40">Password</label>
+                    <div className="relative">
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="w-full bg-white/5 border border-white/8 rounded-xl px-4 py-3.5 pr-12 outline-none focus:border-gold/50 focus:bg-gold/5 transition-all text-sm text-white placeholder:text-white/20"
+                        placeholder="••••••••"
+                        autoComplete={isLogin ? 'current-password' : 'new-password'}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(p => !p)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-white/25 hover:text-white/60 transition-colors"
+                      >
+                        {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                      </button>
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full py-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 disabled:opacity-50 transition-all mt-2"
+                    style={{ background: 'linear-gradient(135deg, #d4af37, #b8860b)', color: '#0a0a0a', boxShadow: '0 8px 24px -4px rgba(212,175,55,0.35)' }}
+                  >
+                    {loading
+                      ? <Loader2 className="animate-spin" size={18} />
+                      : isLogin ? <LogIn size={18} /> : <UserPlus size={18} />}
+                    <span>{isLogin ? 'Sign In' : 'Create Account'}</span>
+                  </button>
+                </form>
+              </motion.div>
+            </AnimatePresence>
+
+            <div className="relative my-6">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-white/6" />
+              </div>
+              <div className="relative flex justify-center">
+                <span className="px-3 bg-transparent text-[10px] uppercase tracking-widest text-white/20">or</span>
+              </div>
+            </div>
+
+            <button
+              onClick={handleGoogleSignIn}
+              disabled={loading}
+              className="w-full bg-white/5 hover:bg-white/10 border border-white/8 text-white/80 hover:text-white font-medium py-3.5 rounded-xl transition-all flex items-center justify-center gap-3 text-sm"
+            >
+              <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" className="w-5 h-5" alt="Google" />
+              <span>Continue with Google</span>
+            </button>
+
+            <p className="text-center text-[10px] text-white/15 mt-6 leading-relaxed uppercase tracking-wider">
+              By continuing you accept our{' '}
+              <button onClick={() => setShowLegal({ show: true, type: 'terms' })} className="text-gold/40 hover:text-gold transition-colors underline underline-offset-2">
+                Terms
+              </button>
+              {' & '}
+              <button onClick={() => setShowLegal({ show: true, type: 'privacy' })} className="text-gold/40 hover:text-gold transition-colors underline underline-offset-2">
+                Privacy
               </button>
             </p>
           </div>
         </motion.div>
       </div>
 
-      {/* Legal Modal */}
+      {/* ── Legal Modal ── */}
       <AnimatePresence>
         {showLegal.show && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               onClick={() => setShowLegal({ ...showLegal, show: false })}
               className="absolute inset-0 bg-black/80 backdrop-blur-md"
             />
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="relative w-full max-w-2xl bg-night border border-white/10 rounded-[2.5rem] p-10 shadow-2xl overflow-hidden flex flex-col max-h-[80vh]"
+              className="relative w-full max-w-2xl bg-night border border-white/10 rounded-[2.5rem] p-10 shadow-2xl flex flex-col max-h-[80vh]"
             >
               <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-4">
@@ -312,14 +382,12 @@ export default function Auth({ globalSettings }: AuthProps) {
                   <X size={20} />
                 </button>
               </div>
-
-              <div className="flex-1 overflow-y-auto pr-4 custom-scrollbar">
+              <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
                 <div className="text-white/60 text-sm leading-relaxed whitespace-pre-wrap font-light">
                   {showLegal.type === 'terms' ? legalContent.terms : legalContent.privacy}
                 </div>
               </div>
-
-              <button 
+              <button
                 onClick={() => setShowLegal({ ...showLegal, show: false })}
                 className="mt-8 w-full py-4 bg-gold text-night font-bold rounded-xl hover:bg-gold/90 transition-all"
               >

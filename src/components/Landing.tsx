@@ -55,7 +55,7 @@ export default function Landing({ globalSettings }: LandingProps) {
               className="flex items-center gap-4 mb-8"
             >
               <span className="w-12 h-[1px] bg-gold/50" />
-              <span className="text-xs font-bold uppercase tracking-[0.5em] text-gold">The Ultimate Manual Book Studio</span>
+              <span className="text-xs font-bold uppercase tracking-[0.5em] text-gold">{appName} · The Ultimate Story Studio</span>
             </motion.div>
             
             <motion.h1 
