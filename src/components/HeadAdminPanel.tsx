@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Shield, User, Star, Trash2, Search, Filter, CheckCircle, XCircle, Settings, BookOpen, Zap, AlertTriangle, Bug, MessageSquare, Clock, Crown, Send, Sparkles, Code, Terminal, Bot, Activity, Database, Cpu, ShieldCheck, RefreshCw, Wand2, Plus, FileText } from 'lucide-react';
+import { Shield, User, Star, Trash2, Search, Filter, CheckCircle, XCircle, Settings, BookOpen, Zap, AlertTriangle, Bug, MessageSquare, Clock, Crown, Send, Sparkles, Code, Terminal, Bot, Activity, Database, Cpu, ShieldCheck, RefreshCw, Wand2, Plus, FileText, Brain, Key, Eye, EyeOff, ToggleLeft, ToggleRight, ChevronDown, Save } from 'lucide-react';
+import { AIService, AIProviderSettings, DEFAULT_AI_SETTINGS, AVAILABLE_MODELS } from '../services/AIService';
 import { db, auth } from '../firebase';
 import { collection, query, onSnapshot, doc, updateDoc, deleteDoc, getDocs, setDoc, getDoc, orderBy, addDoc } from 'firebase/firestore';
 import { handleFirestoreError, OperationType } from '../lib/firestore-utils';
@@ -14,7 +15,7 @@ export default function HeadAdminPanel() {
   const [stories, setStories] = useState<Story[]>([]);
   const [feedback, setFeedback] = useState<Feedback[]>([]);
   const [subscriptionCodes, setSubscriptionCodes] = useState<SubscriptionCode[]>([]);
-  const [activeTab, setActiveTab] = useState<'users' | 'stories' | 'settings' | 'feedback' | 'subscription' | 'codes' | 'legal'>('users');
+  const [activeTab, setActiveTab] = useState<'users' | 'stories' | 'settings' | 'feedback' | 'subscription' | 'codes' | 'legal' | 'ai'>('users');
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState<'all' | 'admin' | 'user'>('all');
   
@@ -64,6 +65,10 @@ export default function HeadAdminPanel() {
       animationsEnabled: true
     }
   });
+
+  const [aiSettings, setAiSettings] = useState<AIProviderSettings>(DEFAULT_AI_SETTINGS);
+  const [aiSaving, setAiSaving] = useState(false);
+  const [visibleKeys, setVisibleKeys] = useState<Record<string, boolean>>({});
 
   const defaultUISettings = {
     showParticles: true,
@@ -215,15 +220,22 @@ export default function HeadAdminPanel() {
         if (settingsDoc.exists()) {
           setGlobalSettings(prev => ({ ...prev, ...settingsDoc.data() }));
         } else if (auth.currentUser?.email === 'alaa.abukhamseen@gmail.com') {
-          // Bootstrap global settings
           await setDoc(doc(db, 'settings', 'global'), globalSettings);
         }
         const subDoc = await getDoc(doc(db, 'settings', 'subscription'));
         if (subDoc.exists()) {
           setSubscriptionSettings(subDoc.data() as any);
         } else if (auth.currentUser?.email === 'alaa.abukhamseen@gmail.com') {
-          // Bootstrap subscription settings
           await setDoc(doc(db, 'settings', 'subscription'), subscriptionSettings);
+        }
+        const aiDoc = await getDoc(doc(db, 'settings', 'ai_providers'));
+        if (aiDoc.exists()) {
+          const data = aiDoc.data();
+          setAiSettings({
+            ...DEFAULT_AI_SETTINGS,
+            ...data,
+            providers: { ...DEFAULT_AI_SETTINGS.providers, ...(data.providers || {}) }
+          } as AIProviderSettings);
         }
       } catch (error) {
         handleFirestoreError(error, OperationType.GET, 'settings');
@@ -266,6 +278,28 @@ export default function HeadAdminPanel() {
       }
       toast.error("Failed to update settings");
     }
+  };
+
+  const saveAiSettings = async () => {
+    setAiSaving(true);
+    try {
+      await AIService.saveSettings(aiSettings);
+      toast.success('AI provider settings saved!');
+    } catch (error) {
+      toast.error('Failed to save AI settings');
+    } finally {
+      setAiSaving(false);
+    }
+  };
+
+  const updateProvider = (key: keyof AIProviderSettings['providers'], field: string, value: any) => {
+    setAiSettings(prev => ({
+      ...prev,
+      providers: {
+        ...prev.providers,
+        [key]: { ...prev.providers[key], [field]: value }
+      }
+    }));
   };
 
   const updateFeedbackStatus = async (id: string, status: Feedback['status']) => {
@@ -361,11 +395,18 @@ export default function HeadAdminPanel() {
           >
             Codes
           </button>
-          <button 
+          <button
             onClick={() => setActiveTab('legal')}
             className={cn("px-6 py-2 rounded-xl text-sm font-bold transition-all", activeTab === 'legal' ? "bg-white shadow-sm text-black" : "text-gray-500 hover:text-black")}
           >
             Legal
+          </button>
+          <button
+            onClick={() => setActiveTab('ai')}
+            className={cn("px-6 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2", activeTab === 'ai' ? "bg-gold text-night shadow-sm" : "text-gray-500 hover:text-black")}
+          >
+            <Brain size={14} />
+            AI
           </button>
         </div>
       </div>
@@ -1186,6 +1227,196 @@ export default function HeadAdminPanel() {
           </div>
         </div>
       )}
+      {activeTab === 'ai' && (
+        <div className="space-y-8">
+          {/* Header */}
+          <div className="bg-night text-white rounded-[2.5rem] p-8 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-gold/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
+            <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 bg-gold/20 rounded-2xl flex items-center justify-center text-gold">
+                  <Brain size={28} />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-serif font-bold">AI Providers</h3>
+                  <p className="text-white/40 text-sm">Configure API keys for each AI engine powering StoryCraft.</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="text-right">
+                  <p className="text-[10px] uppercase tracking-widest text-white/30 font-bold mb-1">Active Text AI</p>
+                  <select
+                    value={aiSettings.activeTextProvider}
+                    onChange={(e) => setAiSettings(prev => ({ ...prev, activeTextProvider: e.target.value }))}
+                    className="bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-sm font-bold text-white outline-none"
+                  >
+                    {Object.entries(aiSettings.providers)
+                      .filter(([, p]) => p.usedFor.includes('text'))
+                      .map(([key, p]) => (
+                        <option key={key} value={key} className="text-black">{p.name}</option>
+                      ))}
+                  </select>
+                </div>
+                <div className="text-right">
+                  <p className="text-[10px] uppercase tracking-widest text-white/30 font-bold mb-1">Active Image AI</p>
+                  <select
+                    value={aiSettings.activeImageProvider}
+                    onChange={(e) => setAiSettings(prev => ({ ...prev, activeImageProvider: e.target.value }))}
+                    className="bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-sm font-bold text-white outline-none"
+                  >
+                    {Object.entries(aiSettings.providers)
+                      .filter(([, p]) => p.usedFor.includes('image'))
+                      .map(([key, p]) => (
+                        <option key={key} value={key} className="text-black">{p.name}</option>
+                      ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Provider Cards */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {(Object.entries(aiSettings.providers) as [keyof AIProviderSettings['providers'], any][]).map(([key, provider]) => {
+              const isActiveText = aiSettings.activeTextProvider === key;
+              const isActiveImage = aiSettings.activeImageProvider === key;
+              const isActive = isActiveText || isActiveImage;
+              const showKey = visibleKeys[key];
+
+              return (
+                <div
+                  key={key}
+                  className={cn(
+                    "bg-white rounded-[2rem] border-2 p-8 space-y-6 transition-all",
+                    provider.enabled ? "border-gold/30 shadow-lg shadow-gold/5" : "border-gray-100"
+                  )}
+                >
+                  {/* Card Header */}
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className={cn(
+                        "w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-lg",
+                        provider.enabled ? "bg-gold/10 text-gold" : "bg-gray-100 text-gray-400"
+                      )}>
+                        {key === 'gemini' && '✦'}
+                        {key === 'openai' && '⊛'}
+                        {key === 'anthropic' && '◎'}
+                        {key === 'stability' && '⬡'}
+                        {key === 'mistral' && '⫿'}
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h4 className="text-lg font-bold">{provider.name}</h4>
+                          {isActiveText && (
+                            <span className="text-[8px] bg-gold/10 text-gold font-bold px-2 py-0.5 rounded-full border border-gold/20 uppercase tracking-widest">
+                              Text
+                            </span>
+                          )}
+                          {isActiveImage && (
+                            <span className="text-[8px] bg-blue-50 text-blue-600 font-bold px-2 py-0.5 rounded-full border border-blue-100 uppercase tracking-widest">
+                              Image
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-xs text-gray-400 mt-0.5">{provider.description}</p>
+                      </div>
+                    </div>
+                    {/* Enable Toggle */}
+                    <button
+                      onClick={() => updateProvider(key, 'enabled', !provider.enabled)}
+                      className={cn(
+                        "flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all",
+                        provider.enabled
+                          ? "bg-gold/10 text-gold hover:bg-gold/20"
+                          : "bg-gray-100 text-gray-400 hover:bg-gray-200"
+                      )}
+                    >
+                      {provider.enabled ? <ToggleRight size={16} /> : <ToggleLeft size={16} />}
+                      {provider.enabled ? 'Enabled' : 'Disabled'}
+                    </button>
+                  </div>
+
+                  {/* API Key */}
+                  <div className="space-y-2">
+                    <label className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                      <Key size={12} />
+                      API Key
+                    </label>
+                    <div className="relative">
+                      <input
+                        type={showKey ? 'text' : 'password'}
+                        value={provider.apiKey}
+                        onChange={(e) => updateProvider(key, 'apiKey', e.target.value)}
+                        placeholder={`Enter your ${provider.name} API key...`}
+                        className="w-full pr-12 pl-4 py-3 bg-gray-50 border border-gray-100 rounded-xl font-mono text-sm outline-none focus:border-gold/40 focus:bg-gold/5 transition-all placeholder:text-gray-300"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setVisibleKeys(prev => ({ ...prev, [key]: !prev[key] }))}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 hover:text-gray-500 transition-colors"
+                      >
+                        {showKey ? <EyeOff size={16} /> : <Eye size={16} />}
+                      </button>
+                    </div>
+                    {provider.apiKey && (
+                      <p className="text-[10px] text-green-500 font-bold flex items-center gap-1">
+                        <CheckCircle size={10} /> Key entered — {provider.apiKey.length} characters
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Model Selector */}
+                  <div className="space-y-2">
+                    <label className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                      <Cpu size={12} />
+                      Model
+                    </label>
+                    <div className="relative">
+                      <select
+                        value={provider.model}
+                        onChange={(e) => updateProvider(key, 'model', e.target.value)}
+                        className="w-full appearance-none px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-bold outline-none focus:border-gold/40 focus:bg-gold/5 transition-all"
+                      >
+                        {(AVAILABLE_MODELS[key] || []).map(m => (
+                          <option key={m} value={m}>{m}</option>
+                        ))}
+                      </select>
+                      <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                    </div>
+                  </div>
+
+                  {/* Capabilities */}
+                  <div className="flex items-center gap-2 pt-2 border-t border-gray-50">
+                    <span className="text-[10px] uppercase tracking-widest text-gray-300 font-bold">Used for:</span>
+                    {provider.usedFor.map((cap: string) => (
+                      <span key={cap} className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 bg-black/5 text-black/40 rounded-full">
+                        {cap}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Save Button */}
+          <div className="flex justify-end">
+            <button
+              onClick={saveAiSettings}
+              disabled={aiSaving}
+              className="flex items-center gap-3 px-10 py-5 bg-gold text-night rounded-2xl font-bold hover:scale-105 transition-all shadow-xl shadow-gold/20 disabled:opacity-50"
+            >
+              {aiSaving ? (
+                <RefreshCw size={20} className="animate-spin" />
+              ) : (
+                <Save size={20} />
+              )}
+              {aiSaving ? 'Saving...' : 'Save AI Settings'}
+            </button>
+          </div>
+        </div>
+      )}
+
       {activeTab === 'legal' && (
         <div className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

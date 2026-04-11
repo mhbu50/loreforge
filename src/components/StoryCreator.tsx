@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Sparkles, FileText, Loader2, ImageIcon, Plus, Trash2, Wand2, ChevronLeft, ChevronRight, X, Edit3, Mic, MicOff, Languages, Layout, Zap, Type, Image as ImageIconLucide, AlignLeft, AlignCenter, AlignRight, Bold, Italic, Underline, Settings, Sliders } from 'lucide-react';
+import { Sparkles, FileText, Loader2, ImageIcon, Plus, Trash2, Wand2, ChevronLeft, ChevronRight, X, Edit3, Mic, MicOff, Languages, Layout, Zap, Type, Image as ImageIconLucide, AlignLeft, AlignCenter, AlignRight, Bold, Italic, Underline, Settings, Sliders, Brain } from 'lucide-react';
+import { AIService, GenerationMode, AIProgress } from '../services/AIService';
 import { StoryStyle, StoryPage, SubscriptionTier, ImageAdjustments } from '../types';
 import ImageEditor from './ImageEditor';
 import { getSubscriptionLimits, STORY_STYLES, STORY_CATEGORIES, FONTS } from '../constants';
@@ -71,6 +72,9 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
   const [editingImageIndex, setEditingImageIndex] = useState<number | 'cover' | null>(null);
   const [isForgingTransition, setIsForgingTransition] = useState(false);
   const [isFinalForging, setIsFinalForging] = useState(false);
+  const [isAIGenerating, setIsAIGenerating] = useState(false);
+  const [generationMode, setGenerationMode] = useState<GenerationMode | null>(null);
+  const [aiProgress, setAiProgress] = useState<AIProgress | null>(null);
 
   const maxPages = limits.maxPagesPerStory;
   const minPages = 1;
@@ -165,6 +169,107 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
     input.click();
   };
 
+  const runAIGeneration = async (mode: GenerationMode, overrideIdea?: string) => {
+    const finalIdea = overrideIdea || idea;
+    if (!finalIdea.trim()) {
+      toast.error('Please enter a story idea first!');
+      return;
+    }
+    setIsAIGenerating(true);
+    setIsForgingTransition(true);
+    setAiProgress({ step: 'Loading AI engines...', current: 0, total: 1 });
+    try {
+      const aiSettings = await AIService.loadSettings();
+      let result: { title: string; pages: { text: string; imageUrl?: string }[] };
+
+      if (mode === 'script') {
+        setAiProgress({ step: 'Writing your story...', current: 0, total: 1 });
+        result = await AIService.generateStoryPages(finalIdea, pageCount, style, ageGroup, language, aiSettings);
+
+      } else if (mode === 'images') {
+        result = await AIService.generateImagesOnly(
+          finalIdea, pageCount, style, ageGroup, aiSettings,
+          (p) => setAiProgress(p)
+        );
+
+      } else {
+        // 'both' or 'surprise'
+        result = await AIService.generateFullStory(
+          finalIdea, pageCount, style, ageGroup, language, aiSettings,
+          (p) => setAiProgress(p)
+        );
+      }
+
+      setDraftTitle(result.title);
+      const newPages = result.pages.map((p) => ({
+        text: p.text,
+        imageUrl: p.imageUrl,
+        font: 'serif',
+        alignment: 'left' as const,
+        fontSize: 'text-xl',
+        color: '#000000'
+      }));
+      setDraftPages(newPages);
+      setPageCount(newPages.length);
+
+      const imageCount = newPages.filter(p => p.imageUrl).length;
+      const msg = imageCount > 0
+        ? `"${result.title}" forged — ${newPages.length} pages with ${imageCount} illustrations!`
+        : `"${result.title}" forged — ${newPages.length} pages ready!`;
+      toast.success(msg);
+
+      setAiProgress(null);
+      setTimeout(() => {
+        setIsForgingTransition(false);
+        setStep('manual');
+      }, 800);
+    } catch (err: any) {
+      toast.error(err?.message || 'AI generation failed. Check your API keys in Admin Panel → AI.');
+      setIsForgingTransition(false);
+      setAiProgress(null);
+    } finally {
+      setIsAIGenerating(false);
+    }
+  };
+
+  const handleAIGenerate = () => {
+    if (!generationMode) {
+      toast.error('Select a generation mode first (Script, Images, Both, or Surprise Me).');
+      return;
+    }
+    runAIGeneration(generationMode);
+  };
+
+  const SURPRISE_IDEAS = [
+    'A tiny dragon who is afraid of fire discovers she can breathe rainbows instead.',
+    'A boy finds a library where every book is a door to a different world.',
+    'The moon goes missing and a group of children must climb the sky to find it.',
+    'A robot learns what friendship means from a stray cat in a junkyard.',
+    'A young chef creates a magical recipe that brings back memories of lost loved ones.',
+    'An underwater city of mermaids must face the surface world for the first time.',
+    'A girl discovers her grandmother was once the greatest pirate who ever sailed.',
+    'Every night, the stars come down to play in a meadow watched by a lonely shepherd.',
+    'A boy who can talk to clouds helps bring rain back to a drought-stricken village.',
+    'A magical paintbrush makes everything it draws come to life.',
+  ];
+
+  const handleSurpriseMe = async () => {
+    const randomIdea = SURPRISE_IDEAS[Math.floor(Math.random() * SURPRISE_IDEAS.length)];
+    const randomStyles = ['watercolor', 'oil-painting', 'cartoon', 'manga', 'digital-art'];
+    const randomAges = ['3-5', '6-8', '9-12', 'YA'];
+    const randomStyle = randomStyles[Math.floor(Math.random() * randomStyles.length)] as any;
+    const randomAge = randomAges[Math.floor(Math.random() * randomAges.length)];
+    const randomPageCount = Math.floor(Math.random() * 4) + 4; // 4-7 pages
+
+    setIdea(randomIdea);
+    setStyle(randomStyle);
+    setAgeGroup(randomAge);
+    setPageCount(Math.min(randomPageCount, maxPages));
+    setGenerationMode('both');
+
+    runAIGeneration('both', randomIdea);
+  };
+
   const wrapSelection = (index: number, prefix: string, suffix: string) => {
     const textarea = document.getElementById(`page-text-${index}`) as HTMLTextAreaElement;
     if (!textarea) return;
@@ -189,25 +294,64 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="min-h-[80vh] flex flex-col items-center justify-center text-center space-y-8"
+            className="min-h-[80vh] flex flex-col items-center justify-center text-center space-y-10 px-8"
           >
+            {/* Animated ring */}
             <div className="relative">
-              <motion.div 
+              <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                className="w-32 h-32 border-2 border-gold/20 rounded-full border-t-gold"
+                className="w-36 h-36 border-2 border-gold/20 rounded-full border-t-gold"
               />
-              <motion.div 
-                animate={{ scale: [0.8, 1.2, 0.8] }}
+              <motion.div
+                animate={{ rotate: -360 }}
+                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                className="absolute inset-4 border border-gold/10 rounded-full border-b-gold/40"
+              />
+              <motion.div
+                animate={{ scale: [0.8, 1.2, 0.8], opacity: [0.5, 1, 0.5] }}
                 transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
                 className="absolute inset-0 flex items-center justify-center text-gold"
               >
-                <Sparkles size={40} />
+                {aiProgress ? <Brain size={44} /> : <Sparkles size={44} />}
               </motion.div>
             </div>
-            <div className="space-y-2">
-              <h2 className="text-3xl font-serif font-bold text-night">Preparing the Forge</h2>
-              <p className="text-black/40 small-caps tracking-widest text-[10px]">Gathering creative essence...</p>
+
+            <div className="space-y-4 max-w-sm">
+              <h2 className="text-3xl font-serif font-bold text-night">
+                {aiProgress ? 'AI Forging in Progress' : 'Preparing the Forge'}
+              </h2>
+
+              {aiProgress ? (
+                <>
+                  {/* Step label */}
+                  <motion.p
+                    key={aiProgress.step}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-gold font-bold text-sm tracking-wide"
+                  >
+                    {aiProgress.step}
+                  </motion.p>
+
+                  {/* Progress bar */}
+                  <div className="w-full h-2 bg-black/5 rounded-full overflow-hidden">
+                    <motion.div
+                      className="h-full bg-gold rounded-full"
+                      initial={{ width: '0%' }}
+                      animate={{ width: `${aiProgress.total > 0 ? Math.round((aiProgress.current / aiProgress.total) * 100) : 0}%` }}
+                      transition={{ duration: 0.5, ease: 'easeOut' }}
+                    />
+                  </div>
+                  <p className="text-[10px] text-black/30 uppercase tracking-widest font-bold">
+                    Step {aiProgress.current} of {aiProgress.total}
+                  </p>
+                </>
+              ) : (
+                <p className="text-black/40 small-caps tracking-widest text-[10px]">
+                  Gathering creative essence...
+                </p>
+              )}
             </div>
           </motion.div>
         ) : step === 'setup' ? (
@@ -309,6 +453,30 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                 </div>
 
                 <div className="space-y-6">
+                  {/* Story Idea Textarea */}
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-black/40">Story Idea</label>
+                    <textarea
+                      value={idea}
+                      onChange={(e) => setIdea(e.target.value)}
+                      placeholder="Describe your story idea... (e.g. A brave girl discovers a hidden kingdom under her garden)"
+                      rows={3}
+                      className="w-full bg-black/5 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-gold/50 transition-all resize-none text-sm leading-relaxed placeholder:text-black/25"
+                    />
+                    {/* Quick templates */}
+                    <div className="flex flex-wrap gap-2">
+                      {TEMPLATES.map(t => (
+                        <button
+                          key={t.id}
+                          onClick={() => setIdea(t.idea)}
+                          className="text-[9px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full bg-black/5 text-black/40 hover:bg-gold/10 hover:text-gold transition-all border border-transparent hover:border-gold/20"
+                        >
+                          {t.name}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-3">
                       <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-black/40">Story Title</label>
@@ -424,7 +592,87 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                       </button>
                     </div>
                   </div>
-                  <div className="pt-8 flex flex-col gap-4">
+                  {/* Generation Mode Cards */}
+                  <div className="pt-6 space-y-4">
+                    <div>
+                      <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-black/40 mb-3">AI Generation Mode</p>
+                      <div className="grid grid-cols-2 gap-3">
+                        {([
+                          {
+                            mode: 'script' as GenerationMode,
+                            icon: <FileText size={20} />,
+                            label: 'Script Only',
+                            desc: 'AI writes the story text for every page',
+                            color: 'blue'
+                          },
+                          {
+                            mode: 'images' as GenerationMode,
+                            icon: <ImageIconLucide size={20} />,
+                            label: 'Images Only',
+                            desc: 'AI illustrates each scene with art',
+                            color: 'purple'
+                          },
+                          {
+                            mode: 'both' as GenerationMode,
+                            icon: <Sparkles size={20} />,
+                            label: 'Script + Images',
+                            desc: 'Full AI story — text and illustrations',
+                            color: 'gold'
+                          },
+                          {
+                            mode: 'surprise' as GenerationMode,
+                            icon: <Wand2 size={20} />,
+                            label: 'Surprise Me',
+                            desc: 'AI picks the idea and creates everything',
+                            color: 'night'
+                          },
+                        ]).map(({ mode, icon, label, desc, color }) => (
+                          <button
+                            key={mode}
+                            onClick={() => {
+                              if (mode === 'surprise') {
+                                handleSurpriseMe();
+                              } else {
+                                setGenerationMode(prev => prev === mode ? null : mode);
+                              }
+                            }}
+                            className={cn(
+                              "p-4 rounded-2xl border-2 text-left transition-all group",
+                              mode === 'surprise'
+                                ? "bg-night text-white border-night hover:border-gold hover:bg-black"
+                                : generationMode === mode
+                                  ? "bg-gold/10 border-gold text-night shadow-lg shadow-gold/10"
+                                  : "bg-black/3 border-black/5 hover:border-gold/30 hover:bg-gold/5"
+                            )}
+                          >
+                            <div className={cn(
+                              "w-9 h-9 rounded-xl flex items-center justify-center mb-3 transition-all",
+                              mode === 'surprise'
+                                ? "bg-gold/20 text-gold"
+                                : generationMode === mode
+                                  ? "bg-gold text-night"
+                                  : "bg-black/5 text-black/40 group-hover:bg-gold/10 group-hover:text-gold"
+                            )}>
+                              {icon}
+                            </div>
+                            <p className={cn(
+                              "text-xs font-bold uppercase tracking-widest mb-1",
+                              mode === 'surprise' ? "text-gold" : generationMode === mode ? "text-gold" : "text-black/60"
+                            )}>
+                              {label}
+                            </p>
+                            <p className={cn(
+                              "text-[10px] leading-relaxed",
+                              mode === 'surprise' ? "text-white/40" : "text-black/30"
+                            )}>
+                              {desc}
+                            </p>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Token cost + buttons */}
                     <div className="flex items-center justify-between p-4 bg-gold/5 rounded-2xl border border-gold/10">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-gold/10 rounded-xl flex items-center justify-center text-gold">
@@ -440,24 +688,40 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                       </div>
                     </div>
 
-                    <div className="flex gap-4">
-                      <button 
+                    <div className="flex gap-3">
+                      <button
                         onClick={onCancel}
-                        className="flex-1 py-5 bg-black/5 rounded-2xl font-bold hover:bg-black/10 transition-all text-black/60"
+                        className="px-6 py-4 bg-black/5 rounded-2xl font-bold hover:bg-black/10 transition-all text-black/50 text-sm"
                       >
                         Discard
                       </button>
-                      <button 
+                      <button
+                        onClick={handleAIGenerate}
+                        disabled={isAIGenerating || !generationMode || generationMode === 'surprise'}
+                        className={cn(
+                          "flex-1 py-4 rounded-2xl font-bold transition-all flex items-center justify-center gap-2 text-sm",
+                          generationMode && generationMode !== 'surprise'
+                            ? "bg-gold text-night hover:bg-night hover:text-gold shadow-xl shadow-gold/20"
+                            : "bg-black/5 text-black/25 cursor-not-allowed"
+                        )}
+                      >
+                        {isAIGenerating ? (
+                          <><Loader2 size={18} className="animate-spin" /> Forging...</>
+                        ) : (
+                          <><Brain size={18} /> AI Forge</>
+                        )}
+                      </button>
+                      <button
                         onClick={() => {
                           if (userTokens < tokenCost) {
                             return toast.error(`Insufficient tokens! You need ${tokenCost} tokens to start crafting.`);
                           }
                           handleManualStart();
                         }}
-                        className="flex-[2] py-5 bg-night text-white rounded-2xl font-bold hover:bg-gold hover:text-night transition-all shadow-2xl flex items-center justify-center gap-3 group"
+                        className="flex-1 py-4 bg-night text-white rounded-2xl font-bold hover:bg-black transition-all shadow-xl flex items-center justify-center gap-2 text-sm group"
                       >
-                        <Zap size={20} className="group-hover:fill-night transition-all" />
-                        <span>Begin Forging</span>
+                        <Zap size={18} className="group-hover:fill-white transition-all" />
+                        Manual
                       </button>
                     </div>
                   </div>
@@ -901,7 +1165,32 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                         </div>
                       </div>
 
-                      <textarea 
+                      {/* AI Enhance Button */}
+                      <button
+                        onClick={async () => {
+                          const currentText = draftPages[currentPageIndex].text;
+                          if (!currentText.trim()) return toast.error('Write some text first to enhance it.');
+                          setIsAIGenerating(true);
+                          try {
+                            const aiSettings = await AIService.loadSettings();
+                            const enhanced = await AIService.enhanceText(currentText, aiSettings);
+                            handleUpdatePage(currentPageIndex, { text: enhanced.trim() });
+                            toast.success('Page enhanced by AI!');
+                          } catch (err: any) {
+                            toast.error(err?.message || 'AI enhancement failed.');
+                          } finally {
+                            setIsAIGenerating(false);
+                          }
+                        }}
+                        disabled={isAIGenerating}
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-gold/10 text-gold rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-gold hover:text-night transition-all border border-gold/20 disabled:opacity-40"
+                        title="Enhance this page's text with AI"
+                      >
+                        {isAIGenerating ? <Loader2 size={12} className="animate-spin" /> : <Brain size={12} />}
+                        AI Enhance
+                      </button>
+
+                      <textarea
                         id={`page-text-${currentPageIndex}`}
                         value={draftPages[currentPageIndex].text}
                         onChange={(e) => handleUpdatePage(currentPageIndex, { text: e.target.value })}
