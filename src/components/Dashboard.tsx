@@ -812,7 +812,7 @@ export default function Dashboard({ userProfile }: DashboardProps) {
             {isHeadAdmin && (
               <button 
                 onClick={() => setShowAdmin(!showAdmin)}
-                className={`p-3 rounded-xl transition-all flex items-center gap-2 ${showAdmin ? 'bg-purple-600 text-white' : 'bg-purple-500/10 text-purple-600 hover:bg-purple-500/20'}`}
+                className={`p-3 rounded-xl transition-all flex items-center gap-2 ${showAdmin ? 'bg-gold text-night' : 'bg-gold/10 text-gold hover:bg-gold/20'}`}
               >
                 <Shield size={20} />
                 <span className="text-xs font-bold uppercase tracking-widest hidden md:inline">Head Admin</span>
@@ -859,7 +859,7 @@ export default function Dashboard({ userProfile }: DashboardProps) {
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
               className="relative w-full max-w-md bg-white rounded-[2.5rem] p-10 shadow-2xl overflow-hidden"
             >
-              <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-br from-gold/20 to-purple-500/20" />
+              <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-br from-gold/20 to-gold/5" />
               <div className="relative flex flex-col items-center text-center">
                 <div className="w-24 h-24 rounded-full bg-white border-4 border-white shadow-xl flex items-center justify-center text-4xl font-serif font-bold text-night mb-6">
                   {userProfile.displayName?.[0]}
@@ -868,27 +868,27 @@ export default function Dashboard({ userProfile }: DashboardProps) {
                 <p className="text-sm text-black/40 mb-8">{userProfile.email}</p>
                 
                 <div className="grid grid-cols-2 gap-4 w-full mb-8">
-                  <div className="p-4 bg-orange-50 rounded-2xl border border-orange-100">
-                    <div className="text-2xl font-bold text-orange-600">🔥 {userProfile.streak || 0}</div>
-                    <div className="text-[10px] small-caps tracking-widest text-orange-400 font-bold">Day Streak</div>
+                  <div className="p-4 bg-gold/5 rounded-2xl border border-gold/15">
+                    <div className="text-2xl font-bold text-gold">🔥 {userProfile.streak || 0}</div>
+                    <div className="text-[10px] small-caps tracking-widest text-gold/60 font-bold">Day Streak</div>
                   </div>
-                  <div className="p-4 bg-purple-50 rounded-2xl border border-purple-100">
-                    <div className="text-2xl font-bold text-purple-600">{stories.length}</div>
-                    <div className="text-[10px] small-caps tracking-widest text-purple-400 font-bold">Stories Forged</div>
+                  <div className="p-4 bg-black/5 rounded-2xl border border-black/5">
+                    <div className="text-2xl font-bold text-night">{stories.length}</div>
+                    <div className="text-[10px] small-caps tracking-widest text-black/40 font-bold">Stories Forged</div>
                   </div>
-                  <div className="p-4 bg-amber-50 rounded-2xl border border-amber-100">
-                    <div className="text-2xl font-bold text-amber-600">{userProfile.tokens || 0}</div>
-                    <div className="text-[10px] small-caps tracking-widest text-amber-400 font-bold">Tokens Available</div>
+                  <div className="p-4 bg-gold/5 rounded-2xl border border-gold/15">
+                    <div className="text-2xl font-bold text-gold">{userProfile.tokens || 0}</div>
+                    <div className="text-[10px] small-caps tracking-widest text-gold/60 font-bold">Tokens Available</div>
                   </div>
-                  <div className="p-4 bg-amber-50 rounded-2xl border border-amber-100 relative group">
+                  <div className="p-4 bg-black/5 rounded-2xl border border-black/5 relative group">
                     <div className="flex items-center gap-2">
-                      <div className="text-2xl font-bold text-amber-600 capitalize">{userProfile.subscriptionTier}</div>
-                      {userProfile.subscriptionTier === 'premium' && <Crown size={16} className="text-amber-600" />}
+                      <div className="text-2xl font-bold text-night capitalize">{userProfile.subscriptionTier}</div>
+                      {userProfile.subscriptionTier === 'premium' && <Crown size={16} className="text-gold" />}
                     </div>
-                    <div className="text-[10px] small-caps tracking-widest text-amber-400 font-bold">Subscription</div>
+                    <div className="text-[10px] small-caps tracking-widest text-black/40 font-bold">Subscription</div>
                     <button 
                       onClick={() => { setShowProfile(false); setShowRedeemModal(true); }}
-                      className="absolute top-2 right-2 p-1.5 bg-white rounded-lg text-amber-600 opacity-0 group-hover:opacity-100 transition-all hover:bg-amber-600 hover:text-white shadow-sm"
+                      className="absolute top-2 right-2 p-1.5 bg-white rounded-lg text-gold opacity-0 group-hover:opacity-100 transition-all hover:bg-gold hover:text-night shadow-sm"
                       title="Redeem Code"
                     >
                       <Zap size={14} />
@@ -922,7 +922,7 @@ export default function Dashboard({ userProfile }: DashboardProps) {
                       </div>
                     ))}
                     {(!userProfile.badges || userProfile.badges.length === 0) && (
-                      <p className="text-xs text-black/20 italic italic">No badges earned yet. Start crafting!</p>
+                      <p className="text-xs text-black/20 italic">No badges earned yet. Start crafting!</p>
                     )}
                   </div>
                 </div>
@@ -969,14 +969,14 @@ export default function Dashboard({ userProfile }: DashboardProps) {
             >
               <button
                 onClick={() => { setShowSupportMenu(false); setActiveView('support'); }}
-                className="flex items-center gap-3 px-6 py-3 bg-white text-black rounded-2xl shadow-2xl border border-black/5 hover:bg-red-50 hover:text-red-600 transition-all group"
+                className="flex items-center gap-3 px-6 py-3 bg-white text-black rounded-2xl shadow-2xl border border-black/5 hover:bg-gold/10 hover:text-gold transition-all group"
               >
                 <Bug size={18} className="group-hover:animate-bounce" />
                 <span className="text-xs font-bold uppercase tracking-widest">Report Bug</span>
               </button>
               <button
                 onClick={() => { setShowSupportMenu(false); setActiveView('support'); }}
-                className="flex items-center gap-3 px-6 py-3 bg-white text-black rounded-2xl shadow-2xl border border-black/5 hover:bg-blue-50 hover:text-blue-600 transition-all group"
+                className="flex items-center gap-3 px-6 py-3 bg-white text-black rounded-2xl shadow-2xl border border-black/5 hover:bg-gold/10 hover:text-gold transition-all group"
               >
                 <MessageSquare size={18} className="group-hover:animate-bounce" />
                 <span className="text-xs font-bold uppercase tracking-widest">Suggestion</span>
@@ -1352,7 +1352,7 @@ export default function Dashboard({ userProfile }: DashboardProps) {
             >
               <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-500 flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-2xl bg-gold/10 text-gold flex items-center justify-center">
                     <UserPlus size={24} />
                   </div>
                   <div>
@@ -1477,11 +1477,11 @@ export default function Dashboard({ userProfile }: DashboardProps) {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 flex-1">
                   {/* Standard Plan */}
-                  <div className="p-8 rounded-[2rem] border-2 border-black/5 flex flex-col justify-between hover:border-purple-500/20 transition-all group">
+                  <div className="p-8 rounded-[2rem] border-2 border-black/5 flex flex-col justify-between hover:border-gold/30 transition-all group">
                     <div>
                       <div className="flex items-center justify-between mb-4">
                         <span className="text-xs font-bold uppercase tracking-widest text-black/40">Standard</span>
-                        <Star className="w-5 h-5 text-purple-500 opacity-0 group-hover:opacity-100 transition-all" />
+                        <Star className="w-5 h-5 text-gold opacity-0 group-hover:opacity-100 transition-all" />
                       </div>
                       <div className="flex items-baseline gap-1 mb-6">
                         <span className="text-4xl font-serif font-bold">${billingCycle === 'monthly' ? SUBSCRIPTION_PRICING.standard.monthly : (SUBSCRIPTION_PRICING.standard.yearly / 12).toFixed(2)}</span>
@@ -1489,61 +1489,61 @@ export default function Dashboard({ userProfile }: DashboardProps) {
                       </div>
                       <ul className="space-y-3 mb-8">
                         <li className="text-xs text-black/60 flex items-center gap-2">
-                          <div className="w-1 h-1 rounded-full bg-purple-500" />
+                          <div className="w-1 h-1 rounded-full bg-gold" />
                           3 Stories Per Month
                         </li>
                         <li className="text-xs text-black/60 flex items-center gap-2">
-                          <div className="w-1 h-1 rounded-full bg-purple-500" />
+                          <div className="w-1 h-1 rounded-full bg-gold" />
                           15 Pages Per Story
                         </li>
                         <li className="text-xs text-black/60 flex items-center gap-2">
-                          <div className="w-1 h-1 rounded-full bg-purple-500" />
+                          <div className="w-1 h-1 rounded-full bg-gold" />
                           Collaboration Access
                         </li>
                       </ul>
                     </div>
-                    <button 
+                    <button
                       onClick={() => handleUpgrade('standard', billingCycle)}
                       disabled={userProfile?.subscriptionTier === 'standard' || isUpgrading}
-                      className="w-full py-4 bg-black text-white rounded-xl font-bold text-sm hover:bg-purple-600 transition-all disabled:opacity-50"
+                      className="w-full py-4 bg-black text-white rounded-xl font-bold text-sm hover:bg-gold hover:text-night transition-all disabled:opacity-50"
                     >
                       {userProfile?.subscriptionTier === 'standard' ? 'Current Plan' : 'Select Standard'}
                     </button>
                   </div>
 
                   {/* Premium Plan */}
-                  <div className="p-8 rounded-[2rem] border-2 border-purple-500 bg-purple-50/30 flex flex-col justify-between relative overflow-hidden">
+                  <div className="p-8 rounded-[2rem] border-2 border-gold bg-gold/5 flex flex-col justify-between relative overflow-hidden">
                     <div className="absolute top-0 right-0 p-4">
-                      <Crown className="w-12 h-12 text-purple-500/10 -rotate-12" />
+                      <Crown className="w-12 h-12 text-gold/10 -rotate-12" />
                     </div>
                     <div>
                       <div className="flex items-center justify-between mb-4">
-                        <span className="text-xs font-bold uppercase tracking-widest text-purple-600">Premium</span>
-                        <Crown className="w-5 h-5 text-purple-600" />
+                        <span className="text-xs font-bold uppercase tracking-widest text-gold">Premium</span>
+                        <Crown className="w-5 h-5 text-gold" />
                       </div>
                       <div className="flex items-baseline gap-1 mb-6">
-                        <span className="text-4xl font-serif font-bold text-purple-600">${billingCycle === 'monthly' ? SUBSCRIPTION_PRICING.premium.monthly : (SUBSCRIPTION_PRICING.premium.yearly / 12).toFixed(2)}</span>
-                        <span className="text-purple-600/40 text-xs font-bold uppercase">/mo</span>
+                        <span className="text-4xl font-serif font-bold text-night">${billingCycle === 'monthly' ? SUBSCRIPTION_PRICING.premium.monthly : (SUBSCRIPTION_PRICING.premium.yearly / 12).toFixed(2)}</span>
+                        <span className="text-night/40 text-xs font-bold uppercase">/mo</span>
                       </div>
                       <ul className="space-y-3 mb-8">
-                        <li className="text-xs text-purple-600 flex items-center gap-2 font-bold">
+                        <li className="text-xs text-gold flex items-center gap-2 font-bold">
                           <Sparkles className="w-3 h-3" />
                           Unlimited Stories
                         </li>
-                        <li className="text-xs text-purple-600/60 flex items-center gap-2">
-                          <div className="w-1 h-1 rounded-full bg-purple-600" />
+                        <li className="text-xs text-night/60 flex items-center gap-2">
+                          <div className="w-1 h-1 rounded-full bg-gold" />
                           50 Pages Per Story
                         </li>
-                        <li className="text-xs text-purple-600/60 flex items-center gap-2">
-                          <div className="w-1 h-1 rounded-full bg-purple-600" />
+                        <li className="text-xs text-night/60 flex items-center gap-2">
+                          <div className="w-1 h-1 rounded-full bg-gold" />
                           All Artistic Styles
                         </li>
                       </ul>
                     </div>
-                    <button 
+                    <button
                       onClick={() => handleUpgrade('premium', billingCycle)}
                       disabled={userProfile?.subscriptionTier === 'premium' || isUpgrading}
-                      className="w-full py-4 bg-purple-600 text-white rounded-xl font-bold text-sm hover:bg-purple-700 transition-all shadow-lg shadow-purple-200 disabled:opacity-50"
+                      className="w-full py-4 bg-gold text-night rounded-xl font-bold text-sm hover:bg-night hover:text-gold transition-all shadow-lg shadow-gold/20 disabled:opacity-50"
                     >
                       {userProfile?.subscriptionTier === 'premium' ? 'Current Plan' : 'Go Premium'}
                     </button>

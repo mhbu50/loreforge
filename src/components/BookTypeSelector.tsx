@@ -114,7 +114,7 @@ export default function BookTypeSelector({ onSelect, onCancel }: BookTypeSelecto
         </div>
 
         <div className="mt-12 pt-8 border-t border-gold/10 text-center">
-          <p className="text-xs text-gold/30 italic italic">
+          <p className="text-xs text-gold/30 italic">
             Each medium offers unique customization tools tailored to its format.
           </p>
         </div>
