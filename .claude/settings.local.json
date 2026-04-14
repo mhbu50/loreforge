@@ -7,7 +7,14 @@
       "Bash(npm run:*)",
       "Bash(npm install:*)",
       "Bash(node_modules/.bin/tsx server.ts)",
-      "Bash(curl -s http://localhost:3000)"
+      "Bash(curl -s http://localhost:3000)",
+      "Bash(wc -l /home/mohd/Downloads/storycraft/src/components/*.tsx)",
+      "Bash(git -C .claude/worktrees/agent-a8c8d638 diff --name-only HEAD)",
+      "Bash(git merge:*)",
+      "Bash(git -C /home/mohd/Downloads/storycraft/.claude/worktrees/agent-a8c8d638 log --oneline -5)",
+      "Bash(git -C /home/mohd/Downloads/storycraft/.claude/worktrees/agent-a8c8d638 status)",
+      "Bash(grep -rn \"bg-\\\\[#[0-9A-Fa-f]\\\\{3,6\\\\}\\\\]\\\\|style.*backgroundColor.*#[0-9A-Fa-f]\\\\|style.*background.*#[0-9A-Fa-f]\" /home/mohd/Downloads/storycraft/src/components/StoryCreator.tsx)",
+      "Bash(grep -rn \"bg-\\\\[#[0-9A-Fa-f]\" /home/mohd/Downloads/storycraft/src/components/*.tsx)"
     ]
   }
 }

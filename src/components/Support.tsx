@@ -6,9 +6,10 @@ import { collection, addDoc, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { handleFirestoreError, OperationType } from '../lib/firestore-utils';
 import { toast } from 'sonner';
 import { UserProfile } from '../types';
+import { cn } from '../lib/utils';
 
 export default function Support() {
-  const [feedbackModal, setFeedbackModal] = useState<{ show: boolean, type: 'bug' | 'suggestion' }>({ show: false, type: 'bug' });
+  const [feedbackModal, setFeedbackModal] = useState<{ show: boolean; type: 'bug' | 'suggestion' }>({ show: false, type: 'bug' });
   const [feedbackContent, setFeedbackContent] = useState('');
   const [isSubmittingFeedback, setIsSubmittingFeedback] = useState(false);
 
@@ -23,7 +24,7 @@ export default function Support() {
         type: feedbackModal.type,
         content: feedbackContent,
         status: 'pending',
-        createdAt: Date.now()
+        createdAt: Date.now(),
       });
       toast.success("Thank you for your feedback! Our team will review it.");
       setFeedbackModal({ show: false, type: 'bug' });
@@ -41,76 +42,93 @@ export default function Support() {
 
   return (
     <div className="max-w-5xl mx-auto p-8 pb-32">
-      <header className="mb-12">
-        <h1 className="text-6xl font-serif font-light mb-4">Forge <span className="italic text-gold">Support</span></h1>
-        <p className="text-black/40 small-caps tracking-[0.3em] text-xs">We're here to help you forge your best stories</p>
+      {/* Page header */}
+      <header className="mb-14">
+        <h1 className="text-6xl font-serif font-light mb-3 leading-none">
+          Forge <span className="italic text-gold">Support</span>
+        </h1>
+        <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-black/40">
+          We're here to help you forge your best stories
+        </p>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-        <button 
+      {/* Main contact cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+        {/* Bug report */}
+        <button
           onClick={() => setFeedbackModal({ show: true, type: 'bug' })}
-          className="group p-8 bg-white border border-black/5 rounded-[2.5rem] text-left hover:border-red-500/50 transition-all hover:shadow-2xl hover:shadow-red-500/5"
+          className="group p-8 bg-white border border-black/5 rounded-[2rem] text-left hover:shadow-xl hover:shadow-gold/10 hover:-translate-y-1 transition-all"
         >
-          <div className="w-16 h-16 bg-red-50 text-red-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-            <Bug size={32} />
+          <div className="w-14 h-14 rounded-2xl flex items-center justify-center bg-red-50 text-red-500 mb-6 group-hover:scale-110 transition-transform">
+            <Bug size={28} />
           </div>
           <h3 className="text-2xl font-serif font-bold mb-2">Report a Bug</h3>
-          <p className="text-sm text-black/40 leading-relaxed">Found a glitch in the forge? Let us know so we can fix it immediately.</p>
+          <p className="text-sm text-black/40 leading-relaxed">
+            Found a glitch in the forge? Let us know so we can fix it immediately.
+          </p>
         </button>
 
-        <button 
+        {/* Suggestion */}
+        <button
           onClick={() => setFeedbackModal({ show: true, type: 'suggestion' })}
-          className="group p-8 bg-white border border-black/5 rounded-[2.5rem] text-left hover:border-blue-500/50 transition-all hover:shadow-2xl hover:shadow-blue-500/5"
+          className="group p-8 bg-white border border-black/5 rounded-[2rem] text-left hover:shadow-xl hover:shadow-gold/10 hover:-translate-y-1 transition-all"
         >
-          <div className="w-16 h-16 bg-blue-50 text-blue-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-            <MessageSquare size={32} />
+          <div className="w-14 h-14 rounded-2xl flex items-center justify-center bg-blue-50 text-blue-500 mb-6 group-hover:scale-110 transition-transform">
+            <MessageSquare size={28} />
           </div>
           <h3 className="text-2xl font-serif font-bold mb-2">Share a Suggestion</h3>
-          <p className="text-sm text-black/40 leading-relaxed">Have an idea for a new feature or improvement? We'd love to hear it!</p>
+          <p className="text-sm text-black/40 leading-relaxed">
+            Have an idea for a new feature or improvement? We'd love to hear it!
+          </p>
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* Resource cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
         {[
-          { title: 'Documentation', icon: <BookOpen size={20} />, desc: 'Learn how to use all the forge tools.' },
-          { title: 'Community FAQ', icon: <HelpCircle size={20} />, desc: 'Common questions from other storytellers.' },
-          { title: 'Live Status', icon: <LifeBuoy size={20} />, desc: 'Check if the forge engines are running smoothly.' },
+          { title: 'Documentation', icon: <BookOpen size={20} />, desc: 'Learn how to use all the forge tools.', bg: 'bg-gold/10', color: 'text-gold' },
+          { title: 'Community FAQ', icon: <HelpCircle size={20} />, desc: 'Common questions from other storytellers.', bg: 'bg-blue-50', color: 'text-blue-500' },
+          { title: 'Live Status', icon: <LifeBuoy size={20} />, desc: 'Check if the forge engines are running smoothly.', bg: 'bg-green-50', color: 'text-green-500' },
         ].map((item, i) => (
-          <div key={i} className="p-6 bg-black/5 rounded-3xl border border-black/5">
-            <div className="text-gold mb-4">{item.icon}</div>
-            <h4 className="text-lg font-bold mb-1">{item.title}</h4>
-            <p className="text-xs text-black/40">{item.desc}</p>
+          <div key={i} className="p-6 bg-white border border-black/5 rounded-[1.5rem] shadow-sm">
+            <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center mb-4", item.bg, item.color)}>
+              {item.icon}
+            </div>
+            <h4 className="text-base font-bold mb-1">{item.title}</h4>
+            <p className="text-xs text-black/40 leading-relaxed">{item.desc}</p>
           </div>
         ))}
       </div>
 
-      <div className="mt-12 p-8 bg-gold/5 border border-gold/20 rounded-[2.5rem] flex flex-col md:flex-row items-center justify-between gap-8">
+      {/* Legal banner */}
+      <div className="p-8 bg-gold/5 border border-gold/20 rounded-[2rem] flex flex-col md:flex-row items-center justify-between gap-8">
         <div className="flex items-center gap-6">
-          <div className="w-16 h-16 bg-gold/10 text-gold rounded-2xl flex items-center justify-center">
-            <FileText size={32} />
+          <div className="w-14 h-14 bg-gold/10 text-gold rounded-2xl flex items-center justify-center flex-shrink-0">
+            <FileText size={28} />
           </div>
           <div>
-            <h3 className="text-2xl font-serif font-bold">Legal & Privacy</h3>
-            <p className="text-sm text-black/40">Review our terms of service and privacy policy.</p>
+            <h3 className="text-2xl font-serif font-bold">Legal &amp; Privacy</h3>
+            <p className="text-sm text-black/40 mt-0.5">Review our terms of service and privacy policy.</p>
           </div>
         </div>
-        <button 
+        <button
           onClick={async () => {
             const settingsDoc = await getDoc(doc(db, 'settings', 'global'));
-            const terms = (settingsDoc.exists() ? settingsDoc.data().termsOfConditions : null) || 'Welcome to StoryCraft. Our terms of conditions are currently being updated.';
-            // Open in a simple alert for now or a dedicated modal if available
+            const terms =
+              (settingsDoc.exists() ? settingsDoc.data().termsOfConditions : null) ||
+              'Welcome to StoryCraft. Our terms of conditions are currently being updated.';
             toast.info("Terms & Conditions", {
               description: (typeof terms === 'string' ? terms : '').substring(0, 100) + "...",
               action: {
                 label: "Read Full",
-                onClick: () => window.open('/terms', '_blank') // Assuming a terms route exists or just show more
-              }
+                onClick: () => window.open('/terms', '_blank'),
+              },
             });
           }}
-          className="px-8 py-4 bg-black text-white rounded-2xl font-bold hover:bg-gold hover:text-night transition-all flex items-center gap-2"
+          className="flex items-center gap-2 px-8 py-4 bg-black text-white rounded-2xl font-bold hover:bg-gold hover:text-night transition-all shadow-lg shadow-gold/20 flex-shrink-0"
         >
           <span>View Terms</span>
-          <ExternalLink size={18} />
+          <ExternalLink size={16} />
         </button>
       </div>
 
@@ -118,49 +136,87 @@ export default function Support() {
       <AnimatePresence>
         {feedbackModal.show && (
           <div className="fixed inset-0 z-[110] flex items-center justify-center p-6">
-            <motion.div 
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               onClick={() => setFeedbackModal({ show: false, type: 'bug' })}
               className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             />
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.92, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              exit={{ opacity: 0, scale: 0.92, y: 20 }}
+              transition={{ type: 'spring', damping: 24, stiffness: 220 }}
               className="relative w-full max-w-lg bg-white rounded-[2.5rem] p-10 shadow-2xl overflow-hidden"
             >
+              {/* Header */}
               <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-4">
-                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${feedbackModal.type === 'bug' ? 'bg-red-50 text-red-500' : 'bg-blue-50 text-blue-500'}`}>
-                    {feedbackModal.type === 'bug' ? <Bug size={24} /> : <MessageSquare size={24} />}
+                  <div className={cn(
+                    "w-12 h-12 rounded-2xl flex items-center justify-center",
+                    feedbackModal.type === 'bug' ? 'bg-red-50 text-red-500' : 'bg-blue-50 text-blue-500'
+                  )}>
+                    {feedbackModal.type === 'bug' ? <Bug size={22} /> : <MessageSquare size={22} />}
                   </div>
                   <div>
-                    <h3 className="text-2xl font-serif font-bold">{feedbackModal.type === 'bug' ? 'Report a Bug' : 'Share a Suggestion'}</h3>
-                    <p className="text-xs text-black/40 uppercase tracking-widest font-bold">Help us craft a better StoryCraft</p>
+                    <h3 className="text-2xl font-serif font-bold leading-tight">
+                      {feedbackModal.type === 'bug' ? 'Report a Bug' : 'Share a Suggestion'}
+                    </h3>
+                    <p className="text-[10px] text-black/40 uppercase tracking-widest font-bold mt-0.5">
+                      Help us craft a better StoryCraft
+                    </p>
                   </div>
                 </div>
-                <button onClick={() => setFeedbackModal({ show: false, type: 'bug' })} className="p-2 hover:bg-black/5 rounded-xl transition-all">
-                  <X size={20} />
+                <button
+                  onClick={() => setFeedbackModal({ show: false, type: 'bug' })}
+                  className="p-2 hover:bg-black/5 rounded-xl transition-all"
+                >
+                  <X size={18} />
                 </button>
               </div>
 
-              <textarea 
+              {/* Type toggle pills */}
+              <div className="flex gap-2 mb-6 p-1 bg-black/5 rounded-2xl">
+                {(['bug', 'suggestion'] as const).map((t) => (
+                  <button
+                    key={t}
+                    onClick={() => setFeedbackModal(prev => ({ ...prev, type: t }))}
+                    className={cn(
+                      "flex-1 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all",
+                      feedbackModal.type === t
+                        ? "bg-white shadow-sm text-black"
+                        : "text-black/40 hover:text-black/60"
+                    )}
+                  >
+                    {t === 'bug' ? 'Bug Report' : 'Suggestion'}
+                  </button>
+                ))}
+              </div>
+
+              {/* Textarea */}
+              <textarea
                 value={feedbackContent}
                 onChange={(e) => setFeedbackContent(e.target.value)}
-                placeholder={feedbackModal.type === 'bug' ? "Describe the bug you encountered..." : "What features would you like to see?"}
-                className="w-full h-48 bg-black/5 rounded-3xl p-6 outline-none focus:ring-2 focus:ring-black/5 transition-all font-medium resize-none mb-8"
+                placeholder={
+                  feedbackModal.type === 'bug'
+                    ? "Describe the bug you encountered..."
+                    : "What features would you like to see?"
+                }
+                className="w-full h-44 bg-black/5 border border-black/5 rounded-2xl p-4 resize-none outline-none focus:border-gold/30 transition-colors font-medium text-sm mb-6"
               />
 
-              <button 
+              {/* Submit */}
+              <button
                 onClick={handleSubmitFeedback}
                 disabled={isSubmittingFeedback || !feedbackContent.trim()}
-                className="w-full py-5 bg-black text-white rounded-2xl font-bold hover:bg-gold hover:text-night transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                className="w-full py-4 bg-gold text-night rounded-2xl font-bold hover:bg-night hover:text-white transition-all flex items-center justify-center gap-2 shadow-lg shadow-gold/20 disabled:opacity-50"
               >
                 {isSubmittingFeedback ? (
-                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <div className="w-5 h-5 border-2 border-night/30 border-t-night rounded-full animate-spin" />
                 ) : (
                   <>
-                    <Send size={18} />
+                    <Send size={16} />
                     <span>Send Feedback</span>
                   </>
                 )}

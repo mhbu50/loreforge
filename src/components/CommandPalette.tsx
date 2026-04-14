@@ -28,17 +28,24 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const commands: CommandItem[] = [
-    { id: 'new-book', title: 'Create New Book', description: 'Start a new story, comic, or anime project', icon: <Book size={18} />, action: () => console.log('New Book'), category: 'General' },
-    { id: 'zen-mode', title: 'Toggle Zen Mode', description: 'Hide UI for focused writing', icon: <Eye size={18} />, action: () => console.log('Zen Mode'), category: 'Workspace' },
-    { id: 'save-draft', title: 'Save Draft', description: 'Manually save current progress', icon: <Save size={18} />, action: () => console.log('Save Draft'), category: 'General' },
-    { id: 'open-settings', title: 'Open Settings', description: 'Customize your StoryCraft experience', icon: <Settings size={18} />, action: () => console.log('Settings'), category: 'General' },
-    { id: 'terminal', title: 'Toggle Terminal', description: 'Run Linux commands', icon: <Terminal size={18} />, action: () => console.log('Technical' ), category: 'Technical' },
+    { id: 'new-book', title: 'Create New Book', description: 'Start a new story, comic, or anime project', icon: <Book size={16} />, action: () => console.log('New Book'), category: 'General' },
+    { id: 'zen-mode', title: 'Toggle Zen Mode', description: 'Hide UI for focused writing', icon: <Eye size={16} />, action: () => console.log('Zen Mode'), category: 'Workspace' },
+    { id: 'save-draft', title: 'Save Draft', description: 'Manually save current progress', icon: <Save size={16} />, action: () => console.log('Save Draft'), category: 'General' },
+    { id: 'open-settings', title: 'Open Settings', description: 'Customize your StoryCraft experience', icon: <Settings size={16} />, action: () => console.log('Settings'), category: 'General' },
+    { id: 'terminal', title: 'Toggle Terminal', description: 'Run Linux commands', icon: <Terminal size={16} />, action: () => console.log('Technical'), category: 'Technical' },
   ];
 
-  const filteredCommands = commands.filter(cmd => 
+  const filteredCommands = commands.filter(cmd =>
     cmd.title.toLowerCase().includes(query.toLowerCase()) ||
     cmd.category.toLowerCase().includes(query.toLowerCase())
   );
+
+  // Group by category
+  const grouped = filteredCommands.reduce<Record<string, CommandItem[]>>((acc, cmd) => {
+    if (!acc[cmd.category]) acc[cmd.category] = [];
+    acc[cmd.category].push(cmd);
+    return acc;
+  }, {});
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     if (!isOpen) return;
@@ -75,83 +82,110 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
     <AnimatePresence>
       {isOpen && (
         <div className="fixed inset-0 z-[100] flex items-start justify-center pt-[15vh] px-4">
-          <motion.div 
+          {/* Backdrop */}
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-night/80 backdrop-blur-sm"
+            className="fixed inset-0 bg-night/70 backdrop-blur-sm"
             onClick={onClose}
           />
-          
+
+          {/* Palette */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: -20 }}
+            initial={{ opacity: 0, scale: 0.96, y: -16 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: -20 }}
-            className="relative w-full max-w-2xl bg-night-light border border-gold/20 rounded-xl shadow-2xl overflow-hidden"
+            exit={{ opacity: 0, scale: 0.96, y: -16 }}
+            transition={{ type: 'spring', damping: 28, stiffness: 300 }}
+            className="relative w-full max-w-2xl bg-[#111]/95 backdrop-blur-2xl border border-white/10 rounded-[2rem] shadow-2xl overflow-hidden"
           >
-            <div className="flex items-center px-4 py-3 border-b border-gold/10">
-              <Search className="text-gold/50 mr-3" size={20} />
+            {/* Search input row */}
+            <div className="flex items-center gap-3 px-5 py-4 border-b border-white/8">
+              <Search className="text-gold flex-shrink-0" size={18} />
               <input
                 autoFocus
-                className="flex-1 bg-transparent border-none outline-none text-gold placeholder:text-gold/30 text-lg"
+                className="flex-1 bg-transparent border-none outline-none text-white placeholder:text-white/25 text-base"
                 placeholder="Type a command or search..."
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
               />
-              <div className="flex items-center gap-1 px-2 py-1 bg-gold/10 rounded border border-gold/20">
-                <Command size={12} className="text-gold/70" />
-                <span className="text-[10px] font-mono text-gold/70">P</span>
+              <div className="flex items-center gap-1 px-2 py-1 bg-white/10 rounded-md border border-white/15">
+                <Command size={11} className="text-white/50" />
+                <span className="text-[9px] font-mono text-white/50">P</span>
               </div>
             </div>
 
-            <div className="max-h-[60vh] overflow-y-auto p-2">
+            {/* Results */}
+            <div className="max-h-[52vh] overflow-y-auto p-3">
               {filteredCommands.length > 0 ? (
-                <div className="space-y-1">
-                  {filteredCommands.map((cmd, index) => (
-                    <button
-                      key={cmd.id}
-                      className={cn(
-                        "w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-left",
-                        index === selectedIndex ? "bg-gold/20 text-gold" : "text-gold/60 hover:bg-gold/5 hover:text-gold/80"
-                      )}
-                      onClick={() => {
-                        cmd.action();
-                        onClose();
-                      }}
-                      onMouseEnter={() => setSelectedIndex(index)}
-                    >
-                      <div className={cn(
-                        "p-2 rounded-md",
-                        index === selectedIndex ? "bg-gold/20" : "bg-gold/5"
-                      )}>
-                        {cmd.icon}
+                Object.entries(grouped).map(([category, items]) => {
+                  return (
+                    <div key={category} className="mb-4 last:mb-0">
+                      <p className="text-[9px] uppercase tracking-widest text-white/30 font-bold px-2 mb-2">
+                        {category}
+                      </p>
+                      <div className="space-y-0.5">
+                        {items.map((cmd) => {
+                          const globalIndex = filteredCommands.indexOf(cmd);
+                          const isSelected = globalIndex === selectedIndex;
+                          return (
+                            <button
+                              key={cmd.id}
+                              className={cn(
+                                "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all text-left",
+                                isSelected
+                                  ? "bg-gold/10 border border-gold/20 text-gold"
+                                  : "text-white/70 hover:bg-white/8 hover:text-white border border-transparent"
+                              )}
+                              onClick={() => {
+                                cmd.action();
+                                onClose();
+                              }}
+                              onMouseEnter={() => setSelectedIndex(globalIndex)}
+                            >
+                              <div className={cn(
+                                "w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors",
+                                isSelected ? "bg-gold/20 text-gold" : "bg-white/8 text-white/50"
+                              )}>
+                                {cmd.icon}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <div className="text-sm font-medium truncate">{cmd.title}</div>
+                                {cmd.description && (
+                                  <div className="text-[11px] text-white/40 truncate mt-0.5">{cmd.description}</div>
+                                )}
+                              </div>
+                            </button>
+                          );
+                        })}
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="font-medium truncate">{cmd.title}</div>
-                        {cmd.description && (
-                          <div className="text-xs opacity-60 truncate">{cmd.description}</div>
-                        )}
-                      </div>
-                      <div className="text-[10px] font-mono opacity-40 uppercase tracking-wider">
-                        {cmd.category}
-                      </div>
-                    </button>
-                  ))}
-                </div>
+                    </div>
+                  );
+                })
               ) : (
-                <div className="py-12 text-center">
-                  <Zap className="mx-auto text-gold/20 mb-3" size={48} />
-                  <p className="text-gold/40">No commands found for "{query}"</p>
+                <div className="py-14 text-center">
+                  <Zap className="mx-auto text-white/10 mb-3" size={40} />
+                  <p className="text-white/30 text-sm">No commands found for &ldquo;{query}&rdquo;</p>
                 </div>
               )}
             </div>
 
-            <div className="px-4 py-2 bg-night border-t border-gold/10 flex items-center justify-between text-[10px] text-gold/40 uppercase tracking-widest">
-              <div className="flex items-center gap-4">
-                <span className="flex items-center gap-1"><span className="px-1 py-0.5 bg-gold/10 rounded border border-gold/20">↑↓</span> Navigate</span>
-                <span className="flex items-center gap-1"><span className="px-1 py-0.5 bg-gold/10 rounded border border-gold/20">Enter</span> Select</span>
+            {/* Footer */}
+            <div className="px-5 py-3 border-t border-white/8 flex items-center justify-between">
+              <div className="flex items-center gap-4 text-[10px] text-white/30 uppercase tracking-widest">
+                <span className="flex items-center gap-1.5">
+                  <kbd className="bg-white/10 border border-white/15 text-white/50 rounded-md text-[9px] px-1.5 py-0.5">↑↓</kbd>
+                  Navigate
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <kbd className="bg-white/10 border border-white/15 text-white/50 rounded-md text-[9px] px-1.5 py-0.5">Enter</kbd>
+                  Select
+                </span>
               </div>
-              <span className="flex items-center gap-1"><span className="px-1 py-0.5 bg-gold/10 rounded border border-gold/20">Esc</span> Close</span>
+              <span className="flex items-center gap-1.5 text-[10px] text-white/30 uppercase tracking-widest">
+                <kbd className="bg-white/10 border border-white/15 text-white/50 rounded-md text-[9px] px-1.5 py-0.5">Esc</kbd>
+                Close
+              </span>
             </div>
           </motion.div>
         </div>

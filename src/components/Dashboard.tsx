@@ -621,7 +621,7 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
   );
 
   return (
-    <div className="min-h-screen bg-[#FDFCFB] text-[#0A0A0A] flex selection:bg-gold selection:text-night overflow-hidden">
+    <div className="min-h-screen bg-paper text-ink flex selection:bg-gold selection:text-night overflow-hidden">
       <div className="atmosphere opacity-[0.03]" />
       
       {/* Forging Overlay */}
@@ -718,103 +718,101 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
       </AnimatePresence>
 
       {/* Sidebar */}
-      <aside 
+      <aside
         style={{ width: sidebarWidth }}
         className={cn(
-          "fixed left-0 top-0 bottom-0 bg-white border-r border-black/5 z-[60] flex flex-col transition-transform duration-500",
+          "fixed left-0 top-0 bottom-0 bg-white border-r border-black/[0.06] z-[60] flex flex-col transition-transform duration-500",
           isZenMode && "-translate-x-full"
         )}
       >
-        <div className="p-8 flex items-center gap-4 border-b border-black/5 group/logo cursor-pointer">
-          <div className="w-12 h-12 bg-night rounded-2xl flex items-center justify-center text-gold shadow-2xl shadow-gold/20 group-hover/logo:rotate-12 transition-transform duration-500 overflow-hidden">
+        {/* Logo */}
+        <div className="p-6 flex items-center gap-3.5 border-b border-black/[0.06] group/logo cursor-pointer">
+          <div className="w-11 h-11 bg-night rounded-[14px] flex items-center justify-center text-gold shadow-xl shadow-gold/20 group-hover/logo:rotate-12 transition-transform duration-500 overflow-hidden flex-shrink-0">
             {appIcon?.startsWith('http') ? (
               <img src={appIcon} className="w-full h-full object-cover" alt="icon" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
             ) : appIcon ? (
-              <span className="text-xl">{appIcon}</span>
+              <span className="text-lg">{appIcon}</span>
             ) : (
-              <Sparkles size={24} />
+              <Sparkles size={20} />
             )}
           </div>
-          <div className="flex flex-col">
-            <span className="text-xl font-serif font-bold tracking-tight">{appName}</span>
-            <span className="text-[10px] font-bold text-gold uppercase tracking-[0.2em]">Studio</span>
+          <div>
+            <span className="text-base font-serif font-bold tracking-tight block">{appName}</span>
+            <span className="text-[9px] font-bold text-gold/70 uppercase tracking-[0.25em]">Creative Studio</span>
           </div>
         </div>
 
-        <nav className="flex-1 p-4 space-y-1 overflow-y-auto custom-scrollbar">
+        {/* Nav */}
+        <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto custom-scrollbar">
+          {/* Section label */}
+          <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-black/20 px-4 pt-3 pb-2">Navigation</p>
           {([
-            { view: 'library', icon: <Layout size={18} />, label: 'Library' },
-            { view: 'workspace', icon: <Edit3 size={18} />, label: 'Workspace' },
-            { view: 'themes', icon: <Palette size={18} />, label: 'Themes' },
-            { view: 'forge-settings', icon: <SettingsIcon size={18} />, label: 'Settings' },
-            { view: 'support', icon: <LifeBuoy size={18} />, label: 'Support' },
-            { view: 'publish', icon: <Share2 size={18} />, label: 'Publish' },
+            { view: 'library', icon: <Layout size={16} />, label: 'Library' },
+            { view: 'workspace', icon: <Edit3 size={16} />, label: 'Workspace' },
+            { view: 'themes', icon: <Palette size={16} />, label: 'Themes' },
+            { view: 'forge-settings', icon: <SettingsIcon size={16} />, label: 'Settings' },
+            { view: 'support', icon: <LifeBuoy size={16} />, label: 'Support' },
+            { view: 'publish', icon: <Share2 size={16} />, label: 'Publish' },
           ] as const).map(({ view, icon, label }) => (
             <button
               key={view}
               onClick={() => { setCurrentStory(null); setIsCreating(false); setShowAdmin(false); setActiveView(view); }}
               className={cn(
-                "w-full flex items-center gap-3 px-5 py-3.5 rounded-2xl transition-all group relative overflow-hidden",
+                "w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all group relative",
                 activeView === view
-                  ? "bg-night text-white shadow-lg shadow-black/10"
-                  : "text-black/35 hover:bg-black/5 hover:text-black"
+                  ? "bg-night text-white shadow-md shadow-black/15"
+                  : "text-black/40 hover:bg-black/[0.04] hover:text-black/70"
               )}
             >
               {activeView === view && (
-                <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-7 bg-gold rounded-r-full" />
+                <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-6 bg-gold rounded-r-full" />
               )}
-              <span className={cn("transition-colors flex-shrink-0", activeView === view ? "text-gold" : "group-hover:text-black/60")}>
+              <span className={cn("transition-colors flex-shrink-0", activeView === view ? "text-gold" : "group-hover:text-black/50")}>
                 {icon}
               </span>
-              <span className="text-[11px] font-bold uppercase tracking-[0.15em]">{label}</span>
-              {activeView === view && (
-                <span className="ml-auto w-1.5 h-1.5 bg-gold rounded-full" />
-              )}
+              <span className="text-[11px] font-bold tracking-[0.1em] uppercase">{label}</span>
+              {activeView === view && <span className="ml-auto w-1 h-1 bg-gold rounded-full opacity-60" />}
             </button>
           ))}
         </nav>
 
-        {/* Theme toggle */}
-        <div className="px-4 pb-2">
+        {/* Bottom controls */}
+        <div className="border-t border-black/[0.06] p-3 space-y-1">
+          {/* Theme toggle */}
           <button
             onClick={onToggleTheme}
             className={cn(
-              "w-full flex items-center gap-3 px-5 py-3 rounded-2xl text-[11px] font-bold uppercase tracking-[0.15em] transition-all",
+              "w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-[11px] font-bold uppercase tracking-[0.1em] transition-all",
               theme === 'dark'
-                ? "bg-gold/20 text-gold hover:bg-gold/30"
-                : "text-black/35 hover:bg-black/5 hover:text-black"
+                ? "bg-gold/15 text-gold hover:bg-gold/25"
+                : "text-black/30 hover:bg-black/[0.04] hover:text-black/60"
             )}
           >
-            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+            {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
             {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
           </button>
-        </div>
 
-        <div className="px-8 pb-8 border-t border-black/5 pt-6">
+          {/* User row */}
           <div
             onClick={() => setShowProfile(true)}
-            className="w-full flex items-center gap-4 group cursor-pointer"
+            className="w-full flex items-center gap-3 px-3 py-3 rounded-xl group cursor-pointer hover:bg-black/[0.04] transition-all"
           >
-            <div className="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center text-gold font-bold border-2 border-gold/40 group-hover:scale-110 transition-transform">
-              {userProfile?.displayName?.[0] || 'U'}
+            <div
+              className="w-9 h-9 rounded-xl flex items-center justify-center text-base font-bold flex-shrink-0 shadow-md"
+              style={{ backgroundColor: userProfile?.avatarColor || '#d4af37', color: '#0a0a0a' }}
+            >
+              {userProfile?.avatarEmoji || userProfile?.displayName?.[0]?.toUpperCase() || 'U'}
             </div>
-            <span className="text-left">
-              <span className="block text-sm font-bold truncate max-w-[120px]">{userProfile?.displayName}</span>
-              <span className="flex items-center gap-1.5">
-                <span className="text-[10px] small-caps tracking-widest text-black/30 font-bold">{userProfile?.subscriptionTier || 'Free'} Plan</span>
-                <button 
-                  onClick={(e) => { e.stopPropagation(); setShowRedeemModal(true); }}
-                  className="text-[8px] font-bold text-gold hover:text-night hover:bg-gold px-1.5 py-0.5 rounded border border-gold/20 transition-all"
-                >
-                  REDEEM
-                </button>
-              </span>
-            </span>
+            <div className="flex-1 min-w-0">
+              <span className="block text-[12px] font-bold truncate leading-tight">{userProfile?.displayName}</span>
+              <span className="text-[10px] text-black/30 font-medium capitalize">{userProfile?.subscriptionTier || 'Free'} Plan</span>
+            </div>
+            <ChevronRight size={13} className="text-black/20 group-hover:text-black/40 flex-shrink-0" />
           </div>
         </div>
 
         {/* Resize Handle */}
-        <div 
+        <div
           onMouseDown={startResizing}
           className="absolute right-0 top-0 bottom-0 w-1 cursor-col-resize hover:bg-gold/40 transition-colors z-[70]"
         />
@@ -823,38 +821,36 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
       <div className="flex-1 flex flex-col min-w-0 transition-all duration-500" style={{ marginLeft: isZenMode ? 0 : sidebarWidth }}>
         {/* Header */}
         <header className={cn(
-          "h-20 border-b border-black/5 bg-white/90 backdrop-blur-xl flex items-center justify-between px-10 sticky top-0 z-40 transition-all duration-500 shadow-sm",
+          "h-16 border-b border-black/[0.06] bg-white/95 backdrop-blur-xl flex items-center justify-between px-8 sticky top-0 z-40 transition-all duration-500",
           isZenMode && "-translate-y-full"
         )}>
-          <div className="flex items-center gap-12">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-gold rounded-lg flex items-center justify-center text-night overflow-hidden">
-                {appIcon?.startsWith('http') ? (
-                  <img src={appIcon} className="w-full h-full object-cover" alt="icon" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
-                ) : appIcon ? (
-                  <span className="text-sm">{appIcon}</span>
-                ) : (
-                  <Sparkles size={16} />
-                )}
-              </div>
-              <span className="text-lg font-serif font-bold">{appName}</span>
+          {/* Left: breadcrumb */}
+          <div className="flex items-center gap-3">
+            <div className="w-7 h-7 bg-night rounded-lg flex items-center justify-center text-gold overflow-hidden flex-shrink-0">
+              {appIcon?.startsWith('http') ? (
+                <img src={appIcon} className="w-full h-full object-cover" alt="icon" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+              ) : appIcon ? (
+                <span className="text-xs">{appIcon}</span>
+              ) : (
+                <Sparkles size={13} />
+              )}
             </div>
+            <span className="text-sm font-serif font-bold text-black/60">{appName}</span>
+            <span className="text-black/20">/</span>
+            <span className="text-sm font-bold capitalize">{activeView.replace('-', ' ')}</span>
           </div>
-          
-          <div className="flex items-center gap-4">
+
+          {/* Right: actions */}
+          <div className="flex items-center gap-3">
+            {/* Token pill */}
             <div className="group relative">
-              <div className="flex items-center gap-3 px-6 py-3 bg-gold/5 rounded-2xl border border-gold/10 shadow-sm hover:shadow-md transition-all cursor-help">
-                <div className="w-8 h-8 bg-gold rounded-xl flex items-center justify-center text-night shadow-lg shadow-gold/20">
-                  <Zap size={18} className="fill-night" />
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-lg font-bold text-gold leading-none">{userProfile?.tokens || 0}</span>
-                  <span className="text-[9px] font-bold uppercase tracking-widest text-gold/60">Tokens Available</span>
-                </div>
+              <div className="flex items-center gap-2 px-4 py-2 bg-gold/8 rounded-xl border border-gold/15 hover:border-gold/30 transition-all cursor-help">
+                <Zap size={14} className="text-gold fill-gold" />
+                <span className="text-sm font-bold text-gold">{userProfile?.tokens || 0}</span>
+                <span className="text-[9px] font-bold uppercase tracking-widest text-gold/50 hidden sm:block">tokens</span>
               </div>
-              
               {/* Tooltip */}
-              <div className="absolute top-full right-0 mt-3 w-72 bg-night text-white p-5 rounded-2xl shadow-2xl opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all pointer-events-none z-50 border border-white/10">
+              <div className="absolute top-full right-0 mt-2 w-72 bg-night text-white p-5 rounded-2xl shadow-2xl opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all pointer-events-none z-50 border border-white/10">
                 <div className="flex items-center gap-2 mb-3 text-gold">
                   <Sparkles size={14} />
                   <span className="text-[10px] font-bold uppercase tracking-widest">Token Costs</span>
@@ -886,37 +882,38 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
                 </div>
               </div>
             </div>
+
             {isHeadAdmin && (
-              <button 
+              <button
                 onClick={() => setShowAdmin(!showAdmin)}
-                className={`p-3 rounded-xl transition-all flex items-center gap-2 ${showAdmin ? 'bg-gold text-night' : 'bg-gold/10 text-gold hover:bg-gold/20'}`}
+                className={cn("p-2.5 rounded-xl transition-all flex items-center gap-2", showAdmin ? "bg-gold text-night" : "bg-gold/10 text-gold hover:bg-gold/20")}
               >
-                <Shield size={20} />
-                <span className="text-xs font-bold uppercase tracking-widest hidden md:inline">Head Admin</span>
+                <Shield size={17} />
+                <span className="text-[10px] font-bold uppercase tracking-widest hidden md:inline">Admin</span>
               </button>
             )}
-            
-            <button 
+
+            <button
               onClick={() => {
                 if (canCreateStory) {
                   setShowTypeSelector(true);
                 } else {
                   setShowPricingModal(true);
                   toast.error(
-                    userProfile?.subscriptionTier === 'free' 
+                    userProfile?.subscriptionTier === 'free'
                       ? "Free tier limit reached (1 story total). Upgrade to create more!"
                       : "Monthly limit reached (3 stories). Upgrade to Premium for unlimited stories!"
                   );
                 }
               }}
-              className="flex items-center gap-2 px-6 py-3 bg-black text-white rounded-2xl hover:bg-gold hover:text-night transition-all font-bold shadow-xl shadow-black/10"
+              className="flex items-center gap-2 px-5 py-2.5 bg-night text-white rounded-xl hover:bg-gold hover:text-night transition-all font-bold text-[12px] shadow-lg shadow-black/10"
             >
-              <Plus size={20} />
-              <span>Create Project</span>
+              <Plus size={16} />
+              <span>New Project</span>
             </button>
 
-            <button onClick={() => auth.signOut()} className="p-3 text-black/20 hover:text-black transition-colors">
-              <LogOut size={20} />
+            <button onClick={() => auth.signOut()} className="p-2.5 text-black/20 hover:text-black hover:bg-black/5 rounded-xl transition-all">
+              <LogOut size={17} />
             </button>
           </div>
         </header>
@@ -1099,23 +1096,23 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0 }}
-                  className="p-8 bg-white rounded-[2rem] border border-black/5 shadow-sm hover:shadow-xl hover:border-black/10 transition-all group cursor-default relative overflow-hidden"
+                  className="bg-white rounded-[1.75rem] border border-black/[0.06] p-6 shadow-sm group relative overflow-hidden hover:shadow-lg hover:shadow-gold/5 transition-all"
                 >
-                  <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-black/10 to-transparent group-hover:via-gold/40 transition-all duration-500 rounded-t-[2rem]" />
+                  <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-black/10 to-transparent group-hover:via-gold/40 transition-all duration-500 rounded-t-[1.75rem]" />
                   <div className="flex items-center justify-between mb-5">
-                    <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-black/35">Total Stories</div>
+                    <div className="text-[10px] font-bold uppercase tracking-widest text-black/30 mt-1">Total Stories</div>
                     <div className="w-9 h-9 rounded-2xl bg-black/5 flex items-center justify-center text-black/25 group-hover:bg-gold/10 group-hover:text-gold transition-all">
                       <BookOpen size={17} />
                     </div>
                   </div>
-                  <div className="text-6xl font-serif font-bold tracking-tight">{stories.length}</div>
+                  <div className="text-3xl font-serif font-bold">{stories.length}</div>
                   <div className="mt-2 text-xs text-black/30">{stories.filter(s => s.isPublished).length} published</div>
-                  <div className="mt-4 h-1 bg-black/5 rounded-full overflow-hidden">
+                  <div className="h-[3px] bg-black/5 rounded-full overflow-hidden mt-4">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${Math.min(stories.length * 10, 100)}%` }}
                       transition={{ duration: 0.8, delay: 0.2 }}
-                      className="h-full bg-gradient-to-r from-gold/40 to-gold/70 rounded-full"
+                      className="h-full bg-gradient-to-r from-gold to-gold/60 rounded-full"
                     />
                   </div>
                 </motion.div>
@@ -1125,26 +1122,26 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.08 }}
-                  className="p-8 bg-white rounded-[2rem] border border-black/5 shadow-sm hover:shadow-xl hover:border-black/10 transition-all group cursor-default relative overflow-hidden"
+                  className="bg-white rounded-[1.75rem] border border-black/[0.06] p-6 shadow-sm group relative overflow-hidden hover:shadow-lg hover:shadow-gold/5 transition-all"
                 >
-                  <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-black/10 to-transparent group-hover:via-orange-400/40 transition-all duration-500 rounded-t-[2rem]" />
+                  <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-black/10 to-transparent group-hover:via-orange-400/40 transition-all duration-500 rounded-t-[1.75rem]" />
                   <div className="flex items-center justify-between mb-5">
-                    <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-black/35">Streak</div>
+                    <div className="text-[10px] font-bold uppercase tracking-widest text-black/30 mt-1">Streak</div>
                     <div className="w-9 h-9 rounded-2xl bg-black/5 flex items-center justify-center text-black/25 group-hover:bg-orange-50 group-hover:text-orange-500 transition-all">
                       <Star size={17} />
                     </div>
                   </div>
                   <div className="flex items-baseline gap-2">
-                    <div className="text-6xl font-serif font-bold text-orange-500 tracking-tight">{userProfile?.streak || 0}</div>
+                    <div className="text-3xl font-serif font-bold text-orange-500">{userProfile?.streak || 0}</div>
                     <div className="text-xl text-black/25 font-light mb-1">days</div>
                   </div>
                   <div className="mt-2 text-xs text-black/30">Keep writing daily!</div>
-                  <div className="mt-4 h-1 bg-black/5 rounded-full overflow-hidden">
+                  <div className="h-[3px] bg-black/5 rounded-full overflow-hidden mt-4">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${Math.min((userProfile?.streak || 0) * 5, 100)}%` }}
                       transition={{ duration: 0.8, delay: 0.3 }}
-                      className="h-full bg-gradient-to-r from-orange-300/50 to-orange-400/70 rounded-full"
+                      className="h-full bg-gradient-to-r from-gold to-gold/60 rounded-full"
                     />
                   </div>
                 </motion.div>
@@ -1154,23 +1151,23 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.16 }}
-                  className="p-8 bg-white rounded-[2rem] border border-black/5 shadow-sm hover:shadow-xl hover:border-gold/20 transition-all group cursor-default relative overflow-hidden"
+                  className="bg-white rounded-[1.75rem] border border-black/[0.06] p-6 shadow-sm group relative overflow-hidden hover:shadow-lg hover:shadow-gold/5 transition-all"
                 >
-                  <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-black/10 to-transparent group-hover:via-gold/50 transition-all duration-500 rounded-t-[2rem]" />
+                  <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-black/10 to-transparent group-hover:via-gold/50 transition-all duration-500 rounded-t-[1.75rem]" />
                   <div className="flex items-center justify-between mb-5">
-                    <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-black/35">Tokens Available</div>
+                    <div className="text-[10px] font-bold uppercase tracking-widest text-black/30 mt-1">Tokens Available</div>
                     <div className="w-9 h-9 rounded-2xl bg-black/5 flex items-center justify-center text-black/25 group-hover:bg-gold/10 group-hover:text-gold transition-all">
                       <Zap size={17} />
                     </div>
                   </div>
-                  <div className="text-6xl font-serif font-bold text-gold tracking-tight">{userProfile?.tokens || 0}</div>
+                  <div className="text-3xl font-serif font-bold text-gold">{userProfile?.tokens || 0}</div>
                   <div className="mt-2 text-xs text-black/30">of {currentLimits.tokensPerMonth || 5}/mo</div>
-                  <div className="mt-4 h-1 bg-black/5 rounded-full overflow-hidden">
+                  <div className="h-[3px] bg-black/5 rounded-full overflow-hidden mt-4">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${Math.min(((userProfile?.tokens || 0) / (currentLimits.tokensPerMonth || 5)) * 100, 100)}%` }}
                       transition={{ duration: 0.8, delay: 0.4 }}
-                      className="h-full bg-gradient-to-r from-gold/40 to-gold rounded-full"
+                      className="h-full bg-gradient-to-r from-gold to-gold/60 rounded-full"
                     />
                   </div>
                 </motion.div>

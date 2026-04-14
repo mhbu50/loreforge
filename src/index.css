@@ -110,6 +110,48 @@
 [data-theme="dark"] .custom-scrollbar::-webkit-scrollbar-thumb { background: #333; }
 [data-theme="dark"] .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #444; }
 
+/* Ensure ALL bg-white panels get proper border in dark mode */
+[data-theme="dark"] .bg-white {
+  border-color: rgba(255,255,255,0.06);
+}
+
+/* Inputs without explicit bg class get dark bg */
+[data-theme="dark"] input:not([type="range"]):not([type="color"]):not([type="checkbox"]),
+[data-theme="dark"] textarea,
+[data-theme="dark"] select {
+  background-color: rgba(255,255,255,0.05) !important;
+  border-color: rgba(255,255,255,0.10) !important;
+}
+
+/* Shadow adjustments for dark mode — drop dark shadows */
+[data-theme="dark"] .shadow-sm,
+[data-theme="dark"] .shadow,
+[data-theme="dark"] .shadow-lg,
+[data-theme="dark"] .shadow-xl,
+[data-theme="dark"] .shadow-2xl {
+  --tw-shadow-color: rgba(0,0,0,0.5);
+}
+
+/* bg-gold opacity variants stay as-is in dark mode — gold is always gold */
+
+/* Table rows */
+[data-theme="dark"] tr:hover { background-color: rgba(255,255,255,0.03) !important; }
+[data-theme="dark"] .divide-y > * + * { border-color: rgba(255,255,255,0.06) !important; }
+
+/* Backdrop / overlay colors */
+[data-theme="dark"] .bg-gray-50 { background-color: var(--color-gray-50) !important; }
+
+/* Pill / badge text that uses explicit colors */
+[data-theme="dark"] .text-gray-400 { color: rgba(232,232,227,0.45) !important; }
+[data-theme="dark"] .text-gray-500 { color: rgba(232,232,227,0.55) !important; }
+[data-theme="dark"] .text-gray-600 { color: rgba(232,232,227,0.65) !important; }
+[data-theme="dark"] .text-gray-700 { color: rgba(232,232,227,0.80) !important; }
+
+/* border-black opacity variants — extended set */
+[data-theme="dark"] .border-black\/15 { border-color: rgba(255,255,255,0.10) !important; }
+[data-theme="dark"] .border-black\/25 { border-color: rgba(255,255,255,0.15) !important; }
+[data-theme="dark"] .border-black\/30 { border-color: rgba(255,255,255,0.18) !important; }
+
 /* Recipe 4: Dark Luxury / Travel */
 .luxury-bg {
   background-color: var(--color-night);

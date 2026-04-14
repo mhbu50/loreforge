@@ -1,6 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronLeft, ChevronRight, X, Mic2, FileText, ShoppingBag, Star, LayoutGrid, Volume2, Maximize2, Minimize2, Share2, Download, Type, Globe, Sparkles, Edit3 } from 'lucide-react';
+import {
+  ChevronLeft,
+  ChevronRight,
+  X,
+  Mic2,
+  FileText,
+  ShoppingBag,
+  Star,
+  LayoutGrid,
+  Volume2,
+  Maximize2,
+  Minimize2,
+  Share2,
+  Download,
+  Type,
+  Globe,
+  Sparkles,
+  Edit3,
+} from 'lucide-react';
 import { Story, StoryPage } from '../types';
 import { FONTS } from '../constants';
 import { toast } from 'sonner';
@@ -40,241 +58,297 @@ export default function StoryViewer({ story, onClose, onEdit, narrator }: StoryV
   const currentPageStyle = story.pages[currentPage]?.style || story.style;
   const styleClass = currentPageStyle ? `style-${currentPageStyle}` : '';
 
+  const totalPages = story.pages.length;
+  const hasCovers = !!story.coverImage;
+
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       className={cn(
-        "fixed inset-0 z-[100] flex flex-col transition-all duration-700",
-        isCinemaMode ? "bg-night text-white" : "bg-paper text-ink",
-        isBedtimeMode && "sepia-[0.4] brightness-[0.9]",
+        "fixed inset-0 z-[100] flex flex-col",
+        "bg-[#050505] text-white",
+        isBedtimeMode && "sepia-[0.4] brightness-[0.85]",
         styleClass
       )}
     >
-      <div className="atmosphere opacity-20" />
-      
-      {/* Header */}
-      <nav className="px-8 py-6 flex items-center justify-between relative z-20">
+      {/* Atmosphere */}
+      <div className="atmosphere opacity-15 pointer-events-none" />
+
+      {/* ── Header ── */}
+      <nav className="relative z-20 flex items-center justify-between px-8 py-5">
+        {/* Left: close + title */}
         <div className="flex items-center gap-4">
-          <button onClick={onClose} className="p-3 hover:bg-white/10 rounded-xl transition-all">
-            <X size={24} />
+          <button
+            onClick={onClose}
+            className="p-3 bg-white/8 border border-white/10 rounded-2xl hover:bg-gold/10 hover:border-gold/20 text-white/60 hover:text-gold transition-all"
+          >
+            <X size={20} />
           </button>
           <div>
-            <h2 className="text-2xl font-serif font-bold leading-none">{story.title}</h2>
-            <p className="text-[10px] small-caps tracking-widest opacity-40">By {story.authorName}</p>
+            <h2 className="text-xl font-serif font-bold leading-none text-white">{story.title}</h2>
+            <p className="text-[10px] small-caps tracking-widest text-white/30 mt-0.5">By {story.authorName}</p>
           </div>
         </div>
-        
-        <div className="flex items-center gap-4">
-          <button 
+
+        {/* Right: toolbar */}
+        <div className="flex items-center gap-2">
+          <button
             onClick={() => setIsDyslexicFont(!isDyslexicFont)}
-            className={cn("p-3 rounded-xl transition-all", isDyslexicFont ? "bg-blue-500 text-white" : "bg-white/10")}
+            className={cn(
+              "p-3 rounded-2xl border transition-all",
+              isDyslexicFont
+                ? "bg-blue-500/20 border-blue-500/40 text-blue-400"
+                : "bg-white/8 border-white/10 text-white/60 hover:bg-gold/10 hover:border-gold/20 hover:text-gold"
+            )}
             title="Dyslexia Friendly Font"
           >
-            <Type size={20} />
+            <Type size={18} />
           </button>
-          <button 
+
+          <button
             onClick={handleShare}
-            className="p-3 bg-white/10 rounded-xl hover:bg-white/20 transition-all"
+            className="p-3 bg-white/8 border border-white/10 rounded-2xl hover:bg-gold/10 hover:border-gold/20 text-white/60 hover:text-gold transition-all"
             title="Share Story"
           >
-            <Share2 size={20} />
+            <Share2 size={18} />
           </button>
+
           <div className="relative group">
-            <button className="p-3 bg-white/10 rounded-xl hover:bg-white/20 transition-all">
-              <Download size={20} />
+            <button className="p-3 bg-white/8 border border-white/10 rounded-2xl hover:bg-gold/10 hover:border-gold/20 text-white/60 hover:text-gold transition-all">
+              <Download size={18} />
             </button>
-            <div className="absolute right-0 top-full mt-2 hidden group-hover:block bg-night border border-white/10 rounded-xl overflow-hidden shadow-2xl z-50">
-              <button onClick={() => handleExport('epub')} className="w-full px-6 py-3 text-left hover:bg-white/10 text-xs font-bold uppercase tracking-widest">EPUB</button>
-              <button onClick={() => handleExport('mobi')} className="w-full px-6 py-3 text-left hover:bg-white/10 text-xs font-bold uppercase tracking-widest">MOBI</button>
+            <div className="absolute right-0 top-full mt-2 hidden group-hover:block bg-[#1a1a1a] border border-white/10 rounded-2xl overflow-hidden shadow-2xl z-50 min-w-[120px]">
+              <button
+                onClick={() => handleExport('epub')}
+                className="w-full px-5 py-3 text-left hover:bg-white/8 text-xs font-bold uppercase tracking-widest text-white/60 hover:text-white transition-all"
+              >
+                EPUB
+              </button>
+              <button
+                onClick={() => handleExport('mobi')}
+                className="w-full px-5 py-3 text-left hover:bg-white/8 text-xs font-bold uppercase tracking-widest text-white/60 hover:text-white transition-all"
+              >
+                MOBI
+              </button>
             </div>
           </div>
-          <button 
+
+          <button
             onClick={() => setIsBedtimeMode(!isBedtimeMode)}
-            className={cn("p-3 rounded-xl transition-all", isBedtimeMode ? "bg-orange-500 text-white" : "bg-white/10")}
+            className={cn(
+              "p-3 rounded-2xl border transition-all",
+              isBedtimeMode
+                ? "bg-orange-500/20 border-orange-500/40 text-orange-400"
+                : "bg-white/8 border-white/10 text-white/60 hover:bg-gold/10 hover:border-gold/20 hover:text-gold"
+            )}
             title="Bedtime Mode (Warm Colors)"
           >
-            <Star size={20} />
+            <Star size={18} />
           </button>
-          <button 
+
+          <button
             onClick={() => setIsCinemaMode(!isCinemaMode)}
-            className={cn("p-3 rounded-xl transition-all", isCinemaMode ? "bg-gold text-night" : "bg-black/5")}
+            className={cn(
+              "p-3 rounded-2xl border transition-all",
+              isCinemaMode
+                ? "bg-gold/20 border-gold/40 text-gold"
+                : "bg-white/8 border-white/10 text-white/60 hover:bg-gold/10 hover:border-gold/20 hover:text-gold"
+            )}
             title="Cinema Mode"
           >
-            <Maximize2 size={20} />
+            <Maximize2 size={18} />
           </button>
+
           {onEdit && (
-            <button 
+            <button
               onClick={() => onEdit(story)}
-              className="p-3 bg-white/10 rounded-xl hover:bg-white/20 transition-all"
+              className="p-3 bg-white/8 border border-white/10 rounded-2xl hover:bg-gold/10 hover:border-gold/20 text-white/60 hover:text-gold transition-all"
               title="Edit Story"
             >
-              <Edit3 size={20} />
+              <Edit3 size={18} />
             </button>
           )}
-          <button onClick={() => setShowScript(!showScript)} className="p-3 bg-white/10 rounded-xl hover:bg-white/20 transition-all">
-            <FileText size={20} />
+
+          <button
+            onClick={() => setShowScript(!showScript)}
+            className={cn(
+              "p-3 rounded-2xl border transition-all",
+              showScript
+                ? "bg-white/15 border-white/20 text-white"
+                : "bg-white/8 border-white/10 text-white/60 hover:bg-gold/10 hover:border-gold/20 hover:text-gold"
+            )}
+          >
+            <FileText size={18} />
           </button>
         </div>
       </nav>
 
-      {/* Top Progress Bar */}
-      <div className="h-0.5 bg-white/5 relative z-20">
-        <motion.div 
-          className="h-full bg-gold shadow-[0_0_10px_rgba(212,175,55,0.5)]"
+      {/* Progress bar */}
+      <div className="h-px bg-white/5 relative z-20">
+        <motion.div
+          className="h-full bg-gold shadow-[0_0_8px_rgba(212,175,55,0.6)]"
           initial={{ width: 0 }}
-          animate={{ width: `${((currentPage + 2) / (story.pages.length + 1)) * 100}%` }}
+          animate={{ width: `${((currentPage + 2) / (totalPages + 1)) * 100}%` }}
+          transition={{ type: 'spring', stiffness: 80, damping: 20 }}
         />
       </div>
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col items-center justify-center p-8 lg:p-16 relative z-10">
-        <div className="w-full max-w-6xl flex items-stretch justify-center relative">
+      {/* ── Main Content ── */}
+      <div className="flex-1 flex flex-col items-center justify-center px-8 py-6 relative z-10">
+        <div className="w-full max-w-2xl relative">
+          {/* Prev button */}
+          <button
+            onClick={() => setCurrentPage(p => Math.max(hasCovers ? -1 : 0, p - 1))}
+            disabled={currentPage === (hasCovers ? -1 : 0)}
+            className="absolute -left-16 top-1/2 -translate-y-1/2 p-4 bg-white/8 border border-white/10 rounded-2xl hover:bg-gold/10 hover:border-gold/20 text-white/60 hover:text-gold transition-all disabled:opacity-0"
+          >
+            <ChevronLeft size={24} />
+          </button>
+
+          {/* Next button */}
+          <button
+            onClick={() => setCurrentPage(p => Math.min(totalPages - 1, p + 1))}
+            disabled={currentPage === totalPages - 1}
+            className="absolute -right-16 top-1/2 -translate-y-1/2 p-4 bg-white/8 border border-white/10 rounded-2xl hover:bg-gold/10 hover:border-gold/20 text-white/60 hover:text-gold transition-all disabled:opacity-0"
+          >
+            <ChevronRight size={24} />
+          </button>
+
+          {/* Page content */}
           <AnimatePresence mode="wait">
-            <motion.div 
+            <motion.div
               key={currentPage}
-              initial={{ opacity: 0, rotateY: 90, originX: 0 }}
-              animate={{ opacity: 1, rotateY: 0, originX: 0 }}
-              exit={{ opacity: 0, rotateY: -90, originX: 0 }}
-              transition={{ type: "spring", damping: 25, stiffness: 120 }}
-              className="w-full flex items-stretch perspective-2000 preserve-3d"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -16 }}
+              transition={{ duration: 0.35, ease: 'easeInOut' }}
+              className="w-full"
             >
-              {/* Left Page: Illustration */}
-              <div className="flex-1">
-                <div 
-                  className="aspect-[4/5] bg-white rounded-l-2xl shadow-2xl overflow-hidden relative"
-                  style={{ 
-                    backgroundImage: 'url("https://www.transparenttextures.com/patterns/paper-fibers.png")',
-                    boxShadow: 'inset -20px 0 30px rgba(0,0,0,0.05)'
-                  }}
-                >
-                  <img 
-                    src={currentPage === -1 ? (story.coverImage || story.pages[0].imageUrl) : story.pages[currentPage].imageUrl} 
-                    alt="" className="w-full h-full object-cover"
-                    style={{
-                      filter: (currentPage === -1 && story.coverImageAdjustments) ? 
-                        `brightness(${story.coverImageAdjustments.brightness}%) contrast(${story.coverImageAdjustments.contrast}%) saturate(${story.coverImageAdjustments.saturation}%) sepia(${story.coverImageAdjustments.sepia}%) grayscale(${story.coverImageAdjustments.grayscale}%) blur(${story.coverImageAdjustments.blur}px) hue-rotate(${story.coverImageAdjustments.hueRotate}deg)` :
-                        (currentPage !== -1 && story.pages[currentPage].imageAdjustments) ? 
-                        `brightness(${story.pages[currentPage].imageAdjustments.brightness}%) contrast(${story.pages[currentPage].imageAdjustments.contrast}%) saturate(${story.pages[currentPage].imageAdjustments.saturation}%) sepia(${story.pages[currentPage].imageAdjustments.sepia}%) grayscale(${story.pages[currentPage].imageAdjustments.grayscale}%) blur(${story.pages[currentPage].imageAdjustments.blur}px) hue-rotate(${story.pages[currentPage].imageAdjustments.hueRotate}deg)` : 'none',
-                      transform: (currentPage === -1 && story.coverImageAdjustments) ? 
-                        `rotate(${story.coverImageAdjustments.rotate}deg) scaleX(${story.coverImageAdjustments.flipX ? -1 : 1}) scaleY(${story.coverImageAdjustments.flipY ? -1 : 1})` :
-                        (currentPage !== -1 && story.pages[currentPage].imageAdjustments) ? 
-                        `rotate(${story.pages[currentPage].imageAdjustments.rotate}deg) scaleX(${story.pages[currentPage].imageAdjustments.flipX ? -1 : 1}) scaleY(${story.pages[currentPage].imageAdjustments.flipY ? -1 : 1})` : 'none'
-                    }}
-                    referrerPolicy="no-referrer"
-                  />
-                  <div className="absolute inset-0 page-gradient pointer-events-none" />
-                  
-                  {/* Language Tag */}
-                  {story.language && (
-                    <div className="absolute top-6 left-6 bg-black/50 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-2 border border-white/10">
-                      <Globe size={12} className="text-gold" />
-                      <span className="text-[10px] font-bold uppercase tracking-widest text-white">{story.language}</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Book Spine */}
-              <div className="w-12 bg-gradient-to-r from-black/20 via-black/10 to-black/20 shadow-inner relative z-10 flex flex-col items-center justify-center">
-                <div className="w-px h-full bg-black/10" />
-                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/leather.png')] opacity-30" />
-              </div>
-
-              {/* Right Page: Text */}
-              <div className="flex-1">
-                <div 
-                  className="aspect-[4/5] bg-white rounded-r-2xl shadow-2xl p-16 flex flex-col justify-center relative"
-                  style={{ 
-                    backgroundImage: 'url("https://www.transparenttextures.com/patterns/paper-fibers.png")',
-                    boxShadow: 'inset 20px 0 30px rgba(0,0,0,0.05)'
-                  }}
-                >
-                  {currentPage === -1 ? (
-                    <div className="flex flex-col items-center justify-center text-center h-full space-y-8">
-                      <div className="w-16 h-16 bg-gold/10 rounded-full flex items-center justify-center text-gold">
-                        <Sparkles size={32} />
-                      </div>
-                      <div>
-                        <h1 className="text-5xl font-serif font-bold text-night mb-4">{story.title}</h1>
-                        <div className="w-12 h-0.5 bg-gold/40 mx-auto mb-6" />
-                        <p className="text-night/60 font-serif italic text-xl">by {story.authorName}</p>
-                      </div>
-                      <div className="pt-12">
-                        <p className="text-[10px] small-caps tracking-[0.3em] text-black/20 font-bold">A StoryCraft Masterpiece</p>
-                      </div>
-                    </div>
-                  ) : (
-                    <>
-                      <div className="flex items-center gap-4 mb-8">
-                        <span className="w-12 h-[1px] bg-gold/30" />
-                        <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-gold">Chapter {currentPage + 1}</span>
-                      </div>
-                      
-                      <div 
-                        className={cn(
-                          "font-serif leading-relaxed italic font-light text-ink",
-                          story.pages[currentPage].fontSize || "text-3xl",
-                          story.pages[currentPage].alignment === 'center' ? 'text-center' : story.pages[currentPage].alignment === 'right' ? 'text-right' : 'text-left',
-                          isDyslexicFont && "font-dyslexic"
-                        )}
+              {currentPage === -1 ? (
+                /* Cover page */
+                <div className="flex flex-col items-center text-center space-y-8 py-16">
+                  {story.coverImage && (
+                    <div className="w-full max-w-sm">
+                      <img
+                        src={story.coverImage}
+                        alt={story.title}
+                        className="w-full rounded-2xl shadow-2xl shadow-black/60 object-cover"
                         style={{
-                          color: story.pages[currentPage].color || 'inherit',
-                          fontFamily: FONTS.find(f => f.id === (story.pages[currentPage].font || 'serif'))?.family || 'inherit'
+                          filter: story.coverImageAdjustments
+                            ? `brightness(${story.coverImageAdjustments.brightness}%) contrast(${story.coverImageAdjustments.contrast}%) saturate(${story.coverImageAdjustments.saturation}%) sepia(${story.coverImageAdjustments.sepia}%) grayscale(${story.coverImageAdjustments.grayscale}%) blur(${story.coverImageAdjustments.blur}px) hue-rotate(${story.coverImageAdjustments.hueRotate}deg)`
+                            : undefined,
+                          transform: story.coverImageAdjustments
+                            ? `rotate(${story.coverImageAdjustments.rotate}deg) scaleX(${story.coverImageAdjustments.flipX ? -1 : 1}) scaleY(${story.coverImageAdjustments.flipY ? -1 : 1})`
+                            : undefined,
                         }}
-                      >
-                        <ReactMarkdown rehypePlugins={[rehypeRaw]}>
-                          {story.pages[currentPage].text || story.pages[currentPage].content || ''}
-                        </ReactMarkdown>
-                      </div>
+                        referrerPolicy="no-referrer"
+                      />
+                    </div>
+                  )}
+                  <div>
+                    <h1 className="text-5xl font-serif font-bold text-white mb-4">{story.title}</h1>
+                    <div className="w-12 h-0.5 bg-gold/50 mx-auto mb-4" />
+                    <p className="text-white/50 font-serif italic text-xl">by {story.authorName}</p>
+                  </div>
+                  <p className="text-[10px] small-caps tracking-[0.3em] text-white/20 font-bold">
+                    A StoryCraft Masterpiece
+                  </p>
+                </div>
+              ) : (
+                /* Story page */
+                <div className="space-y-6">
+                  {/* Image */}
+                  {story.pages[currentPage]?.imageUrl && (
+                    <div className="w-full">
+                      <img
+                        src={story.pages[currentPage].imageUrl}
+                        alt=""
+                        className="w-full rounded-2xl shadow-2xl shadow-black/60 object-cover max-h-72"
+                        style={{
+                          filter: story.pages[currentPage].imageAdjustments
+                            ? `brightness(${story.pages[currentPage].imageAdjustments.brightness}%) contrast(${story.pages[currentPage].imageAdjustments.contrast}%) saturate(${story.pages[currentPage].imageAdjustments.saturation}%) sepia(${story.pages[currentPage].imageAdjustments.sepia}%) grayscale(${story.pages[currentPage].imageAdjustments.grayscale}%) blur(${story.pages[currentPage].imageAdjustments.blur}px) hue-rotate(${story.pages[currentPage].imageAdjustments.hueRotate}deg)`
+                            : undefined,
+                          transform: story.pages[currentPage].imageAdjustments
+                            ? `rotate(${story.pages[currentPage].imageAdjustments.rotate}deg) scaleX(${story.pages[currentPage].imageAdjustments.flipX ? -1 : 1}) scaleY(${story.pages[currentPage].imageAdjustments.flipY ? -1 : 1})`
+                            : undefined,
+                        }}
+                        referrerPolicy="no-referrer"
+                      />
+                    </div>
+                  )}
 
-                      <div className="absolute bottom-8 left-0 right-0 flex justify-center">
-                        <div className="text-[10px] font-bold text-black/20 uppercase tracking-widest">
-                          {currentPage + 1}
-                        </div>
-                      </div>
-                    </>
+                  {/* Chapter label */}
+                  <div className="flex items-center gap-3">
+                    <span className="w-10 h-px bg-gold/40" />
+                    <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-gold">
+                      Chapter {currentPage + 1}
+                    </span>
+                  </div>
+
+                  {/* Text */}
+                  <div
+                    className={cn(
+                      "font-serif leading-relaxed text-white/90 text-xl",
+                      story.pages[currentPage].fontSize,
+                      story.pages[currentPage].alignment === 'center'
+                        ? 'text-center'
+                        : story.pages[currentPage].alignment === 'right'
+                        ? 'text-right'
+                        : 'text-left',
+                      isDyslexicFont && "font-dyslexic"
+                    )}
+                    style={{
+                      color: story.pages[currentPage].color || undefined,
+                      fontFamily:
+                        FONTS.find(f => f.id === (story.pages[currentPage].font || 'serif'))?.family ||
+                        'inherit',
+                    }}
+                  >
+                    <ReactMarkdown rehypePlugins={[rehypeRaw]}>
+                      {story.pages[currentPage].text || story.pages[currentPage].content || ''}
+                    </ReactMarkdown>
+                  </div>
+
+                  {/* Language tag */}
+                  {story.language && (
+                    <div className="inline-flex items-center gap-2 bg-black/50 backdrop-blur-md px-3 py-1 rounded-full border border-white/10">
+                      <Globe size={12} className="text-gold" />
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-white">
+                        {story.language}
+                      </span>
+                    </div>
                   )}
                 </div>
-              </div>
+              )}
             </motion.div>
           </AnimatePresence>
-          
-          <button 
-            onClick={() => setCurrentPage(p => Math.max(story.coverImage ? -1 : 0, p - 1))}
-            disabled={currentPage === (story.coverImage ? -1 : 0)}
-            className="absolute -left-20 top-1/2 -translate-y-1/2 p-6 bg-white/5 hover:bg-white/10 rounded-full transition-all disabled:opacity-0"
-          >
-            <ChevronLeft size={32} />
-          </button>
-          <button 
-            onClick={() => setCurrentPage(p => Math.min(story.pages.length - 1, p + 1))}
-            disabled={currentPage === story.pages.length - 1}
-            className="absolute -right-20 top-1/2 -translate-y-1/2 p-6 bg-white/5 hover:bg-white/10 rounded-full transition-all disabled:opacity-0"
-          >
-            <ChevronRight size={32} />
-          </button>
         </div>
 
-        {/* Page Navigation Dots */}
-        <div className="mt-12 flex gap-2">
-          {story.coverImage && (
-            <button 
+        {/* Page dot navigation */}
+        <div className="mt-10 flex items-center gap-2">
+          {hasCovers && (
+            <button
               onClick={() => setCurrentPage(-1)}
-              className={cn("h-1 rounded-full transition-all", -1 === currentPage ? "bg-gold w-12" : "bg-white/10 w-4 hover:bg-white/20")} 
+              className={cn(
+                "h-1.5 rounded-full transition-all duration-300",
+                currentPage === -1 ? "bg-gold w-10" : "bg-white/15 w-4 hover:bg-white/30"
+              )}
             />
           )}
           {story.pages.map((_, i) => (
-            <button 
-              key={i} 
+            <button
+              key={i}
               onClick={() => setCurrentPage(i)}
-              className={cn("h-1 rounded-full transition-all", i === currentPage ? "bg-gold w-12" : "bg-white/10 w-4 hover:bg-white/20")} 
+              className={cn(
+                "h-1.5 rounded-full transition-all duration-300",
+                i === currentPage ? "bg-gold w-10" : "bg-white/15 w-4 hover:bg-white/30"
+              )}
             />
           ))}
         </div>
       </div>
-
     </motion.div>
   );
 }
