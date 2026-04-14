@@ -11,6 +11,10 @@ export const SUBSCRIPTION_LIMITS = {
     freeMarketplace: false,
     tokensPerMonth: 5,
     bookTokenCost: 1,
+    editTokenCost: 0,
+    aiScriptCost: 1,
+    aiImageCost: 1,
+    aiEnhanceCost: 0,
   },
   standard: {
     maxStoriesPerMonth: 3,
@@ -22,6 +26,10 @@ export const SUBSCRIPTION_LIMITS = {
     freeMarketplace: false,
     tokensPerMonth: 20,
     bookTokenCost: 1,
+    editTokenCost: 0,
+    aiScriptCost: 1,
+    aiImageCost: 1,
+    aiEnhanceCost: 0,
   },
   premium: {
     maxStoriesTotal: Infinity,
@@ -33,6 +41,10 @@ export const SUBSCRIPTION_LIMITS = {
     freeMarketplace: false,
     tokensPerMonth: 100,
     bookTokenCost: 1,
+    editTokenCost: 0,
+    aiScriptCost: 1,
+    aiImageCost: 1,
+    aiEnhanceCost: 0,
   },
   ultimate: {
     maxStoriesTotal: Infinity,
@@ -40,11 +52,11 @@ export const SUBSCRIPTION_LIMITS = {
     allowCollaboration: true,
     allowMarketplacePublishing: true,
     allowedStyles: [
-      'watercolor-dream', 'midnight-tales', 'vintage-storybook', 'whimsical-play', 
-      'minimalist-parchment', 'enchanted-forest', 'galactic-odyssey', 'fairy-dust', 
-      'steampunk-chronicle', 'nordic-simplicity', 'neon-noir', 'paper-cut', 
-      'botanical-sketch', 'retro-pixel', 'gilded-age', 'misty-highlands', 
-      'kawaii-cute', 'art-nouveau', 'scandinavian-folk', 'monochrome-ink', 
+      'watercolor-dream', 'midnight-tales', 'vintage-storybook', 'whimsical-play',
+      'minimalist-parchment', 'enchanted-forest', 'galactic-odyssey', 'fairy-dust',
+      'steampunk-chronicle', 'nordic-simplicity', 'neon-noir', 'paper-cut',
+      'botanical-sketch', 'retro-pixel', 'gilded-age', 'misty-highlands',
+      'kawaii-cute', 'art-nouveau', 'scandinavian-folk', 'monochrome-ink',
       'cloud-nine', 'crystal-cavern', 'rustic-cabin', 'celestial-map', 'toy-block',
       'watercolor', 'cartoon', 'anime', 'oil-painting', 'sketch', 'cinematic', 'cyberpunk', 'comic'
     ],
@@ -52,6 +64,10 @@ export const SUBSCRIPTION_LIMITS = {
     freeMarketplace: true,
     tokensPerMonth: 500,
     bookTokenCost: 1,
+    editTokenCost: 0,
+    aiScriptCost: 1,
+    aiImageCost: 1,
+    aiEnhanceCost: 0,
   }
 };
 

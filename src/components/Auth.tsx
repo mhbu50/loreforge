@@ -139,71 +139,103 @@ export default function Auth({ globalSettings }: AuthProps) {
     }
   };
 
+  const floatingCards = [
+    { title: 'The Obsidian Citadel', genre: 'Fantasy', pages: 12, color: 'from-purple-900/60 to-indigo-900/40' },
+    { title: 'Neon Horizons', genre: 'Sci-Fi', pages: 8, color: 'from-cyan-900/60 to-blue-900/40' },
+    { title: 'The Silver Fox', genre: 'Mystery', pages: 15, color: 'from-amber-900/60 to-orange-900/40' },
+  ];
+
   return (
     <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2 luxury-bg overflow-hidden">
 
       {/* ── Left Pane: Branding ── */}
-      <div className="hidden lg:flex flex-col justify-between p-16 relative border-r border-white/5 overflow-hidden">
+      <div className="hidden lg:flex flex-col justify-between p-14 relative border-r border-white/5 overflow-hidden bg-[#060606]">
         <div className="atmosphere" />
 
-        {/* Background decorative circles */}
+        {/* Background layers */}
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute -top-40 -left-40 w-96 h-96 rounded-full border border-gold/5" />
-          <div className="absolute -top-20 -left-20 w-64 h-64 rounded-full border border-gold/10" />
-          <div className="absolute bottom-32 right-8 w-80 h-80 rounded-full"
-            style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.04) 0%, transparent 70%)' }} />
+          <div className="absolute top-0 left-0 w-full h-full opacity-[0.015]" style={{backgroundImage: 'linear-gradient(white 1px, transparent 1px), linear-gradient(90deg, white 1px, transparent 1px)', backgroundSize: '60px 60px'}} />
+          <div className="absolute -top-40 -left-40 w-96 h-96 rounded-full" style={{background: 'radial-gradient(circle, rgba(212,175,55,0.08) 0%, transparent 70%)'}} />
+          <div className="absolute bottom-0 right-0 w-96 h-96" style={{background: 'radial-gradient(circle, rgba(212,175,55,0.04) 0%, transparent 70%)'}} />
         </div>
 
+        {/* Logo */}
         <motion.div
-          initial={{ opacity: 0, x: -40 }}
+          initial={{ opacity: 0, x: -30 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8 }}
-          className="relative z-10"
+          transition={{ duration: 0.7 }}
+          className="relative z-10 flex items-center gap-4"
         >
-          <div className="flex items-center gap-4 mb-16">
-            <div className="w-14 h-14 bg-gold rounded-2xl flex items-center justify-center text-night shadow-lg shadow-gold/30 overflow-hidden">
-              {appIcon?.startsWith('http') ? (
-                <img src={appIcon} className="w-full h-full object-cover" alt="icon" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
-              ) : appIcon ? (
-                <span className="text-2xl">{appIcon}</span>
-              ) : (
-                <Sparkles size={28} />
-              )}
-            </div>
-            <div>
-              <span className="block font-serif text-xl font-bold text-white">{appName}</span>
-              <span className="text-[9px] font-bold uppercase tracking-[0.4em] text-gold/50">Creative Studio</span>
-            </div>
+          <div className="w-12 h-12 bg-gold rounded-2xl flex items-center justify-center text-night shadow-lg shadow-gold/30 overflow-hidden">
+            {appIcon?.startsWith('http') ? (
+              <img src={appIcon} className="w-full h-full object-cover" alt="icon" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+            ) : appIcon ? (
+              <span className="text-xl">{appIcon}</span>
+            ) : (
+              <Sparkles size={22} />
+            )}
           </div>
+          <div>
+            <span className="block font-serif text-lg font-bold text-white">{appName}</span>
+            <span className="text-[9px] font-bold uppercase tracking-[0.4em] text-gold/50">Creative Studio</span>
+          </div>
+        </motion.div>
 
-          <h1 className="text-6xl font-serif font-light leading-[1.05] mb-8 tracking-tighter">
+        {/* Center content */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.1 }}
+          className="relative z-10 flex-1 flex flex-col justify-center py-12"
+        >
+          <h1 className="text-[4.5rem] font-serif font-light leading-[0.95] mb-6 tracking-tighter">
             Craft <br />
-            <span className="italic font-bold" style={{
-              background: 'linear-gradient(135deg, #d4af37, #f0d060)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }}>Eternal</span> <br />
+            <span className="italic font-bold text-gradient-gold">Eternal</span> <br />
             Tales.
           </h1>
-
-          <p className="text-white/35 max-w-xs text-base leading-relaxed font-light">
-            The world's most immersive story studio.
-            Write, illustrate, and publish your masterpieces.
+          <p className="text-white/30 max-w-sm text-sm leading-relaxed font-light mb-12">
+            The world's most immersive story studio. Write, illustrate, and publish your masterpieces with AI.
           </p>
+
+          {/* Floating story cards */}
+          <div className="relative h-48">
+            {floatingCards.map((card, i) => (
+              <motion.div
+                key={card.title}
+                initial={{ opacity: 0, x: -20 + i * 10, y: 20 }}
+                animate={{ opacity: 1, x: i * 24, y: i * 16 }}
+                transition={{ duration: 0.8, delay: 0.3 + i * 0.15 }}
+                className={`absolute bg-gradient-to-br ${card.color} border border-white/10 rounded-2xl px-5 py-4 shadow-2xl backdrop-blur-sm`}
+                style={{ width: 220, zIndex: 3 - i }}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[9px] font-bold uppercase tracking-widest text-gold/70">{card.genre}</span>
+                  <span className="text-[9px] text-white/30">{card.pages} pages</span>
+                </div>
+                <div className="text-white font-serif font-bold text-sm leading-snug">{card.title}</div>
+                <div className="mt-3 flex gap-1">
+                  {[...Array(3)].map((_, j) => (
+                    <div key={j} className="h-1 flex-1 bg-white/10 rounded-full overflow-hidden">
+                      <div className="h-full bg-gold/60 rounded-full" style={{width: `${[80, 60, 40][j]}%`}} />
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </motion.div>
 
         {/* Stats row */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
-          className="relative z-10 flex gap-10"
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="relative z-10 flex gap-8 pt-6 border-t border-white/5"
         >
           {[{ val: '10k+', label: 'Stories Crafted' }, { val: '50+', label: 'Art Styles' }, { val: '4.9★', label: 'Rating' }].map(s => (
             <div key={s.label}>
-              <div className="text-2xl font-serif font-bold text-gold">{s.val}</div>
-              <div className="text-[9px] font-bold uppercase tracking-[0.3em] text-white/25 mt-1">{s.label}</div>
+              <div className="text-xl font-serif font-bold text-gold">{s.val}</div>
+              <div className="text-[9px] font-bold uppercase tracking-[0.3em] text-white/20 mt-0.5">{s.label}</div>
             </div>
           ))}
         </motion.div>
@@ -211,10 +243,12 @@ export default function Auth({ globalSettings }: AuthProps) {
 
       {/* ── Right Pane: Form ── */}
       <div className="flex items-center justify-center p-6 lg:p-12 bg-night relative overflow-hidden">
-        {/* Subtle background glow */}
+        {/* Background glows */}
         <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 left-0 w-96 h-96 -translate-x-1/2 -translate-y-1/2 rounded-full"
+            style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.03) 0%, transparent 70%)' }} />
           <div className="absolute bottom-0 right-0 w-96 h-96 translate-x-1/2 translate-y-1/2 rounded-full"
-            style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.04) 0%, transparent 70%)' }} />
+            style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.05) 0%, transparent 70%)' }} />
         </div>
 
         <motion.div
@@ -224,8 +258,10 @@ export default function Auth({ globalSettings }: AuthProps) {
           className="w-full max-w-md relative z-10"
         >
           {/* Card */}
-          <div className="bg-white/[0.03] border border-white/8 rounded-[2rem] p-8 lg:p-10 shadow-2xl"
-            style={{ boxShadow: '0 0 0 1px rgba(212,175,55,0.08), 0 32px 64px -16px rgba(0,0,0,0.6)' }}>
+          <div className="relative bg-white/[0.03] rounded-[2rem] p-8 lg:p-10 shadow-2xl overflow-hidden"
+            style={{ boxShadow: '0 0 0 1px rgba(212,175,55,0.12), 0 32px 64px -16px rgba(0,0,0,0.7)' }}>
+            {/* Gold top accent */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-[1.5px] bg-gradient-to-r from-transparent via-gold/60 to-transparent rounded-full" />
 
             {/* Mobile logo */}
             <div className="flex lg:hidden items-center gap-3 mb-8 justify-center">
@@ -238,16 +274,16 @@ export default function Auth({ globalSettings }: AuthProps) {
             </div>
 
             {/* Tab toggle */}
-            <div className="flex bg-white/5 rounded-2xl p-1 mb-8">
+            <div className="flex bg-white/[0.04] border border-white/[0.06] rounded-2xl p-1 mb-8">
               <button
                 onClick={() => setIsLogin(true)}
-                className={`flex-1 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${isLogin ? 'bg-gold text-night shadow-lg' : 'text-white/40 hover:text-white/70'}`}
+                className={`flex-1 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${isLogin ? 'bg-gold text-night shadow-lg shadow-gold/20' : 'text-white/35 hover:text-white/60'}`}
               >
                 Sign In
               </button>
               <button
                 onClick={() => setIsLogin(false)}
-                className={`flex-1 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${!isLogin ? 'bg-gold text-night shadow-lg' : 'text-white/40 hover:text-white/70'}`}
+                className={`flex-1 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${!isLogin ? 'bg-gold text-night shadow-lg shadow-gold/20' : 'text-white/35 hover:text-white/60'}`}
               >
                 Sign Up
               </button>
@@ -265,39 +301,39 @@ export default function Auth({ globalSettings }: AuthProps) {
                   <h2 className="text-2xl font-serif font-bold text-white">
                     {isLogin ? 'Welcome back' : 'Create account'}
                   </h2>
-                  <p className="text-white/35 text-xs mt-1">
-                    {isLogin ? 'Enter your credentials to continue your journey' : 'Start crafting your tales today'}
+                  <p className="text-white/30 text-xs mt-1.5">
+                    {isLogin ? 'Enter your credentials to continue your journey' : 'Start crafting your tales today · 5 free tokens'}
                   </p>
                 </div>
 
                 <form onSubmit={handleEmailAuth} className="space-y-4">
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-white/40">Email</label>
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-white/50">Email</label>
                     <input
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="w-full bg-white/5 border border-white/8 rounded-xl px-4 py-3.5 outline-none focus:border-gold/50 focus:bg-gold/5 transition-all text-sm text-white placeholder:text-white/20"
+                      className="w-full bg-white/5 border border-white/8 rounded-xl px-4 py-3.5 outline-none focus:border-gold/40 focus:bg-gold/[0.04] transition-all text-sm text-white placeholder:text-white/15 shadow-sm"
                       placeholder="you@example.com"
                       autoComplete="email"
                     />
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-white/40">Password</label>
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-white/50">Password</label>
                     <div className="relative">
                       <input
                         type={showPassword ? 'text' : 'password'}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="w-full bg-white/5 border border-white/8 rounded-xl px-4 py-3.5 pr-12 outline-none focus:border-gold/50 focus:bg-gold/5 transition-all text-sm text-white placeholder:text-white/20"
+                        className="w-full bg-white/5 border border-white/8 rounded-xl px-4 py-3.5 pr-12 outline-none focus:border-gold/40 focus:bg-gold/[0.04] transition-all text-sm text-white placeholder:text-white/15 shadow-sm"
                         placeholder="••••••••"
                         autoComplete={isLogin ? 'current-password' : 'new-password'}
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword(p => !p)}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 text-white/25 hover:text-white/60 transition-colors"
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-white/20 hover:text-white/50 transition-colors"
                       >
                         {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                       </button>
@@ -307,8 +343,8 @@ export default function Auth({ globalSettings }: AuthProps) {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full py-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 disabled:opacity-50 transition-all mt-2"
-                    style={{ background: 'linear-gradient(135deg, #d4af37, #b8860b)', color: '#0a0a0a', boxShadow: '0 8px 24px -4px rgba(212,175,55,0.35)' }}
+                    className="w-full py-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 disabled:opacity-50 transition-all mt-2 shadow-lg shadow-gold/25 hover:shadow-gold/40"
+                    style={{ background: 'linear-gradient(135deg, #d4af37, #b8860b)', color: '#0a0a0a' }}
                   >
                     {loading
                       ? <Loader2 className="animate-spin" size={18} />
@@ -321,23 +357,23 @@ export default function Auth({ globalSettings }: AuthProps) {
 
             <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-white/6" />
+                <div className="w-full border-t border-white/5" />
               </div>
               <div className="relative flex justify-center">
-                <span className="px-3 bg-transparent text-[10px] uppercase tracking-widest text-white/20">or</span>
+                <span className="px-3 text-[10px] uppercase tracking-widest text-white/15 bg-night">or</span>
               </div>
             </div>
 
             <button
               onClick={handleGoogleSignIn}
               disabled={loading}
-              className="w-full bg-white/5 hover:bg-white/10 border border-white/8 text-white/80 hover:text-white font-medium py-3.5 rounded-xl transition-all flex items-center justify-center gap-3 text-sm"
+              className="w-full bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-white/70 hover:text-white font-medium py-3.5 rounded-xl transition-all flex items-center justify-center gap-3 text-sm"
             >
               <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" className="w-5 h-5" alt="Google" />
               <span>Continue with Google</span>
             </button>
 
-            <p className="text-center text-[10px] text-white/15 mt-6 leading-relaxed uppercase tracking-wider">
+            <p className="text-center text-[10px] text-white/12 mt-6 leading-relaxed uppercase tracking-wider">
               By continuing you accept our{' '}
               <button onClick={() => setShowLegal({ show: true, type: 'terms' })} className="text-gold/40 hover:text-gold transition-colors underline underline-offset-2">
                 Terms

@@ -27,6 +27,9 @@ export default function HeadAdminPanel() {
       tokensPerMonth: 5,
       bookTokenCost: 1,
       editTokenCost: 0,
+      aiScriptCost: 1,
+      aiImageCost: 1,
+      aiEnhanceCost: 0,
     },
     standard: {
       monthlyPrice: 7.00,
@@ -36,6 +39,9 @@ export default function HeadAdminPanel() {
       tokensPerMonth: 20,
       bookTokenCost: 1,
       editTokenCost: 0,
+      aiScriptCost: 1,
+      aiImageCost: 1,
+      aiEnhanceCost: 0,
     },
     premium: {
       monthlyPrice: 19.99,
@@ -44,6 +50,9 @@ export default function HeadAdminPanel() {
       tokensPerMonth: 100,
       bookTokenCost: 1,
       editTokenCost: 0,
+      aiScriptCost: 1,
+      aiImageCost: 1,
+      aiEnhanceCost: 0,
     },
     ultimate: {
       monthlyPrice: 20.00,
@@ -52,6 +61,9 @@ export default function HeadAdminPanel() {
       tokensPerMonth: 500,
       bookTokenCost: 1,
       editTokenCost: 0,
+      aiScriptCost: 1,
+      aiImageCost: 1,
+      aiEnhanceCost: 0,
     }
   });
 
@@ -746,7 +758,7 @@ export default function HeadAdminPanel() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Create Cost (Tokens)</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Create Cost</label>
                     <input
                       type="number"
                       value={subscriptionSettings.free?.bookTokenCost || 1}
@@ -758,7 +770,7 @@ export default function HeadAdminPanel() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Edit Cost (Tokens)</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Edit Cost</label>
                     <input
                       type="number"
                       value={subscriptionSettings.free?.editTokenCost ?? 0}
@@ -768,6 +780,47 @@ export default function HeadAdminPanel() {
                       })}
                       className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                     />
+                  </div>
+                </div>
+                <div className="pt-2">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">AI Operation Costs</p>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold uppercase tracking-widest text-gray-400">AI Script</label>
+                      <input
+                        type="number"
+                        value={(subscriptionSettings.free as any)?.aiScriptCost ?? 1}
+                        onChange={(e) => updateSubscriptionSettings({
+                          ...subscriptionSettings,
+                          free: { ...subscriptionSettings.free, aiScriptCost: parseInt(e.target.value) }
+                        })}
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold uppercase tracking-widest text-gray-400">AI Image</label>
+                      <input
+                        type="number"
+                        value={(subscriptionSettings.free as any)?.aiImageCost ?? 1}
+                        onChange={(e) => updateSubscriptionSettings({
+                          ...subscriptionSettings,
+                          free: { ...subscriptionSettings.free, aiImageCost: parseInt(e.target.value) }
+                        })}
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold uppercase tracking-widest text-gray-400">AI Enhance</label>
+                      <input
+                        type="number"
+                        value={(subscriptionSettings.free as any)?.aiEnhanceCost ?? 0}
+                        onChange={(e) => updateSubscriptionSettings({
+                          ...subscriptionSettings,
+                          free: { ...subscriptionSettings.free, aiEnhanceCost: parseInt(e.target.value) }
+                        })}
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -845,7 +898,7 @@ export default function HeadAdminPanel() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Create Cost (Tokens)</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Create Cost</label>
                     <input
                       type="number"
                       value={subscriptionSettings.standard.bookTokenCost || 1}
@@ -857,7 +910,7 @@ export default function HeadAdminPanel() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Edit Cost (Tokens)</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Edit Cost</label>
                     <input
                       type="number"
                       value={subscriptionSettings.standard.editTokenCost ?? 0}
@@ -867,6 +920,47 @@ export default function HeadAdminPanel() {
                       })}
                       className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                     />
+                  </div>
+                </div>
+                <div className="pt-2">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">AI Operation Costs</p>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold uppercase tracking-widest text-gray-400">AI Script</label>
+                      <input
+                        type="number"
+                        value={(subscriptionSettings.standard as any)?.aiScriptCost ?? 1}
+                        onChange={(e) => updateSubscriptionSettings({
+                          ...subscriptionSettings,
+                          standard: { ...subscriptionSettings.standard, aiScriptCost: parseInt(e.target.value) }
+                        })}
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold uppercase tracking-widest text-gray-400">AI Image</label>
+                      <input
+                        type="number"
+                        value={(subscriptionSettings.standard as any)?.aiImageCost ?? 1}
+                        onChange={(e) => updateSubscriptionSettings({
+                          ...subscriptionSettings,
+                          standard: { ...subscriptionSettings.standard, aiImageCost: parseInt(e.target.value) }
+                        })}
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold uppercase tracking-widest text-gray-400">AI Enhance</label>
+                      <input
+                        type="number"
+                        value={(subscriptionSettings.standard as any)?.aiEnhanceCost ?? 0}
+                        onChange={(e) => updateSubscriptionSettings({
+                          ...subscriptionSettings,
+                          standard: { ...subscriptionSettings.standard, aiEnhanceCost: parseInt(e.target.value) }
+                        })}
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -932,7 +1026,7 @@ export default function HeadAdminPanel() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Create Cost (Tokens)</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Create Cost</label>
                     <input
                       type="number"
                       value={subscriptionSettings.premium.bookTokenCost || 1}
@@ -944,7 +1038,7 @@ export default function HeadAdminPanel() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Edit Cost (Tokens)</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Edit Cost</label>
                     <input
                       type="number"
                       value={(subscriptionSettings.premium as any).editTokenCost ?? 0}
@@ -954,6 +1048,47 @@ export default function HeadAdminPanel() {
                       })}
                       className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                     />
+                  </div>
+                </div>
+                <div className="pt-2">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">AI Operation Costs</p>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold uppercase tracking-widest text-gray-400">AI Script</label>
+                      <input
+                        type="number"
+                        value={(subscriptionSettings.premium as any)?.aiScriptCost ?? 1}
+                        onChange={(e) => updateSubscriptionSettings({
+                          ...subscriptionSettings,
+                          premium: { ...subscriptionSettings.premium, aiScriptCost: parseInt(e.target.value) }
+                        })}
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold uppercase tracking-widest text-gray-400">AI Image</label>
+                      <input
+                        type="number"
+                        value={(subscriptionSettings.premium as any)?.aiImageCost ?? 1}
+                        onChange={(e) => updateSubscriptionSettings({
+                          ...subscriptionSettings,
+                          premium: { ...subscriptionSettings.premium, aiImageCost: parseInt(e.target.value) }
+                        })}
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold uppercase tracking-widest text-gray-400">AI Enhance</label>
+                      <input
+                        type="number"
+                        value={(subscriptionSettings.premium as any)?.aiEnhanceCost ?? 0}
+                        onChange={(e) => updateSubscriptionSettings({
+                          ...subscriptionSettings,
+                          premium: { ...subscriptionSettings.premium, aiEnhanceCost: parseInt(e.target.value) }
+                        })}
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1019,7 +1154,7 @@ export default function HeadAdminPanel() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Create Cost (Tokens)</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Create Cost</label>
                     <input
                       type="number"
                       value={subscriptionSettings.ultimate?.bookTokenCost || 1}
@@ -1031,7 +1166,7 @@ export default function HeadAdminPanel() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Edit Cost (Tokens)</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Edit Cost</label>
                     <input
                       type="number"
                       value={(subscriptionSettings.ultimate as any)?.editTokenCost ?? 0}
@@ -1041,6 +1176,47 @@ export default function HeadAdminPanel() {
                       })}
                       className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                     />
+                  </div>
+                </div>
+                <div className="pt-2">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">AI Operation Costs</p>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold uppercase tracking-widest text-gray-400">AI Script</label>
+                      <input
+                        type="number"
+                        value={(subscriptionSettings.ultimate as any)?.aiScriptCost ?? 1}
+                        onChange={(e) => updateSubscriptionSettings({
+                          ...subscriptionSettings,
+                          ultimate: { ...subscriptionSettings.ultimate, aiScriptCost: parseInt(e.target.value) }
+                        })}
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold uppercase tracking-widest text-gray-400">AI Image</label>
+                      <input
+                        type="number"
+                        value={(subscriptionSettings.ultimate as any)?.aiImageCost ?? 1}
+                        onChange={(e) => updateSubscriptionSettings({
+                          ...subscriptionSettings,
+                          ultimate: { ...subscriptionSettings.ultimate, aiImageCost: parseInt(e.target.value) }
+                        })}
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold uppercase tracking-widest text-gray-400">AI Enhance</label>
+                      <input
+                        type="number"
+                        value={(subscriptionSettings.ultimate as any)?.aiEnhanceCost ?? 0}
+                        onChange={(e) => updateSubscriptionSettings({
+                          ...subscriptionSettings,
+                          ultimate: { ...subscriptionSettings.ultimate, aiEnhanceCost: parseInt(e.target.value) }
+                        })}
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>

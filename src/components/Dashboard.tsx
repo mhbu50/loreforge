@@ -543,6 +543,26 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
     }
   };
 
+  // Deduct tokens for mid-session AI operations (script, image, enhance)
+  const handleConsumeTokens = async (amount: number, reason: string): Promise<boolean> => {
+    if (!auth.currentUser || !userProfile) return false;
+    if (amount <= 0) return true;
+    const currentTokens = userProfile.tokens || 0;
+    if (currentTokens < amount) {
+      toast.error(`Not enough tokens for ${reason}. Need ${amount}, have ${currentTokens}.`);
+      setShowPricingModal(true);
+      return false;
+    }
+    try {
+      await updateDoc(doc(db, 'users', auth.currentUser.uid), {
+        tokens: currentTokens - amount
+      });
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
   const handlePublish = async (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
     const limits = currentLimits;
@@ -833,27 +853,35 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
               </div>
               
               {/* Tooltip */}
-              <div className="absolute top-full right-0 mt-3 w-64 bg-night text-white p-4 rounded-2xl shadow-2xl opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all pointer-events-none z-50 border border-white/10">
-                <div className="flex items-center gap-2 mb-2 text-gold">
+              <div className="absolute top-full right-0 mt-3 w-72 bg-night text-white p-5 rounded-2xl shadow-2xl opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all pointer-events-none z-50 border border-white/10">
+                <div className="flex items-center gap-2 mb-3 text-gold">
                   <Sparkles size={14} />
-                  <span className="text-[10px] font-bold uppercase tracking-widest">Forging Costs</span>
+                  <span className="text-[10px] font-bold uppercase tracking-widest">Token Costs</span>
                 </div>
                 <div className="space-y-2">
-                  <div className="flex justify-between items-center">
+                  <div className="flex justify-between items-center py-1.5 border-b border-white/5">
                     <span className="text-xs opacity-60">Create Story</span>
                     <span className="text-xs font-bold text-gold">{currentLimits.bookTokenCost || 1} Token{(currentLimits.bookTokenCost || 1) !== 1 ? 's' : ''}</span>
                   </div>
-                  <div className="flex justify-between items-center">
+                  <div className="flex justify-between items-center py-1.5 border-b border-white/5">
                     <span className="text-xs opacity-60">Edit Story</span>
                     <span className="text-xs font-bold text-gold">{(currentLimits.editTokenCost ?? 0) === 0 ? 'Free' : `${currentLimits.editTokenCost} Token${currentLimits.editTokenCost !== 1 ? 's' : ''}`}</span>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs opacity-60">AI Generation</span>
-                    <span className="text-xs font-bold text-gold">Included</span>
+                  <div className="flex justify-between items-center py-1.5 border-b border-white/5">
+                    <span className="text-xs opacity-60">AI Script</span>
+                    <span className="text-xs font-bold text-gold">{(currentLimits.aiScriptCost ?? 1) === 0 ? 'Free' : `${currentLimits.aiScriptCost ?? 1} Token${(currentLimits.aiScriptCost ?? 1) !== 1 ? 's' : ''}`}</span>
+                  </div>
+                  <div className="flex justify-between items-center py-1.5 border-b border-white/5">
+                    <span className="text-xs opacity-60">AI Image (per image)</span>
+                    <span className="text-xs font-bold text-gold">{(currentLimits.aiImageCost ?? 1) === 0 ? 'Free' : `${currentLimits.aiImageCost ?? 1} Token${(currentLimits.aiImageCost ?? 1) !== 1 ? 's' : ''}`}</span>
+                  </div>
+                  <div className="flex justify-between items-center py-1.5">
+                    <span className="text-xs opacity-60">AI Enhance</span>
+                    <span className="text-xs font-bold text-gold">{(currentLimits.aiEnhanceCost ?? 0) === 0 ? 'Free' : `${currentLimits.aiEnhanceCost} Token${currentLimits.aiEnhanceCost !== 1 ? 's' : ''}`}</span>
                   </div>
                 </div>
                 <div className="mt-3 pt-3 border-t border-white/5">
-                  <p className="text-[10px] opacity-40 leading-relaxed italic">Tokens refresh monthly based on your subscription tier.</p>
+                  <p className="text-[10px] opacity-35 leading-relaxed italic">Tokens refresh monthly. Costs set by admin.</p>
                 </div>
               </div>
             </div>
@@ -1055,7 +1083,7 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
             >
-              <StoryCreator 
+              <StoryCreator
                 userId={userProfile?.uid || ''}
                 onComplete={handleCreateComplete}
                 onCancel={() => { setIsCreating(false); setIsEditing(false); setEditingStory(null); }}
@@ -1063,6 +1091,7 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
                 userSubscriptionTier={userProfile?.subscriptionTier || 'standard'}
                 subscriptionLimits={currentLimits}
                 userTokens={userProfile?.tokens || 0}
+                onConsumeTokens={handleConsumeTokens}
                 bookType={selectedBookType}
                 config={config}
                 initialStory={editingStory}
@@ -1143,43 +1172,87 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
               </div>
 
               {/* Quick Stats */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div className="p-8 bg-white rounded-[2rem] border border-black/5 shadow-sm hover:shadow-xl transition-all group cursor-default">
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="text-[10px] small-caps tracking-widest text-black/40 font-bold">Total Stories</div>
-                    <div className="w-8 h-8 rounded-xl bg-black/5 flex items-center justify-center text-black/30 group-hover:bg-gold/10 group-hover:text-gold transition-all">
-                      <BookOpen size={16} />
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* Stories card */}
+                <motion.div
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0 }}
+                  className="p-8 bg-white rounded-[2rem] border border-black/5 shadow-sm hover:shadow-xl hover:border-black/10 transition-all group cursor-default relative overflow-hidden"
+                >
+                  <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-black/10 to-transparent group-hover:via-gold/40 transition-all duration-500 rounded-t-[2rem]" />
+                  <div className="flex items-center justify-between mb-5">
+                    <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-black/35">Total Stories</div>
+                    <div className="w-9 h-9 rounded-2xl bg-black/5 flex items-center justify-center text-black/25 group-hover:bg-gold/10 group-hover:text-gold transition-all">
+                      <BookOpen size={17} />
                     </div>
                   </div>
-                  <div className="text-5xl font-serif font-bold">{stories.length}</div>
+                  <div className="text-6xl font-serif font-bold tracking-tight">{stories.length}</div>
+                  <div className="mt-2 text-xs text-black/30">{stories.filter(s => s.isPublished).length} published</div>
                   <div className="mt-4 h-1 bg-black/5 rounded-full overflow-hidden">
-                    <div className="h-full bg-gold/50 rounded-full transition-all duration-700" style={{width: `${Math.min(stories.length * 10, 100)}%`}} />
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${Math.min(stories.length * 10, 100)}%` }}
+                      transition={{ duration: 0.8, delay: 0.2 }}
+                      className="h-full bg-gradient-to-r from-gold/40 to-gold/70 rounded-full"
+                    />
                   </div>
-                </div>
-                <div className="p-8 bg-white rounded-[2rem] border border-black/5 shadow-sm hover:shadow-xl transition-all group cursor-default">
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="text-[10px] small-caps tracking-widest text-black/40 font-bold">Current Streak</div>
-                    <div className="w-8 h-8 rounded-xl bg-black/5 flex items-center justify-center text-black/30 group-hover:bg-orange-50 group-hover:text-orange-500 transition-all">
-                      <Star size={16} />
+                </motion.div>
+
+                {/* Streak card */}
+                <motion.div
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.08 }}
+                  className="p-8 bg-white rounded-[2rem] border border-black/5 shadow-sm hover:shadow-xl hover:border-black/10 transition-all group cursor-default relative overflow-hidden"
+                >
+                  <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-black/10 to-transparent group-hover:via-orange-400/40 transition-all duration-500 rounded-t-[2rem]" />
+                  <div className="flex items-center justify-between mb-5">
+                    <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-black/35">Streak</div>
+                    <div className="w-9 h-9 rounded-2xl bg-black/5 flex items-center justify-center text-black/25 group-hover:bg-orange-50 group-hover:text-orange-500 transition-all">
+                      <Star size={17} />
                     </div>
                   </div>
-                  <div className="text-5xl font-serif font-bold text-orange-500">{userProfile?.streak || 0} <span className="text-2xl text-black/30 font-light">days</span></div>
-                  <div className="mt-4 h-1 bg-black/5 rounded-full overflow-hidden">
-                    <div className="h-full bg-orange-300/60 rounded-full transition-all duration-700" style={{width: `${Math.min((userProfile?.streak || 0) * 5, 100)}%`}} />
+                  <div className="flex items-baseline gap-2">
+                    <div className="text-6xl font-serif font-bold text-orange-500 tracking-tight">{userProfile?.streak || 0}</div>
+                    <div className="text-xl text-black/25 font-light mb-1">days</div>
                   </div>
-                </div>
-                <div className="p-8 bg-white rounded-[2rem] border border-black/5 shadow-sm hover:shadow-xl transition-all group cursor-default">
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="text-[10px] small-caps tracking-widest text-black/40 font-bold">Tokens</div>
-                    <div className="w-8 h-8 rounded-xl bg-black/5 flex items-center justify-center text-black/30 group-hover:bg-gold/10 group-hover:text-gold transition-all">
-                      <Zap size={16} />
+                  <div className="mt-2 text-xs text-black/30">Keep writing daily!</div>
+                  <div className="mt-4 h-1 bg-black/5 rounded-full overflow-hidden">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${Math.min((userProfile?.streak || 0) * 5, 100)}%` }}
+                      transition={{ duration: 0.8, delay: 0.3 }}
+                      className="h-full bg-gradient-to-r from-orange-300/50 to-orange-400/70 rounded-full"
+                    />
+                  </div>
+                </motion.div>
+
+                {/* Tokens card */}
+                <motion.div
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.16 }}
+                  className="p-8 bg-white rounded-[2rem] border border-black/5 shadow-sm hover:shadow-xl hover:border-gold/20 transition-all group cursor-default relative overflow-hidden"
+                >
+                  <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-black/10 to-transparent group-hover:via-gold/50 transition-all duration-500 rounded-t-[2rem]" />
+                  <div className="flex items-center justify-between mb-5">
+                    <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-black/35">Tokens Available</div>
+                    <div className="w-9 h-9 rounded-2xl bg-black/5 flex items-center justify-center text-black/25 group-hover:bg-gold/10 group-hover:text-gold transition-all">
+                      <Zap size={17} />
                     </div>
                   </div>
-                  <div className="text-5xl font-serif font-bold text-gold">{userProfile?.tokens || 0}</div>
+                  <div className="text-6xl font-serif font-bold text-gold tracking-tight">{userProfile?.tokens || 0}</div>
+                  <div className="mt-2 text-xs text-black/30">of {currentLimits.tokensPerMonth || 5}/mo</div>
                   <div className="mt-4 h-1 bg-black/5 rounded-full overflow-hidden">
-                    <div className="h-full bg-gold/50 rounded-full transition-all duration-700" style={{width: `${Math.min((userProfile?.tokens || 0) * 2, 100)}%`}} />
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${Math.min(((userProfile?.tokens || 0) / (currentLimits.tokensPerMonth || 5)) * 100, 100)}%` }}
+                      transition={{ duration: 0.8, delay: 0.4 }}
+                      className="h-full bg-gradient-to-r from-gold/40 to-gold rounded-full"
+                    />
                   </div>
-                </div>
+                </motion.div>
               </div>
 
               {/* Story Library */}

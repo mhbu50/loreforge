@@ -18,6 +18,7 @@ interface StoryCreatorProps {
   subscriptionLimits: any;
   userId: string;
   userTokens: number;
+  onConsumeTokens?: (amount: number, reason: string) => Promise<boolean>;
   bookType: 'story' | 'comic' | 'anime' | 'novel' | 'manga' | 'biography' | 'other';
   config?: any;
   initialStory?: any;
@@ -50,7 +51,7 @@ const AGE_GROUPS = [
   { id: 'Adult', name: 'Adult' }
 ];
 
-export default function StoryCreator({ onComplete, onCancel, userDisplayName, userSubscriptionTier, subscriptionLimits, userId, userTokens, bookType, config, initialStory }: StoryCreatorProps) {
+export default function StoryCreator({ onComplete, onCancel, userDisplayName, userSubscriptionTier, subscriptionLimits, userId, userTokens, onConsumeTokens, bookType, config, initialStory }: StoryCreatorProps) {
   const limits = subscriptionLimits || getSubscriptionLimits(userSubscriptionTier);
   const tokenCost = initialStory ? 0 : (limits.bookTokenCost || 1);
   const [step, setStep] = useState<'setup' | 'manual'>(initialStory ? 'manual' : 'setup');
@@ -192,6 +193,26 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
       toast.error('Please enter a story idea first!');
       return;
     }
+
+    // Deduct AI token costs before generation
+    if (onConsumeTokens) {
+      const aiScriptCost = limits.aiScriptCost ?? 1;
+      const aiImageCost = limits.aiImageCost ?? 1;
+      if (mode === 'script') {
+        const ok = await onConsumeTokens(aiScriptCost, 'AI script generation');
+        if (!ok) return;
+      } else if (mode === 'images') {
+        const cost = aiImageCost * pageCount;
+        const ok = await onConsumeTokens(cost, `AI image generation (${pageCount} images)`);
+        if (!ok) return;
+      } else {
+        // 'both' or 'surprise' — script + images
+        const cost = aiScriptCost + aiImageCost * pageCount;
+        const ok = await onConsumeTokens(cost, `AI full story generation`);
+        if (!ok) return;
+      }
+    }
+
     setIsAIGenerating(true);
     setIsForgingTransition(true);
     setAiProgress({ step: 'Loading AI engines...', current: 0, total: 1 });
@@ -1187,6 +1208,14 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                         onClick={async () => {
                           const currentText = draftPages[currentPageIndex].text;
                           if (!currentText.trim()) return toast.error('Write some text first to enhance it.');
+                          // Deduct enhance cost
+                          if (onConsumeTokens) {
+                            const cost = limits.aiEnhanceCost ?? 0;
+                            if (cost > 0) {
+                              const ok = await onConsumeTokens(cost, 'AI text enhancement');
+                              if (!ok) return;
+                            }
+                          }
                           setIsAIGenerating(true);
                           try {
                             const aiSettings = await AIService.loadSettings();

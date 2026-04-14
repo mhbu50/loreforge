@@ -39,37 +39,46 @@ export default function StoryLibrary({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
-      <header className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
+      <header className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-[0.5em] text-black/25 mb-3">Your Archive</p>
-          <h2 className="text-6xl font-serif font-light mb-3 tracking-tight">Your <span className="italic text-gold">Library</span></h2>
-          <p className="text-black/40 small-caps tracking-[0.4em] text-xs">A collection of your crafted masterpieces</p>
+          <p className="text-[10px] font-bold uppercase tracking-[0.5em] text-black/25 mb-2">Your Archive</p>
+          <h2 className="text-5xl font-serif font-light mb-2 tracking-tight">Your <span className="italic text-gold">Library</span></h2>
+          <p className="text-black/35 text-xs font-medium">
+            {stories.length > 0 ? `${stories.length} masterpiece${stories.length !== 1 ? 's' : ''} in your archive` : 'Your collection awaits'}
+          </p>
         </div>
-        
-        <div className="flex flex-col md:flex-row items-center gap-6 p-2 bg-white rounded-3xl shadow-sm border border-black/5 px-6">
-          <div className="flex items-center gap-3 flex-1 min-w-[300px]">
-            <Sparkles className="text-black/30" size={18} />
-            <input 
-              type="text" 
-              placeholder="Search your library..." 
+
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          {/* Search */}
+          <div className="flex items-center gap-3 px-4 py-3 bg-white rounded-2xl shadow-sm border border-black/5 min-w-[260px] focus-within:border-gold/30 focus-within:shadow-md transition-all">
+            <Sparkles className="text-black/25 flex-shrink-0" size={16} />
+            <input
+              type="text"
+              placeholder="Search stories..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full bg-transparent outline-none text-sm font-medium placeholder:text-black/20"
             />
+            {searchTerm && (
+              <button onClick={() => setSearchTerm('')} className="text-black/20 hover:text-black/50 transition-colors flex-shrink-0">
+                <span className="text-xs font-bold">✕</span>
+              </button>
+            )}
           </div>
-          <div className="h-8 w-[1px] bg-black/5 hidden md:block" />
-          <div className="flex items-center gap-2">
-            <button 
+
+          {/* View toggles */}
+          <div className="flex items-center gap-1 p-1 bg-white rounded-2xl shadow-sm border border-black/5">
+            <button
               onClick={() => setViewMode('grid')}
-              className={cn("p-3 rounded-xl transition-all", viewMode === 'grid' ? "bg-black text-white" : "text-black/20 hover:text-black")}
+              className={cn("p-2.5 rounded-xl transition-all", viewMode === 'grid' ? "bg-black text-white shadow-sm" : "text-black/25 hover:text-black/60")}
             >
-              <LayoutGrid size={20} />
+              <LayoutGrid size={18} />
             </button>
-            <button 
+            <button
               onClick={() => setViewMode('list')}
-              className={cn("p-3 rounded-xl transition-all", viewMode === 'list' ? "bg-black text-white" : "text-black/20 hover:text-black")}
+              className={cn("p-2.5 rounded-xl transition-all", viewMode === 'list' ? "bg-black text-white shadow-sm" : "text-black/25 hover:text-black/60")}
             >
-              <List size={20} />
+              <List size={18} />
             </button>
           </div>
         </div>
@@ -92,32 +101,49 @@ export default function StoryLibrary({
           ))}
         </div>
       ) : stories.length === 0 ? (
-        <div className="text-center py-32 bg-white rounded-[3rem] border border-dashed border-black/10 relative overflow-hidden">
-          {/* Subtle background glow */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center py-28 bg-white rounded-[3rem] border border-dashed border-black/10 relative overflow-hidden"
+        >
+          {/* Background radial glow */}
           <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full" style={{background: 'radial-gradient(circle, rgba(212,175,55,0.04) 0%, transparent 70%)'}} />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full" style={{background: 'radial-gradient(circle, rgba(212,175,55,0.05) 0%, transparent 65%)'}} />
           </div>
-          {/* Styled icon container */}
-          <div className="relative mb-10 inline-block">
-            <div className="w-32 h-32 rounded-[2.5rem] bg-gradient-to-br from-black/5 to-black/10 flex items-center justify-center mx-auto shadow-inner">
-              <BookOpen className="text-black/10" size={56} />
+
+          {/* Decorative floating elements */}
+          <div className="absolute top-10 left-10 w-3 h-3 rounded-full bg-gold/20 animate-pulse" />
+          <div className="absolute top-16 right-16 w-2 h-2 rounded-full bg-gold/30" />
+          <div className="absolute bottom-12 left-20 w-4 h-4 rounded-full bg-gold/15 animate-pulse" style={{animationDelay: '0.5s'}} />
+          <div className="absolute bottom-8 right-12 w-2 h-2 rounded-full bg-gold/25" />
+
+          {/* Icon container */}
+          <div className="relative mb-8 inline-block">
+            <div className="w-28 h-28 rounded-[2rem] bg-gradient-to-br from-black/5 via-black/8 to-black/12 flex items-center justify-center mx-auto shadow-inner border border-black/5">
+              <BookOpen className="text-black/15" size={48} />
             </div>
-            <div className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-gold/20 border border-gold/40" />
-            <div className="absolute -bottom-1 -left-1 w-3 h-3 rounded-full bg-gold/30" />
+            <div className="absolute -top-2 -right-3 w-6 h-6 rounded-full bg-gold/20 border border-gold/30 flex items-center justify-center">
+              <Sparkles size={10} className="text-gold/60" />
+            </div>
+            <div className="absolute -bottom-2 -left-2 w-4 h-4 rounded-full bg-gold/25 border border-gold/30" />
           </div>
+
           <h3 className="text-4xl font-serif font-light text-black/30 mb-3">Your archives are empty.</h3>
-          <p className="text-sm text-black/30 mb-12 max-w-xs mx-auto">Every great storyteller starts with a single tale. Yours begins now.</p>
+          <p className="text-sm text-black/35 mb-10 max-w-sm mx-auto leading-relaxed">
+            Every great storyteller starts with a single tale.<br />Yours begins now.
+          </p>
+
           <button
             onClick={onCreate}
-            className="px-12 py-5 bg-black text-white rounded-2xl font-bold hover:bg-gold hover:text-night transition-all inline-flex flex-col items-center gap-1 group mx-auto"
+            className="px-12 py-5 bg-night text-white rounded-2xl font-bold hover:bg-gold hover:text-night transition-all inline-flex flex-col items-center gap-1.5 group mx-auto shadow-xl shadow-black/10 hover:shadow-gold/20"
           >
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2.5">
               <Sparkles size={18} className="group-hover:rotate-12 transition-transform" />
-              <span>Forge First Tale</span>
+              <span>Forge Your First Tale</span>
             </div>
-            <span className="text-[9px] font-bold uppercase tracking-[0.2em] opacity-40 group-hover:opacity-100">Cost: 1 Token</span>
+            <span className="text-[9px] font-bold uppercase tracking-[0.25em] opacity-30 group-hover:opacity-80 transition-opacity">Cost: 1 Token</span>
           </button>
-        </div>
+        </motion.div>
       ) : (
         <div className={cn(
           "grid gap-10",
