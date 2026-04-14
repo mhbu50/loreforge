@@ -7,7 +7,8 @@
       "Bash(npm run:*)",
       "Bash(npm install:*)",
       "Bash(node_modules/.bin/tsx server.ts)",
-      "Bash(curl -s http://localhost:3000)"
+      "Bash(curl -s http://localhost:3000)",
+      "Bash(wc -l /home/mohd/Downloads/storycraft/src/components/*.tsx)"
     ]
   }
 }
