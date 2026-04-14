@@ -11,8 +11,10 @@ export interface AIProvider {
 }
 
 export interface AIProviderSettings {
-  activeTextProvider: string;
-  activeImageProvider: string;
+  activeTextProvider: string;      // story script generation
+  activeImageProvider: string;     // image generation
+  activeEnhanceProvider: string;   // text enhancement / editing
+  activeTitleProvider: string;     // title generation
   providers: {
     gemini: AIProvider;
     openai: AIProvider;
@@ -67,6 +69,8 @@ export const AVAILABLE_MODELS: Record<string, string[]> = {
 export const DEFAULT_AI_SETTINGS: AIProviderSettings = {
   activeTextProvider: 'gemini',
   activeImageProvider: 'stability',
+  activeEnhanceProvider: 'gemini',
+  activeTitleProvider: 'gemini',
   providers: {
     gemini: {
       name: 'Google Gemini',
@@ -224,22 +228,32 @@ export class AIService {
     return data.choices?.[0]?.message?.content || '';
   }
 
-  static async generateText(prompt: string, settings: AIProviderSettings): Promise<string> {
-    const providerKey = settings.activeTextProvider as keyof typeof settings.providers;
+  static async generateText(
+    prompt: string,
+    settings: AIProviderSettings,
+    purpose: 'text' | 'enhance' | 'title' = 'text'
+  ): Promise<string> {
+    const activeKey = purpose === 'enhance'
+      ? (settings.activeEnhanceProvider || settings.activeTextProvider)
+      : purpose === 'title'
+        ? (settings.activeTitleProvider || settings.activeTextProvider)
+        : settings.activeTextProvider;
+
+    const providerKey = activeKey as keyof typeof settings.providers;
     const provider = settings.providers[providerKey];
 
     if (!provider?.enabled) {
-      throw new Error(`Text provider "${provider?.name || providerKey}" is disabled. Enable it in Admin Panel → AI.`);
+      throw new Error(`${purpose === 'enhance' ? 'Enhancement' : purpose === 'title' ? 'Title' : 'Text'} provider "${provider?.name || providerKey}" is disabled. Enable it in Admin Panel → AI.`);
     }
     if (!provider?.apiKey?.trim()) {
       throw new Error(`No API key for "${provider?.name}". Add it in Admin Panel → AI Providers.`);
     }
 
     switch (providerKey) {
-      case 'gemini':   return AIService.callGemini(provider.apiKey, provider.model, prompt);
-      case 'openai':   return AIService.callOpenAI(provider.apiKey, provider.model, prompt);
+      case 'gemini':    return AIService.callGemini(provider.apiKey, provider.model, prompt);
+      case 'openai':    return AIService.callOpenAI(provider.apiKey, provider.model, prompt);
       case 'anthropic': return AIService.callAnthropic(provider.apiKey, provider.model, prompt);
-      case 'mistral':  return AIService.callMistral(provider.apiKey, provider.model, prompt);
+      case 'mistral':   return AIService.callMistral(provider.apiKey, provider.model, prompt);
       default: throw new Error(`Unknown text provider: ${providerKey}`);
     }
   }
@@ -489,12 +503,12 @@ Rules:
 
   static async enhanceText(text: string, settings: AIProviderSettings): Promise<string> {
     const prompt = `Improve the following children's story page text. Make it more vivid, engaging, and age-appropriate. Keep roughly the same length. Return ONLY the improved text, nothing else.\n\nOriginal:\n${text}`;
-    return AIService.generateText(prompt, settings);
+    return AIService.generateText(prompt, settings, 'enhance');
   }
 
   static async generateTitle(idea: string, settings: AIProviderSettings): Promise<string> {
     const prompt = `Create a single creative, catchy title for a children's story about: "${idea}". Return ONLY the title, no quotes, no explanation.`;
-    const result = await AIService.generateText(prompt, settings);
+    const result = await AIService.generateText(prompt, settings, 'title');
     return result.trim().replace(/^["']|["']$/g, '');
   }
 }

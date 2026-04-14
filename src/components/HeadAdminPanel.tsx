@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Shield, User, Star, Trash2, Search, Filter, CheckCircle, XCircle, Settings, BookOpen, Zap, AlertTriangle, Bug, MessageSquare, Clock, Crown, Send, Sparkles, Code, Terminal, Bot, Activity, Database, Cpu, ShieldCheck, RefreshCw, Wand2, Plus, FileText, Brain, Key, Eye, EyeOff, ToggleLeft, ToggleRight, ChevronDown, Save, Image as ImageIconLucide } from 'lucide-react';
+import { Shield, User, Star, Trash2, Search, CheckCircle, XCircle, Settings, BookOpen, Zap, AlertTriangle, Bug, MessageSquare, Clock, Crown, Send, Sparkles, Code, Terminal, Bot, Activity, Database, Cpu, ShieldCheck, RefreshCw, Wand2, Plus, FileText, Brain, Key, Eye, EyeOff, ToggleLeft, ToggleRight, ChevronDown, Save, Image as ImageIconLucide } from 'lucide-react';
 import { AIService, AIProviderSettings, DEFAULT_AI_SETTINGS, AVAILABLE_MODELS } from '../services/AIService';
 import { PhotoPickerService, PhotoServiceSettings, DEFAULT_PHOTO_SETTINGS } from '../services/PhotoPickerService';
 import { db, auth } from '../firebase';
@@ -257,6 +257,8 @@ export default function HeadAdminPanel() {
           setAiSettings({
             ...DEFAULT_AI_SETTINGS,
             ...data,
+            activeEnhanceProvider: data.activeEnhanceProvider || DEFAULT_AI_SETTINGS.activeEnhanceProvider,
+            activeTitleProvider: data.activeTitleProvider || DEFAULT_AI_SETTINGS.activeTitleProvider,
             providers: { ...DEFAULT_AI_SETTINGS.providers, ...(data.providers || {}) }
           } as AIProviderSettings);
         }
@@ -1557,35 +1559,29 @@ export default function HeadAdminPanel() {
                   <p className="text-white/40 text-sm">Configure API keys for each AI engine powering StoryCraft.</p>
                 </div>
               </div>
-              <div className="flex items-center gap-4">
-                <div className="text-right">
-                  <p className="text-[10px] uppercase tracking-widest text-white/30 font-bold mb-1">Active Text AI</p>
-                  <select
-                    value={aiSettings.activeTextProvider}
-                    onChange={(e) => setAiSettings(prev => ({ ...prev, activeTextProvider: e.target.value }))}
-                    className="bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-sm font-bold text-white outline-none"
-                  >
-                    {Object.entries(aiSettings.providers)
-                      .filter(([, p]) => p.usedFor.includes('text'))
-                      .map(([key, p]) => (
-                        <option key={key} value={key} className="text-black">{p.name}</option>
-                      ))}
-                  </select>
-                </div>
-                <div className="text-right">
-                  <p className="text-[10px] uppercase tracking-widest text-white/30 font-bold mb-1">Active Image AI</p>
-                  <select
-                    value={aiSettings.activeImageProvider}
-                    onChange={(e) => setAiSettings(prev => ({ ...prev, activeImageProvider: e.target.value }))}
-                    className="bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-sm font-bold text-white outline-none"
-                  >
-                    {Object.entries(aiSettings.providers)
-                      .filter(([, p]) => p.usedFor.includes('image'))
-                      .map(([key, p]) => (
-                        <option key={key} value={key} className="text-black">{p.name}</option>
-                      ))}
-                  </select>
-                </div>
+              <div className="grid grid-cols-2 gap-3">
+                {([
+                  { label: '✍️ Writing AI', key: 'activeTextProvider', filter: 'text', desc: 'Story script & page text' },
+                  { label: '🖼️ Image AI', key: 'activeImageProvider', filter: 'image', desc: 'Illustration generation' },
+                  { label: '✨ Enhance AI', key: 'activeEnhanceProvider', filter: 'text', desc: 'Text improvement & editing' },
+                  { label: '🏷️ Title AI', key: 'activeTitleProvider', filter: 'text', desc: 'Story title generation' },
+                ] as const).map(({ label, key, filter, desc }) => (
+                  <div key={key} className="bg-white/5 border border-white/10 rounded-2xl p-3 space-y-1.5">
+                    <p className="text-[9px] uppercase tracking-widest text-white/40 font-bold">{label}</p>
+                    <select
+                      value={(aiSettings as any)[key]}
+                      onChange={(e) => setAiSettings(prev => ({ ...prev, [key]: e.target.value }))}
+                      className="w-full bg-white/10 border border-white/20 rounded-xl px-3 py-2 text-xs font-bold text-white outline-none focus:border-gold/40"
+                    >
+                      {Object.entries(aiSettings.providers)
+                        .filter(([, p]) => p.usedFor.includes(filter))
+                        .map(([k, p]) => (
+                          <option key={k} value={k} className="text-black">{p.name}</option>
+                        ))}
+                    </select>
+                    <p className="text-[9px] text-white/25">{desc}</p>
+                  </div>
+                ))}
               </div>
             </div>
           </div>

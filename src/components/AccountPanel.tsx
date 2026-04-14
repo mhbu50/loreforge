@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   X, User, CreditCard, Settings, Shield, LogOut, Star, Zap, Crown,
@@ -6,10 +6,9 @@ import {
   Edit3, Save, Ticket, BookOpen, Calendar, RefreshCw, Eye, EyeOff,
   Sparkles, Lock, Mail, Award, TrendingUp, Clock, Flame
 } from 'lucide-react';
-import { motion as m } from 'motion/react';
 import { auth, db } from '../firebase';
 import { doc, updateDoc, deleteDoc } from 'firebase/firestore';
-import { updatePassword, updateEmail, reauthenticateWithCredential, EmailAuthProvider, deleteUser } from 'firebase/auth';
+import { updatePassword, reauthenticateWithCredential, EmailAuthProvider, deleteUser } from 'firebase/auth';
 import { UserProfile, SubscriptionTier } from '../types';
 import { getSubscriptionLimits, SUBSCRIPTION_PRICING } from '../constants';
 import { toast } from 'sonner';
