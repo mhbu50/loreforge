@@ -9,7 +9,7 @@ export const SUBSCRIPTION_LIMITS = {
     allowedStyles: ['watercolor', 'sketch', 'comic'],
     allowedLanguages: ['English'],
     freeMarketplace: false,
-    tokensPerMonth: 5,
+    tokensPerMonth: 0,
     bookTokenCost: 1,
     editTokenCost: 0,
     aiScriptCost: 1,

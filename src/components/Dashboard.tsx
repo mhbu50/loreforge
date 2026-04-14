@@ -209,7 +209,7 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
       if (now - lastRefill >= thirtyDaysInMs) {
         const tier = userProfile.subscriptionTier || 'free';
         const limits = dynamicSubscriptionSettings?.[tier] || getSubscriptionLimits(tier);
-        const refillAmount = limits.tokensPerMonth || 5;
+        const refillAmount = limits.tokensPerMonth ?? 0;
 
         try {
           await updateDoc(doc(db, 'users', auth.currentUser.uid), {
@@ -1161,11 +1161,11 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
                     </div>
                   </div>
                   <div className="text-3xl font-serif font-bold text-gold">{userProfile?.tokens || 0}</div>
-                  <div className="mt-2 text-xs text-black/30">of {currentLimits.tokensPerMonth || 5}/mo</div>
+                  <div className="mt-2 text-xs text-black/30">of {currentLimits.tokensPerMonth ?? 0}/mo</div>
                   <div className="h-[3px] bg-black/5 rounded-full overflow-hidden mt-4">
                     <motion.div
                       initial={{ width: 0 }}
-                      animate={{ width: `${Math.min(((userProfile?.tokens || 0) / (currentLimits.tokensPerMonth || 5)) * 100, 100)}%` }}
+                      animate={{ width: `${currentLimits.tokensPerMonth ? Math.min(((userProfile?.tokens || 0) / currentLimits.tokensPerMonth) * 100, 100) : 0}%` }}
                       transition={{ duration: 0.8, delay: 0.4 }}
                       className="h-full bg-gradient-to-r from-gold to-gold/60 rounded-full"
                     />

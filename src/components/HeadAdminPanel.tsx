@@ -534,7 +534,7 @@ export default function HeadAdminPanel() {
                           <input 
                             type="number" 
                             value={user.tokens || 0} 
-                            onChange={(e) => updateDoc(doc(db, 'users', user.uid), { tokens: parseInt(e.target.value) })}
+                            onChange={(e) => updateDoc(doc(db, 'users', user.uid), { tokens: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) })}
                             className="w-20 bg-gray-50 border-none rounded-lg px-2 py-1 text-sm font-bold"
                           />
                         </div>
@@ -726,10 +726,10 @@ export default function HeadAdminPanel() {
                   <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Max Stories (Total)</label>
                   <input 
                     type="number" 
-                    value={subscriptionSettings.free?.maxStoriesTotal || 1}
+                    value={subscriptionSettings.free?.maxStoriesTotal ?? 1}
                     onChange={(e) => updateSubscriptionSettings({
                       ...subscriptionSettings,
-                      free: { ...subscriptionSettings.free, maxStoriesTotal: parseInt(e.target.value) }
+                      free: { ...subscriptionSettings.free, maxStoriesTotal: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                     })}
                     className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                   />
@@ -738,10 +738,10 @@ export default function HeadAdminPanel() {
                   <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Max Pages Per Story</label>
                   <input 
                     type="number" 
-                    value={subscriptionSettings.free?.maxPagesPerStory || 5}
+                    value={subscriptionSettings.free?.maxPagesPerStory ?? 5}
                     onChange={(e) => updateSubscriptionSettings({
                       ...subscriptionSettings,
-                      free: { ...subscriptionSettings.free, maxPagesPerStory: parseInt(e.target.value) }
+                      free: { ...subscriptionSettings.free, maxPagesPerStory: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                     })}
                     className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                   />
@@ -751,10 +751,10 @@ export default function HeadAdminPanel() {
                     <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Tokens/Month</label>
                     <input
                       type="number"
-                      value={subscriptionSettings.free?.tokensPerMonth || 5}
+                      value={subscriptionSettings.free?.tokensPerMonth ?? 0}
                       onChange={(e) => updateSubscriptionSettings({
                         ...subscriptionSettings,
-                        free: { ...subscriptionSettings.free, tokensPerMonth: parseInt(e.target.value) }
+                        free: { ...subscriptionSettings.free, tokensPerMonth: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                       })}
                       className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                     />
@@ -763,10 +763,10 @@ export default function HeadAdminPanel() {
                     <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Create Cost</label>
                     <input
                       type="number"
-                      value={subscriptionSettings.free?.bookTokenCost || 1}
+                      value={subscriptionSettings.free?.bookTokenCost ?? 0}
                       onChange={(e) => updateSubscriptionSettings({
                         ...subscriptionSettings,
-                        free: { ...subscriptionSettings.free, bookTokenCost: parseInt(e.target.value) }
+                        free: { ...subscriptionSettings.free, bookTokenCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                       })}
                       className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                     />
@@ -778,7 +778,7 @@ export default function HeadAdminPanel() {
                       value={subscriptionSettings.free?.editTokenCost ?? 0}
                       onChange={(e) => updateSubscriptionSettings({
                         ...subscriptionSettings,
-                        free: { ...subscriptionSettings.free, editTokenCost: parseInt(e.target.value) }
+                        free: { ...subscriptionSettings.free, editTokenCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                       })}
                       className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                     />
@@ -791,10 +791,10 @@ export default function HeadAdminPanel() {
                       <label className="text-xs font-bold uppercase tracking-widest text-gray-400">AI Script</label>
                       <input
                         type="number"
-                        value={(subscriptionSettings.free as any)?.aiScriptCost ?? 1}
+                        value={(subscriptionSettings.free as any)?.aiScriptCost ?? 0}
                         onChange={(e) => updateSubscriptionSettings({
                           ...subscriptionSettings,
-                          free: { ...subscriptionSettings.free, aiScriptCost: parseInt(e.target.value) }
+                          free: { ...subscriptionSettings.free, aiScriptCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                         })}
                         className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                       />
@@ -803,10 +803,10 @@ export default function HeadAdminPanel() {
                       <label className="text-xs font-bold uppercase tracking-widest text-gray-400">AI Image</label>
                       <input
                         type="number"
-                        value={(subscriptionSettings.free as any)?.aiImageCost ?? 1}
+                        value={(subscriptionSettings.free as any)?.aiImageCost ?? 0}
                         onChange={(e) => updateSubscriptionSettings({
                           ...subscriptionSettings,
-                          free: { ...subscriptionSettings.free, aiImageCost: parseInt(e.target.value) }
+                          free: { ...subscriptionSettings.free, aiImageCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                         })}
                         className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                       />
@@ -818,7 +818,7 @@ export default function HeadAdminPanel() {
                         value={(subscriptionSettings.free as any)?.aiEnhanceCost ?? 0}
                         onChange={(e) => updateSubscriptionSettings({
                           ...subscriptionSettings,
-                          free: { ...subscriptionSettings.free, aiEnhanceCost: parseInt(e.target.value) }
+                          free: { ...subscriptionSettings.free, aiEnhanceCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                         })}
                         className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                       />
@@ -844,7 +844,7 @@ export default function HeadAdminPanel() {
                       value={subscriptionSettings.standard.monthlyPrice}
                       onChange={(e) => updateSubscriptionSettings({
                         ...subscriptionSettings,
-                        standard: { ...subscriptionSettings.standard, monthlyPrice: parseFloat(e.target.value) }
+                        standard: { ...subscriptionSettings.standard, monthlyPrice: (v => isNaN(v) ? 0 : v)(parseFloat(e.target.value)) }
                       })}
                       className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                     />
@@ -856,7 +856,7 @@ export default function HeadAdminPanel() {
                       value={subscriptionSettings.standard.yearlyPrice}
                       onChange={(e) => updateSubscriptionSettings({
                         ...subscriptionSettings,
-                        standard: { ...subscriptionSettings.standard, yearlyPrice: parseFloat(e.target.value) }
+                        standard: { ...subscriptionSettings.standard, yearlyPrice: (v => isNaN(v) ? 0 : v)(parseFloat(e.target.value)) }
                       })}
                       className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                     />
@@ -866,10 +866,10 @@ export default function HeadAdminPanel() {
                   <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Max Stories Per Month</label>
                   <input 
                     type="number" 
-                    value={subscriptionSettings.standard.maxStoriesPerMonth || 3}
+                    value={subscriptionSettings.standard.maxStoriesPerMonth ?? 3}
                     onChange={(e) => updateSubscriptionSettings({
                       ...subscriptionSettings,
-                      standard: { ...subscriptionSettings.standard, maxStoriesPerMonth: parseInt(e.target.value) }
+                      standard: { ...subscriptionSettings.standard, maxStoriesPerMonth: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                     })}
                     className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                   />
@@ -881,7 +881,7 @@ export default function HeadAdminPanel() {
                     value={subscriptionSettings.standard.maxPagesPerStory}
                     onChange={(e) => updateSubscriptionSettings({
                       ...subscriptionSettings,
-                      standard: { ...subscriptionSettings.standard, maxPagesPerStory: parseInt(e.target.value) }
+                      standard: { ...subscriptionSettings.standard, maxPagesPerStory: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                     })}
                     className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                   />
@@ -891,10 +891,10 @@ export default function HeadAdminPanel() {
                     <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Tokens/Month</label>
                     <input
                       type="number"
-                      value={subscriptionSettings.standard.tokensPerMonth || 20}
+                      value={subscriptionSettings.standard.tokensPerMonth ?? 0}
                       onChange={(e) => updateSubscriptionSettings({
                         ...subscriptionSettings,
-                        standard: { ...subscriptionSettings.standard, tokensPerMonth: parseInt(e.target.value) }
+                        standard: { ...subscriptionSettings.standard, tokensPerMonth: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                       })}
                       className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                     />
@@ -903,10 +903,10 @@ export default function HeadAdminPanel() {
                     <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Create Cost</label>
                     <input
                       type="number"
-                      value={subscriptionSettings.standard.bookTokenCost || 1}
+                      value={subscriptionSettings.standard.bookTokenCost ?? 0}
                       onChange={(e) => updateSubscriptionSettings({
                         ...subscriptionSettings,
-                        standard: { ...subscriptionSettings.standard, bookTokenCost: parseInt(e.target.value) }
+                        standard: { ...subscriptionSettings.standard, bookTokenCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                       })}
                       className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                     />
@@ -918,7 +918,7 @@ export default function HeadAdminPanel() {
                       value={subscriptionSettings.standard.editTokenCost ?? 0}
                       onChange={(e) => updateSubscriptionSettings({
                         ...subscriptionSettings,
-                        standard: { ...subscriptionSettings.standard, editTokenCost: parseInt(e.target.value) }
+                        standard: { ...subscriptionSettings.standard, editTokenCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                       })}
                       className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                     />
@@ -931,10 +931,10 @@ export default function HeadAdminPanel() {
                       <label className="text-xs font-bold uppercase tracking-widest text-gray-400">AI Script</label>
                       <input
                         type="number"
-                        value={(subscriptionSettings.standard as any)?.aiScriptCost ?? 1}
+                        value={(subscriptionSettings.standard as any)?.aiScriptCost ?? 0}
                         onChange={(e) => updateSubscriptionSettings({
                           ...subscriptionSettings,
-                          standard: { ...subscriptionSettings.standard, aiScriptCost: parseInt(e.target.value) }
+                          standard: { ...subscriptionSettings.standard, aiScriptCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                         })}
                         className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                       />
@@ -943,10 +943,10 @@ export default function HeadAdminPanel() {
                       <label className="text-xs font-bold uppercase tracking-widest text-gray-400">AI Image</label>
                       <input
                         type="number"
-                        value={(subscriptionSettings.standard as any)?.aiImageCost ?? 1}
+                        value={(subscriptionSettings.standard as any)?.aiImageCost ?? 0}
                         onChange={(e) => updateSubscriptionSettings({
                           ...subscriptionSettings,
-                          standard: { ...subscriptionSettings.standard, aiImageCost: parseInt(e.target.value) }
+                          standard: { ...subscriptionSettings.standard, aiImageCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                         })}
                         className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                       />
@@ -958,7 +958,7 @@ export default function HeadAdminPanel() {
                         value={(subscriptionSettings.standard as any)?.aiEnhanceCost ?? 0}
                         onChange={(e) => updateSubscriptionSettings({
                           ...subscriptionSettings,
-                          standard: { ...subscriptionSettings.standard, aiEnhanceCost: parseInt(e.target.value) }
+                          standard: { ...subscriptionSettings.standard, aiEnhanceCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                         })}
                         className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                       />
@@ -984,7 +984,7 @@ export default function HeadAdminPanel() {
                       value={subscriptionSettings.premium.monthlyPrice}
                       onChange={(e) => updateSubscriptionSettings({
                         ...subscriptionSettings,
-                        premium: { ...subscriptionSettings.premium, monthlyPrice: parseFloat(e.target.value) }
+                        premium: { ...subscriptionSettings.premium, monthlyPrice: (v => isNaN(v) ? 0 : v)(parseFloat(e.target.value)) }
                       })}
                       className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                     />
@@ -996,7 +996,7 @@ export default function HeadAdminPanel() {
                       value={subscriptionSettings.premium.yearlyPrice}
                       onChange={(e) => updateSubscriptionSettings({
                         ...subscriptionSettings,
-                        premium: { ...subscriptionSettings.premium, yearlyPrice: parseFloat(e.target.value) }
+                        premium: { ...subscriptionSettings.premium, yearlyPrice: (v => isNaN(v) ? 0 : v)(parseFloat(e.target.value)) }
                       })}
                       className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                     />
@@ -1009,7 +1009,7 @@ export default function HeadAdminPanel() {
                     value={subscriptionSettings.premium.maxPagesPerStory}
                     onChange={(e) => updateSubscriptionSettings({
                       ...subscriptionSettings,
-                      premium: { ...subscriptionSettings.premium, maxPagesPerStory: parseInt(e.target.value) }
+                      premium: { ...subscriptionSettings.premium, maxPagesPerStory: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                     })}
                     className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                   />
@@ -1019,10 +1019,10 @@ export default function HeadAdminPanel() {
                     <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Tokens/Month</label>
                     <input
                       type="number"
-                      value={subscriptionSettings.premium.tokensPerMonth || 100}
+                      value={subscriptionSettings.premium.tokensPerMonth ?? 0}
                       onChange={(e) => updateSubscriptionSettings({
                         ...subscriptionSettings,
-                        premium: { ...subscriptionSettings.premium, tokensPerMonth: parseInt(e.target.value) }
+                        premium: { ...subscriptionSettings.premium, tokensPerMonth: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                       })}
                       className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                     />
@@ -1031,10 +1031,10 @@ export default function HeadAdminPanel() {
                     <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Create Cost</label>
                     <input
                       type="number"
-                      value={subscriptionSettings.premium.bookTokenCost || 1}
+                      value={subscriptionSettings.premium.bookTokenCost ?? 0}
                       onChange={(e) => updateSubscriptionSettings({
                         ...subscriptionSettings,
-                        premium: { ...subscriptionSettings.premium, bookTokenCost: parseInt(e.target.value) }
+                        premium: { ...subscriptionSettings.premium, bookTokenCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                       })}
                       className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                     />
@@ -1046,7 +1046,7 @@ export default function HeadAdminPanel() {
                       value={(subscriptionSettings.premium as any).editTokenCost ?? 0}
                       onChange={(e) => updateSubscriptionSettings({
                         ...subscriptionSettings,
-                        premium: { ...subscriptionSettings.premium, editTokenCost: parseInt(e.target.value) }
+                        premium: { ...subscriptionSettings.premium, editTokenCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                       })}
                       className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                     />
@@ -1059,10 +1059,10 @@ export default function HeadAdminPanel() {
                       <label className="text-xs font-bold uppercase tracking-widest text-gray-400">AI Script</label>
                       <input
                         type="number"
-                        value={(subscriptionSettings.premium as any)?.aiScriptCost ?? 1}
+                        value={(subscriptionSettings.premium as any)?.aiScriptCost ?? 0}
                         onChange={(e) => updateSubscriptionSettings({
                           ...subscriptionSettings,
-                          premium: { ...subscriptionSettings.premium, aiScriptCost: parseInt(e.target.value) }
+                          premium: { ...subscriptionSettings.premium, aiScriptCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                         })}
                         className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                       />
@@ -1071,10 +1071,10 @@ export default function HeadAdminPanel() {
                       <label className="text-xs font-bold uppercase tracking-widest text-gray-400">AI Image</label>
                       <input
                         type="number"
-                        value={(subscriptionSettings.premium as any)?.aiImageCost ?? 1}
+                        value={(subscriptionSettings.premium as any)?.aiImageCost ?? 0}
                         onChange={(e) => updateSubscriptionSettings({
                           ...subscriptionSettings,
-                          premium: { ...subscriptionSettings.premium, aiImageCost: parseInt(e.target.value) }
+                          premium: { ...subscriptionSettings.premium, aiImageCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                         })}
                         className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                       />
@@ -1086,7 +1086,7 @@ export default function HeadAdminPanel() {
                         value={(subscriptionSettings.premium as any)?.aiEnhanceCost ?? 0}
                         onChange={(e) => updateSubscriptionSettings({
                           ...subscriptionSettings,
-                          premium: { ...subscriptionSettings.premium, aiEnhanceCost: parseInt(e.target.value) }
+                          premium: { ...subscriptionSettings.premium, aiEnhanceCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                         })}
                         className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                       />
@@ -1109,10 +1109,10 @@ export default function HeadAdminPanel() {
                     <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Monthly Price ($)</label>
                     <input 
                       type="number" step="0.01"
-                      value={subscriptionSettings.ultimate?.monthlyPrice || 20.00}
+                      value={subscriptionSettings.ultimate?.monthlyPrice ?? 20}
                       onChange={(e) => updateSubscriptionSettings({
                         ...subscriptionSettings,
-                        ultimate: { ...subscriptionSettings.ultimate, monthlyPrice: parseFloat(e.target.value) }
+                        ultimate: { ...subscriptionSettings.ultimate, monthlyPrice: (v => isNaN(v) ? 0 : v)(parseFloat(e.target.value)) }
                       })}
                       className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                     />
@@ -1121,10 +1121,10 @@ export default function HeadAdminPanel() {
                     <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Yearly Price ($)</label>
                     <input 
                       type="number" step="0.01"
-                      value={subscriptionSettings.ultimate?.yearlyPrice || 200.00}
+                      value={subscriptionSettings.ultimate?.yearlyPrice ?? 200}
                       onChange={(e) => updateSubscriptionSettings({
                         ...subscriptionSettings,
-                        ultimate: { ...subscriptionSettings.ultimate, yearlyPrice: parseFloat(e.target.value) }
+                        ultimate: { ...subscriptionSettings.ultimate, yearlyPrice: (v => isNaN(v) ? 0 : v)(parseFloat(e.target.value)) }
                       })}
                       className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                     />
@@ -1134,10 +1134,10 @@ export default function HeadAdminPanel() {
                   <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Max Pages Per Story</label>
                   <input 
                     type="number" 
-                    value={subscriptionSettings.ultimate?.maxPagesPerStory || 100}
+                    value={subscriptionSettings.ultimate?.maxPagesPerStory ?? 100}
                     onChange={(e) => updateSubscriptionSettings({
                       ...subscriptionSettings,
-                      ultimate: { ...subscriptionSettings.ultimate, maxPagesPerStory: parseInt(e.target.value) }
+                      ultimate: { ...subscriptionSettings.ultimate, maxPagesPerStory: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                     })}
                     className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                   />
@@ -1147,10 +1147,10 @@ export default function HeadAdminPanel() {
                     <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Tokens/Month</label>
                     <input
                       type="number"
-                      value={subscriptionSettings.ultimate?.tokensPerMonth || 500}
+                      value={subscriptionSettings.ultimate?.tokensPerMonth ?? 0}
                       onChange={(e) => updateSubscriptionSettings({
                         ...subscriptionSettings,
-                        ultimate: { ...subscriptionSettings.ultimate, tokensPerMonth: parseInt(e.target.value) }
+                        ultimate: { ...subscriptionSettings.ultimate, tokensPerMonth: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                       })}
                       className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                     />
@@ -1159,10 +1159,10 @@ export default function HeadAdminPanel() {
                     <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Create Cost</label>
                     <input
                       type="number"
-                      value={subscriptionSettings.ultimate?.bookTokenCost || 1}
+                      value={subscriptionSettings.ultimate?.bookTokenCost ?? 0}
                       onChange={(e) => updateSubscriptionSettings({
                         ...subscriptionSettings,
-                        ultimate: { ...subscriptionSettings.ultimate, bookTokenCost: parseInt(e.target.value) }
+                        ultimate: { ...subscriptionSettings.ultimate, bookTokenCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                       })}
                       className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                     />
@@ -1174,7 +1174,7 @@ export default function HeadAdminPanel() {
                       value={(subscriptionSettings.ultimate as any)?.editTokenCost ?? 0}
                       onChange={(e) => updateSubscriptionSettings({
                         ...subscriptionSettings,
-                        ultimate: { ...subscriptionSettings.ultimate, editTokenCost: parseInt(e.target.value) }
+                        ultimate: { ...subscriptionSettings.ultimate, editTokenCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                       })}
                       className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                     />
@@ -1187,10 +1187,10 @@ export default function HeadAdminPanel() {
                       <label className="text-xs font-bold uppercase tracking-widest text-gray-400">AI Script</label>
                       <input
                         type="number"
-                        value={(subscriptionSettings.ultimate as any)?.aiScriptCost ?? 1}
+                        value={(subscriptionSettings.ultimate as any)?.aiScriptCost ?? 0}
                         onChange={(e) => updateSubscriptionSettings({
                           ...subscriptionSettings,
-                          ultimate: { ...subscriptionSettings.ultimate, aiScriptCost: parseInt(e.target.value) }
+                          ultimate: { ...subscriptionSettings.ultimate, aiScriptCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                         })}
                         className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                       />
@@ -1199,10 +1199,10 @@ export default function HeadAdminPanel() {
                       <label className="text-xs font-bold uppercase tracking-widest text-gray-400">AI Image</label>
                       <input
                         type="number"
-                        value={(subscriptionSettings.ultimate as any)?.aiImageCost ?? 1}
+                        value={(subscriptionSettings.ultimate as any)?.aiImageCost ?? 0}
                         onChange={(e) => updateSubscriptionSettings({
                           ...subscriptionSettings,
-                          ultimate: { ...subscriptionSettings.ultimate, aiImageCost: parseInt(e.target.value) }
+                          ultimate: { ...subscriptionSettings.ultimate, aiImageCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                         })}
                         className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                       />
@@ -1214,7 +1214,7 @@ export default function HeadAdminPanel() {
                         value={(subscriptionSettings.ultimate as any)?.aiEnhanceCost ?? 0}
                         onChange={(e) => updateSubscriptionSettings({
                           ...subscriptionSettings,
-                          ultimate: { ...subscriptionSettings.ultimate, aiEnhanceCost: parseInt(e.target.value) }
+                          ultimate: { ...subscriptionSettings.ultimate, aiEnhanceCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                         })}
                         className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                       />
