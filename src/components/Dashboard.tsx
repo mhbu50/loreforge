@@ -26,6 +26,7 @@ import TabbedWorkspace from './TabbedWorkspace';
 import { WordCountWidget, ImagePreviewWidget, ProgressWidget } from './Widgets';
 import { Book as BookEntity, BookType } from '../types';
 import { ConfigService } from '../services/ConfigService';
+import AccountPanel from './AccountPanel';
 
 interface DashboardProps {
   userProfile: UserProfile | null;
@@ -920,98 +921,18 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
           </div>
         </header>
 
-      {/* Profile Modal */}
+      {/* Profile / Account Panel */}
       <AnimatePresence>
         {showProfile && userProfile && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
-            <motion.div 
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              onClick={() => setShowProfile(false)}
-              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-            />
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="relative w-full max-w-md bg-white rounded-[2.5rem] p-10 shadow-2xl overflow-hidden"
-            >
-              <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-br from-gold/20 to-gold/5" />
-              <div className="relative flex flex-col items-center text-center">
-                <div className="w-24 h-24 rounded-full bg-white border-4 border-white shadow-xl flex items-center justify-center text-4xl font-serif font-bold text-night mb-6">
-                  {userProfile.displayName?.[0]}
-                </div>
-                <h3 className="text-3xl font-serif font-bold text-night mb-2">{userProfile.displayName}</h3>
-                <p className="text-sm text-black/40 mb-8">{userProfile.email}</p>
-                
-                <div className="grid grid-cols-2 gap-4 w-full mb-8">
-                  <div className="p-4 bg-gold/5 rounded-2xl border border-gold/15">
-                    <div className="text-2xl font-bold text-gold">🔥 {userProfile.streak || 0}</div>
-                    <div className="text-[10px] small-caps tracking-widest text-gold/60 font-bold">Day Streak</div>
-                  </div>
-                  <div className="p-4 bg-black/5 rounded-2xl border border-black/5">
-                    <div className="text-2xl font-bold text-night">{stories.length}</div>
-                    <div className="text-[10px] small-caps tracking-widest text-black/40 font-bold">Stories Forged</div>
-                  </div>
-                  <div className="p-4 bg-gold/5 rounded-2xl border border-gold/15">
-                    <div className="text-2xl font-bold text-gold">{userProfile.tokens || 0}</div>
-                    <div className="text-[10px] small-caps tracking-widest text-gold/60 font-bold">Tokens Available</div>
-                  </div>
-                  <div className="p-4 bg-black/5 rounded-2xl border border-black/5 relative group">
-                    <div className="flex items-center gap-2">
-                      <div className="text-2xl font-bold text-night capitalize">{userProfile.subscriptionTier}</div>
-                      {userProfile.subscriptionTier === 'premium' && <Crown size={16} className="text-gold" />}
-                    </div>
-                    <div className="text-[10px] small-caps tracking-widest text-black/40 font-bold">Subscription</div>
-                    <button 
-                      onClick={() => { setShowProfile(false); setShowRedeemModal(true); }}
-                      className="absolute top-2 right-2 p-1.5 bg-white rounded-lg text-gold opacity-0 group-hover:opacity-100 transition-all hover:bg-gold hover:text-night shadow-sm"
-                      title="Redeem Code"
-                    >
-                      <Zap size={14} />
-                    </button>
-                  </div>
-                </div>
-
-                <div className="w-full mb-8">
-                </div>
-
-                {userProfile.subscriptionTier === 'standard' && (
-                  <button 
-                    onClick={() => {
-                      setShowProfile(false);
-                      setShowPricingModal(true);
-                    }}
-                    className="w-full py-4 bg-gold text-night rounded-2xl font-bold hover:bg-black hover:text-white transition-all shadow-lg shadow-gold/20 flex items-center justify-center gap-2 mb-8"
-                  >
-                    <Crown size={20} />
-                    Upgrade to Premium
-                  </button>
-                )}
-
-                <div className="w-full text-left">
-                  <h4 className="text-[10px] small-caps tracking-widest text-black/40 font-bold mb-4">Achievements</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {userProfile.badges?.map(badge => (
-                      <div key={badge} className="flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-xl border border-gray-100">
-                        <Star size={14} className="text-gold" />
-                        <span className="text-sm font-medium">{badge}</span>
-                      </div>
-                    ))}
-                    {(!userProfile.badges || userProfile.badges.length === 0) && (
-                      <p className="text-xs text-black/20 italic">No badges earned yet. Start crafting!</p>
-                    )}
-                  </div>
-                </div>
-
-                <button 
-                  onClick={() => setShowProfile(false)}
-                  className="mt-10 w-full py-4 bg-black text-white rounded-2xl font-bold hover:bg-gold hover:text-night transition-all"
-                >
-                  Close Profile
-                </button>
-              </div>
-            </motion.div>
-          </div>
+          <AccountPanel
+            userProfile={userProfile}
+            stories={stories}
+            theme={theme}
+            onToggleTheme={onToggleTheme}
+            onClose={() => setShowProfile(false)}
+            onUpgrade={() => { setShowProfile(false); setShowPricingModal(true); }}
+            onRedeem={() => { setShowProfile(false); setShowRedeemModal(true); }}
+          />
         )}
       </AnimatePresence>
 

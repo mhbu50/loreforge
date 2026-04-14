@@ -128,6 +128,9 @@ export interface UserProfile {
   displayName: string;
   role: 'headadmin' | 'admin' | 'user';
   subscriptionTier: SubscriptionTier;
+  subscriptionStatus?: 'active' | 'expired' | 'cancelled';
+  subscriptionCycle?: 'monthly' | 'yearly' | 'none';
+  subscriptionExpiresAt?: number;
   customSettings: Record<string, any>;
   workspaceLayout: Record<string, any>;
   activeThemeId?: string;
@@ -137,6 +140,13 @@ export interface UserProfile {
   lastTokenRefill?: number;
   lastActive?: number;
   createdAt: number;
+  // Profile customization
+  bio?: string;
+  avatarEmoji?: string;
+  avatarColor?: string;
+  // Preferences
+  notificationsEnabled?: boolean;
+  emailNotifications?: boolean;
 }
 
 export interface UserGoal {
