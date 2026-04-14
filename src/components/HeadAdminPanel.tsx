@@ -26,6 +26,7 @@ export default function HeadAdminPanel() {
       maxPagesPerStory: 5,
       tokensPerMonth: 5,
       bookTokenCost: 1,
+      editTokenCost: 0,
     },
     standard: {
       monthlyPrice: 7.00,
@@ -34,6 +35,7 @@ export default function HeadAdminPanel() {
       maxPagesPerStory: 15,
       tokensPerMonth: 20,
       bookTokenCost: 1,
+      editTokenCost: 0,
     },
     premium: {
       monthlyPrice: 19.99,
@@ -41,6 +43,7 @@ export default function HeadAdminPanel() {
       maxPagesPerStory: 50,
       tokensPerMonth: 100,
       bookTokenCost: 1,
+      editTokenCost: 0,
     },
     ultimate: {
       monthlyPrice: 20.00,
@@ -48,6 +51,7 @@ export default function HeadAdminPanel() {
       maxPagesPerStory: 100,
       tokensPerMonth: 500,
       bookTokenCost: 1,
+      editTokenCost: 0,
     }
   });
 
@@ -728,11 +732,11 @@ export default function HeadAdminPanel() {
                     className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-3 gap-4">
                   <div className="space-y-2">
                     <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Tokens/Month</label>
-                    <input 
-                      type="number" 
+                    <input
+                      type="number"
                       value={subscriptionSettings.free?.tokensPerMonth || 5}
                       onChange={(e) => updateSubscriptionSettings({
                         ...subscriptionSettings,
@@ -742,13 +746,25 @@ export default function HeadAdminPanel() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Token Cost/Book</label>
-                    <input 
-                      type="number" 
+                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Create Cost (Tokens)</label>
+                    <input
+                      type="number"
                       value={subscriptionSettings.free?.bookTokenCost || 1}
                       onChange={(e) => updateSubscriptionSettings({
                         ...subscriptionSettings,
                         free: { ...subscriptionSettings.free, bookTokenCost: parseInt(e.target.value) }
+                      })}
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Edit Cost (Tokens)</label>
+                    <input
+                      type="number"
+                      value={subscriptionSettings.free?.editTokenCost ?? 0}
+                      onChange={(e) => updateSubscriptionSettings({
+                        ...subscriptionSettings,
+                        free: { ...subscriptionSettings.free, editTokenCost: parseInt(e.target.value) }
                       })}
                       className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                     />
@@ -815,11 +831,11 @@ export default function HeadAdminPanel() {
                     className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-3 gap-4">
                   <div className="space-y-2">
                     <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Tokens/Month</label>
-                    <input 
-                      type="number" 
+                    <input
+                      type="number"
                       value={subscriptionSettings.standard.tokensPerMonth || 20}
                       onChange={(e) => updateSubscriptionSettings({
                         ...subscriptionSettings,
@@ -829,13 +845,25 @@ export default function HeadAdminPanel() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Token Cost/Book</label>
-                    <input 
-                      type="number" 
+                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Create Cost (Tokens)</label>
+                    <input
+                      type="number"
                       value={subscriptionSettings.standard.bookTokenCost || 1}
                       onChange={(e) => updateSubscriptionSettings({
                         ...subscriptionSettings,
                         standard: { ...subscriptionSettings.standard, bookTokenCost: parseInt(e.target.value) }
+                      })}
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Edit Cost (Tokens)</label>
+                    <input
+                      type="number"
+                      value={subscriptionSettings.standard.editTokenCost ?? 0}
+                      onChange={(e) => updateSubscriptionSettings({
+                        ...subscriptionSettings,
+                        standard: { ...subscriptionSettings.standard, editTokenCost: parseInt(e.target.value) }
                       })}
                       className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                     />
@@ -890,11 +918,11 @@ export default function HeadAdminPanel() {
                     className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-3 gap-4">
                   <div className="space-y-2">
                     <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Tokens/Month</label>
-                    <input 
-                      type="number" 
+                    <input
+                      type="number"
                       value={subscriptionSettings.premium.tokensPerMonth || 100}
                       onChange={(e) => updateSubscriptionSettings({
                         ...subscriptionSettings,
@@ -904,13 +932,25 @@ export default function HeadAdminPanel() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Token Cost/Book</label>
-                    <input 
-                      type="number" 
+                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Create Cost (Tokens)</label>
+                    <input
+                      type="number"
                       value={subscriptionSettings.premium.bookTokenCost || 1}
                       onChange={(e) => updateSubscriptionSettings({
                         ...subscriptionSettings,
                         premium: { ...subscriptionSettings.premium, bookTokenCost: parseInt(e.target.value) }
+                      })}
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Edit Cost (Tokens)</label>
+                    <input
+                      type="number"
+                      value={(subscriptionSettings.premium as any).editTokenCost ?? 0}
+                      onChange={(e) => updateSubscriptionSettings({
+                        ...subscriptionSettings,
+                        premium: { ...subscriptionSettings.premium, editTokenCost: parseInt(e.target.value) }
                       })}
                       className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                     />
@@ -965,11 +1005,11 @@ export default function HeadAdminPanel() {
                     className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-3 gap-4">
                   <div className="space-y-2">
                     <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Tokens/Month</label>
-                    <input 
-                      type="number" 
+                    <input
+                      type="number"
                       value={subscriptionSettings.ultimate?.tokensPerMonth || 500}
                       onChange={(e) => updateSubscriptionSettings({
                         ...subscriptionSettings,
@@ -979,13 +1019,25 @@ export default function HeadAdminPanel() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Token Cost/Book</label>
-                    <input 
-                      type="number" 
+                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Create Cost (Tokens)</label>
+                    <input
+                      type="number"
                       value={subscriptionSettings.ultimate?.bookTokenCost || 1}
                       onChange={(e) => updateSubscriptionSettings({
                         ...subscriptionSettings,
                         ultimate: { ...subscriptionSettings.ultimate, bookTokenCost: parseInt(e.target.value) }
+                      })}
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Edit Cost (Tokens)</label>
+                    <input
+                      type="number"
+                      value={(subscriptionSettings.ultimate as any)?.editTokenCost ?? 0}
+                      onChange={(e) => updateSubscriptionSettings({
+                        ...subscriptionSettings,
+                        ultimate: { ...subscriptionSettings.ultimate, editTokenCost: parseInt(e.target.value) }
                       })}
                       className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
                     />

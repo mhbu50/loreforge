@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Sparkles, Plus, LogOut, ShieldAlert, BookOpen, Shield, Star, Bug, MessageSquare, Send, X, UserPlus, Crown, CreditCard, Loader2, Check, Zap, Share2, Monitor, FileText, Maximize2, Command, Eye, ChevronRight, ChevronLeft, Settings as SettingsIcon, Layout, Edit3, Image as ImageIcon, Palette, LifeBuoy, Bot, CheckCircle } from 'lucide-react';
+import { Sparkles, Plus, LogOut, ShieldAlert, BookOpen, Shield, Star, Bug, MessageSquare, Send, X, UserPlus, Crown, CreditCard, Loader2, Check, Zap, Share2, Monitor, FileText, Maximize2, Command, Eye, ChevronRight, ChevronLeft, Settings as SettingsIcon, Layout, Edit3, Image as ImageIcon, Palette, LifeBuoy, Bot, CheckCircle, Moon, Sun, Pencil } from 'lucide-react';
 import { Story, StoryPage, StoryStyle, UserProfile, ImageAdjustments } from '../types';
 import { auth, db } from '../firebase';
 import { collection, addDoc, query, where, onSnapshot, deleteDoc, doc, orderBy, updateDoc, getDocs, getDoc, increment } from 'firebase/firestore';
@@ -30,9 +30,11 @@ import { ConfigService } from '../services/ConfigService';
 interface DashboardProps {
   userProfile: UserProfile | null;
   globalSettings?: any;
+  theme?: 'light' | 'dark';
+  onToggleTheme?: () => void;
 }
 
-export default function Dashboard({ userProfile, globalSettings }: DashboardProps) {
+export default function Dashboard({ userProfile, globalSettings, theme = 'light', onToggleTheme }: DashboardProps) {
   const appName = globalSettings?.appName || 'StoryCraft';
   const appIcon = globalSettings?.appIcon || '';
   const [stories, setStories] = useState<Story[]>([]);
@@ -382,11 +384,13 @@ export default function Dashboard({ userProfile, globalSettings }: DashboardProp
     if (!auth.currentUser || !userProfile) return;
     
     setIsForging(true);
-    const tokenCost = isEditing ? 0 : (currentLimits.bookTokenCost || 1);
+    const tokenCost = isEditing
+      ? (currentLimits.editTokenCost ?? 0)
+      : (currentLimits.bookTokenCost || 1);
     const userTokens = userProfile.tokens || 0;
 
-    if (!isEditing && userTokens < tokenCost) {
-      toast.error(`Insufficient tokens! You need ${tokenCost} tokens to forge this story.`);
+    if (userTokens < tokenCost) {
+      toast.error(`Insufficient tokens! You need ${tokenCost} token${tokenCost !== 1 ? 's' : ''} to ${isEditing ? 'save edits' : 'forge this story'}.`);
       setShowPricingModal(true);
       return;
     }
@@ -423,6 +427,12 @@ export default function Dashboard({ userProfile, globalSettings }: DashboardProp
           });
         }
         
+        // Deduct edit tokens if editTokenCost > 0
+        if (tokenCost > 0) {
+          await updateDoc(doc(db, 'users', auth.currentUser.uid), {
+            tokens: userTokens - tokenCost
+          });
+        }
         toast.success("Story updated successfully!");
         setIsEditing(false);
         setEditingStory(null);
@@ -743,8 +753,24 @@ export default function Dashboard({ userProfile, globalSettings }: DashboardProp
           ))}
         </nav>
 
-        <div className="p-8 border-t border-black/5">
-          <div 
+        {/* Theme toggle */}
+        <div className="px-4 pb-2">
+          <button
+            onClick={onToggleTheme}
+            className={cn(
+              "w-full flex items-center gap-3 px-5 py-3 rounded-2xl text-[11px] font-bold uppercase tracking-[0.15em] transition-all",
+              theme === 'dark'
+                ? "bg-gold/20 text-gold hover:bg-gold/30"
+                : "text-black/35 hover:bg-black/5 hover:text-black"
+            )}
+          >
+            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+            {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+          </button>
+        </div>
+
+        <div className="px-8 pb-8 border-t border-black/5 pt-6">
+          <div
             onClick={() => setShowProfile(true)}
             className="w-full flex items-center gap-4 group cursor-pointer"
           >
@@ -814,8 +840,12 @@ export default function Dashboard({ userProfile, globalSettings }: DashboardProp
                 </div>
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
-                    <span className="text-xs opacity-60">New Story</span>
-                    <span className="text-xs font-bold text-gold">1 Token</span>
+                    <span className="text-xs opacity-60">Create Story</span>
+                    <span className="text-xs font-bold text-gold">{currentLimits.bookTokenCost || 1} Token{(currentLimits.bookTokenCost || 1) !== 1 ? 's' : ''}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs opacity-60">Edit Story</span>
+                    <span className="text-xs font-bold text-gold">{(currentLimits.editTokenCost ?? 0) === 0 ? 'Free' : `${currentLimits.editTokenCost} Token${currentLimits.editTokenCost !== 1 ? 's' : ''}`}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-xs opacity-60">AI Generation</span>
@@ -1161,6 +1191,12 @@ export default function Dashboard({ userProfile, globalSettings }: DashboardProp
                 viewMode={viewMode}
                 setViewMode={setViewMode}
                 onSelect={handleSelectStory}
+                onEdit={(story, e) => {
+                  e.stopPropagation();
+                  setEditingStory(story);
+                  setIsEditing(true);
+                  setSelectedBookType(story.category as any || 'story');
+                }}
                 onPublish={handlePublish}
                 onDelete={handleDelete}
                 onAddPartner={(story) => setPartnerModal({ show: true, story })}

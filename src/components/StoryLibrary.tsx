@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, useMotionValue, useTransform, useSpring } from 'motion/react';
-import { LayoutGrid, List, Heart, Star, DollarSign, Trash2, BookOpen, Sparkles, Globe, Layers, UserPlus } from 'lucide-react';
+import { LayoutGrid, List, Heart, Star, DollarSign, Trash2, BookOpen, Sparkles, Globe, Layers, UserPlus, Pencil } from 'lucide-react';
 import { Story } from '../types';
 import { cn } from '../lib/utils';
 
@@ -12,21 +12,23 @@ interface StoryLibraryProps {
   viewMode: 'grid' | 'list';
   setViewMode: (mode: 'grid' | 'list') => void;
   onSelect: (story: Story) => void;
+  onEdit: (story: Story, e: React.MouseEvent) => void;
   onPublish: (id: string, e: React.MouseEvent) => void;
   onDelete: (id: string, e: React.MouseEvent) => void;
   onAddPartner: (story: Story, e: React.MouseEvent) => void;
   onCreate: () => void;
 }
 
-export default function StoryLibrary({ 
-  stories, 
+export default function StoryLibrary({
+  stories,
   isLoading,
-  searchTerm, 
-  setSearchTerm, 
-  viewMode, 
-  setViewMode, 
-  onSelect, 
-  onPublish, 
+  searchTerm,
+  setSearchTerm,
+  viewMode,
+  setViewMode,
+  onSelect,
+  onEdit,
+  onPublish,
   onDelete,
   onAddPartner,
   onCreate
@@ -122,14 +124,15 @@ export default function StoryLibrary({
           viewMode === 'grid' ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"
         )}>
           {stories.map((story, i) => (
-            <StoryCard 
-              key={story.id} 
-              story={story} 
-              index={i} 
-              viewMode={viewMode} 
-              onSelect={onSelect} 
-              onPublish={onPublish} 
-              onDelete={onDelete} 
+            <StoryCard
+              key={story.id}
+              story={story}
+              index={i}
+              viewMode={viewMode}
+              onSelect={onSelect}
+              onEdit={onEdit}
+              onPublish={onPublish}
+              onDelete={onDelete}
               onAddPartner={onAddPartner}
             />
           ))}
@@ -139,12 +142,13 @@ export default function StoryLibrary({
   );
 }
 
-function StoryCard({ story, index, viewMode, onSelect, onPublish, onDelete, onAddPartner }: { 
-  story: Story, 
-  index: number, 
-  viewMode: 'grid' | 'list', 
-  onSelect: (s: Story) => void, 
-  onPublish: (id: string, e: React.MouseEvent) => void, 
+function StoryCard({ story, index, viewMode, onSelect, onEdit, onPublish, onDelete, onAddPartner }: {
+  story: Story,
+  index: number,
+  viewMode: 'grid' | 'list',
+  onSelect: (s: Story) => void,
+  onEdit: (s: Story, e: React.MouseEvent) => void,
+  onPublish: (id: string, e: React.MouseEvent) => void,
   onDelete: (id: string, e: React.MouseEvent) => void,
   onAddPartner: (story: Story, e: React.MouseEvent) => void
 }) {
@@ -295,6 +299,14 @@ function StoryCard({ story, index, viewMode, onSelect, onPublish, onDelete, onAd
           </div>
 
           <div className="flex gap-1.5 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
+            {/* Edit button — direct access without opening viewer */}
+            <button
+              onClick={(e) => onEdit(story, e)}
+              className="p-2.5 bg-night/10 text-night rounded-xl hover:bg-night hover:text-white transition-all"
+              title="Edit Story"
+            >
+              <Pencil size={16} />
+            </button>
             <button
               onClick={(e) => onAddPartner(story, e)}
               className="p-2.5 bg-gold/10 text-gold rounded-xl hover:bg-gold hover:text-night transition-all"

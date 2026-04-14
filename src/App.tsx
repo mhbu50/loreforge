@@ -52,6 +52,17 @@ export default function App() {
   const [profileSetupFailed, setProfileSetupFailed] = useState(false);
   const [globalSettings, setGlobalSettings] = useState<any>(null);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    return (localStorage.getItem('storycraft-theme') as 'light' | 'dark') || 'light';
+  });
+
+  // Apply / remove dark theme on <html>
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('storycraft-theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => setTheme(t => t === 'light' ? 'dark' : 'light');
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -287,7 +298,7 @@ export default function App() {
             element={
               user
                 ? userProfile
-                  ? <Dashboard userProfile={userProfile} globalSettings={globalSettings} />
+                  ? <Dashboard userProfile={userProfile} globalSettings={globalSettings} theme={theme} onToggleTheme={toggleTheme} />
                   : (
                     // Authenticated but profile not ready yet — self-heal is in progress
                     <div className="min-h-screen flex items-center justify-center luxury-bg">
