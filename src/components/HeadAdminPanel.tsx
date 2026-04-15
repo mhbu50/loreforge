@@ -433,7 +433,7 @@ export default function HeadAdminPanel() {
       </div>
 
       {/* Tab Bar */}
-      <div className="flex flex-wrap items-center gap-2 p-1 bg-black/5 rounded-2xl">
+      <div className="flex flex-wrap items-center gap-2 p-1 bg-white/[0.04] rounded-2xl">
         {([
           { id: 'users', label: 'Users', icon: <User size={14} /> },
           { id: 'stories', label: 'Stories', icon: <BookOpen size={14} /> },
@@ -452,7 +452,7 @@ export default function HeadAdminPanel() {
               "flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all",
               activeTab === id
                 ? "bg-night text-gold shadow-lg shadow-black/20"
-                : "text-black/40 hover:text-black hover:bg-white/60"
+                : "text-white/40 hover:text-white/70 hover:bg-white/[0.04]"
             )}
           >
             {icon}
@@ -465,19 +465,19 @@ export default function HeadAdminPanel() {
         <div className="space-y-6">
           <div className="flex items-center gap-4">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/35 w-4 h-4" />
               <input
                 type="text"
                 placeholder="Search users..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all w-full"
+                className="pl-10 pr-4 py-2 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:ring-2 focus:ring-gold/30 text-white/90 placeholder:text-white/25 outline-none transition-all w-full"
               />
             </div>
             <select
               value={filter}
               onChange={(e) => setFilter(e.target.value as any)}
-              className="px-4 py-2 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+              className="px-4 py-2 bg-white/[0.05] border border-white/[0.09] rounded-xl text-white/90 focus:ring-2 focus:ring-gold/30 outline-none transition-all"
             >
               <option value="all">All Roles</option>
               <option value="admin">Admins</option>
@@ -485,28 +485,28 @@ export default function HeadAdminPanel() {
             </select>
           </div>
 
-          <div className="bg-white rounded-3xl border border-gray-100 overflow-hidden shadow-sm">
+          <div className="bg-[#111] rounded-2xl border border-white/[0.07] overflow-hidden">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-gray-50 border-b border-gray-100">
-                  <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400">User</th>
-                  <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400">Role / Tier</th>
-                  <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400">Level / XP / Tokens</th>
-                  <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400">Badges</th>
-                  <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400 text-right">Actions</th>
+                <tr className="bg-white/[0.03] border-b border-white/[0.06]">
+                  <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-white/35">User</th>
+                  <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-white/35">Role / Tier</th>
+                  <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-white/35">Level / XP / Tokens</th>
+                  <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-white/35">Badges</th>
+                  <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-white/35 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-50">
+              <tbody className="divide-y divide-white/[0.04]">
                 {filteredUsers.map((user) => (
-                  <tr key={user.uid} className="hover:bg-gray-50/50 transition-colors">
+                  <tr key={user.uid} className="hover:bg-white/[0.02] transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-gold/10 text-gold flex items-center justify-center font-bold">
                           {user.displayName?.[0] || 'U'}
                         </div>
                         <div>
-                          <div className="font-bold text-gray-900">{user.displayName}</div>
-                          <div className="text-xs text-gray-500">{user.email}</div>
+                          <div className="font-bold text-white/90">{user.displayName}</div>
+                          <div className="text-xs text-white/40">{user.email}</div>
                         </div>
                       </div>
                     </td>
@@ -514,13 +514,13 @@ export default function HeadAdminPanel() {
                       <div className="flex flex-col gap-1">
                         <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest w-fit ${
                           user.role === 'headadmin' ? 'bg-gold/10 text-gold' :
-                          user.role === 'admin' ? 'bg-red-100 text-red-600' :
-                          'bg-gray-100 text-gray-600'
+                          user.role === 'admin' ? 'bg-red-500/10 text-red-400 border border-red-500/20' :
+                          'bg-white/[0.06] text-white/50'
                         }`}>
                           {user.role}
                         </span>
                         <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest w-fit flex items-center gap-1 ${
-                          user.subscriptionTier === 'premium' ? 'bg-amber-100 text-amber-600' : 'bg-blue-100 text-blue-600'
+                          user.subscriptionTier === 'premium' ? 'bg-gold/10 text-gold border border-gold/20' : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
                         }`}>
                           {user.subscriptionTier}
                           {user.subscriptionTier === 'premium' && <Crown size={10} />}
@@ -530,12 +530,12 @@ export default function HeadAdminPanel() {
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-4">
                         <div className="flex flex-col">
-                          <span className="text-xs font-bold text-gray-400 uppercase">Tokens</span>
-                          <input 
-                            type="number" 
-                            value={user.tokens || 0} 
+                          <span className="text-xs font-bold text-white/35 uppercase">Tokens</span>
+                          <input
+                            type="number"
+                            value={user.tokens || 0}
                             onChange={(e) => updateDoc(doc(db, 'users', user.uid), { tokens: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) })}
-                            className="w-20 bg-gray-50 border-none rounded-lg px-2 py-1 text-sm font-bold"
+                            className="w-20 bg-white/[0.04] border border-white/[0.07] text-white/90 rounded-lg px-2 py-1 text-sm font-bold"
                           />
                         </div>
                       </div>
@@ -557,31 +557,31 @@ export default function HeadAdminPanel() {
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
-                        <div className="flex bg-gray-100 p-1 rounded-lg">
+                        <div className="flex bg-white/[0.06] p-1 rounded-lg">
                           <button
                             onClick={() => toggleSubscription(user, 'free')}
-                            className={cn("p-2 rounded-md transition-all", user.subscriptionTier === 'free' ? "bg-white shadow-sm text-blue-600" : "text-gray-400 hover:text-blue-600")}
+                            className={cn("p-2 rounded-md transition-all", user.subscriptionTier === 'free' ? "bg-white/[0.1] shadow-sm text-blue-400" : "text-white/30 hover:text-blue-400")}
                             title="Set to Free"
                           >
                             <span className="text-[10px] font-bold">F</span>
                           </button>
                           <button
                             onClick={() => toggleSubscription(user, 'standard')}
-                            className={cn("p-2 rounded-md transition-all", user.subscriptionTier === 'standard' ? "bg-white shadow-sm text-gold" : "text-gray-400 hover:text-gold")}
+                            className={cn("p-2 rounded-md transition-all", user.subscriptionTier === 'standard' ? "bg-white/[0.1] shadow-sm text-gold" : "text-white/30 hover:text-gold")}
                             title="Set to Standard"
                           >
                             <span className="text-[10px] font-bold">S</span>
                           </button>
                           <button
                             onClick={() => toggleSubscription(user, 'premium')}
-                            className={cn("p-2 rounded-md transition-all", user.subscriptionTier === 'premium' ? "bg-white shadow-sm text-amber-600" : "text-gray-400 hover:text-amber-600")}
+                            className={cn("p-2 rounded-md transition-all", user.subscriptionTier === 'premium' ? "bg-white/[0.1] shadow-sm text-gold" : "text-white/30 hover:text-gold")}
                             title="Set to Premium"
                           >
                             <Crown className="w-4 h-4" />
                           </button>
                           <button
                             onClick={() => toggleSubscription(user, 'ultimate')}
-                            className={cn("p-2 rounded-md transition-all", user.subscriptionTier === 'ultimate' ? "bg-white shadow-sm text-red-600" : "text-gray-400 hover:text-red-600")}
+                            className={cn("p-2 rounded-md transition-all", user.subscriptionTier === 'ultimate' ? "bg-white/[0.1] shadow-sm text-red-400" : "text-white/30 hover:text-red-400")}
                             title="Set to Ultimate"
                           >
                             <Zap className="w-4 h-4" />
@@ -609,37 +609,37 @@ export default function HeadAdminPanel() {
       )}
 
       {activeTab === 'stories' && (
-        <div className="bg-white rounded-3xl border border-gray-100 overflow-hidden shadow-sm">
+        <div className="bg-[#111] rounded-2xl border border-white/[0.07] overflow-hidden">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-gray-50 border-b border-gray-100">
-                <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400">Story</th>
-                <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400">Author</th>
-                <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400">Pages</th>
-                <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400">Status</th>
-                <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400 text-right">Actions</th>
+              <tr className="bg-white/[0.03] border-b border-white/[0.06]">
+                <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-white/35">Story</th>
+                <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-white/35">Author</th>
+                <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-white/35">Pages</th>
+                <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-white/35">Status</th>
+                <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-white/35 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-white/[0.04]">
               {stories.map((story) => (
-                <tr key={story.id} className="hover:bg-gray-50/50 transition-colors">
+                <tr key={story.id} className="hover:bg-white/[0.02] transition-colors">
                   <td className="px-6 py-4">
-                    <div className="font-bold text-gray-900">{story.title}</div>
-                    <div className="text-xs text-gray-500">{story.style}</div>
+                    <div className="font-bold text-white/90">{story.title}</div>
+                    <div className="text-xs text-white/40">{story.style}</div>
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-600">{story.authorName}</td>
-                  <td className="px-6 py-4 text-sm text-gray-600">{story.pages.length}</td>
+                  <td className="px-6 py-4 text-sm text-white/55">{story.authorName}</td>
+                  <td className="px-6 py-4 text-sm text-white/55">{story.pages.length}</td>
                   <td className="px-6 py-4">
                     <span className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest ${
-                      story.isPublished ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-600'
+                      story.isPublished ? 'bg-green-500/10 text-green-400 border border-green-500/20' : 'bg-white/[0.06] text-white/50'
                     }`}>
                       {story.isPublished ? 'Published' : 'Draft'}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <button 
+                    <button
                       onClick={() => deleteStory(story.id)}
-                      className="p-2 text-gray-400 hover:text-red-600 transition-colors"
+                      className="p-2 text-white/35 hover:text-red-400 transition-colors"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -655,56 +655,56 @@ export default function HeadAdminPanel() {
         <div className="space-y-6">
           <div className="grid grid-cols-1 gap-6">
             {feedback.map((item) => (
-              <div key={item.id} className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-md transition-all">
+              <div key={item.id} className="bg-[#111] rounded-2xl p-6 border border-white/[0.07] hover:border-white/[0.12] transition-all">
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-4">
-                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${item.type === 'bug' ? 'bg-red-50 text-red-500' : 'bg-blue-50 text-blue-500'}`}>
+                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${item.type === 'bug' ? 'bg-red-500/10 text-red-400' : 'bg-blue-500/10 text-blue-400'}`}>
                       {item.type === 'bug' ? <Bug size={24} /> : <MessageSquare size={24} />}
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="text-sm font-bold uppercase tracking-widest">{item.type}</span>
+                        <span className="text-sm font-bold uppercase tracking-widest text-white/80">{item.type}</span>
                         <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${
-                          item.status === 'resolved' ? 'bg-green-100 text-green-600' : 
-                          item.status === 'reviewed' ? 'bg-blue-100 text-blue-600' : 'bg-orange-100 text-orange-600'
+                          item.status === 'resolved' ? 'bg-green-500/10 text-green-400' :
+                          item.status === 'reviewed' ? 'bg-blue-500/10 text-blue-400' : 'bg-orange-500/10 text-orange-400'
                         }`}>
                           {item.status}
                         </span>
                       </div>
-                      <p className="text-xs text-gray-500">{item.userEmail} • {new Date(item.createdAt).toLocaleString()}</p>
+                      <p className="text-xs text-white/35">{item.userEmail} • {new Date(item.createdAt).toLocaleString()}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <button 
+                    <button
                       onClick={() => updateFeedbackStatus(item.id!, 'reviewed')}
-                      className="p-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all"
+                      className="p-2 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-xl hover:bg-blue-500/20 transition-all"
                       title="Mark as Reviewed"
                     >
                       <CheckCircle size={18} />
                     </button>
-                    <button 
+                    <button
                       onClick={() => updateFeedbackStatus(item.id!, 'resolved')}
-                      className="p-2 bg-green-50 text-green-600 rounded-xl hover:bg-green-600 hover:text-white transition-all"
+                      className="p-2 bg-green-500/10 text-green-400 border border-green-500/20 rounded-xl hover:bg-green-500/20 transition-all"
                       title="Mark as Resolved"
                     >
                       <CheckCircle size={18} />
                     </button>
-                    <button 
+                    <button
                       onClick={() => deleteFeedback(item.id!)}
-                      className="p-2 bg-red-50 text-red-600 rounded-xl hover:bg-red-600 hover:text-white transition-all"
+                      className="p-2 bg-red-500/10 text-red-400 border border-red-500/20 rounded-xl hover:bg-red-500/20 transition-all"
                       title="Delete"
                     >
                       <Trash2 size={18} />
                     </button>
                   </div>
                 </div>
-                <p className="text-lg font-medium text-gray-800 leading-relaxed">{item.content}</p>
+                <p className="text-lg font-medium text-white/80 leading-relaxed">{item.content}</p>
               </div>
             ))}
             {feedback.length === 0 && (
-              <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-gray-200">
-                <MessageSquare className="mx-auto mb-4 text-gray-200" size={48} />
-                <p className="text-gray-400 font-serif italic text-xl">No feedback received yet.</p>
+              <div className="text-center py-20 bg-[#111] rounded-2xl border border-dashed border-white/[0.08]">
+                <MessageSquare className="mx-auto mb-4 text-white/15" size={48} />
+                <p className="text-white/30 font-serif italic text-xl">No feedback received yet.</p>
               </div>
             )}
           </div>
@@ -715,15 +715,15 @@ export default function HeadAdminPanel() {
         <div className="space-y-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Free Tier */}
-            <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm space-y-8">
+            <div className="bg-[#111] p-6 rounded-2xl border border-white/[0.07] space-y-8">
               <div className="flex items-center gap-3">
                 <Star className="text-blue-400" />
-                <h3 className="text-xl font-bold">Free Tier Limits</h3>
+                <h3 className="text-xl font-bold text-white/90">Free Tier Limits</h3>
               </div>
               
               <div className="space-y-6">
                 <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Max Stories (Total)</label>
+                  <label className="text-xs font-bold uppercase tracking-widest text-white/35">Max Stories (Total)</label>
                   <input 
                     type="number" 
                     value={subscriptionSettings.free?.maxStoriesTotal ?? 1}
@@ -731,11 +731,11 @@ export default function HeadAdminPanel() {
                       ...subscriptionSettings,
                       free: { ...subscriptionSettings.free, maxStoriesTotal: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                     })}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                    className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Max Pages Per Story</label>
+                  <label className="text-xs font-bold uppercase tracking-widest text-white/35">Max Pages Per Story</label>
                   <input 
                     type="number" 
                     value={subscriptionSettings.free?.maxPagesPerStory ?? 5}
@@ -743,12 +743,12 @@ export default function HeadAdminPanel() {
                       ...subscriptionSettings,
                       free: { ...subscriptionSettings.free, maxPagesPerStory: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                     })}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                    className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
                   />
                 </div>
                 <div className="grid grid-cols-3 gap-4">
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Tokens/Month</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Tokens/Month</label>
                     <input
                       type="number"
                       value={subscriptionSettings.free?.tokensPerMonth ?? 0}
@@ -756,11 +756,11 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         free: { ...subscriptionSettings.free, tokensPerMonth: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                       })}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Create Cost</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Create Cost</label>
                     <input
                       type="number"
                       value={subscriptionSettings.free?.bookTokenCost ?? 0}
@@ -768,11 +768,11 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         free: { ...subscriptionSettings.free, bookTokenCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                       })}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Edit Cost</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Edit Cost</label>
                     <input
                       type="number"
                       value={subscriptionSettings.free?.editTokenCost ?? 0}
@@ -780,15 +780,15 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         free: { ...subscriptionSettings.free, editTokenCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                       })}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
                     />
                   </div>
                 </div>
                 <div className="pt-2">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">AI Operation Costs</p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-white/35 mb-3">AI Operation Costs</p>
                   <div className="grid grid-cols-3 gap-4">
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-gray-400">AI Script</label>
+                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">AI Script</label>
                       <input
                         type="number"
                         value={(subscriptionSettings.free as any)?.aiScriptCost ?? 0}
@@ -796,11 +796,11 @@ export default function HeadAdminPanel() {
                           ...subscriptionSettings,
                           free: { ...subscriptionSettings.free, aiScriptCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                         })}
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                        className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-gray-400">AI Image</label>
+                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">AI Image</label>
                       <input
                         type="number"
                         value={(subscriptionSettings.free as any)?.aiImageCost ?? 0}
@@ -808,11 +808,11 @@ export default function HeadAdminPanel() {
                           ...subscriptionSettings,
                           free: { ...subscriptionSettings.free, aiImageCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                         })}
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                        className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-gray-400">AI Enhance</label>
+                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">AI Enhance</label>
                       <input
                         type="number"
                         value={(subscriptionSettings.free as any)?.aiEnhanceCost ?? 0}
@@ -820,7 +820,7 @@ export default function HeadAdminPanel() {
                           ...subscriptionSettings,
                           free: { ...subscriptionSettings.free, aiEnhanceCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                         })}
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                        className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
                       />
                     </div>
                   </div>
@@ -829,16 +829,16 @@ export default function HeadAdminPanel() {
             </div>
 
             {/* Standard Tier */}
-            <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm space-y-8">
+            <div className="bg-[#111] p-6 rounded-2xl border border-white/[0.07] space-y-8">
               <div className="flex items-center gap-3">
                 <Star className="text-gold" />
-                <h3 className="text-xl font-bold">Standard Tier Settings</h3>
+                <h3 className="text-xl font-bold text-white/90">Standard Tier Settings</h3>
               </div>
               
               <div className="space-y-6">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Monthly Price ($)</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Monthly Price ($)</label>
                     <input 
                       type="number" step="0.01"
                       value={subscriptionSettings.standard.monthlyPrice}
@@ -846,11 +846,11 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         standard: { ...subscriptionSettings.standard, monthlyPrice: (v => isNaN(v) ? 0 : v)(parseFloat(e.target.value)) }
                       })}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Yearly Price ($)</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Yearly Price ($)</label>
                     <input 
                       type="number" step="0.01"
                       value={subscriptionSettings.standard.yearlyPrice}
@@ -858,12 +858,12 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         standard: { ...subscriptionSettings.standard, yearlyPrice: (v => isNaN(v) ? 0 : v)(parseFloat(e.target.value)) }
                       })}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
                     />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Max Stories Per Month</label>
+                  <label className="text-xs font-bold uppercase tracking-widest text-white/35">Max Stories Per Month</label>
                   <input 
                     type="number" 
                     value={subscriptionSettings.standard.maxStoriesPerMonth ?? 3}
@@ -871,11 +871,11 @@ export default function HeadAdminPanel() {
                       ...subscriptionSettings,
                       standard: { ...subscriptionSettings.standard, maxStoriesPerMonth: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                     })}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                    className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Max Pages Per Story</label>
+                  <label className="text-xs font-bold uppercase tracking-widest text-white/35">Max Pages Per Story</label>
                   <input 
                     type="number" 
                     value={subscriptionSettings.standard.maxPagesPerStory}
@@ -883,12 +883,12 @@ export default function HeadAdminPanel() {
                       ...subscriptionSettings,
                       standard: { ...subscriptionSettings.standard, maxPagesPerStory: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                     })}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                    className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
                   />
                 </div>
                 <div className="grid grid-cols-3 gap-4">
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Tokens/Month</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Tokens/Month</label>
                     <input
                       type="number"
                       value={subscriptionSettings.standard.tokensPerMonth ?? 0}
@@ -896,11 +896,11 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         standard: { ...subscriptionSettings.standard, tokensPerMonth: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                       })}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Create Cost</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Create Cost</label>
                     <input
                       type="number"
                       value={subscriptionSettings.standard.bookTokenCost ?? 0}
@@ -908,11 +908,11 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         standard: { ...subscriptionSettings.standard, bookTokenCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                       })}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Edit Cost</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Edit Cost</label>
                     <input
                       type="number"
                       value={subscriptionSettings.standard.editTokenCost ?? 0}
@@ -920,15 +920,15 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         standard: { ...subscriptionSettings.standard, editTokenCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                       })}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
                     />
                   </div>
                 </div>
                 <div className="pt-2">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">AI Operation Costs</p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-white/35 mb-3">AI Operation Costs</p>
                   <div className="grid grid-cols-3 gap-4">
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-gray-400">AI Script</label>
+                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">AI Script</label>
                       <input
                         type="number"
                         value={(subscriptionSettings.standard as any)?.aiScriptCost ?? 0}
@@ -936,11 +936,11 @@ export default function HeadAdminPanel() {
                           ...subscriptionSettings,
                           standard: { ...subscriptionSettings.standard, aiScriptCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                         })}
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                        className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-gray-400">AI Image</label>
+                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">AI Image</label>
                       <input
                         type="number"
                         value={(subscriptionSettings.standard as any)?.aiImageCost ?? 0}
@@ -948,11 +948,11 @@ export default function HeadAdminPanel() {
                           ...subscriptionSettings,
                           standard: { ...subscriptionSettings.standard, aiImageCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                         })}
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                        className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-gray-400">AI Enhance</label>
+                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">AI Enhance</label>
                       <input
                         type="number"
                         value={(subscriptionSettings.standard as any)?.aiEnhanceCost ?? 0}
@@ -960,7 +960,7 @@ export default function HeadAdminPanel() {
                           ...subscriptionSettings,
                           standard: { ...subscriptionSettings.standard, aiEnhanceCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                         })}
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                        className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
                       />
                     </div>
                   </div>
@@ -969,16 +969,16 @@ export default function HeadAdminPanel() {
             </div>
 
             {/* Premium Tier */}
-            <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm space-y-8">
+            <div className="bg-[#111] p-6 rounded-2xl border border-white/[0.07] space-y-8">
               <div className="flex items-center gap-3">
                 <Crown className="text-gold" />
-                <h3 className="text-xl font-bold">Premium Tier Settings</h3>
+                <h3 className="text-xl font-bold text-white/90">Premium Tier Settings</h3>
               </div>
               
               <div className="space-y-6">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Monthly Price ($)</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Monthly Price ($)</label>
                     <input 
                       type="number" step="0.01"
                       value={subscriptionSettings.premium.monthlyPrice}
@@ -986,11 +986,11 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         premium: { ...subscriptionSettings.premium, monthlyPrice: (v => isNaN(v) ? 0 : v)(parseFloat(e.target.value)) }
                       })}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Yearly Price ($)</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Yearly Price ($)</label>
                     <input 
                       type="number" step="0.01"
                       value={subscriptionSettings.premium.yearlyPrice}
@@ -998,12 +998,12 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         premium: { ...subscriptionSettings.premium, yearlyPrice: (v => isNaN(v) ? 0 : v)(parseFloat(e.target.value)) }
                       })}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
                     />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Max Pages Per Story</label>
+                  <label className="text-xs font-bold uppercase tracking-widest text-white/35">Max Pages Per Story</label>
                   <input 
                     type="number" 
                     value={subscriptionSettings.premium.maxPagesPerStory}
@@ -1011,12 +1011,12 @@ export default function HeadAdminPanel() {
                       ...subscriptionSettings,
                       premium: { ...subscriptionSettings.premium, maxPagesPerStory: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                     })}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                    className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
                   />
                 </div>
                 <div className="grid grid-cols-3 gap-4">
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Tokens/Month</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Tokens/Month</label>
                     <input
                       type="number"
                       value={subscriptionSettings.premium.tokensPerMonth ?? 0}
@@ -1024,11 +1024,11 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         premium: { ...subscriptionSettings.premium, tokensPerMonth: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                       })}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Create Cost</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Create Cost</label>
                     <input
                       type="number"
                       value={subscriptionSettings.premium.bookTokenCost ?? 0}
@@ -1036,11 +1036,11 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         premium: { ...subscriptionSettings.premium, bookTokenCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                       })}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Edit Cost</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Edit Cost</label>
                     <input
                       type="number"
                       value={(subscriptionSettings.premium as any).editTokenCost ?? 0}
@@ -1048,15 +1048,15 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         premium: { ...subscriptionSettings.premium, editTokenCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                       })}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
                     />
                   </div>
                 </div>
                 <div className="pt-2">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">AI Operation Costs</p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-white/35 mb-3">AI Operation Costs</p>
                   <div className="grid grid-cols-3 gap-4">
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-gray-400">AI Script</label>
+                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">AI Script</label>
                       <input
                         type="number"
                         value={(subscriptionSettings.premium as any)?.aiScriptCost ?? 0}
@@ -1064,11 +1064,11 @@ export default function HeadAdminPanel() {
                           ...subscriptionSettings,
                           premium: { ...subscriptionSettings.premium, aiScriptCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                         })}
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                        className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-gray-400">AI Image</label>
+                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">AI Image</label>
                       <input
                         type="number"
                         value={(subscriptionSettings.premium as any)?.aiImageCost ?? 0}
@@ -1076,11 +1076,11 @@ export default function HeadAdminPanel() {
                           ...subscriptionSettings,
                           premium: { ...subscriptionSettings.premium, aiImageCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                         })}
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                        className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-gray-400">AI Enhance</label>
+                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">AI Enhance</label>
                       <input
                         type="number"
                         value={(subscriptionSettings.premium as any)?.aiEnhanceCost ?? 0}
@@ -1088,7 +1088,7 @@ export default function HeadAdminPanel() {
                           ...subscriptionSettings,
                           premium: { ...subscriptionSettings.premium, aiEnhanceCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                         })}
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                        className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
                       />
                     </div>
                   </div>
@@ -1097,16 +1097,16 @@ export default function HeadAdminPanel() {
             </div>
 
             {/* Ultimate Tier */}
-            <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm space-y-8">
+            <div className="bg-[#111] p-6 rounded-2xl border border-white/[0.07] space-y-8">
               <div className="flex items-center gap-3">
                 <Zap className="text-red-500" />
-                <h3 className="text-xl font-bold">Ultimate Tier Settings</h3>
+                <h3 className="text-xl font-bold text-white/90">Ultimate Tier Settings</h3>
               </div>
               
               <div className="space-y-6">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Monthly Price ($)</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Monthly Price ($)</label>
                     <input 
                       type="number" step="0.01"
                       value={subscriptionSettings.ultimate?.monthlyPrice ?? 20}
@@ -1114,11 +1114,11 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         ultimate: { ...subscriptionSettings.ultimate, monthlyPrice: (v => isNaN(v) ? 0 : v)(parseFloat(e.target.value)) }
                       })}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Yearly Price ($)</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Yearly Price ($)</label>
                     <input 
                       type="number" step="0.01"
                       value={subscriptionSettings.ultimate?.yearlyPrice ?? 200}
@@ -1126,12 +1126,12 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         ultimate: { ...subscriptionSettings.ultimate, yearlyPrice: (v => isNaN(v) ? 0 : v)(parseFloat(e.target.value)) }
                       })}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
                     />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Max Pages Per Story</label>
+                  <label className="text-xs font-bold uppercase tracking-widest text-white/35">Max Pages Per Story</label>
                   <input 
                     type="number" 
                     value={subscriptionSettings.ultimate?.maxPagesPerStory ?? 100}
@@ -1139,12 +1139,12 @@ export default function HeadAdminPanel() {
                       ...subscriptionSettings,
                       ultimate: { ...subscriptionSettings.ultimate, maxPagesPerStory: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                     })}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                    className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
                   />
                 </div>
                 <div className="grid grid-cols-3 gap-4">
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Tokens/Month</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Tokens/Month</label>
                     <input
                       type="number"
                       value={subscriptionSettings.ultimate?.tokensPerMonth ?? 0}
@@ -1152,11 +1152,11 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         ultimate: { ...subscriptionSettings.ultimate, tokensPerMonth: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                       })}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Create Cost</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Create Cost</label>
                     <input
                       type="number"
                       value={subscriptionSettings.ultimate?.bookTokenCost ?? 0}
@@ -1164,11 +1164,11 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         ultimate: { ...subscriptionSettings.ultimate, bookTokenCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                       })}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Edit Cost</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Edit Cost</label>
                     <input
                       type="number"
                       value={(subscriptionSettings.ultimate as any)?.editTokenCost ?? 0}
@@ -1176,15 +1176,15 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         ultimate: { ...subscriptionSettings.ultimate, editTokenCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                       })}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
                     />
                   </div>
                 </div>
                 <div className="pt-2">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">AI Operation Costs</p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-white/35 mb-3">AI Operation Costs</p>
                   <div className="grid grid-cols-3 gap-4">
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-gray-400">AI Script</label>
+                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">AI Script</label>
                       <input
                         type="number"
                         value={(subscriptionSettings.ultimate as any)?.aiScriptCost ?? 0}
@@ -1192,11 +1192,11 @@ export default function HeadAdminPanel() {
                           ...subscriptionSettings,
                           ultimate: { ...subscriptionSettings.ultimate, aiScriptCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                         })}
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                        className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-gray-400">AI Image</label>
+                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">AI Image</label>
                       <input
                         type="number"
                         value={(subscriptionSettings.ultimate as any)?.aiImageCost ?? 0}
@@ -1204,11 +1204,11 @@ export default function HeadAdminPanel() {
                           ...subscriptionSettings,
                           ultimate: { ...subscriptionSettings.ultimate, aiImageCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                         })}
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                        className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-gray-400">AI Enhance</label>
+                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">AI Enhance</label>
                       <input
                         type="number"
                         value={(subscriptionSettings.ultimate as any)?.aiEnhanceCost ?? 0}
@@ -1216,7 +1216,7 @@ export default function HeadAdminPanel() {
                           ...subscriptionSettings,
                           ultimate: { ...subscriptionSettings.ultimate, aiEnhanceCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                         })}
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                        className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
                       />
                     </div>
                   </div>
@@ -1229,45 +1229,45 @@ export default function HeadAdminPanel() {
 
       {activeTab === 'settings' && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm space-y-6">
+          <div className="bg-[#111] p-6 rounded-2xl border border-white/[0.07] space-y-6">
             <div className="flex items-center gap-3 mb-2">
               <Settings className="text-gold" />
-              <h3 className="text-xl font-bold">Global Configuration</h3>
+              <h3 className="text-xl font-bold text-white/90">Global Configuration</h3>
             </div>
-            
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl">
+
+            <div className="flex items-center justify-between p-4 bg-white/[0.03] rounded-2xl">
               <div className="flex items-center gap-3">
                 <AlertTriangle className="text-amber-500" />
                 <div>
-                  <div className="font-bold">Maintenance Mode</div>
-                  <div className="text-xs text-gray-500">Restrict access to the app</div>
+                  <div className="font-bold text-white/90">Maintenance Mode</div>
+                  <div className="text-xs text-white/40">Restrict access to the app</div>
                 </div>
               </div>
               <button 
                 onClick={() => updateGlobalSettings({ maintenanceMode: !globalSettings.maintenanceMode })}
-                className={cn("w-12 h-6 rounded-full transition-all relative", globalSettings.maintenanceMode ? "bg-red-500" : "bg-gray-200")}
+                className={cn("w-12 h-6 rounded-full transition-all relative", globalSettings.maintenanceMode ? "bg-red-500" : "bg-white/[0.12]")}
               >
                 <div className={cn("absolute top-1 w-4 h-4 bg-white rounded-full transition-all", globalSettings.maintenanceMode ? "right-1" : "left-1")} />
               </button>
             </div>
 
-            <div className="space-y-3 pt-4 border-t border-gray-100">
-              <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Terms and Conditions</label>
-              <textarea 
+            <div className="space-y-3 pt-4 border-t border-white/[0.07]">
+              <label className="text-xs font-bold uppercase tracking-widest text-white/35">Terms and Conditions</label>
+              <textarea
                 value={globalSettings.termsOfConditions}
                 onChange={(e) => updateGlobalSettings({ termsOfConditions: e.target.value })}
-                className="w-full h-64 px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all font-serif text-sm resize-none"
+                className="w-full h-64 px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 placeholder:text-white/25 outline-none transition-all font-serif text-sm resize-none"
                 placeholder="Enter the long terms and conditions here..."
               />
-              <p className="text-[10px] text-gray-400 italic">This text will be displayed on the login page.</p>
+              <p className="text-[10px] text-white/35 italic">This text will be displayed on the login page.</p>
             </div>
           </div>
 
           {/* Branding Card */}
-          <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm space-y-6 md:col-span-2">
+          <div className="bg-[#111] p-6 rounded-2xl border border-white/[0.07] space-y-6 md:col-span-2">
             <div className="flex items-center gap-3 mb-2">
               <Sparkles className="text-gold" />
-              <h3 className="text-xl font-bold">App Branding</h3>
+              <h3 className="text-xl font-bold text-white/90">App Branding</h3>
             </div>
 
             {/* Live preview */}
@@ -1289,23 +1289,23 @@ export default function HeadAdminPanel() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-widest text-gray-400">App Name</label>
+                <label className="text-xs font-bold uppercase tracking-widest text-white/35">App Name</label>
                 <input
                   value={globalSettings.appName || 'StoryCraft'}
                   onChange={(e) => setGlobalSettings(prev => ({ ...prev, appName: e.target.value }))}
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all font-serif text-lg"
+                  className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 placeholder:text-white/25 outline-none transition-all font-serif text-lg"
                   placeholder="StoryCraft"
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-widest text-gray-400">App Icon (emoji or image URL)</label>
+                <label className="text-xs font-bold uppercase tracking-widest text-white/35">App Icon (emoji or image URL)</label>
                 <input
                   value={globalSettings.appIcon || ''}
                   onChange={(e) => setGlobalSettings(prev => ({ ...prev, appIcon: e.target.value }))}
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold/50 outline-none transition-all"
+                  className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 placeholder:text-white/25 outline-none transition-all"
                   placeholder="✨  or  https://example.com/icon.png"
                 />
-                <p className="text-[10px] text-gray-400 italic">Enter an emoji like ✨ or a direct image URL</p>
+                <p className="text-[10px] text-white/35 italic">Enter an emoji like ✨ or a direct image URL</p>
               </div>
             </div>
 
@@ -1318,105 +1318,105 @@ export default function HeadAdminPanel() {
             </button>
           </div>
 
-          <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm space-y-6">
+          <div className="bg-[#111] p-6 rounded-2xl border border-white/[0.07] space-y-6">
             <div className="flex items-center gap-3 mb-2">
               <Zap className="text-gold" />
-              <h3 className="text-xl font-bold">UI & Visuals</h3>
+              <h3 className="text-xl font-bold text-white/90">UI & Visuals</h3>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl">
+              <div className="flex items-center justify-between p-4 bg-white/[0.03] rounded-2xl">
                 <div>
-                  <div className="font-bold text-sm">Ambient Particles</div>
-                  <div className="text-[10px] text-gray-500">Floating dust & magic</div>
+                  <div className="font-bold text-sm text-white/90">Ambient Particles</div>
+                  <div className="text-[10px] text-white/40">Floating dust & magic</div>
                 </div>
                 <button 
                   onClick={() => updateGlobalSettings({ 
                     uiSettings: { ...(globalSettings.uiSettings || defaultUISettings), showParticles: !(globalSettings.uiSettings?.showParticles ?? true) } 
                   })}
-                  className={cn("w-10 h-5 rounded-full transition-all relative", (globalSettings.uiSettings?.showParticles ?? true) ? "bg-gold" : "bg-gray-200")}
+                  className={cn("w-10 h-5 rounded-full transition-all relative", (globalSettings.uiSettings?.showParticles ?? true) ? "bg-gold" : "bg-white/[0.12]")}
                 >
                   <div className={cn("absolute top-0.5 w-4 h-4 bg-white rounded-full transition-all", (globalSettings.uiSettings?.showParticles ?? true) ? "right-0.5" : "left-0.5")} />
                 </button>
               </div>
 
-              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl">
+              <div className="flex items-center justify-between p-4 bg-white/[0.03] rounded-2xl">
                 <div>
-                  <div className="font-bold text-sm">Film Grain</div>
-                  <div className="text-[10px] text-gray-500">Subtle texture overlay</div>
+                  <div className="font-bold text-sm text-white/90">Film Grain</div>
+                  <div className="text-[10px] text-white/40">Subtle texture overlay</div>
                 </div>
                 <button 
                   onClick={() => updateGlobalSettings({ 
                     uiSettings: { ...(globalSettings.uiSettings || defaultUISettings), showGrain: !(globalSettings.uiSettings?.showGrain ?? true) } 
                   })}
-                  className={cn("w-10 h-5 rounded-full transition-all relative", (globalSettings.uiSettings?.showGrain ?? true) ? "bg-gold" : "bg-gray-200")}
+                  className={cn("w-10 h-5 rounded-full transition-all relative", (globalSettings.uiSettings?.showGrain ?? true) ? "bg-gold" : "bg-white/[0.12]")}
                 >
                   <div className={cn("absolute top-0.5 w-4 h-4 bg-white rounded-full transition-all", (globalSettings.uiSettings?.showGrain ?? true) ? "right-0.5" : "left-0.5")} />
                 </button>
               </div>
 
-              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl">
+              <div className="flex items-center justify-between p-4 bg-white/[0.03] rounded-2xl">
                 <div>
-                  <div className="font-bold text-sm">Vignette</div>
-                  <div className="text-[10px] text-gray-500">Soft dark edges</div>
+                  <div className="font-bold text-sm text-white/90">Vignette</div>
+                  <div className="text-[10px] text-white/40">Soft dark edges</div>
                 </div>
                 <button 
                   onClick={() => updateGlobalSettings({ 
                     uiSettings: { ...(globalSettings.uiSettings || defaultUISettings), showVignette: !(globalSettings.uiSettings?.showVignette ?? true) } 
                   })}
-                  className={cn("w-10 h-5 rounded-full transition-all relative", (globalSettings.uiSettings?.showVignette ?? true) ? "bg-gold" : "bg-gray-200")}
+                  className={cn("w-10 h-5 rounded-full transition-all relative", (globalSettings.uiSettings?.showVignette ?? true) ? "bg-gold" : "bg-white/[0.12]")}
                 >
                   <div className={cn("absolute top-0.5 w-4 h-4 bg-white rounded-full transition-all", (globalSettings.uiSettings?.showVignette ?? true) ? "right-0.5" : "left-0.5")} />
                 </button>
               </div>
 
-              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl">
+              <div className="flex items-center justify-between p-4 bg-white/[0.03] rounded-2xl">
                 <div>
-                  <div className="font-bold text-sm">Animations</div>
-                  <div className="text-[10px] text-gray-500">Global micro-interactions</div>
+                  <div className="font-bold text-sm text-white/90">Animations</div>
+                  <div className="text-[10px] text-white/40">Global micro-interactions</div>
                 </div>
                 <button 
                   onClick={() => updateGlobalSettings({ 
                     uiSettings: { ...(globalSettings.uiSettings || defaultUISettings), animationsEnabled: !(globalSettings.uiSettings?.animationsEnabled ?? true) } 
                   })}
-                  className={cn("w-10 h-5 rounded-full transition-all relative", (globalSettings.uiSettings?.animationsEnabled ?? true) ? "bg-gold" : "bg-gray-200")}
+                  className={cn("w-10 h-5 rounded-full transition-all relative", (globalSettings.uiSettings?.animationsEnabled ?? true) ? "bg-gold" : "bg-white/[0.12]")}
                 >
                   <div className={cn("absolute top-0.5 w-4 h-4 bg-white rounded-full transition-all", (globalSettings.uiSettings?.animationsEnabled ?? true) ? "right-0.5" : "left-0.5")} />
                 </button>
               </div>
             </div>
 
-            <div className="space-y-4 pt-4 border-t border-gray-100">
+            <div className="space-y-4 pt-4 border-t border-white/[0.07]">
               <div className="space-y-2">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Primary Color (Gold)</label>
+                <label className="text-[10px] font-bold uppercase tracking-widest text-white/35">Primary Color (Gold)</label>
                 <div className="flex gap-2">
-                  <input 
-                    type="color" 
+                  <input
+                    type="color"
                     value={globalSettings.uiSettings?.primaryColor || '#d4af37'}
-                    onChange={(e) => updateGlobalSettings({ 
-                      uiSettings: { ...(globalSettings.uiSettings || defaultUISettings), primaryColor: e.target.value } 
+                    onChange={(e) => updateGlobalSettings({
+                      uiSettings: { ...(globalSettings.uiSettings || defaultUISettings), primaryColor: e.target.value }
                     })}
                     className="w-10 h-10 rounded-xl cursor-pointer border-none bg-transparent"
                   />
-                  <input 
+                  <input
                     type="text"
                     value={globalSettings.uiSettings?.primaryColor || '#d4af37'}
-                    onChange={(e) => updateGlobalSettings({ 
-                      uiSettings: { ...(globalSettings.uiSettings || defaultUISettings), primaryColor: e.target.value } 
+                    onChange={(e) => updateGlobalSettings({
+                      uiSettings: { ...(globalSettings.uiSettings || defaultUISettings), primaryColor: e.target.value }
                     })}
-                    className="flex-1 px-4 py-2 bg-gray-50 border border-gray-100 rounded-xl outline-none font-mono text-xs"
+                    className="flex-1 px-4 py-2 bg-white/[0.05] border border-white/[0.09] rounded-xl text-white/90 outline-none font-mono text-xs"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Main Font Family</label>
-                <select 
+                <label className="text-[10px] font-bold uppercase tracking-widest text-white/35">Main Font Family</label>
+                <select
                   value={globalSettings.uiSettings?.fontFamily || 'serif'}
-                  onChange={(e) => updateGlobalSettings({ 
-                    uiSettings: { ...(globalSettings.uiSettings || defaultUISettings), fontFamily: e.target.value } 
+                  onChange={(e) => updateGlobalSettings({
+                    uiSettings: { ...(globalSettings.uiSettings || defaultUISettings), fontFamily: e.target.value }
                   })}
-                  className="w-full px-4 py-2 bg-gray-50 border border-gray-100 rounded-xl outline-none text-sm"
+                  className="w-full px-4 py-2 bg-white/[0.05] border border-white/[0.09] rounded-xl text-white/90 outline-none text-sm"
                 >
                   <option value="serif">Classic Serif (Cormorant)</option>
                   <option value="sans">Modern Sans (Inter)</option>
@@ -1427,19 +1427,19 @@ export default function HeadAdminPanel() {
             </div>
           </div>
 
-          <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm space-y-6">
+          <div className="bg-[#111] p-6 rounded-2xl border border-white/[0.07] space-y-6">
             <div className="flex items-center gap-3 mb-2">
               <Zap className="text-gold" />
-              <h3 className="text-xl font-bold">Platform Stats</h3>
+              <h3 className="text-xl font-bold text-white/90">Platform Stats</h3>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="p-6 bg-gold/10 rounded-2xl border border-gold/20">
                 <div className="text-xs font-bold text-gold/60 uppercase tracking-widest mb-1">Total Users</div>
                 <div className="text-3xl font-serif font-bold text-gold">{users.length}</div>
               </div>
-              <div className="p-6 bg-blue-50 rounded-2xl border border-blue-100">
+              <div className="p-6 bg-blue-500/10 rounded-2xl border border-blue-500/20">
                 <div className="text-xs font-bold text-blue-400 uppercase tracking-widest mb-1">Stories Forged</div>
-                <div className="text-3xl font-serif font-bold text-blue-600">{stories.length}</div>
+                <div className="text-3xl font-serif font-bold text-blue-400">{stories.length}</div>
               </div>
             </div>
           </div>
@@ -1448,16 +1448,16 @@ export default function HeadAdminPanel() {
 
       {activeTab === 'codes' && (
         <div className="space-y-6">
-          <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm">
+          <div className="bg-[#111] p-6 rounded-2xl border border-white/[0.07]">
             <div className="flex items-center justify-between mb-8">
               <div>
-                <h3 className="text-2xl font-serif font-bold">Subscription Codes</h3>
-                <p className="text-sm text-gray-500">Generate 12-digit codes for manual subscription redemption</p>
+                <h3 className="text-2xl font-serif font-bold text-white/90">Subscription Codes</h3>
+                <p className="text-sm text-white/40">Generate 12-digit codes for manual subscription redemption</p>
               </div>
               <div className="flex gap-3">
-                <button 
+                <button
                   onClick={() => generateSubscriptionCode('standard')}
-                  className="px-6 py-2 bg-blue-50 text-blue-600 rounded-xl font-bold text-xs hover:bg-blue-100 transition-all"
+                  className="px-6 py-2 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-xl font-bold text-xs hover:bg-blue-500/20 transition-all"
                 >
                   + Standard Code
                 </button>
@@ -1479,7 +1479,7 @@ export default function HeadAdminPanel() {
             <div className="overflow-x-auto">
               <table className="w-full text-left">
                 <thead>
-                  <tr className="text-xs font-bold uppercase tracking-widest text-gray-400 border-b border-gray-50">
+                  <tr className="text-xs font-bold uppercase tracking-widest text-white/35 border-b border-white/[0.06]">
                     <th className="pb-4 px-4">Code</th>
                     <th className="pb-4 px-4">Tier</th>
                     <th className="pb-4 px-4">Status</th>
@@ -1488,9 +1488,9 @@ export default function HeadAdminPanel() {
                     <th className="pb-4 px-4 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-50">
+                <tbody className="divide-y divide-white/[0.04]">
                   {subscriptionCodes.map((code) => (
-                    <tr key={code.id} className="group hover:bg-gray-50/50 transition-all">
+                    <tr key={code.id} className="group hover:bg-white/[0.02] transition-all">
                       <td className="py-4 px-4">
                         <span className="font-mono font-bold text-lg tracking-wider">{code.code}</span>
                       </td>
@@ -1499,39 +1499,39 @@ export default function HeadAdminPanel() {
                           "px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest",
                           code.tier === 'ultimate' ? "bg-gold/20 text-gold" :
                           code.tier === 'premium' ? "bg-gold/10 text-gold" :
-                          "bg-blue-100 text-blue-600"
+                          "bg-blue-500/10 text-blue-400 border border-blue-500/20"
                         )}>
                           {code.tier}
                         </span>
                       </td>
                       <td className="py-4 px-4">
                         {code.isUsed ? (
-                          <span className="flex items-center gap-2 text-green-600 text-xs font-bold">
+                          <span className="flex items-center gap-2 text-green-400 text-xs font-bold">
                             <CheckCircle size={14} />
                             Redeemed
                           </span>
                         ) : (
-                          <span className="flex items-center gap-2 text-amber-600 text-xs font-bold">
+                          <span className="flex items-center gap-2 text-amber-400 text-xs font-bold">
                             <Clock size={14} />
                             Active
                           </span>
                         )}
                       </td>
-                      <td className="py-4 px-4 text-xs text-gray-500">
+                      <td className="py-4 px-4 text-xs text-white/40">
                         {code.isUsed ? (
                           <div className="flex flex-col">
-                            <span className="font-bold text-gray-900">{users.find(u => u.uid === code.usedBy)?.displayName || 'Unknown User'}</span>
+                            <span className="font-bold text-white/90">{users.find(u => u.uid === code.usedBy)?.displayName || 'Unknown User'}</span>
                             <span>{new Date(code.usedAt!).toLocaleDateString()}</span>
                           </div>
                         ) : '-'}
                       </td>
-                      <td className="py-4 px-4 text-xs text-gray-500">
+                      <td className="py-4 px-4 text-xs text-white/40">
                         {new Date(code.createdAt).toLocaleDateString()}
                       </td>
                       <td className="py-4 px-4 text-right">
                         <button 
                           onClick={() => deleteSubscriptionCode(code.id)}
-                          className="p-2 text-gray-300 hover:text-red-500 transition-colors"
+                          className="p-2 text-white/25 hover:text-red-400 transition-colors"
                         >
                           <Trash2 size={16} />
                         </button>
@@ -1598,8 +1598,8 @@ export default function HeadAdminPanel() {
                 <div
                   key={key}
                   className={cn(
-                    "bg-white rounded-[2rem] border-2 p-8 space-y-6 transition-all",
-                    provider.enabled ? "border-gold/30 shadow-lg shadow-gold/5" : "border-gray-100"
+                    "bg-[#111] rounded-2xl border-2 p-6 space-y-6 transition-all",
+                    provider.enabled ? "border-gold/30 shadow-lg shadow-gold/5" : "border-white/[0.07]"
                   )}
                 >
                   {/* Card Header */}
@@ -1607,7 +1607,7 @@ export default function HeadAdminPanel() {
                     <div className="flex items-center gap-4">
                       <div className={cn(
                         "w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-lg",
-                        provider.enabled ? "bg-gold/10 text-gold" : "bg-gray-100 text-gray-400"
+                        provider.enabled ? "bg-gold/10 text-gold" : "bg-white/[0.06] text-white/40"
                       )}>
                         {key === 'gemini' && '✦'}
                         {key === 'openai' && '⊛'}
@@ -1617,19 +1617,19 @@ export default function HeadAdminPanel() {
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
-                          <h4 className="text-lg font-bold">{provider.name}</h4>
+                          <h4 className="text-lg font-bold text-white/90">{provider.name}</h4>
                           {isActiveText && (
                             <span className="text-[8px] bg-gold/10 text-gold font-bold px-2 py-0.5 rounded-full border border-gold/20 uppercase tracking-widest">
                               Text
                             </span>
                           )}
                           {isActiveImage && (
-                            <span className="text-[8px] bg-blue-50 text-blue-600 font-bold px-2 py-0.5 rounded-full border border-blue-100 uppercase tracking-widest">
+                            <span className="text-[8px] bg-blue-500/10 text-blue-400 font-bold px-2 py-0.5 rounded-full border border-blue-500/20 uppercase tracking-widest">
                               Image
                             </span>
                           )}
                         </div>
-                        <p className="text-xs text-gray-400 mt-0.5">{provider.description}</p>
+                        <p className="text-xs text-white/35 mt-0.5">{provider.description}</p>
                       </div>
                     </div>
                     {/* Enable Toggle */}
@@ -1639,7 +1639,7 @@ export default function HeadAdminPanel() {
                         "flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all",
                         provider.enabled
                           ? "bg-gold/10 text-gold hover:bg-gold/20"
-                          : "bg-gray-100 text-gray-400 hover:bg-gray-200"
+                          : "bg-white/[0.06] text-white/40 hover:bg-white/[0.1]"
                       )}
                     >
                       {provider.enabled ? <ToggleRight size={16} /> : <ToggleLeft size={16} />}
@@ -1649,7 +1649,7 @@ export default function HeadAdminPanel() {
 
                   {/* API Key */}
                   <div className="space-y-2">
-                    <label className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                    <label className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-white/35">
                       <Key size={12} />
                       API Key
                     </label>
@@ -1659,12 +1659,12 @@ export default function HeadAdminPanel() {
                         value={provider.apiKey}
                         onChange={(e) => updateProvider(key, 'apiKey', e.target.value)}
                         placeholder={`Enter your ${provider.name} API key...`}
-                        className="w-full pr-12 pl-4 py-3 bg-gray-50 border border-gray-100 rounded-xl font-mono text-sm outline-none focus:border-gold/40 focus:bg-gold/5 transition-all placeholder:text-gray-300"
+                        className="w-full pr-12 pl-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl font-mono text-sm text-white/90 placeholder:text-white/25 outline-none focus:border-gold/40 transition-all"
                       />
                       <button
                         type="button"
                         onClick={() => setVisibleKeys(prev => ({ ...prev, [key]: !prev[key] }))}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 hover:text-gray-500 transition-colors"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-white/25 hover:text-white/60 transition-colors"
                       >
                         {showKey ? <EyeOff size={16} /> : <Eye size={16} />}
                       </button>
@@ -1678,7 +1678,7 @@ export default function HeadAdminPanel() {
 
                   {/* Model Selector */}
                   <div className="space-y-2">
-                    <label className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                    <label className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-white/35">
                       <Cpu size={12} />
                       Model
                     </label>
@@ -1686,21 +1686,21 @@ export default function HeadAdminPanel() {
                       <select
                         value={provider.model}
                         onChange={(e) => updateProvider(key, 'model', e.target.value)}
-                        className="w-full appearance-none px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-bold outline-none focus:border-gold/40 focus:bg-gold/5 transition-all"
+                        className="w-full appearance-none px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl text-sm font-bold text-white/90 outline-none focus:border-gold/40 transition-all"
                       >
                         {(AVAILABLE_MODELS[key] || []).map(m => (
-                          <option key={m} value={m}>{m}</option>
+                          <option key={m} value={m} className="text-black">{m}</option>
                         ))}
                       </select>
-                      <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                      <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/35 pointer-events-none" />
                     </div>
                   </div>
 
                   {/* Capabilities */}
-                  <div className="flex items-center gap-2 pt-2 border-t border-gray-50">
-                    <span className="text-[10px] uppercase tracking-widest text-gray-300 font-bold">Used for:</span>
+                  <div className="flex items-center gap-2 pt-2 border-t border-white/[0.06]">
+                    <span className="text-[10px] uppercase tracking-widest text-white/25 font-bold">Used for:</span>
                     {provider.usedFor.map((cap: string) => (
-                      <span key={cap} className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 bg-black/5 text-black/40 rounded-full">
+                      <span key={cap} className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 bg-white/[0.06] text-white/40 rounded-full">
                         {cap}
                       </span>
                     ))}
@@ -1750,10 +1750,10 @@ export default function HeadAdminPanel() {
               <Sparkles size={20} />
             </div>
             <div className="space-y-1">
-              <p className="text-sm font-bold text-night">How this works</p>
-              <p className="text-[13px] text-black/50 leading-relaxed">
+              <p className="text-sm font-bold text-white/90">How this works</p>
+              <p className="text-[13px] text-white/50 leading-relaxed">
                 When users add images to their story pages they can pick from <strong className="text-gold">Unsplash</strong>, <strong className="text-gold">Pexels</strong>, or <strong className="text-gold">Pixabay</strong> using the API keys you add below.
-                <strong className="text-night"> Vecteezy</strong> and <strong className="text-night">Pinterest</strong> open in a new tab (no key needed).
+                <strong className="text-white/80"> Vecteezy</strong> and <strong className="text-white/80">Pinterest</strong> open in a new tab (no key needed).
                 Free API keys are available on each service's website.
               </p>
             </div>
@@ -1793,8 +1793,8 @@ export default function HeadAdminPanel() {
                 <div
                   key={key}
                   className={cn(
-                    "bg-white rounded-[2rem] border-2 p-8 space-y-6 transition-all",
-                    service.enabled ? "border-gold/30 shadow-lg shadow-gold/5" : "border-gray-100"
+                    "bg-[#111] rounded-2xl border-2 p-6 space-y-6 transition-all",
+                    service.enabled ? "border-gold/30 shadow-lg shadow-gold/5" : "border-white/[0.07]"
                   )}
                 >
                   {/* Card Header */}
@@ -1807,7 +1807,7 @@ export default function HeadAdminPanel() {
                         {logo}
                       </div>
                       <div>
-                        <h4 className="text-lg font-bold">{name}</h4>
+                        <h4 className="text-lg font-bold text-white/90">{name}</h4>
                         <a
                           href={docsUrl}
                           target="_blank"
@@ -1826,7 +1826,7 @@ export default function HeadAdminPanel() {
                         "flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all",
                         service.enabled
                           ? "bg-gold/10 text-gold hover:bg-gold/20"
-                          : "bg-gray-100 text-gray-400 hover:bg-gray-200"
+                          : "bg-white/[0.06] text-white/40 hover:bg-white/[0.1]"
                       )}
                     >
                       {service.enabled ? <ToggleRight size={16} /> : <ToggleLeft size={16} />}
@@ -1834,11 +1834,11 @@ export default function HeadAdminPanel() {
                     </button>
                   </div>
 
-                  <p className="text-xs text-gray-400 leading-relaxed">{desc}</p>
+                  <p className="text-xs text-white/35 leading-relaxed">{desc}</p>
 
                   {/* API Key */}
                   <div className="space-y-2">
-                    <label className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                    <label className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-white/35">
                       <Key size={12} />
                       API Key
                     </label>
@@ -1848,12 +1848,12 @@ export default function HeadAdminPanel() {
                         value={service.apiKey}
                         onChange={(e) => updatePhotoService(key, 'apiKey', e.target.value)}
                         placeholder={`Paste your ${name} API key…`}
-                        className="w-full pr-12 pl-4 py-3 bg-gray-50 border border-gray-100 rounded-xl font-mono text-sm outline-none focus:border-gold/40 focus:bg-gold/5 transition-all placeholder:text-gray-300"
+                        className="w-full pr-12 pl-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl font-mono text-sm text-white/90 placeholder:text-white/25 outline-none focus:border-gold/40 transition-all"
                       />
                       <button
                         type="button"
                         onClick={() => setVisiblePhotoKeys(prev => ({ ...prev, [key]: !prev[key] }))}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 hover:text-gray-500 transition-colors"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-white/25 hover:text-white/60 transition-colors"
                       >
                         {showKey ? <EyeOff size={16} /> : <Eye size={16} />}
                       </button>
@@ -1870,9 +1870,9 @@ export default function HeadAdminPanel() {
           </div>
 
           {/* External services info */}
-          <div className="bg-white rounded-[2rem] border border-gray-100 p-8 space-y-4">
-            <h4 className="text-lg font-bold text-night flex items-center gap-3">
-              <span className="w-8 h-8 bg-black/5 rounded-xl flex items-center justify-center text-sm">🔗</span>
+          <div className="bg-[#111] rounded-2xl border border-white/[0.07] p-6 space-y-4">
+            <h4 className="text-lg font-bold text-white/90 flex items-center gap-3">
+              <span className="w-8 h-8 bg-white/[0.06] rounded-xl flex items-center justify-center text-sm">🔗</span>
               External Browse (No API Key Required)
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1880,16 +1880,16 @@ export default function HeadAdminPanel() {
                 { name: 'Vecteezy', color: '#FF5F5F', desc: 'Free vectors, photos, and videos. Opens in a new tab.' },
                 { name: 'Pinterest', color: '#E60023', desc: 'Visual discovery platform. Opens in a new tab.' },
               ].map(s => (
-                <div key={s.name} className="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl">
+                <div key={s.name} className="flex items-center gap-4 p-4 bg-white/[0.03] rounded-2xl">
                   <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white text-sm font-bold shadow" style={{ backgroundColor: s.color }}>
                     {s.name[0]}
                   </div>
                   <div>
-                    <p className="text-sm font-bold">{s.name}</p>
-                    <p className="text-xs text-gray-400">{s.desc}</p>
+                    <p className="text-sm font-bold text-white/90">{s.name}</p>
+                    <p className="text-xs text-white/35">{s.desc}</p>
                   </div>
                   <div className="ml-auto">
-                    <span className="text-[10px] font-bold bg-green-100 text-green-600 px-2 py-1 rounded-full uppercase tracking-widest">Always On</span>
+                    <span className="text-[10px] font-bold bg-green-500/10 text-green-400 border border-green-500/20 px-2 py-1 rounded-full uppercase tracking-widest">Always On</span>
                   </div>
                 </div>
               ))}
@@ -1918,39 +1918,39 @@ export default function HeadAdminPanel() {
         <div className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Terms of Conditions */}
-            <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm">
+            <div className="bg-[#111] p-6 rounded-2xl border border-white/[0.07]">
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-12 h-12 rounded-2xl bg-gold/10 text-gold flex items-center justify-center">
                   <FileText size={24} />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-serif font-bold">Terms of Conditions</h3>
-                  <p className="text-sm text-gray-500">Manage legal terms of use</p>
+                  <h3 className="text-2xl font-serif font-bold text-white/90">Terms of Conditions</h3>
+                  <p className="text-sm text-white/40">Manage legal terms of use</p>
                 </div>
               </div>
-              <textarea 
+              <textarea
                 value={globalSettings.termsOfConditions}
                 onChange={(e) => setGlobalSettings({ ...globalSettings, termsOfConditions: e.target.value })}
-                className="w-full h-[500px] bg-gray-50 rounded-2xl p-6 text-sm font-light leading-relaxed outline-none focus:ring-2 focus:ring-gold/20 resize-none custom-scrollbar"
+                className="w-full h-[500px] bg-white/[0.05] border border-white/[0.09] rounded-2xl p-6 text-sm text-white/80 font-light leading-relaxed outline-none focus:border-gold/40 focus:ring-0 resize-none custom-scrollbar placeholder:text-white/25"
                 placeholder="Enter terms of conditions..."
               />
             </div>
 
             {/* Privacy Policy */}
-            <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm">
+            <div className="bg-[#111] p-6 rounded-2xl border border-white/[0.07]">
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                <div className="w-12 h-12 rounded-2xl bg-blue-500/10 text-blue-400 flex items-center justify-center">
                   <Shield size={24} />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-serif font-bold">Privacy Policy</h3>
-                  <p className="text-sm text-gray-500">Manage data privacy policy</p>
+                  <h3 className="text-2xl font-serif font-bold text-white/90">Privacy Policy</h3>
+                  <p className="text-sm text-white/40">Manage data privacy policy</p>
                 </div>
               </div>
-              <textarea 
+              <textarea
                 value={globalSettings.privacyPolicy}
                 onChange={(e) => setGlobalSettings({ ...globalSettings, privacyPolicy: e.target.value })}
-                className="w-full h-[500px] bg-gray-50 rounded-2xl p-6 text-sm font-light leading-relaxed outline-none focus:ring-2 focus:ring-gold/20 resize-none custom-scrollbar"
+                className="w-full h-[500px] bg-white/[0.05] border border-white/[0.09] rounded-2xl p-6 text-sm text-white/80 font-light leading-relaxed outline-none focus:border-gold/40 focus:ring-0 resize-none custom-scrollbar placeholder:text-white/25"
                 placeholder="Enter privacy policy..."
               />
             </div>

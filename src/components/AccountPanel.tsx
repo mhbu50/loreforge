@@ -147,10 +147,10 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
   ];
 
   const tierColors: Record<SubscriptionTier, string> = {
-    free: 'text-black/50 bg-black/5 border-black/10',
-    standard: 'text-blue-600 bg-blue-50 border-blue-100',
+    free: 'text-white/40 bg-white/[0.05] border-white/[0.08]',
+    standard: 'text-blue-400 bg-blue-500/10 border-blue-500/20',
     premium: 'text-gold bg-gold/10 border-gold/20',
-    ultimate: 'text-purple-600 bg-purple-50 border-purple-100',
+    ultimate: 'text-purple-400 bg-purple-500/10 border-purple-500/20',
   };
 
   const tierIcons: Record<SubscriptionTier, React.ReactNode> = {
@@ -177,14 +177,14 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
         transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-        className="relative w-full max-w-2xl bg-white rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[92vh]"
+        className="relative w-full max-w-2xl bg-[#111] border border-white/[0.08] rounded-2xl shadow-2xl shadow-black/60 overflow-hidden flex flex-col max-h-[92vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Gold top bar */}
         <div className="h-1 w-full bg-gradient-to-r from-transparent via-gold to-transparent" />
 
         {/* Header */}
-        <div className="flex items-center justify-between px-8 pt-7 pb-5 border-b border-black/5 flex-shrink-0">
+        <div className="flex items-center justify-between px-8 pt-7 pb-5 border-b border-white/[0.06] flex-shrink-0">
           <div className="flex items-center gap-4">
             {/* Avatar */}
             <div
@@ -193,28 +193,28 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
               onClick={() => setShowEmojiPicker(!showEmojiPicker)}
             >
               {avatarEmoji || userProfile.displayName?.[0]?.toUpperCase() || 'U'}
-              <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-white rounded-full flex items-center justify-center shadow-sm">
-                <Edit3 size={10} className="text-black/40" />
+              <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-[#111] rounded-full flex items-center justify-center shadow-sm">
+                <Edit3 size={10} className="text-white/30" />
               </div>
             </div>
             <div>
-              <div className="font-serif font-bold text-lg leading-tight">{userProfile.displayName}</div>
+              <div className="font-serif font-bold text-lg leading-tight text-white/90">{userProfile.displayName}</div>
               <div className="flex items-center gap-2 mt-0.5">
                 <span className={cn('inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest border', tierColors[userProfile.subscriptionTier])}>
                   {tierIcons[userProfile.subscriptionTier]}
                   {userProfile.subscriptionTier}
                 </span>
-                <span className="text-[10px] text-black/30 font-medium">{userProfile.email}</span>
+                <span className="text-[10px] text-white/30 font-medium">{userProfile.email}</span>
               </div>
             </div>
           </div>
-          <button onClick={onClose} className="p-2.5 hover:bg-black/5 rounded-xl transition-all text-black/30 hover:text-black">
+          <button onClick={onClose} className="p-2.5 hover:bg-white/[0.06] rounded-xl transition-all text-white/30 hover:text-white/80">
             <X size={20} />
           </button>
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-1 px-8 pt-4 border-b border-black/5 flex-shrink-0">
+        <div className="flex gap-1 px-8 pt-4 border-b border-white/[0.06] flex-shrink-0">
           {TABS.map(tab => (
             <button
               key={tab.id}
@@ -222,8 +222,8 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
               className={cn(
                 'flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all mb-[-1px]',
                 activeTab === tab.id
-                  ? 'bg-black text-white'
-                  : 'text-black/35 hover:bg-black/5 hover:text-black/70'
+                  ? 'bg-gold/15 text-gold border border-gold/25'
+                  : 'text-white/35 hover:bg-white/[0.05] hover:text-white/60'
               )}
             >
               {tab.icon}
@@ -246,8 +246,8 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                 className="p-8 space-y-8"
               >
                 {/* Avatar customization */}
-                <div className="bg-black/[0.02] rounded-2xl p-6 border border-black/5">
-                  <h3 className="text-xs font-bold uppercase tracking-widest text-black/40 mb-5">Avatar</h3>
+                <div className="bg-white/[0.03] rounded-2xl p-6 border border-white/[0.06]">
+                  <h3 className="text-xs font-bold uppercase tracking-widest text-white/40 mb-5">Avatar</h3>
                   <div className="flex items-start gap-6">
                     <div
                       className="w-20 h-20 rounded-2xl flex items-center justify-center text-3xl shadow-md flex-shrink-0 cursor-pointer hover:scale-105 transition-transform border-2 border-black/5"
@@ -259,33 +259,33 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
 
                     <div className="flex-1 space-y-4">
                       <div>
-                        <p className="text-xs font-bold text-black/40 mb-2">Background Color</p>
+                        <p className="text-xs font-bold text-white/40 mb-2">Background Color</p>
                         <div className="flex flex-wrap gap-2">
                           {AVATAR_COLORS.map(c => (
                             <button
                               key={c}
                               onClick={() => setAvatarColor(c)}
-                              className={cn('w-7 h-7 rounded-xl transition-transform hover:scale-110', avatarColor === c && 'ring-2 ring-offset-1 ring-black/30 scale-110')}
+                              className={cn('w-7 h-7 rounded-xl transition-transform hover:scale-110', avatarColor === c && 'ring-2 ring-offset-1 ring-white/30 scale-110')}
                               style={{ backgroundColor: c }}
                             />
                           ))}
                         </div>
                       </div>
                       <div>
-                        <p className="text-xs font-bold text-black/40 mb-2">Emoji</p>
+                        <p className="text-xs font-bold text-white/40 mb-2">Emoji</p>
                         <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto">
                           {AVATAR_EMOJIS.map(e => (
                             <button
                               key={e}
                               onClick={() => setAvatarEmoji(e)}
-                              className={cn('w-8 h-8 rounded-lg text-lg hover:bg-black/5 transition-all flex items-center justify-center', avatarEmoji === e && 'bg-gold/20 ring-1 ring-gold/40')}
+                              className={cn('w-8 h-8 rounded-lg text-lg hover:bg-white/[0.06] transition-all flex items-center justify-center', avatarEmoji === e && 'bg-gold/20 ring-1 ring-gold/40')}
                             >
                               {e}
                             </button>
                           ))}
                           <button
                             onClick={() => setAvatarEmoji('')}
-                            className={cn('w-8 h-8 rounded-lg text-[10px] font-bold text-black/30 hover:bg-black/5 transition-all', !avatarEmoji && 'bg-black/5')}
+                            className={cn('w-8 h-8 rounded-lg text-[10px] font-bold text-white/40 hover:bg-white/[0.06] transition-all', !avatarEmoji && 'bg-white/[0.06]')}
                           >
                             A
                           </button>
@@ -297,7 +297,7 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
 
                 {/* Display Name */}
                 <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase tracking-widest text-black/40">Display Name</label>
+                  <label className="text-xs font-bold uppercase tracking-widest text-white/40">Display Name</label>
                   <div className="flex items-center gap-3">
                     {editingName ? (
                       <input
@@ -305,17 +305,17 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                         value={displayName}
                         onChange={e => setDisplayName(e.target.value)}
                         onKeyDown={e => e.key === 'Enter' && saveProfile()}
-                        className="flex-1 px-4 py-3 bg-black/5 border border-black/10 rounded-xl outline-none focus:border-gold/40 text-sm font-medium"
+                        className="flex-1 px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl outline-none focus:border-gold/40 text-white/90 text-sm font-medium placeholder:text-white/25"
                         maxLength={40}
                       />
                     ) : (
-                      <div className="flex-1 px-4 py-3 bg-black/[0.02] border border-black/5 rounded-xl text-sm font-medium text-black/70">
+                      <div className="flex-1 px-4 py-3 bg-white/[0.03] border border-white/[0.06] rounded-xl text-sm font-medium text-white/60">
                         {displayName}
                       </div>
                     )}
                     <button
                       onClick={() => editingName ? saveProfile() : setEditingName(true)}
-                      className={cn('p-3 rounded-xl transition-all', editingName ? 'bg-gold text-night shadow-md shadow-gold/20' : 'bg-black/5 text-black/40 hover:bg-black/10')}
+                      className={cn('p-3 rounded-xl transition-all', editingName ? 'bg-gold text-night shadow-md shadow-gold/20' : 'bg-white/[0.06] text-white/40 hover:bg-white/[0.1]')}
                     >
                       {savingProfile ? <RefreshCw size={16} className="animate-spin" /> : editingName ? <Save size={16} /> : <Edit3 size={16} />}
                     </button>
@@ -324,26 +324,26 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
 
                 {/* Bio */}
                 <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase tracking-widest text-black/40">Bio</label>
+                  <label className="text-xs font-bold uppercase tracking-widest text-white/40">Bio</label>
                   <div className="flex gap-3">
                     {editingBio ? (
                       <textarea
                         autoFocus
                         value={bio}
                         onChange={e => setBio(e.target.value)}
-                        className="flex-1 px-4 py-3 bg-black/5 border border-black/10 rounded-xl outline-none focus:border-gold/40 text-sm resize-none"
+                        className="flex-1 px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl outline-none focus:border-gold/40 text-white/90 text-sm resize-none placeholder:text-white/25"
                         placeholder="Write a short bio..."
                         rows={3}
                         maxLength={160}
                       />
                     ) : (
-                      <div className="flex-1 px-4 py-3 bg-black/[0.02] border border-black/5 rounded-xl text-sm text-black/50 min-h-[80px]">
-                        {bio || <span className="italic text-black/25">No bio yet — tell your story...</span>}
+                      <div className="flex-1 px-4 py-3 bg-white/[0.03] border border-white/[0.06] rounded-xl text-sm text-white/50 min-h-[80px]">
+                        {bio || <span className="italic text-white/25">No bio yet — tell your story...</span>}
                       </div>
                     )}
                     <button
                       onClick={() => editingBio ? saveProfile() : setEditingBio(true)}
-                      className={cn('p-3 rounded-xl transition-all self-start', editingBio ? 'bg-gold text-night shadow-md shadow-gold/20' : 'bg-black/5 text-black/40 hover:bg-black/10')}
+                      className={cn('p-3 rounded-xl transition-all self-start', editingBio ? 'bg-gold text-night shadow-md shadow-gold/20' : 'bg-white/[0.06] text-white/40 hover:bg-white/[0.1]')}
                     >
                       {savingProfile ? <RefreshCw size={16} className="animate-spin" /> : editingBio ? <Save size={16} /> : <Edit3 size={16} />}
                     </button>
@@ -352,19 +352,19 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
 
                 {/* Stats */}
                 <div>
-                  <h3 className="text-xs font-bold uppercase tracking-widest text-black/40 mb-4">Stats</h3>
+                  <h3 className="text-xs font-bold uppercase tracking-widest text-white/40 mb-4">Stats</h3>
                   <div className="grid grid-cols-2 gap-3">
                     {[
-                      { icon: <BookOpen size={16} />, val: stories.length, label: 'Stories Forged', color: 'text-black' },
+                      { icon: <BookOpen size={16} />, val: stories.length, label: 'Stories Forged', color: 'text-white/80' },
                       { icon: <Flame size={16} />, val: userProfile.streak || 0, label: 'Day Streak', color: 'text-orange-500' },
                       { icon: <Zap size={16} />, val: userProfile.tokens || 0, label: 'Tokens Left', color: 'text-gold' },
-                      { icon: <TrendingUp size={16} />, val: stories.filter(s => s.isPublished).length, label: 'Published', color: 'text-green-600' },
+                      { icon: <TrendingUp size={16} />, val: stories.filter(s => s.isPublished).length, label: 'Published', color: 'text-green-400' },
                     ].map(stat => (
-                      <div key={stat.label} className="flex items-center gap-3 p-4 bg-black/[0.025] rounded-2xl border border-black/5">
+                      <div key={stat.label} className="flex items-center gap-3 p-4 bg-white/[0.03] rounded-2xl border border-white/[0.06]">
                         <div className={cn('flex-shrink-0', stat.color)}>{stat.icon}</div>
                         <div>
                           <div className={cn('text-2xl font-serif font-bold leading-none', stat.color)}>{stat.val}</div>
-                          <div className="text-[10px] font-bold uppercase tracking-wider text-black/30 mt-0.5">{stat.label}</div>
+                          <div className="text-[10px] font-bold uppercase tracking-wider text-white/30 mt-0.5">{stat.label}</div>
                         </div>
                       </div>
                     ))}
@@ -373,20 +373,20 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
 
                 {/* Badges */}
                 <div>
-                  <h3 className="text-xs font-bold uppercase tracking-widest text-black/40 mb-4">Achievements</h3>
+                  <h3 className="text-xs font-bold uppercase tracking-widest text-white/40 mb-4">Achievements</h3>
                   {userProfile.badges && userProfile.badges.length > 0 ? (
                     <div className="flex flex-wrap gap-2">
                       {userProfile.badges.map(badge => (
-                        <div key={badge} className="flex items-center gap-2 bg-gold/8 border border-gold/20 px-3 py-2 rounded-xl">
+                        <div key={badge} className="flex items-center gap-2 bg-gold/[0.08] border border-gold/20 px-3 py-2 rounded-xl">
                           <Award size={13} className="text-gold" />
-                          <span className="text-xs font-bold text-black/70">{badge}</span>
+                          <span className="text-xs font-bold text-white/70">{badge}</span>
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <div className="text-center py-6 bg-black/[0.02] rounded-2xl border border-dashed border-black/8">
-                      <Award size={24} className="text-black/15 mx-auto mb-2" />
-                      <p className="text-xs text-black/25 italic">No badges yet — keep crafting!</p>
+                    <div className="text-center py-6 bg-white/[0.02] rounded-2xl border border-dashed border-white/[0.08]">
+                      <Award size={24} className="text-white/15 mx-auto mb-2" />
+                      <p className="text-xs text-white/25 italic">No badges yet — keep crafting!</p>
                     </div>
                   )}
                 </div>
@@ -406,20 +406,20 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                 {/* Current Plan */}
                 <div className={cn(
                   'rounded-2xl p-6 border relative overflow-hidden',
-                  userProfile.subscriptionTier === 'ultimate' ? 'bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-100' :
-                  userProfile.subscriptionTier === 'premium' ? 'bg-gradient-to-br from-gold/8 to-amber-50 border-gold/20' :
-                  userProfile.subscriptionTier === 'standard' ? 'bg-gradient-to-br from-blue-50 to-sky-50 border-blue-100' :
-                  'bg-black/[0.02] border-black/8'
+                  userProfile.subscriptionTier === 'ultimate' ? 'bg-[#1a1020] border-purple-500/20' :
+                  userProfile.subscriptionTier === 'premium' ? 'bg-[#1a1600] border-gold/20' :
+                  userProfile.subscriptionTier === 'standard' ? 'bg-[#0d1520] border-blue-500/20' :
+                  'bg-white/[0.02] border-white/[0.06]'
                 )}>
                   <div className="flex items-start justify-between">
                     <div>
                       <div className="flex items-center gap-2 mb-1">
                         {tierIcons[userProfile.subscriptionTier]}
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-black/40">Current Plan</span>
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-white/40">Current Plan</span>
                       </div>
-                      <div className="text-3xl font-serif font-bold capitalize">{userProfile.subscriptionTier}</div>
+                      <div className="text-3xl font-serif font-bold capitalize text-white/90">{userProfile.subscriptionTier}</div>
                       {userProfile.subscriptionExpiresAt && userProfile.subscriptionTier !== 'free' && (
-                        <div className="flex items-center gap-1.5 mt-2 text-xs text-black/40">
+                        <div className="flex items-center gap-1.5 mt-2 text-xs text-white/40">
                           <Calendar size={12} />
                           <span>Renews {new Date(userProfile.subscriptionExpiresAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                         </div>
@@ -427,7 +427,7 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                     </div>
                     {userProfile.subscriptionTier !== 'free' && (
                       <div className={cn('px-3 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-widest border',
-                        userProfile.subscriptionStatus === 'active' ? 'bg-green-50 text-green-600 border-green-100' : 'bg-red-50 text-red-500 border-red-100'
+                        userProfile.subscriptionStatus === 'active' ? 'bg-green-500/10 text-green-400 border-green-500/20' : 'bg-red-500/10 text-red-400 border-red-500/20'
                       )}>
                         {userProfile.subscriptionStatus || 'active'}
                       </div>
@@ -435,12 +435,12 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                   </div>
 
                   {/* Token usage bar */}
-                  <div className="mt-5 pt-5 border-t border-black/8">
+                  <div className="mt-5 pt-5 border-t border-white/[0.08]">
                     <div className="flex justify-between items-center mb-2">
-                      <span className="text-xs font-bold text-black/40 uppercase tracking-wider">Token Balance</span>
-                      <span className="text-sm font-bold text-gold">{userProfile.tokens || 0} <span className="text-black/30 font-normal">/ {limits.tokensPerMonth} per month</span></span>
+                      <span className="text-xs font-bold text-white/40 uppercase tracking-wider">Token Balance</span>
+                      <span className="text-sm font-bold text-gold">{userProfile.tokens || 0} <span className="text-white/25 font-normal">/ {limits.tokensPerMonth} per month</span></span>
                     </div>
-                    <div className="h-2 bg-black/8 rounded-full overflow-hidden">
+                    <div className="h-2 bg-white/[0.08] rounded-full overflow-hidden">
                       <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: `${Math.min(((userProfile.tokens || 0) / limits.tokensPerMonth) * 100, 100)}%` }}
@@ -449,7 +449,7 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                       />
                     </div>
                     {userProfile.lastTokenRefill && (
-                      <div className="flex items-center gap-1 mt-2 text-[10px] text-black/25">
+                      <div className="flex items-center gap-1 mt-2 text-[10px] text-white/20">
                         <Clock size={10} />
                         <span>Last refill: {new Date(userProfile.lastTokenRefill).toLocaleDateString()}</span>
                       </div>
@@ -458,8 +458,8 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                 </div>
 
                 {/* Token cost summary */}
-                <div className="bg-black/[0.02] rounded-2xl p-5 border border-black/5">
-                  <h3 className="text-xs font-bold uppercase tracking-widest text-black/40 mb-4">Your Token Costs</h3>
+                <div className="bg-white/[0.03] rounded-2xl p-5 border border-white/[0.06]">
+                  <h3 className="text-xs font-bold uppercase tracking-widest text-white/40 mb-4">Your Token Costs</h3>
                   <div className="space-y-2.5">
                     {[
                       { label: 'Create Story', val: limits.bookTokenCost || 1 },
@@ -468,8 +468,8 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                       { label: 'AI Image (per image)', val: (limits as any).aiImageCost ?? 1 },
                       { label: 'AI Text Enhance', val: (limits as any).aiEnhanceCost ?? 0 },
                     ].map(item => (
-                      <div key={item.label} className="flex items-center justify-between py-1.5 border-b border-black/5 last:border-0">
-                        <span className="text-sm text-black/50">{item.label}</span>
+                      <div key={item.label} className="flex items-center justify-between py-1.5 border-b border-white/[0.06] last:border-0">
+                        <span className="text-sm text-white/50">{item.label}</span>
                         <span className={cn('text-sm font-bold', item.val === 0 ? 'text-green-600' : 'text-gold')}>
                           {item.val === 0 ? 'Free' : `${item.val} token${item.val !== 1 ? 's' : ''}`}
                         </span>
@@ -482,14 +482,14 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                 {userProfile.subscriptionTier !== 'ultimate' && (
                   <div>
                     <div className="flex items-center justify-between mb-5">
-                      <h3 className="text-xs font-bold uppercase tracking-widest text-black/40">Upgrade Plan</h3>
+                      <h3 className="text-xs font-bold uppercase tracking-widest text-white/40">Upgrade Plan</h3>
                       {/* Monthly / Yearly toggle */}
-                      <div className="flex items-center gap-1 p-1 bg-black/5 rounded-xl">
+                      <div className="flex items-center gap-1 p-1 bg-white/[0.05] rounded-xl">
                         {(['monthly', 'yearly'] as const).map(c => (
                           <button
                             key={c}
                             onClick={() => setBillingCycle(c)}
-                            className={cn('px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all', billingCycle === c ? 'bg-black text-white' : 'text-black/40')}
+                            className={cn('px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all', billingCycle === c ? 'bg-[#1a1a1a] text-white' : 'text-white/35')}
                           >
                             {c}
                             {c === 'yearly' && <span className="ml-1 text-green-500">−20%</span>}
@@ -516,19 +516,19 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                           return (
                             <div key={tier} className={cn(
                               'flex items-center justify-between p-5 rounded-2xl border transition-all cursor-pointer group hover:border-gold/30 hover:bg-gold/[0.02]',
-                              tier === 'premium' ? 'border-gold/25 bg-gold/[0.03]' : 'border-black/8 bg-black/[0.01]'
+                              tier === 'premium' ? 'border-gold/25 bg-gold/[0.03]' : 'border-white/[0.07] bg-white/[0.02]'
                             )}>
                               <div>
                                 <div className="flex items-center gap-2 mb-1">
                                   {tier === 'premium' && <div className="px-2 py-0.5 bg-gold text-night text-[9px] font-bold uppercase tracking-widest rounded-full">Popular</div>}
-                                  <span className="font-serif font-bold capitalize text-base">{tier}</span>
+                                  <span className="font-serif font-bold capitalize text-base text-white/90">{tier}</span>
                                 </div>
-                                <p className="text-xs text-black/40">{highlights[tier]}</p>
+                                <p className="text-xs text-white/35">{highlights[tier]}</p>
                               </div>
                               <div className="flex items-center gap-4">
                                 <div className="text-right">
-                                  <div className="text-xl font-bold">${price}</div>
-                                  <div className="text-[9px] text-black/30 uppercase tracking-wider">/ month</div>
+                                  <div className="text-xl font-bold text-white/90">${price}</div>
+                                  <div className="text-[9px] text-white/25 uppercase tracking-wider">/ month</div>
                                 </div>
                                 <button
                                   onClick={onUpgrade}
@@ -536,7 +536,7 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                                     'px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all',
                                     tier === 'premium'
                                       ? 'bg-gold text-night shadow-md shadow-gold/20 hover:bg-gold/90'
-                                      : 'bg-black text-white hover:bg-gold hover:text-night'
+                                      : 'bg-white/[0.1] text-white/90 hover:bg-gold hover:text-night'
                                   )}
                                 >
                                   Upgrade
@@ -553,18 +553,18 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                 {/* Redeem code */}
                 <button
                   onClick={onRedeem}
-                  className="w-full flex items-center justify-between p-5 bg-black/[0.02] border border-black/8 rounded-2xl hover:border-gold/25 hover:bg-gold/[0.02] transition-all group"
+                  className="w-full flex items-center justify-between p-5 bg-white/[0.02] border border-white/[0.07] rounded-2xl hover:border-gold/25 hover:bg-gold/[0.02] transition-all group"
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-gold/10 text-gold flex items-center justify-center group-hover:bg-gold group-hover:text-night transition-all">
                       <Ticket size={18} />
                     </div>
                     <div className="text-left">
-                      <div className="font-bold text-sm">Redeem a Code</div>
-                      <div className="text-xs text-black/35">Enter a subscription or bonus token code</div>
+                      <div className="font-bold text-sm text-white/90">Redeem a Code</div>
+                      <div className="text-xs text-white/35">Enter a subscription or bonus token code</div>
                     </div>
                   </div>
-                  <ChevronRight size={18} className="text-black/25 group-hover:text-gold transition-colors" />
+                  <ChevronRight size={18} className="text-white/20 group-hover:text-gold transition-colors" />
                 </button>
               </motion.div>
             )}
@@ -580,15 +580,15 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                 className="p-8 space-y-6"
               >
                 {/* Appearance */}
-                <div className="bg-black/[0.02] rounded-2xl p-6 border border-black/5 space-y-4">
-                  <h3 className="text-xs font-bold uppercase tracking-widest text-black/40">Appearance</h3>
+                <div className="bg-white/[0.03] rounded-2xl p-6 border border-white/[0.06] space-y-4">
+                  <h3 className="text-xs font-bold uppercase tracking-widest text-white/40">Appearance</h3>
 
-                  <div className="flex items-center justify-between py-3 border-b border-black/5">
+                  <div className="flex items-center justify-between py-3 border-b border-white/[0.06]">
                     <div className="flex items-center gap-3">
-                      {theme === 'dark' ? <Moon size={18} className="text-gold" /> : <Sun size={18} className="text-black/50" />}
+                      {theme === 'dark' ? <Moon size={18} className="text-gold" /> : <Sun size={18} className="text-white/50" />}
                       <div>
-                        <div className="text-sm font-bold">Theme</div>
-                        <div className="text-xs text-black/35">{theme === 'dark' ? 'Dark mode active' : 'Light mode active'}</div>
+                        <div className="text-sm font-bold text-white/90">Theme</div>
+                        <div className="text-xs text-white/35">{theme === 'dark' ? 'Dark mode active' : 'Light mode active'}</div>
                       </div>
                     </div>
                     <button
@@ -607,19 +607,19 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                 </div>
 
                 {/* Notifications */}
-                <div className="bg-black/[0.02] rounded-2xl p-6 border border-black/5 space-y-4">
-                  <h3 className="text-xs font-bold uppercase tracking-widest text-black/40">Notifications</h3>
+                <div className="bg-white/[0.03] rounded-2xl p-6 border border-white/[0.06] space-y-4">
+                  <h3 className="text-xs font-bold uppercase tracking-widest text-white/40">Notifications</h3>
 
                   {[
                     { key: 'notificationsEnabled', label: 'In-App Notifications', desc: 'Toast alerts for actions and updates', icon: <Bell size={16} />, val: notificationsEnabled, set: setNotificationsEnabled },
                     { key: 'emailNotifications', label: 'Email Notifications', desc: 'Receive updates via email', icon: <Mail size={16} />, val: emailNotifications, set: setEmailNotifications },
                   ].map(item => (
-                    <div key={item.key} className="flex items-center justify-between py-3 border-b border-black/5 last:border-0">
+                    <div key={item.key} className="flex items-center justify-between py-3 border-b border-white/[0.06] last:border-0">
                       <div className="flex items-center gap-3">
-                        <div className="text-black/40">{item.icon}</div>
+                        <div className="text-white/40">{item.icon}</div>
                         <div>
-                          <div className="text-sm font-bold">{item.label}</div>
-                          <div className="text-xs text-black/35">{item.desc}</div>
+                          <div className="text-sm font-bold text-white/90">{item.label}</div>
+                          <div className="text-xs text-white/35">{item.desc}</div>
                         </div>
                       </div>
                       <button
@@ -637,7 +637,7 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
 
                 <button
                   onClick={savePreferences}
-                  className="w-full py-3.5 bg-black text-white rounded-xl font-bold hover:bg-gold hover:text-night transition-all text-sm flex items-center justify-center gap-2"
+                  className="w-full py-3.5 bg-black text-white rounded-xl font-bold hover:bg-gold hover:text-night transition-all text-sm flex items-center justify-center gap-2 rounded-xl"
                 >
                   <Save size={16} />
                   Save Preferences
@@ -656,39 +656,39 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                 className="p-8 space-y-6"
               >
                 {/* Account info */}
-                <div className="bg-black/[0.02] rounded-2xl p-6 border border-black/5">
-                  <h3 className="text-xs font-bold uppercase tracking-widest text-black/40 mb-4">Account Info</h3>
+                <div className="bg-white/[0.03] rounded-2xl p-6 border border-white/[0.06]">
+                  <h3 className="text-xs font-bold uppercase tracking-widest text-white/35 mb-4">Account Info</h3>
                   <div className="space-y-3">
-                    <div className="flex items-center justify-between py-3 border-b border-black/5">
+                    <div className="flex items-center justify-between py-3 border-b border-white/[0.06]">
                       <div className="flex items-center gap-3">
-                        <Mail size={16} className="text-black/35" />
+                        <Mail size={16} className="text-white/35" />
                         <div>
-                          <div className="text-sm font-bold">Email</div>
-                          <div className="text-xs text-black/35">{userProfile.email}</div>
+                          <div className="text-sm font-bold text-white/90">Email</div>
+                          <div className="text-xs text-white/35">{userProfile.email}</div>
                         </div>
                       </div>
-                      <div className="flex items-center gap-1.5 px-2 py-1 bg-green-50 rounded-lg">
-                        <Check size={11} className="text-green-600" />
-                        <span className="text-[10px] font-bold text-green-600 uppercase tracking-wider">Verified</span>
+                      <div className="flex items-center gap-1.5 px-2 py-1 bg-green-500/10 border border-green-500/20 rounded-lg">
+                        <Check size={11} className="text-green-400" />
+                        <span className="text-[10px] font-bold text-green-400 uppercase tracking-wider">Verified</span>
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between py-3 border-b border-black/5">
+                    <div className="flex items-center justify-between py-3 border-b border-white/[0.06]">
                       <div className="flex items-center gap-3">
-                        <Lock size={16} className="text-black/35" />
+                        <Lock size={16} className="text-white/35" />
                         <div>
-                          <div className="text-sm font-bold">Sign-in Method</div>
-                          <div className="text-xs text-black/35">{isGoogleUser ? 'Google Account' : 'Email & Password'}</div>
+                          <div className="text-sm font-bold text-white/90">Sign-in Method</div>
+                          <div className="text-xs text-white/35">{isGoogleUser ? 'Google Account' : 'Email & Password'}</div>
                         </div>
                       </div>
                     </div>
 
                     <div className="flex items-center justify-between py-3">
                       <div className="flex items-center gap-3">
-                        <Calendar size={16} className="text-black/35" />
+                        <Calendar size={16} className="text-white/35" />
                         <div>
-                          <div className="text-sm font-bold">Member Since</div>
-                          <div className="text-xs text-black/35">{new Date(userProfile.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</div>
+                          <div className="text-sm font-bold text-white/90">Member Since</div>
+                          <div className="text-xs text-white/35">{new Date(userProfile.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</div>
                         </div>
                       </div>
                     </div>
@@ -697,35 +697,35 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
 
                 {/* Change Password (email users only) */}
                 {!isGoogleUser && (
-                  <div className="bg-black/[0.02] rounded-2xl p-6 border border-black/5">
-                    <h3 className="text-xs font-bold uppercase tracking-widest text-black/40 mb-4">Change Password</h3>
+                  <div className="bg-white/[0.03] rounded-2xl p-6 border border-white/[0.06]">
+                    <h3 className="text-xs font-bold uppercase tracking-widest text-white/40 mb-4">Change Password</h3>
                     <div className="space-y-3">
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold uppercase tracking-widest text-black/35">Current Password</label>
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-white/35">Current Password</label>
                         <div className="relative">
                           <input
                             type={showNewPw ? 'text' : 'password'}
                             value={currentPassword}
                             onChange={e => setCurrentPassword(e.target.value)}
-                            className="w-full px-4 py-3 bg-black/5 border border-black/8 rounded-xl outline-none focus:border-gold/40 text-sm pr-10"
+                            className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl outline-none focus:border-gold/40 text-white/90 text-sm pr-10 placeholder:text-white/25"
                             placeholder="••••••••"
                           />
                         </div>
                       </div>
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold uppercase tracking-widest text-black/35">New Password</label>
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-white/35">New Password</label>
                         <div className="relative">
                           <input
                             type={showNewPw ? 'text' : 'password'}
                             value={newPassword}
                             onChange={e => setNewPassword(e.target.value)}
-                            className="w-full px-4 py-3 bg-black/5 border border-black/8 rounded-xl outline-none focus:border-gold/40 text-sm pr-10"
+                            className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl outline-none focus:border-gold/40 text-white/90 text-sm pr-10 placeholder:text-white/25"
                             placeholder="Min. 6 characters"
                           />
                           <button
                             type="button"
                             onClick={() => setShowNewPw(p => !p)}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-black/25 hover:text-black/50"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-white/25 hover:text-white/50"
                           >
                             {showNewPw ? <EyeOff size={15} /> : <Eye size={15} />}
                           </button>
@@ -746,20 +746,20 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                 {/* Sign Out */}
                 <button
                   onClick={() => { onClose(); auth.signOut(); }}
-                  className="w-full flex items-center gap-3 p-5 bg-black/[0.02] border border-black/8 rounded-2xl hover:bg-red-50 hover:border-red-100 transition-all group"
+                  className="w-full flex items-center gap-3 p-5 bg-white/[0.03] border border-white/[0.07] rounded-2xl hover:bg-red-500/10 hover:border-red-500/20 transition-all group"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-black/5 text-black/40 flex items-center justify-center group-hover:bg-red-100 group-hover:text-red-500 transition-all flex-shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-white/[0.05] text-white/40 flex items-center justify-center group-hover:bg-red-500/15 group-hover:text-red-400 transition-all flex-shrink-0">
                     <LogOut size={18} />
                   </div>
                   <div className="text-left">
-                    <div className="font-bold text-sm group-hover:text-red-600 transition-colors">Sign Out</div>
-                    <div className="text-xs text-black/35">Sign out of your account</div>
+                    <div className="font-bold text-sm text-white/80 group-hover:text-red-400 transition-colors">Sign Out</div>
+                    <div className="text-xs text-white/35">Sign out of your account</div>
                   </div>
-                  <ChevronRight size={16} className="text-black/20 ml-auto group-hover:text-red-400 transition-colors" />
+                  <ChevronRight size={16} className="text-white/20 ml-auto group-hover:text-red-400 transition-colors" />
                 </button>
 
                 {/* Danger Zone */}
-                <div className="bg-red-50/50 rounded-2xl p-6 border border-red-100">
+                <div className="bg-red-500/[0.05] rounded-2xl p-6 border border-red-500/15">
                   <div className="flex items-center gap-2 mb-4">
                     <AlertTriangle size={16} className="text-red-500" />
                     <h3 className="text-xs font-bold uppercase tracking-widest text-red-400">Danger Zone</h3>
@@ -768,13 +768,13 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                   {!showDeleteConfirm ? (
                     <button
                       onClick={() => setShowDeleteConfirm(true)}
-                      className="w-full flex items-center justify-between p-4 bg-white border border-red-100 rounded-xl hover:border-red-300 hover:bg-red-50 transition-all group"
+                      className="w-full flex items-center justify-between p-4 bg-white/[0.04] border border-red-500/20 rounded-xl hover:border-red-500/40 hover:bg-red-500/10 transition-all group"
                     >
                       <div className="flex items-center gap-3">
                         <Trash2 size={16} className="text-red-400" />
                         <div className="text-left">
-                          <div className="text-sm font-bold text-red-500">Delete Account</div>
-                          <div className="text-xs text-red-300">Permanently delete your account and all data</div>
+                          <div className="text-sm font-bold text-red-400">Delete Account</div>
+                          <div className="text-xs text-red-400/60">Permanently delete your account and all data</div>
                         </div>
                       </div>
                       <ChevronRight size={16} className="text-red-300" />
@@ -788,13 +788,13 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                         autoFocus
                         value={deleteConfirmText}
                         onChange={e => setDeleteConfirmText(e.target.value)}
-                        className="w-full px-4 py-3 bg-white border border-red-200 rounded-xl outline-none focus:border-red-400 text-sm font-mono"
+                        className="w-full px-4 py-3 bg-white/[0.04] border border-red-500/20 rounded-xl outline-none focus:border-red-400 text-white/90 text-sm font-mono placeholder:text-white/25"
                         placeholder="Type DELETE to confirm"
                       />
                       <div className="flex gap-2">
                         <button
                           onClick={() => { setShowDeleteConfirm(false); setDeleteConfirmText(''); }}
-                          className="flex-1 py-3 bg-white border border-black/10 rounded-xl text-sm font-bold text-black/50 hover:bg-black/5 transition-all"
+                          className="flex-1 py-3 bg-white/[0.05] border border-white/[0.08] rounded-xl text-sm font-bold text-white/50 hover:bg-white/[0.08] transition-all"
                         >
                           Cancel
                         </button>

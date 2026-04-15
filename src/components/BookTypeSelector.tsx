@@ -92,7 +92,7 @@ export default function BookTypeSelector({ onSelect, onCancel }: BookTypeSelecto
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.9, y: 20 }}
         transition={{ type: 'spring', damping: 24, stiffness: 200 }}
-        className="relative w-full max-w-5xl bg-[#0d0d0d] border border-white/8 rounded-[2.5rem] p-12 shadow-2xl overflow-hidden"
+        className="relative w-full max-w-5xl bg-[#0d0d0d] border border-white/[0.08] rounded-[2rem] p-10 shadow-2xl overflow-hidden"
       >
         {/* Gold top accent line */}
         <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-gold/0 via-gold to-gold/0" />
@@ -109,21 +109,21 @@ export default function BookTypeSelector({ onSelect, onCancel }: BookTypeSelecto
           </div>
           <button
             onClick={onCancel}
-            className="p-3 hover:bg-white/8 rounded-2xl transition-all text-white/40 hover:text-white mt-1"
+            className="p-2.5 hover:bg-white/[0.06] rounded-xl transition-all text-white/40 hover:text-white/80 mt-1"
           >
             <X size={22} />
           </button>
         </div>
 
         {/* Type Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
           {types.map((type) => (
             <motion.button
               key={type.id}
               whileHover={{ y: -6, scale: 1.02 }}
               whileTap={{ scale: 0.97 }}
               onClick={() => onSelect(type.id)}
-              className="group relative flex flex-col items-start text-left p-8 rounded-[2rem] border-2 border-white/8 bg-white/5 hover:border-gold/40 hover:bg-gold/5 transition-all cursor-pointer overflow-hidden"
+              className="group relative flex flex-col items-start text-left p-6 rounded-2xl border border-white/[0.08] bg-[#161616] hover:border-gold/30 hover:bg-gold/[0.05] transition-all cursor-pointer overflow-hidden"
             >
               {/* Radial glow on hover */}
               <div
@@ -157,7 +157,7 @@ export default function BookTypeSelector({ onSelect, onCancel }: BookTypeSelecto
         </div>
 
         {/* Footer */}
-        <div className="mt-10 pt-8 border-t border-white/8 text-center">
+        <div className="mt-8 pt-6 border-t border-white/[0.06] text-center">
           <p className="text-xs text-white/25 italic">
             Each medium offers unique customization tools tailored to its format.
           </p>

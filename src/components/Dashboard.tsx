@@ -621,7 +621,7 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
   );
 
   return (
-    <div className="min-h-screen bg-paper text-ink flex selection:bg-gold selection:text-night overflow-hidden">
+    <div className="min-h-screen bg-[#080808] text-white/90 flex selection:bg-gold selection:text-[#080808] overflow-hidden">
       <div className="atmosphere opacity-[0.03]" />
       
       {/* Forging Overlay */}
@@ -721,94 +721,85 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
       <aside
         style={{ width: sidebarWidth }}
         className={cn(
-          "fixed left-0 top-0 bottom-0 bg-white border-r border-black/[0.06] z-[60] flex flex-col transition-transform duration-500",
+          "fixed left-0 top-0 bottom-0 bg-[#0d0d0d] border-r border-white/[0.06] z-[60] flex flex-col transition-transform duration-500",
           isZenMode && "-translate-x-full"
         )}
       >
         {/* Logo */}
-        <div className="p-6 flex items-center gap-3.5 border-b border-black/[0.06] group/logo cursor-pointer">
-          <div className="w-11 h-11 bg-night rounded-[14px] flex items-center justify-center text-gold shadow-xl shadow-gold/20 group-hover/logo:rotate-12 transition-transform duration-500 overflow-hidden flex-shrink-0">
+        <div className="h-16 px-5 flex items-center gap-3 border-b border-white/[0.06]">
+          <div className="w-8 h-8 bg-gold rounded-lg flex items-center justify-center text-[#080808] flex-shrink-0">
             {appIcon?.startsWith('http') ? (
-              <img src={appIcon} className="w-full h-full object-cover" alt="icon" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+              <img src={appIcon} className="w-full h-full object-cover rounded-lg" alt="icon" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
             ) : appIcon ? (
-              <span className="text-lg">{appIcon}</span>
+              <span className="text-sm">{appIcon}</span>
             ) : (
-              <Sparkles size={20} />
+              <Sparkles size={16} />
             )}
           </div>
-          <div>
-            <span className="text-base font-serif font-bold tracking-tight block">{appName}</span>
-            <span className="text-[9px] font-bold text-gold/70 uppercase tracking-[0.25em]">Creative Studio</span>
-          </div>
+          <span className="font-bold text-white/90 text-sm tracking-tight">{appName}</span>
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto custom-scrollbar">
-          {/* Section label */}
-          <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-black/20 px-4 pt-3 pb-2">Navigation</p>
+        <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
+          <p className="text-[9px] font-bold uppercase tracking-[0.25em] text-white/20 px-3 pt-3 pb-2">Menu</p>
           {([
-            { view: 'library', icon: <Layout size={16} />, label: 'Library' },
-            { view: 'workspace', icon: <Edit3 size={16} />, label: 'Workspace' },
-            { view: 'themes', icon: <Palette size={16} />, label: 'Themes' },
-            { view: 'forge-settings', icon: <SettingsIcon size={16} />, label: 'Settings' },
-            { view: 'support', icon: <LifeBuoy size={16} />, label: 'Support' },
-            { view: 'publish', icon: <Share2 size={16} />, label: 'Publish' },
+            { view: 'library', icon: <Layout size={15} />, label: 'Library' },
+            { view: 'workspace', icon: <Edit3 size={15} />, label: 'Workspace' },
+            { view: 'themes', icon: <Palette size={15} />, label: 'Themes' },
+            { view: 'forge-settings', icon: <SettingsIcon size={15} />, label: 'Settings' },
+            { view: 'support', icon: <LifeBuoy size={15} />, label: 'Support' },
+            { view: 'publish', icon: <Share2 size={15} />, label: 'Publish' },
           ] as const).map(({ view, icon, label }) => (
             <button
               key={view}
               onClick={() => { setCurrentStory(null); setIsCreating(false); setShowAdmin(false); setActiveView(view); }}
               className={cn(
-                "w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all group relative",
+                "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all text-left group relative",
                 activeView === view
-                  ? "bg-night text-white shadow-md shadow-black/15"
-                  : "text-black/40 hover:bg-black/[0.04] hover:text-black/70"
+                  ? "bg-gold/10 text-gold"
+                  : "text-white/35 hover:bg-white/[0.05] hover:text-white/70"
               )}
             >
               {activeView === view && (
-                <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-6 bg-gold rounded-r-full" />
+                <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-gold rounded-r-full" />
               )}
-              <span className={cn("transition-colors flex-shrink-0", activeView === view ? "text-gold" : "group-hover:text-black/50")}>
-                {icon}
-              </span>
-              <span className="text-[11px] font-bold tracking-[0.1em] uppercase">{label}</span>
-              {activeView === view && <span className="ml-auto w-1 h-1 bg-gold rounded-full opacity-60" />}
+              <span className="flex-shrink-0">{icon}</span>
+              <span className="text-[11px] font-semibold">{label}</span>
+              {activeView === view && <span className="ml-auto w-1 h-1 bg-gold rounded-full" />}
             </button>
           ))}
         </nav>
 
-        {/* Bottom controls */}
-        <div className="border-t border-black/[0.06] p-3 space-y-1">
-          {/* Theme toggle */}
+        {/* Bottom */}
+        <div className="p-3 border-t border-white/[0.06] space-y-1">
           <button
             onClick={onToggleTheme}
             className={cn(
-              "w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-[11px] font-bold uppercase tracking-[0.1em] transition-all",
+              "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[11px] font-semibold transition-all",
               theme === 'dark'
-                ? "bg-gold/15 text-gold hover:bg-gold/25"
-                : "text-black/30 hover:bg-black/[0.04] hover:text-black/60"
+                ? "bg-gold/10 text-gold"
+                : "text-white/30 hover:bg-white/[0.05] hover:text-white/60"
             )}
           >
-            {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
+            {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
             {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
           </button>
-
-          {/* User row */}
-          <div
+          <button
             onClick={() => setShowProfile(true)}
-            className="w-full flex items-center gap-3 px-3 py-3 rounded-xl group cursor-pointer hover:bg-black/[0.04] transition-all"
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/[0.05] transition-all group"
           >
             <div
-              className="w-9 h-9 rounded-xl flex items-center justify-center text-base font-bold flex-shrink-0 shadow-md"
-              style={{ backgroundColor: userProfile?.avatarColor || '#d4af37', color: '#0a0a0a' }}
+              className="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold flex-shrink-0 shadow-md"
+              style={{ backgroundColor: userProfile?.avatarColor || '#d4af37', color: '#080808' }}
             >
               {userProfile?.avatarEmoji || userProfile?.displayName?.[0]?.toUpperCase() || 'U'}
             </div>
-            <div className="flex-1 min-w-0">
-              <span className="block text-[12px] font-bold truncate leading-tight">{userProfile?.displayName}</span>
-              <span className="text-[10px] text-black/30 font-medium capitalize">{userProfile?.subscriptionTier || 'Free'} Plan</span>
+            <div className="flex-1 min-w-0 text-left">
+              <p className="text-[12px] font-semibold text-white/80 truncate leading-tight">{userProfile?.displayName}</p>
+              <p className="text-[10px] text-white/25 capitalize">{userProfile?.subscriptionTier || 'free'}</p>
             </div>
-            <ChevronRight size={13} className="text-black/20 group-hover:text-black/40 flex-shrink-0" />
-          </div>
+            <ChevronRight size={12} className="text-white/15 group-hover:text-white/40" />
+          </button>
         </div>
 
         {/* Resize Handle */}
@@ -818,67 +809,58 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
         />
       </aside>
 
-      <div className="flex-1 flex flex-col min-w-0 transition-all duration-500" style={{ marginLeft: isZenMode ? 0 : sidebarWidth }}>
+      <div className="flex-1 flex flex-col min-w-0 transition-all duration-500 bg-[#080808]" style={{ marginLeft: isZenMode ? 0 : sidebarWidth }}>
         {/* Header */}
         <header className={cn(
-          "h-16 border-b border-black/[0.06] bg-white/95 backdrop-blur-xl flex items-center justify-between px-8 sticky top-0 z-40 transition-all duration-500",
+          "h-14 border-b border-white/[0.06] bg-[#080808]/90 backdrop-blur-xl flex items-center justify-between px-8 sticky top-0 z-40 transition-all duration-500",
           isZenMode && "-translate-y-full"
         )}>
           {/* Left: breadcrumb */}
-          <div className="flex items-center gap-3">
-            <div className="w-7 h-7 bg-night rounded-lg flex items-center justify-center text-gold overflow-hidden flex-shrink-0">
-              {appIcon?.startsWith('http') ? (
-                <img src={appIcon} className="w-full h-full object-cover" alt="icon" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
-              ) : appIcon ? (
-                <span className="text-xs">{appIcon}</span>
-              ) : (
-                <Sparkles size={13} />
-              )}
-            </div>
-            <span className="text-sm font-serif font-bold text-black/60">{appName}</span>
-            <span className="text-black/20">/</span>
-            <span className="text-sm font-bold capitalize">{activeView.replace('-', ' ')}</span>
+          <div className="flex items-center gap-2 text-white/35 text-sm">
+            <span className="font-medium">{appName}</span>
+            <span>/</span>
+            <span className="text-white/70 font-semibold capitalize">{activeView.replace('-', ' ')}</span>
           </div>
 
           {/* Right: actions */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             {/* Token pill */}
             <div className="group relative">
-              <div className="flex items-center gap-2 px-4 py-2 bg-gold/8 rounded-xl border border-gold/15 hover:border-gold/30 transition-all cursor-help">
-                <Zap size={14} className="text-gold fill-gold" />
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-gold/[0.08] border border-gold/15 rounded-lg cursor-help hover:border-gold/30 transition-colors">
+                <Zap size={13} className="text-gold" />
                 <span className="text-sm font-bold text-gold">{userProfile?.tokens || 0}</span>
-                <span className="text-[9px] font-bold uppercase tracking-widest text-gold/50 hidden sm:block">tokens</span>
+                <span className="text-[9px] font-bold uppercase tracking-widest text-gold/40 hidden sm:block">tokens</span>
               </div>
               {/* Tooltip */}
-              <div className="absolute top-full right-0 mt-2 w-72 bg-night text-white p-5 rounded-2xl shadow-2xl opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all pointer-events-none z-50 border border-white/10">
+              <div className="absolute top-full right-0 mt-2 w-72 bg-[#111] text-white p-5 rounded-2xl shadow-2xl opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all pointer-events-none z-50 border border-white/[0.08]">
                 <div className="flex items-center gap-2 mb-3 text-gold">
                   <Sparkles size={14} />
                   <span className="text-[10px] font-bold uppercase tracking-widest">Token Costs</span>
                 </div>
                 <div className="space-y-2">
-                  <div className="flex justify-between items-center py-1.5 border-b border-white/5">
-                    <span className="text-xs opacity-60">Create Story</span>
+                  <div className="flex justify-between items-center py-1.5 border-b border-white/[0.06]">
+                    <span className="text-xs text-white/45">Create Story</span>
                     <span className="text-xs font-bold text-gold">{currentLimits.bookTokenCost || 1} Token{(currentLimits.bookTokenCost || 1) !== 1 ? 's' : ''}</span>
                   </div>
-                  <div className="flex justify-between items-center py-1.5 border-b border-white/5">
-                    <span className="text-xs opacity-60">Edit Story</span>
+                  <div className="flex justify-between items-center py-1.5 border-b border-white/[0.06]">
+                    <span className="text-xs text-white/45">Edit Story</span>
                     <span className="text-xs font-bold text-gold">{(currentLimits.editTokenCost ?? 0) === 0 ? 'Free' : `${currentLimits.editTokenCost} Token${currentLimits.editTokenCost !== 1 ? 's' : ''}`}</span>
                   </div>
-                  <div className="flex justify-between items-center py-1.5 border-b border-white/5">
-                    <span className="text-xs opacity-60">AI Script</span>
+                  <div className="flex justify-between items-center py-1.5 border-b border-white/[0.06]">
+                    <span className="text-xs text-white/45">AI Script</span>
                     <span className="text-xs font-bold text-gold">{(currentLimits.aiScriptCost ?? 1) === 0 ? 'Free' : `${currentLimits.aiScriptCost ?? 1} Token${(currentLimits.aiScriptCost ?? 1) !== 1 ? 's' : ''}`}</span>
                   </div>
-                  <div className="flex justify-between items-center py-1.5 border-b border-white/5">
-                    <span className="text-xs opacity-60">AI Image (per image)</span>
+                  <div className="flex justify-between items-center py-1.5 border-b border-white/[0.06]">
+                    <span className="text-xs text-white/45">AI Image (per image)</span>
                     <span className="text-xs font-bold text-gold">{(currentLimits.aiImageCost ?? 1) === 0 ? 'Free' : `${currentLimits.aiImageCost ?? 1} Token${(currentLimits.aiImageCost ?? 1) !== 1 ? 's' : ''}`}</span>
                   </div>
                   <div className="flex justify-between items-center py-1.5">
-                    <span className="text-xs opacity-60">AI Enhance</span>
+                    <span className="text-xs text-white/45">AI Enhance</span>
                     <span className="text-xs font-bold text-gold">{(currentLimits.aiEnhanceCost ?? 0) === 0 ? 'Free' : `${currentLimits.aiEnhanceCost} Token${currentLimits.aiEnhanceCost !== 1 ? 's' : ''}`}</span>
                   </div>
                 </div>
-                <div className="mt-3 pt-3 border-t border-white/5">
-                  <p className="text-[10px] opacity-35 leading-relaxed italic">Tokens refresh monthly. Costs set by admin.</p>
+                <div className="mt-3 pt-3 border-t border-white/[0.06]">
+                  <p className="text-[10px] text-white/25 leading-relaxed italic">Tokens refresh monthly. Costs set by admin.</p>
                 </div>
               </div>
             </div>
@@ -886,10 +868,11 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
             {isHeadAdmin && (
               <button
                 onClick={() => setShowAdmin(!showAdmin)}
-                className={cn("p-2.5 rounded-xl transition-all flex items-center gap-2", showAdmin ? "bg-gold text-night" : "bg-gold/10 text-gold hover:bg-gold/20")}
+                className={cn("flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all",
+                  showAdmin ? "bg-gold text-[#080808]" : "bg-white/[0.07] text-white/50 hover:bg-white/[0.12] hover:text-white/80 border border-white/[0.08]"
+                )}
               >
-                <Shield size={17} />
-                <span className="text-[10px] font-bold uppercase tracking-widest hidden md:inline">Admin</span>
+                <Shield size={13} /><span className="hidden md:inline">Admin</span>
               </button>
             )}
 
@@ -906,14 +889,13 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
                   );
                 }
               }}
-              className="flex items-center gap-2 px-5 py-2.5 bg-night text-white rounded-xl hover:bg-gold hover:text-night transition-all font-bold text-[12px] shadow-lg shadow-black/10"
+              className="flex items-center gap-1.5 px-4 py-2 bg-gold text-[#080808] rounded-lg font-bold text-xs hover:bg-white transition-all shadow-lg shadow-gold/15"
             >
-              <Plus size={16} />
-              <span>New Project</span>
+              <Plus size={14} /> New
             </button>
 
-            <button onClick={() => auth.signOut()} className="p-2.5 text-black/20 hover:text-black hover:bg-black/5 rounded-xl transition-all">
-              <LogOut size={17} />
+            <button onClick={() => auth.signOut()} className="p-2 text-white/20 hover:text-white/60 hover:bg-white/[0.06] rounded-lg transition-all">
+              <LogOut size={15} />
             </button>
           </div>
         </header>
@@ -963,14 +945,14 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
             >
               <button
                 onClick={() => { setShowSupportMenu(false); setActiveView('support'); }}
-                className="flex items-center gap-3 px-6 py-3 bg-white text-black rounded-2xl shadow-2xl border border-black/5 hover:bg-gold/10 hover:text-gold transition-all group"
+                className="flex items-center gap-3 px-6 py-3 bg-[#111] text-white/70 rounded-2xl shadow-2xl border border-white/[0.08] hover:bg-gold/10 hover:text-gold transition-all group"
               >
                 <Bug size={18} className="group-hover:animate-bounce" />
                 <span className="text-xs font-bold uppercase tracking-widest">Report Bug</span>
               </button>
               <button
                 onClick={() => { setShowSupportMenu(false); setActiveView('support'); }}
-                className="flex items-center gap-3 px-6 py-3 bg-white text-black rounded-2xl shadow-2xl border border-black/5 hover:bg-gold/10 hover:text-gold transition-all group"
+                className="flex items-center gap-3 px-6 py-3 bg-[#111] text-white/70 rounded-2xl shadow-2xl border border-white/[0.08] hover:bg-gold/10 hover:text-gold transition-all group"
               >
                 <MessageSquare size={18} className="group-hover:animate-bounce" />
                 <span className="text-xs font-bold uppercase tracking-widest">Suggestion</span>
@@ -981,11 +963,11 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
         <button
           onClick={() => setShowSupportMenu(!showSupportMenu)}
           className={cn(
-            "w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-all hover:scale-110 active:scale-95",
-            showSupportMenu ? "bg-black text-white" : "bg-gold text-night"
+            "w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-all hover:scale-110 active:scale-95",
+            showSupportMenu ? "bg-white/[0.08] text-white border border-white/10" : "bg-gold text-[#080808]"
           )}
         >
-          {showSupportMenu ? <X size={24} /> : <LifeBuoy size={24} />}
+          {showSupportMenu ? <X size={20} /> : <LifeBuoy size={20} />}
         </button>
       </div>
 
@@ -1047,84 +1029,65 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="space-y-0"
             >
               {/* ── Hero Banner ── */}
-              <div className="relative overflow-hidden rounded-[2rem] mb-8 bg-night">
-                {/* Background glow */}
-                <div className="absolute inset-0 pointer-events-none">
-                  <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full opacity-30" style={{background:'radial-gradient(circle, rgba(212,175,55,0.4) 0%, transparent 65%)'}} />
-                  <div className="absolute -bottom-16 right-0 w-64 h-64 rounded-full opacity-20" style={{background:'radial-gradient(circle, rgba(212,175,55,0.3) 0%, transparent 65%)'}} />
-                  <div className="absolute inset-0 opacity-[0.03]" style={{backgroundImage:'repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(255,255,255,0.5) 40px, rgba(255,255,255,0.5) 41px), repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(255,255,255,0.5) 40px, rgba(255,255,255,0.5) 41px)'}} />
+              <div className="relative overflow-hidden rounded-2xl mb-8 bg-[#111] border border-white/[0.07]">
+                <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                  <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full opacity-20" style={{background:'radial-gradient(circle, #d4af37 0%, transparent 65%)'}} />
+                  <div className="absolute top-0 right-0 w-px h-full bg-gradient-to-b from-transparent via-gold/20 to-transparent" />
                 </div>
 
-                <div className="relative px-10 py-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
+                <div className="relative px-8 py-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
                   <div>
-                    <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-gold/60 mb-3">Welcome back</p>
-                    <h1 className="text-5xl font-serif font-bold text-white leading-none mb-4">
+                    <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-gold/50 mb-2">Creative Studio</p>
+                    <h1 className="text-4xl font-serif font-bold text-white mb-2">
                       {userProfile?.displayName?.split(' ')[0] || 'Creator'}
                       <span className="text-gold">.</span>
                     </h1>
-                    <p className="text-white/35 text-sm font-medium">
+                    <p className="text-white/35 text-sm">
                       {stories.length === 0
-                        ? "Start forging your first masterpiece today."
-                        : `${stories.length} stor${stories.length !== 1 ? 'ies' : 'y'} in your archive. Keep creating.`}
+                        ? 'Start your first project.'
+                        : `${stories.length} project${stories.length !== 1 ? 's' : ''} · ${stories.filter(s => s.isPublished).length} published`}
                     </p>
                     {(userProfile?.streak ?? 0) > 0 && (
-                      <div className="flex items-center gap-2 mt-4">
-                        <span className="inline-flex items-center gap-1.5 bg-orange-500/15 border border-orange-500/20 text-orange-400 text-xs font-bold px-3 py-1.5 rounded-full">
-                          🔥 {userProfile!.streak}-day streak
-                        </span>
-                      </div>
+                      <span className="inline-flex items-center gap-1 mt-3 text-xs font-bold text-orange-400 bg-orange-500/10 border border-orange-500/15 px-2.5 py-1 rounded-full">
+                        🔥 {userProfile!.streak}-day streak
+                      </span>
                     )}
                   </div>
 
-                  {/* Stats row */}
-                  <div className="flex items-stretch gap-4 flex-shrink-0">
+                  <div className="flex items-stretch gap-3">
                     {[
-                      { label: 'Stories', value: stories.length, sub: `${stories.filter(s => s.isPublished).length} pub.`, icon: <BookOpen size={14} />, accent: 'text-white' },
-                      { label: 'Streak', value: userProfile?.streak || 0, sub: 'days', icon: <Star size={14} />, accent: 'text-orange-400' },
-                      { label: 'Tokens', value: userProfile?.tokens || 0, sub: `/ ${currentLimits.tokensPerMonth ?? 0} mo`, icon: <Zap size={14} />, accent: 'text-gold' },
+                      {l:'Stories', v:stories.length, c:'text-white/80'},
+                      {l:'Streak', v:userProfile?.streak||0, c:'text-orange-400'},
+                      {l:'Tokens', v:userProfile?.tokens||0, c:'text-gold'},
                     ].map((s, i) => (
-                      <motion.div
-                        key={s.label}
-                        initial={{ opacity: 0, y: 12 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: i * 0.07 }}
-                        className="bg-white/5 border border-white/8 rounded-2xl px-6 py-5 min-w-[110px] text-center"
-                      >
-                        <div className={cn("text-xs font-bold mb-1 flex items-center justify-center gap-1", s.accent)}>
-                          {s.icon} {s.label}
-                        </div>
-                        <div className={cn("text-3xl font-serif font-bold", s.accent)}>{s.value}</div>
-                        <div className="text-[10px] text-white/25 mt-1">{s.sub}</div>
+                      <motion.div key={s.l} initial={{opacity:0,y:8}} animate={{opacity:1,y:0}} transition={{delay:i*0.06}}
+                        className="bg-white/[0.05] border border-white/[0.08] rounded-xl px-5 py-4 text-center min-w-[80px]">
+                        <div className={`text-2xl font-serif font-bold ${s.c}`}>{s.v}</div>
+                        <div className="text-[9px] text-white/25 font-medium uppercase tracking-widest mt-0.5">{s.l}</div>
                       </motion.div>
                     ))}
                   </div>
                 </div>
 
-                {/* Action bar */}
-                <div className="relative border-t border-white/[0.06] px-10 py-4 flex items-center gap-3">
+                <div className="border-t border-white/[0.06] px-8 py-3 flex items-center gap-2">
                   <button
                     onClick={() => canCreateStory ? setShowTypeSelector(true) : setShowPricingModal(true)}
-                    className="flex items-center gap-2 px-6 py-2.5 bg-gold text-night rounded-xl font-bold text-sm hover:bg-white transition-all shadow-lg shadow-gold/20"
+                    className="flex items-center gap-2 px-5 py-2 bg-gold text-[#080808] rounded-lg font-bold text-xs hover:bg-white transition-all shadow-lg shadow-gold/15"
                   >
-                    <Plus size={16} />
-                    New Project
+                    <Plus size={14} /> New Project
                   </button>
                   <button
                     onClick={() => setIsZenMode(!isZenMode)}
                     className={cn(
-                      "flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm transition-all border",
-                      isZenMode ? "bg-gold/20 border-gold/30 text-gold" : "bg-white/5 border-white/10 text-white/50 hover:text-white hover:border-white/20"
+                      "flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all border",
+                      isZenMode ? "bg-gold/10 border-gold/20 text-gold" : "bg-white/[0.04] border-white/[0.08] text-white/40 hover:text-white/70"
                     )}
                   >
-                    <Eye size={15} />
-                    {isZenMode ? 'Exit Zen' : 'Zen Mode'}
+                    <Eye size={13} /> Zen
                   </button>
-                  <div className="ml-auto text-[10px] font-bold uppercase tracking-widest text-white/20">
-                    {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
-                  </div>
+                  <span className="ml-auto text-[9px] text-white/15 font-medium">{new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}</span>
                 </div>
               </div>
 
@@ -1159,17 +1122,17 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
             >
               <div className="flex items-center justify-between mb-8">
                 <div>
-                  <h1 className="text-4xl font-serif font-bold mb-2">Creative <span className="italic text-gold">Workspace</span></h1>
-                  <p className="text-black/40">Multi-tab editing for your forge projects.</p>
+                  <h1 className="text-4xl font-serif font-bold text-white mb-2">Creative <span className="italic text-gold">Workspace</span></h1>
+                  <p className="text-white/35">Multi-tab editing for your forge projects.</p>
                 </div>
                 <div className="flex items-center gap-4">
-                  <div className="px-4 py-2 bg-black/5 rounded-xl flex items-center gap-2 text-[10px] small-caps tracking-widest font-bold text-black/40">
+                  <div className="px-4 py-2 bg-white/[0.05] border border-white/[0.08] rounded-xl flex items-center gap-2 text-[10px] tracking-widest font-bold text-white/30">
                     <Command size={12} />
                     <span>+ P for Commands</span>
                   </div>
-                  <button 
+                  <button
                     onClick={() => setIsZenMode(true)}
-                    className="p-3 bg-white border border-black/5 rounded-2xl text-black/40 hover:text-black transition-all shadow-xl"
+                    className="p-3 bg-white/[0.05] border border-white/[0.08] rounded-2xl text-white/35 hover:text-white/70 transition-all"
                   >
                     <Eye size={20} />
                   </button>
@@ -1212,72 +1175,73 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="h-full p-12 overflow-y-auto custom-scrollbar"
+              className="h-full overflow-y-auto"
             >
-              <header className="mb-12">
-                <h1 className="text-6xl font-serif font-light mb-4 text-night">Forge <span className="italic text-gold">Publish</span></h1>
-                <p className="text-black/40 small-caps tracking-[0.3em] text-xs">Share your creations with the world</p>
+              <header className="mb-10">
+                <p className="text-[9px] font-bold uppercase tracking-[0.25em] text-white/20 mb-2">Distribution</p>
+                <h1 className="text-4xl font-serif font-bold text-white mb-2">Publish <span className="italic text-gold">Your Work</span></h1>
+                <p className="text-white/35 text-sm">Share your creations with the world</p>
               </header>
 
               {isHeadAdmin && (
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="bg-black text-white rounded-[2.5rem] p-8 shadow-2xl relative overflow-hidden group cursor-pointer"
+                  className="bg-[#111] border border-white/[0.07] rounded-2xl p-8 shadow-2xl relative overflow-hidden group cursor-pointer mb-8"
                   onClick={() => setShowAdmin(true)}
                 >
-                  <div className="absolute top-0 right-0 w-64 h-64 bg-gold/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl group-hover:bg-gold/20 transition-all" />
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-gold/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl group-hover:bg-gold/10 transition-all" />
                   <div className="relative z-10">
                     <div className="flex items-center gap-4 mb-6">
-                      <div className="w-12 h-12 bg-gold/20 rounded-2xl flex items-center justify-center text-gold">
+                      <div className="w-12 h-12 bg-gold/10 rounded-2xl flex items-center justify-center text-gold border border-gold/20">
                         <Bot size={24} />
                       </div>
                       <div>
-                        <h3 className="text-xl font-serif font-bold">App Architect</h3>
+                        <h3 className="text-xl font-serif font-bold text-white">App Architect</h3>
                         <div className="flex items-center gap-2">
                           <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                          <span className="text-[10px] uppercase tracking-widest text-white/40">Active & Monitoring</span>
+                          <span className="text-[10px] uppercase tracking-widest text-white/35">Active & Monitoring</span>
                         </div>
                       </div>
                     </div>
                     <div className="grid grid-cols-3 gap-4">
-                      <div className="p-4 bg-white/5 rounded-2xl border border-white/10">
-                        <div className="text-[8px] uppercase tracking-widest text-white/40 mb-1">System Health</div>
+                      <div className="p-4 bg-white/[0.04] rounded-xl border border-white/[0.07]">
+                        <div className="text-[8px] uppercase tracking-widest text-white/30 mb-1">System Health</div>
                         <div className="text-lg font-bold text-gold">98%</div>
                       </div>
-                      <div className="p-4 bg-white/5 rounded-2xl border border-white/10">
-                        <div className="text-[8px] uppercase tracking-widest text-white/40 mb-1">System Latency</div>
+                      <div className="p-4 bg-white/[0.04] rounded-xl border border-white/[0.07]">
+                        <div className="text-[8px] uppercase tracking-widest text-white/30 mb-1">System Latency</div>
                         <div className="text-lg font-bold text-gold">1.2s</div>
                       </div>
-                      <div className="p-4 bg-white/5 rounded-2xl border border-white/10">
-                        <div className="text-[8px] uppercase tracking-widest text-white/40 mb-1">Active Tools</div>
+                      <div className="p-4 bg-white/[0.04] rounded-xl border border-white/[0.07]">
+                        <div className="text-[8px] uppercase tracking-widest text-white/30 mb-1">Active Tools</div>
                         <div className="text-lg font-bold text-gold">8</div>
                       </div>
                     </div>
-                    <button className="mt-6 w-full py-3 bg-gold text-night rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-white hover:text-black transition-all">
+                    <button className="mt-6 w-full py-3 bg-gold text-[#080808] rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-white transition-all">
                       Open Architect Console
                     </button>
                   </div>
                 </motion.div>
               )}
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                 {[
-                  { id: 'flipbook', title: 'Interactive Flipbook', desc: 'Export as a web-based book with realistic 3D page-turn animations.', icon: <BookOpen size={32} /> },
-                  { id: 'kdp', title: 'Amazon KDP Format', desc: 'Automatically format your manuscript for Kindle or Print-on-Demand.', icon: <ImageIcon size={32} /> },
-                  { id: 'epub', title: 'Standard ePub', desc: 'Universal ebook format compatible with all major e-readers.', icon: <FileText size={32} /> },
-                  { id: 'pdf', title: 'Print-Ready PDF', desc: 'High-resolution PDF with bleed and crop marks for professional printing.', icon: <FileText size={32} /> },
-                  { id: 'web', title: 'Web Serial', desc: 'Publish as a series of blog posts or a dedicated web portal.', icon: <Monitor size={32} /> },
+                  { id: 'flipbook', title: 'Interactive Flipbook', desc: 'Export as a web-based book with realistic 3D page-turn animations.', icon: <BookOpen size={28} /> },
+                  { id: 'kdp', title: 'Amazon KDP Format', desc: 'Automatically format your manuscript for Kindle or Print-on-Demand.', icon: <ImageIcon size={28} /> },
+                  { id: 'epub', title: 'Standard ePub', desc: 'Universal ebook format compatible with all major e-readers.', icon: <FileText size={28} /> },
+                  { id: 'pdf', title: 'Print-Ready PDF', desc: 'High-resolution PDF with bleed and crop marks for professional printing.', icon: <FileText size={28} /> },
+                  { id: 'web', title: 'Web Serial', desc: 'Publish as a series of blog posts or a dedicated web portal.', icon: <Monitor size={28} /> },
                 ].map(option => (
                   <button
                     key={option.id}
-                    className="group p-8 bg-white border border-black/5 rounded-[2.5rem] text-left hover:border-gold transition-all hover:shadow-2xl hover:shadow-gold/10"
+                    className="group p-7 bg-[#111] border border-white/[0.07] rounded-2xl text-left hover:border-gold/20 transition-all hover:shadow-2xl hover:shadow-gold/5"
                   >
-                    <div className="w-16 h-16 bg-gold/10 rounded-2xl flex items-center justify-center text-gold mb-6 group-hover:scale-110 transition-transform">
+                    <div className="w-14 h-14 bg-gold/10 border border-gold/15 rounded-2xl flex items-center justify-center text-gold mb-6 group-hover:scale-110 transition-transform">
                       {option.icon}
                     </div>
-                    <h3 className="text-xl font-serif font-bold mb-2">{option.title}</h3>
-                    <p className="text-xs text-black/40 leading-relaxed">{option.desc}</p>
+                    <h3 className="text-lg font-serif font-bold text-white/90 mb-2">{option.title}</h3>
+                    <p className="text-xs text-white/35 leading-relaxed">{option.desc}</p>
                   </button>
                 ))}
               </div>
@@ -1325,67 +1289,67 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
         )}
       </AnimatePresence>
 
-      <footer className="py-16 border-t border-black/5 text-center">
-        <div className="flex items-center justify-center gap-4 mb-6">
-          <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center text-white">
-            <Sparkles size={16} />
+      <footer className="py-10 border-t border-white/[0.05] text-center">
+        <div className="flex items-center justify-center gap-3 mb-4">
+          <div className="w-7 h-7 bg-gold rounded-lg flex items-center justify-center text-[#080808]">
+            <Sparkles size={14} />
           </div>
-          <span className="font-serif font-bold text-xl">StoryCraft</span>
+          <span className="font-serif font-bold text-white/40">{appName}</span>
         </div>
-        <p className="text-[10px] small-caps tracking-[0.5em] text-black/20">&copy; 2026 Immersive Story Studio</p>
+        <p className="text-[10px] tracking-[0.5em] text-white/15 uppercase">&copy; 2026 Immersive Story Studio</p>
       </footer>
 
       {/* Add Partner Modal */}
       <AnimatePresence>
         {partnerModal.show && (
           <div className="fixed inset-0 z-[110] flex items-center justify-center p-6">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               onClick={() => setPartnerModal({ show: false, story: null })}
-              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              className="absolute inset-0 bg-black/80 backdrop-blur-sm"
             />
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="relative w-full max-w-md bg-white rounded-[2.5rem] p-10 shadow-2xl overflow-hidden"
+              className="relative w-full max-w-md bg-[#111] border border-white/[0.08] rounded-2xl p-8 shadow-2xl overflow-hidden"
             >
-              <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-gold/10 text-gold flex items-center justify-center">
-                    <UserPlus size={24} />
+                  <div className="w-10 h-10 rounded-xl bg-gold/10 border border-gold/20 text-gold flex items-center justify-center">
+                    <UserPlus size={20} />
                   </div>
                   <div>
-                    <h3 className="text-2xl font-serif font-bold">Add Partner</h3>
-                    <p className="text-xs text-black/40 uppercase tracking-widest font-bold">Collaborate on your story</p>
+                    <h3 className="text-xl font-serif font-bold text-white">Add Partner</h3>
+                    <p className="text-xs text-white/30 uppercase tracking-widest font-bold">Collaborate on your story</p>
                   </div>
                 </div>
-                <button onClick={() => setPartnerModal({ show: false, story: null })} className="p-2 hover:bg-black/5 rounded-xl transition-all">
-                  <X size={20} />
+                <button onClick={() => setPartnerModal({ show: false, story: null })} className="p-2 hover:bg-white/[0.06] rounded-lg transition-all text-white/40 hover:text-white/70">
+                  <X size={18} />
                 </button>
               </div>
 
-              <div className="space-y-6 mb-8">
-                <p className="text-sm text-black/60">Enter your partner's email address to grant them access to edit this story.</p>
-                <input 
+              <div className="space-y-4 mb-6">
+                <p className="text-sm text-white/45">Enter your partner's email address to grant them access to edit this story.</p>
+                <input
                   type="email"
                   value={partnerEmail}
                   onChange={(e) => setPartnerEmail(e.target.value)}
                   placeholder="partner@example.com"
-                  className="w-full bg-black/5 rounded-2xl p-4 outline-none border border-black/5 focus:border-gold/40 focus:bg-gold/5 transition-all font-medium placeholder:text-black/25"
+                  className="w-full bg-white/[0.05] border border-white/[0.09] rounded-xl px-4 py-3 text-white/80 placeholder:text-white/20 outline-none focus:border-gold/40 transition-colors"
                 />
               </div>
 
-              <button 
+              <button
                 onClick={handleAddPartner}
                 disabled={isAddingPartner || !partnerEmail.trim()}
-                className="w-full py-5 bg-black text-white rounded-2xl font-bold hover:bg-gold hover:text-night transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                className="w-full py-3 bg-gold text-[#080808] rounded-xl font-bold hover:bg-white transition-all flex items-center justify-center gap-2 disabled:opacity-50 shadow-lg shadow-gold/15"
               >
                 {isAddingPartner ? (
-                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <div className="w-5 h-5 border-2 border-[#080808]/30 border-t-[#080808] rounded-full animate-spin" />
                 ) : (
                   <>
-                    <UserPlus size={18} />
+                    <UserPlus size={16} />
                     <span>Add Partner</span>
                   </>
                 )}
@@ -1399,198 +1363,165 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
       <AnimatePresence>
         {showPricingModal && (
           <div className="fixed inset-0 z-[120] flex items-center justify-center p-6">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               onClick={() => setShowPricingModal(false)}
-              className="absolute inset-0 bg-black/80 backdrop-blur-md"
+              className="absolute inset-0 bg-black/90 backdrop-blur-md"
             />
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="relative w-full max-w-5xl bg-white rounded-[3rem] shadow-2xl overflow-hidden flex flex-col lg:flex-row max-h-[90vh] overflow-y-auto custom-scrollbar"
+              className="relative w-full max-w-5xl bg-[#0d0d0d] border border-white/[0.08] rounded-2xl shadow-2xl overflow-hidden flex flex-col lg:flex-row max-h-[90vh] overflow-y-auto"
             >
               {/* Left Side: Benefits */}
-              <div className="lg:w-1/3 bg-black p-12 text-white flex flex-col justify-between">
+              <div className="lg:w-1/3 bg-[#111] border-r border-white/[0.06] p-10 flex flex-col justify-between">
                 <div>
-                  <div className="flex items-center gap-3 mb-8">
-                    <div className="w-10 h-10 bg-gold rounded-full flex items-center justify-center text-night">
-                      <Sparkles size={20} />
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-9 h-9 bg-gold rounded-xl flex items-center justify-center text-[#080808]">
+                      <Sparkles size={18} />
                     </div>
-                    <span className="small-caps text-gold">StoryCraft Premium</span>
+                    <span className="text-xs font-bold tracking-widest text-gold uppercase">{appName} Premium</span>
                   </div>
-                  
-                  <h3 className="text-4xl font-serif font-bold mb-8 leading-tight">Unlock the Full <br />Power of the Forge.</h3>
-                  
-                  <div className="space-y-6">
-                      {[
-                        "Unlimited Stories Per Month",
-                        "Up to 100 Pages Per Story",
-                        "Unlimited Magic Enhancements",
-                        "All 50+ Artistic Styles",
-                        "Full Audio Narration Suite",
-                        "Collaborative Storytelling",
-                        "FREE Marketplace Books",
-                        "Priority Generation"
-                      ].map((benefit, i) => (
+                  <h3 className="text-3xl font-serif font-bold text-white mb-6 leading-tight">Unlock the Full Power.</h3>
+                  <div className="space-y-4">
+                    {[
+                      "Unlimited Stories Per Month",
+                      "Up to 100 Pages Per Story",
+                      "Unlimited Magic Enhancements",
+                      "All 50+ Artistic Styles",
+                      "Full Audio Narration Suite",
+                      "Collaborative Storytelling",
+                      "FREE Marketplace Books",
+                      "Priority Generation"
+                    ].map((benefit, i) => (
                       <div key={i} className="flex items-center gap-3">
-                        <div className="w-5 h-5 rounded-full bg-gold/20 flex items-center justify-center text-gold">
-                          <Check size={12} />
+                        <div className="w-4 h-4 rounded-full bg-gold/15 border border-gold/25 flex items-center justify-center text-gold flex-shrink-0">
+                          <Check size={10} />
                         </div>
-                        <span className="text-sm text-white/70 font-medium">{benefit}</span>
+                        <span className="text-sm text-white/55 font-medium">{benefit}</span>
                       </div>
                     ))}
                   </div>
                 </div>
-
-                <div className="mt-12 p-6 bg-white/5 rounded-2xl border border-white/10">
-                  <p className="text-[10px] text-white/40 uppercase tracking-widest font-bold mb-2">Current Plan</p>
+                <div className="mt-8 p-4 bg-white/[0.04] rounded-xl border border-white/[0.06]">
+                  <p className="text-[10px] text-white/30 uppercase tracking-widest font-bold mb-1">Current Plan</p>
                   <p className="text-sm font-bold text-gold capitalize">{userProfile?.subscriptionTier} Tier</p>
                 </div>
               </div>
 
               {/* Right Side: Pricing Options */}
-              <div className="flex-1 p-12 bg-white flex flex-col">
-                <div className="flex justify-between items-center mb-12">
-                  <h4 className="text-2xl font-serif font-bold">Choose Your Plan</h4>
-                  <button onClick={() => setShowPricingModal(false)} className="p-2 hover:bg-black/5 rounded-xl transition-all">
-                    <X size={20} />
+              <div className="flex-1 p-10 flex flex-col">
+                <div className="flex justify-between items-center mb-8">
+                  <h4 className="text-2xl font-serif font-bold text-white">Choose Your Plan</h4>
+                  <button onClick={() => setShowPricingModal(false)} className="p-2 hover:bg-white/[0.06] rounded-lg transition-all text-white/40 hover:text-white/70">
+                    <X size={18} />
                   </button>
                 </div>
 
                 {/* Billing Toggle */}
-                <div className="flex p-1 bg-black/5 rounded-2xl mb-10">
-                  <button 
+                <div className="flex p-1 bg-white/[0.04] border border-white/[0.07] rounded-xl mb-8">
+                  <button
                     onClick={() => setBillingCycle('monthly')}
-                    className={cn("flex-1 py-3 rounded-xl text-sm font-bold transition-all", billingCycle === 'monthly' ? "bg-white shadow-sm text-black" : "text-black/40")}
+                    className={cn("flex-1 py-2.5 rounded-lg text-sm font-bold transition-all", billingCycle === 'monthly' ? "bg-white/[0.1] text-white" : "text-white/30")}
                   >
                     Monthly
                   </button>
-                  <button 
+                  <button
                     onClick={() => setBillingCycle('yearly')}
-                    className={cn("flex-1 py-3 rounded-xl text-sm font-bold transition-all relative", billingCycle === 'yearly' ? "bg-white shadow-sm text-black" : "text-black/40")}
+                    className={cn("flex-1 py-2.5 rounded-lg text-sm font-bold transition-all relative", billingCycle === 'yearly' ? "bg-white/[0.1] text-white" : "text-white/30")}
                   >
                     Yearly
-                    <span className="absolute -top-2 -right-2 bg-green-500 text-white text-[8px] px-2 py-1 rounded-full animate-pulse">Save 20%</span>
+                    <span className="absolute -top-2 -right-2 bg-green-500/80 text-white text-[8px] px-2 py-0.5 rounded-full">Save 20%</span>
                   </button>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 flex-1">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5 flex-1">
                   {/* Standard Plan */}
-                  <div className="p-8 rounded-[2rem] border-2 border-black/5 flex flex-col justify-between hover:border-gold/30 transition-all group">
+                  <div className="p-6 rounded-xl border border-white/[0.08] flex flex-col justify-between hover:border-gold/20 transition-all group bg-white/[0.02]">
                     <div>
-                      <div className="flex items-center justify-between mb-4">
-                        <span className="text-xs font-bold uppercase tracking-widest text-black/40">Standard</span>
-                        <Star className="w-5 h-5 text-gold opacity-0 group-hover:opacity-100 transition-all" />
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="text-xs font-bold uppercase tracking-widest text-white/35">Standard</span>
+                        <Star className="w-4 h-4 text-gold opacity-0 group-hover:opacity-100 transition-all" />
                       </div>
-                      <div className="flex items-baseline gap-1 mb-6">
-                        <span className="text-4xl font-serif font-bold">${billingCycle === 'monthly' ? SUBSCRIPTION_PRICING.standard.monthly : (SUBSCRIPTION_PRICING.standard.yearly / 12).toFixed(2)}</span>
-                        <span className="text-black/40 text-xs font-bold uppercase">/mo</span>
+                      <div className="flex items-baseline gap-1 mb-5">
+                        <span className="text-3xl font-serif font-bold text-white">${billingCycle === 'monthly' ? SUBSCRIPTION_PRICING.standard.monthly : (SUBSCRIPTION_PRICING.standard.yearly / 12).toFixed(2)}</span>
+                        <span className="text-white/30 text-xs font-bold uppercase">/mo</span>
                       </div>
-                      <ul className="space-y-3 mb-8">
-                        <li className="text-xs text-black/60 flex items-center gap-2">
-                          <div className="w-1 h-1 rounded-full bg-gold" />
-                          3 Stories Per Month
-                        </li>
-                        <li className="text-xs text-black/60 flex items-center gap-2">
-                          <div className="w-1 h-1 rounded-full bg-gold" />
-                          15 Pages Per Story
-                        </li>
-                        <li className="text-xs text-black/60 flex items-center gap-2">
-                          <div className="w-1 h-1 rounded-full bg-gold" />
-                          Collaboration Access
-                        </li>
+                      <ul className="space-y-2.5 mb-6">
+                        <li className="text-xs text-white/45 flex items-center gap-2"><div className="w-1 h-1 rounded-full bg-gold" />3 Stories Per Month</li>
+                        <li className="text-xs text-white/45 flex items-center gap-2"><div className="w-1 h-1 rounded-full bg-gold" />15 Pages Per Story</li>
+                        <li className="text-xs text-white/45 flex items-center gap-2"><div className="w-1 h-1 rounded-full bg-gold" />Collaboration Access</li>
                       </ul>
                     </div>
                     <button
                       onClick={() => handleUpgrade('standard', billingCycle)}
                       disabled={userProfile?.subscriptionTier === 'standard' || isUpgrading}
-                      className="w-full py-4 bg-black text-white rounded-xl font-bold text-sm hover:bg-gold hover:text-night transition-all disabled:opacity-50"
+                      className="w-full py-3 bg-white/[0.08] border border-white/[0.1] text-white/80 rounded-xl font-bold text-sm hover:bg-gold hover:text-[#080808] hover:border-gold transition-all disabled:opacity-40"
                     >
                       {userProfile?.subscriptionTier === 'standard' ? 'Current Plan' : 'Select Standard'}
                     </button>
                   </div>
 
                   {/* Premium Plan */}
-                  <div className="p-8 rounded-[2rem] border-2 border-gold bg-gold/5 flex flex-col justify-between relative overflow-hidden">
-                    <div className="absolute top-0 right-0 p-4">
-                      <Crown className="w-12 h-12 text-gold/10 -rotate-12" />
+                  <div className="p-6 rounded-xl border border-gold/30 bg-gold/[0.04] flex flex-col justify-between relative overflow-hidden">
+                    <div className="absolute top-0 right-0 p-4 opacity-10">
+                      <Crown className="w-12 h-12 text-gold -rotate-12" />
                     </div>
                     <div>
-                      <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center justify-between mb-3">
                         <span className="text-xs font-bold uppercase tracking-widest text-gold">Premium</span>
-                        <Crown className="w-5 h-5 text-gold" />
+                        <Crown className="w-4 h-4 text-gold" />
                       </div>
-                      <div className="flex items-baseline gap-1 mb-6">
-                        <span className="text-4xl font-serif font-bold text-night">${billingCycle === 'monthly' ? SUBSCRIPTION_PRICING.premium.monthly : (SUBSCRIPTION_PRICING.premium.yearly / 12).toFixed(2)}</span>
-                        <span className="text-night/40 text-xs font-bold uppercase">/mo</span>
+                      <div className="flex items-baseline gap-1 mb-5">
+                        <span className="text-3xl font-serif font-bold text-white">${billingCycle === 'monthly' ? SUBSCRIPTION_PRICING.premium.monthly : (SUBSCRIPTION_PRICING.premium.yearly / 12).toFixed(2)}</span>
+                        <span className="text-white/30 text-xs font-bold uppercase">/mo</span>
                       </div>
-                      <ul className="space-y-3 mb-8">
-                        <li className="text-xs text-gold flex items-center gap-2 font-bold">
-                          <Sparkles className="w-3 h-3" />
-                          Unlimited Stories
-                        </li>
-                        <li className="text-xs text-night/60 flex items-center gap-2">
-                          <div className="w-1 h-1 rounded-full bg-gold" />
-                          50 Pages Per Story
-                        </li>
-                        <li className="text-xs text-night/60 flex items-center gap-2">
-                          <div className="w-1 h-1 rounded-full bg-gold" />
-                          All Artistic Styles
-                        </li>
+                      <ul className="space-y-2.5 mb-6">
+                        <li className="text-xs text-gold flex items-center gap-2 font-bold"><Sparkles className="w-3 h-3" />Unlimited Stories</li>
+                        <li className="text-xs text-white/45 flex items-center gap-2"><div className="w-1 h-1 rounded-full bg-gold" />50 Pages Per Story</li>
+                        <li className="text-xs text-white/45 flex items-center gap-2"><div className="w-1 h-1 rounded-full bg-gold" />All Artistic Styles</li>
                       </ul>
                     </div>
                     <button
                       onClick={() => handleUpgrade('premium', billingCycle)}
                       disabled={userProfile?.subscriptionTier === 'premium' || isUpgrading}
-                      className="w-full py-4 bg-gold text-night rounded-xl font-bold text-sm hover:bg-night hover:text-gold transition-all shadow-lg shadow-gold/20 disabled:opacity-50"
+                      className="w-full py-3 bg-gold text-[#080808] rounded-xl font-bold text-sm hover:bg-white transition-all shadow-lg shadow-gold/15 disabled:opacity-40"
                     >
                       {userProfile?.subscriptionTier === 'premium' ? 'Current Plan' : 'Go Premium'}
                     </button>
                   </div>
 
                   {/* Ultimate Plan */}
-                  <div className="p-8 rounded-[2rem] border-2 border-gold bg-gold/5 flex flex-col justify-between relative overflow-hidden md:col-span-2">
-                    <div className="absolute top-0 right-0 p-4">
-                      <Zap className="w-16 h-16 text-gold/10 -rotate-12" />
+                  <div className="p-6 rounded-xl border border-gold/30 bg-gold/[0.04] flex flex-col justify-between relative overflow-hidden md:col-span-2">
+                    <div className="absolute top-0 right-0 p-4 opacity-10">
+                      <Zap className="w-16 h-16 text-gold -rotate-12" />
                     </div>
-                    <div className="flex flex-col md:flex-row gap-8">
+                    <div className="flex flex-col md:flex-row gap-6">
                       <div className="flex-1">
-                        <div className="flex items-center justify-between mb-4">
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs font-bold uppercase tracking-widest text-gold">Ultimate</span>
-                            <span className="bg-gold text-night text-[8px] px-2 py-0.5 rounded-full font-bold">BEST VALUE</span>
-                          </div>
-                          <Zap className="w-5 h-5 text-gold" />
+                        <div className="flex items-center gap-2 mb-3">
+                          <span className="text-xs font-bold uppercase tracking-widest text-gold">Ultimate</span>
+                          <span className="bg-gold text-[#080808] text-[8px] px-2 py-0.5 rounded-full font-bold">BEST VALUE</span>
+                          <Zap className="w-4 h-4 text-gold ml-auto" />
                         </div>
-                        <div className="flex items-baseline gap-1 mb-6">
-                          <span className="text-5xl font-serif font-bold text-night">${billingCycle === 'monthly' ? SUBSCRIPTION_PRICING.ultimate.monthly : (SUBSCRIPTION_PRICING.ultimate.yearly / 12).toFixed(2)}</span>
-                          <span className="text-night/40 text-xs font-bold uppercase">/mo</span>
+                        <div className="flex items-baseline gap-1 mb-4">
+                          <span className="text-4xl font-serif font-bold text-white">${billingCycle === 'monthly' ? SUBSCRIPTION_PRICING.ultimate.monthly : (SUBSCRIPTION_PRICING.ultimate.yearly / 12).toFixed(2)}</span>
+                          <span className="text-white/30 text-xs font-bold uppercase">/mo</span>
                         </div>
-                        <p className="text-sm text-night/60 mb-6 font-medium">The definitive StoryCraft experience. No limits, no boundaries.</p>
+                        <p className="text-sm text-white/40 font-medium">The definitive experience. No limits, no boundaries.</p>
                       </div>
                       <div className="flex-1">
-                        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3 mb-8">
-                          {[
-                            "Unlimited Stories",
-                            "100 Pages Per Story",
-                            "FREE Marketplace Books",
-                            "Priority Generation",
-                            "All 50+ Artistic Styles",
-                            "Early Access Features",
-                            "Dedicated Support",
-                            "All Premium Features"
-                          ].map((feat, i) => (
-                            <li key={i} className="text-xs text-night/70 flex items-center gap-2">
-                              <Check size={12} className="text-gold" />
-                              {feat}
+                        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 mb-6">
+                          {["Unlimited Stories","100 Pages Per Story","FREE Marketplace Books","Priority Generation","All 50+ Artistic Styles","Early Access Features","Dedicated Support","All Premium Features"].map((feat, i) => (
+                            <li key={i} className="text-xs text-white/45 flex items-center gap-2">
+                              <Check size={11} className="text-gold flex-shrink-0" />{feat}
                             </li>
                           ))}
                         </ul>
-                        <button 
+                        <button
                           onClick={() => handleUpgrade('ultimate', billingCycle)}
                           disabled={userProfile?.subscriptionTier === 'ultimate' || isUpgrading}
-                          className="w-full py-5 bg-night text-gold rounded-2xl font-bold text-lg hover:bg-gold hover:text-night transition-all shadow-2xl shadow-gold/20 disabled:opacity-50"
+                          className="w-full py-4 bg-gold text-[#080808] rounded-xl font-bold text-base hover:bg-white transition-all shadow-2xl shadow-gold/15 disabled:opacity-40"
                         >
                           {userProfile?.subscriptionTier === 'ultimate' ? 'Current Plan' : 'Become Ultimate'}
                         </button>
@@ -1600,28 +1531,28 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
                 </div>
 
                 {/* Donation Section */}
-                <div className="mt-12 p-8 bg-black/5 rounded-[2rem] border border-black/5">
-                  <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+                <div className="mt-8 p-6 bg-white/[0.03] rounded-xl border border-white/[0.06]">
+                  <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                     <div className="flex-1">
-                      <h5 className="text-xl font-serif font-bold mb-2">Support the Forge</h5>
-                      <p className="text-sm text-black/40 font-medium">Your contributions help us keep the magic alive and forge new features.</p>
+                      <h5 className="text-base font-serif font-bold text-white mb-1">Support the Forge</h5>
+                      <p className="text-sm text-white/35 font-medium">Your contributions help us keep the magic alive.</p>
                     </div>
-                    <div className="flex flex-wrap gap-3 justify-center">
+                    <div className="flex flex-wrap gap-2 justify-center">
                       {[5, 10, 50].map(amount => (
-                        <button 
+                        <button
                           key={amount}
                           onClick={() => toast.success(`Thank you for your $${amount} donation! (Demo)`)}
-                          className="px-6 py-3 bg-white border border-black/10 rounded-xl font-bold text-sm hover:bg-black hover:text-white transition-all"
+                          className="px-5 py-2.5 bg-white/[0.06] border border-white/[0.09] rounded-lg font-bold text-sm text-white/60 hover:bg-gold hover:text-[#080808] hover:border-gold transition-all"
                         >
                           ${amount}
                         </button>
                       ))}
                       <div className="relative">
-                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-black/40 font-bold">$</span>
-                        <input 
-                          type="number" 
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30 font-bold text-sm">$</span>
+                        <input
+                          type="number"
                           placeholder="Custom"
-                          className="w-32 pl-8 pr-4 py-3 bg-white border border-black/10 rounded-xl font-bold text-sm outline-none focus:border-black transition-all"
+                          className="w-28 pl-7 pr-3 py-2.5 bg-white/[0.06] border border-white/[0.09] rounded-lg font-bold text-sm text-white/60 outline-none focus:border-gold/40 transition-all placeholder:text-white/20"
                           onKeyDown={(e) => {
                             if (e.key === 'Enter') {
                               const val = (e.target as HTMLInputElement).value;
@@ -1633,19 +1564,16 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
                     </div>
                   </div>
                 </div>
-                
-                <p className="text-[10px] text-center text-black/20 mt-8 uppercase tracking-widest font-bold">Secure Payment Powered by Stripe</p>
-                
-                <div className="mt-8 pt-8 border-t border-black/5 flex flex-col items-center gap-4">
-                  <p className="text-sm text-black/40 font-medium">Have a subscription code?</p>
-                  <button 
-                    onClick={() => {
-                      setShowPricingModal(false);
-                      setShowRedeemModal(true);
-                    }}
-                    className="flex items-center gap-2 px-8 py-3 bg-white border-2 border-black/5 rounded-2xl font-bold text-sm hover:border-black transition-all"
+
+                <p className="text-[10px] text-center text-white/15 mt-6 uppercase tracking-widest font-bold">Secure Payment Powered by Stripe</p>
+
+                <div className="mt-6 pt-6 border-t border-white/[0.06] flex flex-col items-center gap-3">
+                  <p className="text-sm text-white/30 font-medium">Have a subscription code?</p>
+                  <button
+                    onClick={() => { setShowPricingModal(false); setShowRedeemModal(true); }}
+                    className="flex items-center gap-2 px-6 py-2.5 bg-white/[0.05] border border-white/[0.09] rounded-xl font-bold text-sm text-white/50 hover:border-gold/30 hover:text-gold transition-all"
                   >
-                    <Zap size={16} className="text-gold" />
+                    <Zap size={14} className="text-gold" />
                     Redeem 12-Character Code
                   </button>
                 </div>
@@ -1659,36 +1587,36 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
       <AnimatePresence>
         {showRedeemModal && (
           <div className="fixed inset-0 z-[110] flex items-center justify-center p-6">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               onClick={() => setShowRedeemModal(false)}
-              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              className="absolute inset-0 bg-black/80 backdrop-blur-sm"
             />
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="relative w-full max-w-md bg-white rounded-[2.5rem] p-10 shadow-2xl overflow-hidden"
+              className="relative w-full max-w-md bg-[#111] border border-white/[0.08] rounded-2xl p-8 shadow-2xl overflow-hidden"
             >
-              <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-gold/10 text-gold flex items-center justify-center">
-                    <Zap size={24} />
+                  <div className="w-10 h-10 rounded-xl bg-gold/10 border border-gold/20 text-gold flex items-center justify-center">
+                    <Zap size={20} />
                   </div>
                   <div>
-                    <h3 className="text-2xl font-serif font-bold">Redeem Code</h3>
-                    <p className="text-xs text-black/40 uppercase tracking-widest font-bold">Unlock your potential</p>
+                    <h3 className="text-xl font-serif font-bold text-white">Redeem Code</h3>
+                    <p className="text-xs text-white/30 uppercase tracking-widest font-bold">Unlock your potential</p>
                   </div>
                 </div>
-                <button onClick={() => setShowRedeemModal(false)} className="p-2 hover:bg-black/5 rounded-xl transition-all">
-                  <X size={20} />
+                <button onClick={() => setShowRedeemModal(false)} className="p-2 hover:bg-white/[0.06] rounded-lg transition-all text-white/40 hover:text-white/70">
+                  <X size={18} />
                 </button>
               </div>
 
-              <div className="space-y-6 mb-8">
-                <p className="text-sm text-black/60">Enter your 12-character subscription code to upgrade your account instantly.</p>
+              <div className="space-y-4 mb-6">
+                <p className="text-sm text-white/45">Enter your 12-character subscription code to upgrade your account instantly.</p>
                 <div className="relative">
-                  <input 
+                  <input
                     type="text"
                     maxLength={12}
                     value={redeemCode}
@@ -1697,32 +1625,32 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
                       setRedeemCode(val);
                     }}
                     placeholder="ABC123XYZ789"
-                    className="w-full bg-black/5 rounded-2xl p-6 outline-none border border-black/5 font-mono text-2xl text-center tracking-[0.2em] focus:border-gold/50 transition-all"
+                    className="w-full bg-white/[0.05] border border-white/[0.09] rounded-xl px-4 py-5 outline-none font-mono text-2xl text-center tracking-[0.2em] text-white/80 placeholder:text-white/15 focus:border-gold/40 transition-colors"
                   />
                   {redeemCode.length === 12 && (
-                    <motion.div 
+                    <motion.div
                       initial={{ scale: 0 }} animate={{ scale: 1 }}
                       className="absolute right-4 top-1/2 -translate-y-1/2 text-green-500"
                     >
-                      <CheckCircle size={24} />
+                      <CheckCircle size={22} />
                     </motion.div>
                   )}
                 </div>
               </div>
 
-              <button 
+              <button
                 onClick={handleRedeemCode}
                 disabled={redeemCode.length !== 12 || isRedeeming}
-                className="w-full py-5 bg-black text-white rounded-2xl font-bold text-lg hover:bg-gold hover:text-night transition-all shadow-2xl shadow-gold/20 disabled:opacity-50 flex items-center justify-center gap-3"
+                className="w-full py-3.5 bg-gold text-[#080808] rounded-xl font-bold text-base hover:bg-white transition-all shadow-lg shadow-gold/15 disabled:opacity-40 flex items-center justify-center gap-3"
               >
                 {isRedeeming ? (
                   <>
-                    <Loader2 className="animate-spin" size={20} />
+                    <Loader2 className="animate-spin" size={18} />
                     Redeeming...
                   </>
                 ) : (
                   <>
-                    <Sparkles size={20} />
+                    <Sparkles size={18} />
                     Redeem Now
                   </>
                 )}

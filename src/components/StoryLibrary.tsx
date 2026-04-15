@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion, useMotionValue, useTransform, useSpring } from 'motion/react';
-import { LayoutGrid, List, Heart, Star, DollarSign, Trash2, BookOpen, Sparkles, Globe, Layers, UserPlus, Pencil } from 'lucide-react';
+import { LayoutGrid, List, Heart, Star, DollarSign, Trash2, BookOpen, Sparkles, Globe, Layers, UserPlus, Pencil, Plus } from 'lucide-react';
 import { Story } from '../types';
 import { cn } from '../lib/utils';
 
@@ -34,51 +34,46 @@ export default function StoryLibrary({
   onCreate
 }: StoryLibraryProps) {
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
-      <header className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+      {/* Header */}
+      <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-[0.5em] text-black/25 mb-2">Your Archive</p>
-          <h2 className="text-5xl font-serif font-light mb-2 tracking-tight">Your <span className="italic text-gold">Library</span></h2>
-          <p className="text-black/35 text-xs font-medium">
-            {stories.length > 0 ? `${stories.length} masterpiece${stories.length !== 1 ? 's' : ''} in your archive` : 'Your collection awaits'}
-          </p>
+          <p className="text-[9px] font-bold uppercase tracking-[0.25em] text-white/20 mb-1">Archive</p>
+          <h2 className="text-3xl font-serif font-bold text-white">Your <span className="text-gold italic">Library</span></h2>
+          <p className="text-white/30 text-xs mt-1">{stories.length > 0 ? `${stories.length} stor${stories.length !== 1 ? 'ies' : 'y'}` : 'No stories yet'}</p>
         </div>
-
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+        <div className="flex items-center gap-2">
           {/* Search */}
-          <div className="flex items-center gap-3 px-4 py-3 bg-white rounded-2xl shadow-sm border border-black/5 min-w-[260px] focus-within:border-gold/30 focus-within:shadow-md transition-all">
-            <Sparkles className="text-black/25 flex-shrink-0" size={16} />
+          <div className="flex items-center gap-2 px-3 py-2 bg-white/[0.05] border border-white/[0.09] rounded-xl min-w-[220px] focus-within:border-gold/30 transition-colors">
+            <Sparkles size={13} className="text-white/20 flex-shrink-0" />
             <input
               type="text"
-              placeholder="Search stories..."
+              placeholder="Search..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-transparent outline-none text-sm font-medium placeholder:text-black/20"
+              onChange={e => setSearchTerm(e.target.value)}
+              className="flex-1 bg-transparent text-sm text-white/80 placeholder:text-white/20 outline-none"
             />
             {searchTerm && (
-              <button onClick={() => setSearchTerm('')} className="text-black/20 hover:text-black/50 transition-colors flex-shrink-0">
-                <span className="text-xs font-bold">✕</span>
-              </button>
+              <button onClick={() => setSearchTerm('')} className="text-white/20 hover:text-white/60 text-xs">✕</button>
             )}
           </div>
-
-          {/* View toggles */}
-          <div className="flex items-center gap-1 p-1 bg-white rounded-2xl shadow-sm border border-black/5">
+          {/* View toggle */}
+          <div className="flex items-center p-1 bg-white/[0.05] border border-white/[0.08] rounded-xl gap-0.5">
             <button
               onClick={() => setViewMode('grid')}
-              className={cn("p-2.5 rounded-xl transition-all", viewMode === 'grid' ? "bg-black text-white shadow-sm" : "text-black/25 hover:text-black/60")}
+              className={cn("p-2 rounded-lg transition-all", viewMode === 'grid' ? "bg-gold/20 text-gold" : "text-white/25 hover:text-white/60")}
             >
-              <LayoutGrid size={18} />
+              <LayoutGrid size={15} />
             </button>
             <button
               onClick={() => setViewMode('list')}
-              className={cn("p-2.5 rounded-xl transition-all", viewMode === 'list' ? "bg-black text-white shadow-sm" : "text-black/25 hover:text-black/60")}
+              className={cn("p-2 rounded-lg transition-all", viewMode === 'list' ? "bg-gold/20 text-gold" : "text-white/25 hover:text-white/60")}
             >
-              <List size={18} />
+              <List size={15} />
             </button>
           </div>
         </div>
@@ -86,67 +81,37 @@ export default function StoryLibrary({
 
       {isLoading ? (
         <div className={cn(
-          "grid gap-10",
+          "grid gap-5",
           viewMode === 'grid' ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"
         )}>
           {[1, 2, 3, 4, 5, 6].map(i => (
-            <div key={i} className="bg-white rounded-[2.5rem] h-96 animate-pulse border border-black/5 flex flex-col overflow-hidden">
-              <div className="flex-1 bg-black/5" />
-              <div className="p-10 space-y-4">
-                <div className="h-4 bg-black/5 rounded w-1/4" />
-                <div className="h-8 bg-black/5 rounded w-3/4" />
-                <div className="h-4 bg-black/5 rounded w-1/2" />
-              </div>
-            </div>
+            <div key={i} className="bg-[#111] border border-white/[0.07] rounded-2xl h-72 animate-pulse" />
           ))}
         </div>
       ) : stories.length === 0 ? (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center py-28 bg-white rounded-[3rem] border border-dashed border-black/10 relative overflow-hidden"
+          className="text-center py-24 bg-[#111] border border-dashed border-white/[0.08] rounded-2xl relative overflow-hidden"
         >
-          {/* Background radial glow */}
-          <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full" style={{background: 'radial-gradient(circle, rgba(212,175,55,0.05) 0%, transparent 65%)'}} />
+          <div className="absolute inset-0 pointer-events-none" style={{background:'radial-gradient(circle at 50% 40%, rgba(212,175,55,0.05) 0%, transparent 60%)'}} />
+          <div className="relative">
+            <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-gold/10 border border-gold/20 flex items-center justify-center">
+              <BookOpen size={28} className="text-gold/60" />
+            </div>
+            <h3 className="text-2xl font-serif font-bold text-white mb-2">No Stories Yet</h3>
+            <p className="text-white/30 text-sm mb-6">Every great storyteller starts with a single tale.</p>
+            <button
+              onClick={onCreate}
+              className="inline-flex items-center gap-2 px-6 py-3 bg-gold text-[#080808] rounded-xl font-bold text-sm hover:bg-white transition-all shadow-lg shadow-gold/20"
+            >
+              <Plus size={16} /> Create Your First Story
+            </button>
           </div>
-
-          {/* Decorative floating elements */}
-          <div className="absolute top-10 left-10 w-3 h-3 rounded-full bg-gold/20 animate-pulse" />
-          <div className="absolute top-16 right-16 w-2 h-2 rounded-full bg-gold/30" />
-          <div className="absolute bottom-12 left-20 w-4 h-4 rounded-full bg-gold/15 animate-pulse" style={{animationDelay: '0.5s'}} />
-          <div className="absolute bottom-8 right-12 w-2 h-2 rounded-full bg-gold/25" />
-
-          {/* Icon container */}
-          <div className="relative mb-8 inline-block">
-            <div className="w-28 h-28 rounded-[2rem] bg-gradient-to-br from-black/5 via-black/8 to-black/12 flex items-center justify-center mx-auto shadow-inner border border-black/5">
-              <BookOpen className="text-black/15" size={48} />
-            </div>
-            <div className="absolute -top-2 -right-3 w-6 h-6 rounded-full bg-gold/20 border border-gold/30 flex items-center justify-center">
-              <Sparkles size={10} className="text-gold/60" />
-            </div>
-            <div className="absolute -bottom-2 -left-2 w-4 h-4 rounded-full bg-gold/25 border border-gold/30" />
-          </div>
-
-          <h3 className="text-4xl font-serif font-light text-black/30 mb-3">Your archives are empty.</h3>
-          <p className="text-sm text-black/35 mb-10 max-w-sm mx-auto leading-relaxed">
-            Every great storyteller starts with a single tale.<br />Yours begins now.
-          </p>
-
-          <button
-            onClick={onCreate}
-            className="px-12 py-5 bg-night text-white rounded-2xl font-bold hover:bg-gold hover:text-night transition-all inline-flex flex-col items-center gap-1.5 group mx-auto shadow-xl shadow-black/10 hover:shadow-gold/20"
-          >
-            <div className="flex items-center gap-2.5">
-              <Sparkles size={18} className="group-hover:rotate-12 transition-transform" />
-              <span>Forge Your First Tale</span>
-            </div>
-            <span className="text-[9px] font-bold uppercase tracking-[0.25em] opacity-30 group-hover:opacity-80 transition-opacity">Cost: 1 Token</span>
-          </button>
         </motion.div>
       ) : (
         <div className={cn(
-          "grid gap-10",
+          "grid gap-5",
           viewMode === 'grid' ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"
         )}>
           {stories.map((story, i) => (
@@ -205,10 +170,10 @@ function StoryCard({ story, index, viewMode, onSelect, onEdit, onPublish, onDele
   };
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.1 }}
+      transition={{ delay: index * 0.07 }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       style={{
@@ -218,42 +183,31 @@ function StoryCard({ story, index, viewMode, onSelect, onEdit, onPublish, onDele
       }}
       onClick={() => onSelect(story)}
       className={cn(
-        "group bg-white rounded-[2.5rem] overflow-hidden border border-black/5 cursor-pointer hover:shadow-2xl transition-all duration-500",
-        viewMode === 'list' ? "flex h-64" : "flex flex-col"
+        "group bg-[#111] border border-white/[0.07] rounded-2xl overflow-hidden cursor-pointer hover:border-gold/20 transition-all duration-300 hover:shadow-2xl hover:shadow-gold/5",
+        viewMode === 'list' ? "flex h-52" : "flex flex-col"
       )}
     >
+      {/* Image area */}
       <div className={cn(
         "relative overflow-hidden",
-        viewMode === 'list' ? "w-64 h-full" : "aspect-[4/5]"
+        viewMode === 'list' ? "w-48 h-full flex-shrink-0" : "aspect-[4/5]"
       )} style={{ transform: "translateZ(50px)" }}>
-        {/* Progress Circle */}
-        <div className="absolute top-6 right-6 z-10">
-          <svg className="w-10 h-10 transform -rotate-90">
-            <circle
-              cx="20"
-              cy="20"
-              r="16"
-              stroke="currentColor"
-              strokeWidth="3"
-              fill="transparent"
-              className="text-white/10"
-            />
+        {/* Progress circle */}
+        <div className="absolute top-4 right-4 z-10">
+          <svg className="w-9 h-9 transform -rotate-90">
+            <circle cx="18" cy="18" r="14" stroke="currentColor" strokeWidth="2.5" fill="transparent" className="text-white/[0.08]" />
             <motion.circle
-              cx="20"
-              cy="20"
-              r="16"
-              stroke="currentColor"
-              strokeWidth="3"
-              fill="transparent"
-              strokeDasharray="100"
-              initial={{ strokeDashoffset: 100 }}
-              animate={{ strokeDashoffset: 100 - (Math.min(story.pages.length, 10) * 10) }}
-              transition={{ duration: 2, ease: "easeOut" }}
+              cx="18" cy="18" r="14"
+              stroke="currentColor" strokeWidth="2.5" fill="transparent"
+              strokeDasharray="88"
+              initial={{ strokeDashoffset: 88 }}
+              animate={{ strokeDashoffset: 88 - (Math.min(story.pages.length, 10) * 8.8) }}
+              transition={{ duration: 1.5, ease: "easeOut" }}
               className="text-gold"
             />
           </svg>
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-[8px] font-bold text-white">{story.pages.length}</span>
+            <span className="text-[8px] font-bold text-white/70">{story.pages.length}</span>
           </div>
         </div>
 
@@ -261,7 +215,7 @@ function StoryCard({ story, index, viewMode, onSelect, onEdit, onPublish, onDele
           <img
             src={story.coverImage || story.pages[0].imageUrl}
             alt=""
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
             style={{
               filter: story.coverImageAdjustments ?
                 `brightness(${story.coverImageAdjustments.brightness}%) contrast(${story.coverImageAdjustments.contrast}%) saturate(${story.coverImageAdjustments.saturation}%) sepia(${story.coverImageAdjustments.sepia}%) grayscale(${story.coverImageAdjustments.grayscale}%) blur(${story.coverImageAdjustments.blur}px) hue-rotate(${story.coverImageAdjustments.hueRotate}deg)` : 'none',
@@ -272,89 +226,85 @@ function StoryCard({ story, index, viewMode, onSelect, onEdit, onPublish, onDele
             referrerPolicy="no-referrer"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-black/10 to-black/20 flex items-center justify-center">
-            <BookOpen className="text-white/20" size={48} />
+          <div className="w-full h-full bg-gradient-to-br from-[#1a1a1a] to-[#111] flex items-center justify-center">
+            <BookOpen className="text-white/[0.08]" size={40} />
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-        
-        {/* Read Now Slide-in */}
-        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 pointer-events-none">
-          <div className="bg-gold text-night px-8 py-3 rounded-full font-bold flex items-center gap-3 transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500 shadow-2xl">
-            <BookOpen size={20} />
-            <span className="small-caps tracking-widest">Read Now</span>
+
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+
+        {/* Read Now hover CTA */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-400 pointer-events-none">
+          <div className="bg-gold text-[#080808] px-6 py-2.5 rounded-full font-bold flex items-center gap-2 transform translate-y-6 group-hover:translate-y-0 transition-transform duration-400 shadow-2xl text-sm">
+            <BookOpen size={16} />
+            <span>Read Now</span>
           </div>
         </div>
 
-        {/* Watermark */}
-        <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-30 transition-opacity pointer-events-none">
-          <span className="text-[8px] font-bold uppercase tracking-widest text-white">StoryCraft</span>
-        </div>
-
-        {/* Language & Series Badges */}
-        <div className="absolute top-6 left-6 flex flex-col gap-2">
+        {/* Language & Series badges */}
+        <div className="absolute top-4 left-4 flex flex-col gap-1.5">
           {story.language && (
-            <div className="bg-black/50 backdrop-blur-md px-2 py-1 rounded-lg flex items-center gap-1 border border-white/10">
-              <Globe size={10} className="text-gold" />
-              <span className="text-[8px] font-bold uppercase tracking-widest text-white">{story.language}</span>
+            <div className="bg-black/60 backdrop-blur-md px-2 py-1 rounded-lg flex items-center gap-1 border border-white/10">
+              <Globe size={9} className="text-gold" />
+              <span className="text-[8px] font-bold uppercase tracking-widest text-white/80">{story.language}</span>
             </div>
           )}
           {story.seriesId && (
-            <div className="bg-gold/30 backdrop-blur-md px-2 py-1 rounded-lg flex items-center gap-1 border border-gold/20">
-              <Layers size={10} className="text-white" />
-              <span className="text-[8px] font-bold uppercase tracking-widest text-white">Series</span>
+            <div className="bg-gold/20 backdrop-blur-md px-2 py-1 rounded-lg flex items-center gap-1 border border-gold/20">
+              <Layers size={9} className="text-gold" />
+              <span className="text-[8px] font-bold uppercase tracking-widest text-white/80">Series</span>
             </div>
           )}
         </div>
       </div>
 
-      <div className="p-8 flex flex-col flex-1" style={{ transform: "translateZ(30px)" }}>
-        <div className="flex items-center gap-2 mb-3 flex-wrap">
-          <span className="text-[8px] font-bold uppercase tracking-widest bg-black/5 px-2.5 py-1 rounded-full">{story.style}</span>
-          <span className="text-[8px] font-bold uppercase tracking-widest bg-black/5 px-2.5 py-1 rounded-full">{story.pages.length} Pages</span>
+      {/* Card body */}
+      <div className="p-5 flex flex-col flex-1" style={{ transform: "translateZ(30px)" }}>
+        <div className="flex items-center gap-2 mb-2.5 flex-wrap">
+          <span className="bg-white/[0.06] text-white/40 text-[8px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-md">{story.style}</span>
+          <span className="bg-white/[0.06] text-white/40 text-[8px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-md">{story.pages.length} Pages</span>
           {story.isPublished && (
-            <span className="text-[8px] font-bold uppercase tracking-widest bg-gold/10 text-gold px-2.5 py-1 rounded-full border border-gold/20">Published</span>
+            <span className="bg-gold/10 text-gold border border-gold/15 text-[8px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-md">Published</span>
           )}
         </div>
-        <h3 className="text-2xl font-serif font-bold mb-2 group-hover:text-gold transition-colors leading-snug">{story.title}</h3>
+        <h3 className="text-lg font-serif font-bold text-white/90 group-hover:text-gold transition-colors leading-snug mb-auto">{story.title}</h3>
 
-        <div className="mt-auto pt-4 border-t border-black/5 flex items-center justify-between">
-          <div className="flex items-center gap-4 text-black/25 text-xs">
-            <div className="flex items-center gap-1.5"><Heart size={13} /> <span>{story.likes || 0}</span></div>
-            <div className="flex items-center gap-1.5"><Star size={13} /> <span>4.9</span></div>
+        <div className="mt-4 pt-4 border-t border-white/[0.06] flex items-center justify-between">
+          <div className="flex items-center gap-3 text-white/20 text-xs">
+            <div className="flex items-center gap-1.5"><Heart size={12} /><span>{story.likes || 0}</span></div>
+            <div className="flex items-center gap-1.5"><Star size={12} /><span>4.9</span></div>
           </div>
 
-          <div className="flex gap-1.5 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
-            {/* Edit button — direct access without opening viewer */}
+          <div className="flex gap-1.5 opacity-0 group-hover:opacity-100 transition-all translate-x-3 group-hover:translate-x-0">
             <button
               onClick={(e) => onEdit(story, e)}
-              className="p-2.5 bg-night/10 text-night rounded-xl hover:bg-night hover:text-white transition-all"
+              className="bg-white/[0.08] text-white/50 rounded-lg p-2 hover:bg-gold/10 hover:text-gold transition-all"
               title="Edit Story"
             >
-              <Pencil size={16} />
+              <Pencil size={14} />
             </button>
             <button
               onClick={(e) => onAddPartner(story, e)}
-              className="p-2.5 bg-gold/10 text-gold rounded-xl hover:bg-gold hover:text-night transition-all"
+              className="bg-white/[0.08] text-white/50 rounded-lg p-2 hover:bg-gold/10 hover:text-gold transition-all"
               title="Add Partner"
             >
-              <UserPlus size={16} />
+              <UserPlus size={14} />
             </button>
             {!story.isPublished && (
               <button
                 onClick={(e) => onPublish(story.id, e)}
-                className="p-2.5 bg-gold/10 text-gold rounded-xl hover:bg-gold hover:text-night transition-all"
+                className="bg-white/[0.08] text-white/50 rounded-lg p-2 hover:bg-gold/10 hover:text-gold transition-all"
                 title="Publish"
               >
-                <DollarSign size={16} />
+                <DollarSign size={14} />
               </button>
             )}
             <button
               onClick={(e) => onDelete(story.id, e)}
-              className="p-2.5 bg-red-500/10 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all"
+              className="bg-white/[0.06] text-white/30 rounded-lg p-2 hover:bg-red-500/10 hover:text-red-400 transition-all"
               title="Delete"
             >
-              <Trash2 size={16} />
+              <Trash2 size={14} />
             </button>
           </div>
         </div>
