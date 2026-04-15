@@ -17,6 +17,7 @@ export interface AIProviderSettings {
   activeTitleProvider: string;     // title generation
   providers: {
     gemini: AIProvider;
+    gemma: AIProvider;
     openai: AIProvider;
     anthropic: AIProvider;
     stability: AIProvider;
@@ -38,6 +39,14 @@ export const AVAILABLE_MODELS: Record<string, string[]> = {
     'gemini-2.0-flash-lite',
     'gemini-1.5-pro',
     'gemini-1.5-flash',
+  ],
+  gemma: [
+    'gemma-4-27b-it',   // Gemma 4 27B (MoE) — latest
+    'gemma-3-27b-it',
+    'gemma-3-12b-it',
+    'gemma-3-4b-it',
+    'gemma-2-27b-it',
+    'gemma-2-9b-it',
   ],
   openai: [
     'gpt-4o',
@@ -79,6 +88,14 @@ export const DEFAULT_AI_SETTINGS: AIProviderSettings = {
       enabled: false,
       usedFor: ['text', 'image'],
       description: 'Google\'s multimodal AI — best for story generation & image understanding.'
+    },
+    gemma: {
+      name: 'Google Gemma',
+      apiKey: '',
+      model: 'gemma-4-27b-it',
+      enabled: false,
+      usedFor: ['text'],
+      description: 'Gemma 4 27B (MoE) — Google\'s open-weight model, fast and creative script writer. Uses your Google AI API key.'
     },
     openai: {
       name: 'OpenAI GPT',
@@ -251,6 +268,7 @@ export class AIService {
 
     switch (providerKey) {
       case 'gemini':    return AIService.callGemini(provider.apiKey, provider.model, prompt);
+      case 'gemma':     return AIService.callGemini(provider.apiKey, provider.model, prompt); // same Google AI API
       case 'openai':    return AIService.callOpenAI(provider.apiKey, provider.model, prompt);
       case 'anthropic': return AIService.callAnthropic(provider.apiKey, provider.model, prompt);
       case 'mistral':   return AIService.callMistral(provider.apiKey, provider.model, prompt);

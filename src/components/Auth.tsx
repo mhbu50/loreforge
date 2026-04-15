@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { auth, db } from '../firebase';
-import { signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+import { signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword, linkWithCredential, EmailAuthProvider, User } from 'firebase/auth';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { handleFirestoreError, OperationType } from '../lib/firestore-utils';
 import { motion, AnimatePresence } from 'motion/react';
@@ -21,6 +21,10 @@ export default function Auth({ globalSettings }: AuthProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showLegal, setShowLegal] = useState<{ show: boolean, type: 'terms' | 'privacy' }>({ show: false, type: 'terms' });
+  const [pendingGoogleUser, setPendingGoogleUser] = useState<User | null>(null);
+  const [googlePassword, setGooglePassword] = useState('');
+  const [showGooglePw, setShowGooglePw] = useState(false);
+  const [savingGooglePw, setSavingGooglePw] = useState(false);
   const [legalContent, setLegalContent] = useState({ terms: '', privacy: '' });
 
   useEffect(() => {
@@ -69,8 +73,11 @@ export default function Auth({ globalSettings }: AuthProps) {
             subscriptionCycle: 'none',
             streak: 0,
             tokens: 5,
+            authProvider: 'google',
             createdAt: Date.now(),
           });
+          // New Google user — prompt to set a password
+          setPendingGoogleUser(user);
         }
       } catch (err) {
         console.warn('Profile write failed in Auth (will be retried):', err);
@@ -113,6 +120,7 @@ export default function Auth({ globalSettings }: AuthProps) {
             subscriptionCycle: 'none',
             streak: 0,
             tokens: 5,
+            authProvider: 'email',
             createdAt: Date.now(),
           });
         } catch (err) {
@@ -136,6 +144,28 @@ export default function Auth({ globalSettings }: AuthProps) {
       if (error?.code === 'auth/email-already-in-use') setIsLogin(true);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSetGooglePassword = async () => {
+    if (!pendingGoogleUser || !googlePassword) return;
+    if (googlePassword.length < 6) { toast.error('Password must be at least 6 characters'); return; }
+    setSavingGooglePw(true);
+    try {
+      const cred = EmailAuthProvider.credential(pendingGoogleUser.email!, googlePassword);
+      await linkWithCredential(pendingGoogleUser, cred);
+      toast.success('Password set! You can now sign in with email & password too.');
+      setPendingGoogleUser(null);
+      setGooglePassword('');
+    } catch (err: any) {
+      // If already linked, just dismiss
+      if (err?.code === 'auth/provider-already-linked' || err?.code === 'auth/email-already-in-use') {
+        setPendingGoogleUser(null);
+      } else {
+        toast.error(err?.message || 'Failed to set password. You can set it later in Account Settings.');
+      }
+    } finally {
+      setSavingGooglePw(false);
     }
   };
 
@@ -386,6 +416,81 @@ export default function Auth({ globalSettings }: AuthProps) {
           </div>
         </motion.div>
       </div>
+
+      {/* ── Set Password Modal (new Google users) ── */}
+      <AnimatePresence>
+        {pendingGoogleUser && (
+          <div className="fixed inset-0 z-[110] flex items-center justify-center p-6">
+            <motion.div
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-black/80 backdrop-blur-md"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.92, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.92, y: 20 }}
+              className="relative w-full max-w-md bg-[#111] border border-white/[0.08] rounded-2xl p-8 shadow-2xl"
+              style={{ boxShadow: '0 0 0 1px rgba(212,175,55,0.12), 0 32px 64px -16px rgba(0,0,0,0.8)' }}
+            >
+              {/* Gold top accent */}
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-[1.5px] bg-gradient-to-r from-transparent via-gold/60 to-transparent rounded-full" />
+
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-12 h-12 bg-gold/10 border border-gold/20 rounded-2xl flex items-center justify-center text-gold text-xl">
+                  🔐
+                </div>
+                <div>
+                  <h3 className="text-xl font-serif font-bold text-white/90">Set a Password</h3>
+                  <p className="text-xs text-white/35 mt-0.5">Secure your account with an email & password too</p>
+                </div>
+              </div>
+
+              <p className="text-sm text-white/50 mb-6 leading-relaxed">
+                Welcome! You signed in with Google. Set a password so you can also log in with your email{' '}
+                <span className="text-gold/70 font-medium">{pendingGoogleUser.email}</span> directly.
+              </p>
+
+              <div className="space-y-4">
+                <div className="relative">
+                  <input
+                    autoFocus
+                    type={showGooglePw ? 'text' : 'password'}
+                    value={googlePassword}
+                    onChange={e => setGooglePassword(e.target.value)}
+                    onKeyDown={e => e.key === 'Enter' && handleSetGooglePassword()}
+                    className="w-full bg-white/[0.05] border border-white/[0.09] rounded-xl px-4 py-3.5 pr-12 outline-none focus:border-gold/40 transition-all text-white/90 placeholder:text-white/20 text-sm"
+                    placeholder="Choose a password (min. 6 characters)"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowGooglePw(p => !p)}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/25 hover:text-white/50 transition-colors"
+                  >
+                    {showGooglePw ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
+
+                <button
+                  onClick={handleSetGooglePassword}
+                  disabled={savingGooglePw || googlePassword.length < 6}
+                  className="w-full py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 disabled:opacity-40 transition-all"
+                  style={{ background: 'linear-gradient(135deg, #d4af37, #b8860b)', color: '#0a0a0a' }}
+                >
+                  {savingGooglePw ? <Loader2 size={16} className="animate-spin" /> : null}
+                  Set Password & Continue
+                </button>
+
+                <button
+                  onClick={() => { setPendingGoogleUser(null); setGooglePassword(''); }}
+                  className="w-full py-3 rounded-xl text-xs font-bold uppercase tracking-wider text-white/30 hover:text-white/50 hover:bg-white/[0.04] transition-all"
+                >
+                  Skip for now
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* ── Legal Modal ── */}
       <AnimatePresence>

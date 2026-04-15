@@ -4,6 +4,7 @@ import { Shield, User, Star, Trash2, Search, CheckCircle, XCircle, Settings, Boo
 import { AIService, AIProviderSettings, DEFAULT_AI_SETTINGS, AVAILABLE_MODELS } from '../services/AIService';
 import { PhotoPickerService, PhotoServiceSettings, DEFAULT_PHOTO_SETTINGS } from '../services/PhotoPickerService';
 import { db, auth } from '../firebase';
+import { sendPasswordResetEmail } from 'firebase/auth';
 import { collection, query, onSnapshot, doc, updateDoc, deleteDoc, getDocs, setDoc, getDoc, orderBy, addDoc } from 'firebase/firestore';
 import { handleFirestoreError, OperationType } from '../lib/firestore-utils';
 import { UserProfile, Story, Feedback, SubscriptionCode } from '../types';
@@ -396,6 +397,15 @@ export default function HeadAdminPanel() {
     }
   };
 
+  const sendPasswordReset = async (email: string) => {
+    try {
+      await sendPasswordResetEmail(auth, email);
+      toast.success(`Password reset email sent to ${email}`);
+    } catch (error: any) {
+      toast.error(error?.message || 'Failed to send reset email');
+    }
+  };
+
   const filteredUsers = users.filter(user => {
     const matchesSearch = user.displayName?.toLowerCase().includes(searchTerm.toLowerCase()) || 
                          user.email?.toLowerCase().includes(searchTerm.toLowerCase());
@@ -491,7 +501,7 @@ export default function HeadAdminPanel() {
                 <tr className="bg-white/[0.03] border-b border-white/[0.06]">
                   <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-white/35">User</th>
                   <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-white/35">Role / Tier</th>
-                  <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-white/35">Level / XP / Tokens</th>
+                  <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-white/35">Tokens</th>
                   <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-white/35">Badges</th>
                   <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-white/35 text-right">Actions</th>
                 </tr>
@@ -501,12 +511,27 @@ export default function HeadAdminPanel() {
                   <tr key={user.uid} className="hover:bg-white/[0.02] transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-gold/10 text-gold flex items-center justify-center font-bold">
-                          {user.displayName?.[0] || 'U'}
+                        <div
+                          className="w-10 h-10 rounded-full bg-gold/10 text-gold flex items-center justify-center font-bold text-sm flex-shrink-0"
+                          style={(user as any).avatarColor ? { backgroundColor: (user as any).avatarColor } : {}}
+                        >
+                          {(user as any).avatarEmoji || user.displayName?.[0] || 'U'}
                         </div>
-                        <div>
-                          <div className="font-bold text-white/90">{user.displayName}</div>
-                          <div className="text-xs text-white/40">{user.email}</div>
+                        <div className="min-w-0">
+                          <div className="font-bold text-white/90 truncate">{user.displayName}</div>
+                          <div className="text-xs text-white/55 truncate select-all">{user.email}</div>
+                          <div className="flex items-center gap-1.5 mt-1">
+                            {(user as any).authProvider === 'google' ? (
+                              <span className="flex items-center gap-1 px-1.5 py-0.5 bg-blue-500/10 border border-blue-500/20 rounded-md text-[9px] font-bold text-blue-400 uppercase tracking-wider">
+                                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" className="w-3 h-3" alt="" />
+                                Google
+                              </span>
+                            ) : (user as any).authProvider === 'email' ? (
+                              <span className="flex items-center gap-1 px-1.5 py-0.5 bg-white/[0.05] border border-white/[0.08] rounded-md text-[9px] font-bold text-white/40 uppercase tracking-wider">
+                                ✉ Email
+                              </span>
+                            ) : null}
+                          </div>
                         </div>
                       </div>
                     </td>
@@ -591,11 +616,20 @@ export default function HeadAdminPanel() {
                           <button
                             onClick={() => toggleAdmin(user)}
                             className={`p-2 rounded-lg transition-all ${
-                              user.role === 'admin' ? 'bg-red-50 text-red-600 hover:bg-red-100' : 'bg-gold/10 text-gold hover:bg-gold/20'
+                              user.role === 'admin' ? 'bg-red-500/10 text-red-400 hover:bg-red-500/20' : 'bg-gold/10 text-gold hover:bg-gold/20'
                             }`}
                             title={user.role === 'admin' ? 'Revoke Admin' : 'Make Admin'}
                           >
                             <Shield className="w-4 h-4" />
+                          </button>
+                        )}
+                        {user.email && (
+                          <button
+                            onClick={() => sendPasswordReset(user.email!)}
+                            className="p-2 rounded-lg bg-white/[0.05] text-white/35 hover:bg-blue-500/10 hover:text-blue-400 transition-all"
+                            title="Send Password Reset Email"
+                          >
+                            <Send className="w-4 h-4" />
                           </button>
                         )}
                       </div>
@@ -1610,6 +1644,7 @@ export default function HeadAdminPanel() {
                         provider.enabled ? "bg-gold/10 text-gold" : "bg-white/[0.06] text-white/40"
                       )}>
                         {key === 'gemini' && '✦'}
+                        {key === 'gemma' && '◈'}
                         {key === 'openai' && '⊛'}
                         {key === 'anthropic' && '◎'}
                         {key === 'stability' && '⬡'}
