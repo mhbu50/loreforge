@@ -1044,136 +1044,91 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
           ) : activeView === 'library' ? (
             <motion.div
               key="library"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="space-y-12"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="space-y-0"
             >
-              {/* Command Center header */}
-              <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-                <div>
-                  <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-black/30 mb-2">Welcome back, {userProfile?.displayName?.split(' ')[0]}</p>
-                  <h1 className="text-5xl font-serif font-light mb-2">Your <span className="italic text-gold">Command Center</span></h1>
-                  {userProfile && userProfile.streak > 0 && (
-                    <div className="flex items-center gap-2 mt-3">
-                      <div className="flex items-center gap-1.5 bg-orange-50 px-3 py-1.5 rounded-full border border-orange-100">
-                        <span className="text-sm">🔥</span>
-                        <span className="text-orange-600 font-bold text-xs">{userProfile.streak} Day Streak</span>
-                      </div>
-                    </div>
-                  )}
+              {/* ── Hero Banner ── */}
+              <div className="relative overflow-hidden rounded-[2rem] mb-8 bg-night">
+                {/* Background glow */}
+                <div className="absolute inset-0 pointer-events-none">
+                  <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full opacity-30" style={{background:'radial-gradient(circle, rgba(212,175,55,0.4) 0%, transparent 65%)'}} />
+                  <div className="absolute -bottom-16 right-0 w-64 h-64 rounded-full opacity-20" style={{background:'radial-gradient(circle, rgba(212,175,55,0.3) 0%, transparent 65%)'}} />
+                  <div className="absolute inset-0 opacity-[0.03]" style={{backgroundImage:'repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(255,255,255,0.5) 40px, rgba(255,255,255,0.5) 41px), repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(255,255,255,0.5) 40px, rgba(255,255,255,0.5) 41px)'}} />
                 </div>
-                <div className="flex items-center gap-3">
+
+                <div className="relative px-10 py-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-gold/60 mb-3">Welcome back</p>
+                    <h1 className="text-5xl font-serif font-bold text-white leading-none mb-4">
+                      {userProfile?.displayName?.split(' ')[0] || 'Creator'}
+                      <span className="text-gold">.</span>
+                    </h1>
+                    <p className="text-white/35 text-sm font-medium">
+                      {stories.length === 0
+                        ? "Start forging your first masterpiece today."
+                        : `${stories.length} stor${stories.length !== 1 ? 'ies' : 'y'} in your archive. Keep creating.`}
+                    </p>
+                    {(userProfile?.streak ?? 0) > 0 && (
+                      <div className="flex items-center gap-2 mt-4">
+                        <span className="inline-flex items-center gap-1.5 bg-orange-500/15 border border-orange-500/20 text-orange-400 text-xs font-bold px-3 py-1.5 rounded-full">
+                          🔥 {userProfile!.streak}-day streak
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Stats row */}
+                  <div className="flex items-stretch gap-4 flex-shrink-0">
+                    {[
+                      { label: 'Stories', value: stories.length, sub: `${stories.filter(s => s.isPublished).length} pub.`, icon: <BookOpen size={14} />, accent: 'text-white' },
+                      { label: 'Streak', value: userProfile?.streak || 0, sub: 'days', icon: <Star size={14} />, accent: 'text-orange-400' },
+                      { label: 'Tokens', value: userProfile?.tokens || 0, sub: `/ ${currentLimits.tokensPerMonth ?? 0} mo`, icon: <Zap size={14} />, accent: 'text-gold' },
+                    ].map((s, i) => (
+                      <motion.div
+                        key={s.label}
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: i * 0.07 }}
+                        className="bg-white/5 border border-white/8 rounded-2xl px-6 py-5 min-w-[110px] text-center"
+                      >
+                        <div className={cn("text-xs font-bold mb-1 flex items-center justify-center gap-1", s.accent)}>
+                          {s.icon} {s.label}
+                        </div>
+                        <div className={cn("text-3xl font-serif font-bold", s.accent)}>{s.value}</div>
+                        <div className="text-[10px] text-white/25 mt-1">{s.sub}</div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Action bar */}
+                <div className="relative border-t border-white/[0.06] px-10 py-4 flex items-center gap-3">
                   <button
-                    onClick={() => {
-                      if (canCreateStory) {
-                        setShowTypeSelector(true);
-                      } else {
-                        setShowPricingModal(true);
-                      }
-                    }}
-                    className="flex items-center gap-2 px-8 py-4 bg-black text-white rounded-2xl font-bold hover:bg-gold hover:text-night transition-all shadow-xl shadow-black/10"
+                    onClick={() => canCreateStory ? setShowTypeSelector(true) : setShowPricingModal(true)}
+                    className="flex items-center gap-2 px-6 py-2.5 bg-gold text-night rounded-xl font-bold text-sm hover:bg-white transition-all shadow-lg shadow-gold/20"
                   >
-                    <Plus size={18} />
-                    <span>New Story</span>
+                    <Plus size={16} />
+                    New Project
                   </button>
                   <button
                     onClick={() => setIsZenMode(!isZenMode)}
                     className={cn(
-                      "p-4 rounded-2xl transition-all shadow-xl",
-                      isZenMode ? "bg-gold text-night" : "bg-white text-black/40 hover:text-black"
+                      "flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm transition-all border",
+                      isZenMode ? "bg-gold/20 border-gold/30 text-gold" : "bg-white/5 border-white/10 text-white/50 hover:text-white hover:border-white/20"
                     )}
                   >
-                    <Eye size={20} />
+                    <Eye size={15} />
+                    {isZenMode ? 'Exit Zen' : 'Zen Mode'}
                   </button>
+                  <div className="ml-auto text-[10px] font-bold uppercase tracking-widest text-white/20">
+                    {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
+                  </div>
                 </div>
               </div>
 
-              {/* Quick Stats */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Stories card */}
-                <motion.div
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0 }}
-                  className="bg-white rounded-[1.75rem] border border-black/[0.06] p-6 shadow-sm group relative overflow-hidden hover:shadow-lg hover:shadow-gold/5 transition-all"
-                >
-                  <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-black/10 to-transparent group-hover:via-gold/40 transition-all duration-500 rounded-t-[1.75rem]" />
-                  <div className="flex items-center justify-between mb-5">
-                    <div className="text-[10px] font-bold uppercase tracking-widest text-black/30 mt-1">Total Stories</div>
-                    <div className="w-9 h-9 rounded-2xl bg-black/5 flex items-center justify-center text-black/25 group-hover:bg-gold/10 group-hover:text-gold transition-all">
-                      <BookOpen size={17} />
-                    </div>
-                  </div>
-                  <div className="text-3xl font-serif font-bold">{stories.length}</div>
-                  <div className="mt-2 text-xs text-black/30">{stories.filter(s => s.isPublished).length} published</div>
-                  <div className="h-[3px] bg-black/5 rounded-full overflow-hidden mt-4">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={{ width: `${Math.min(stories.length * 10, 100)}%` }}
-                      transition={{ duration: 0.8, delay: 0.2 }}
-                      className="h-full bg-gradient-to-r from-gold to-gold/60 rounded-full"
-                    />
-                  </div>
-                </motion.div>
-
-                {/* Streak card */}
-                <motion.div
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.08 }}
-                  className="bg-white rounded-[1.75rem] border border-black/[0.06] p-6 shadow-sm group relative overflow-hidden hover:shadow-lg hover:shadow-gold/5 transition-all"
-                >
-                  <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-black/10 to-transparent group-hover:via-orange-400/40 transition-all duration-500 rounded-t-[1.75rem]" />
-                  <div className="flex items-center justify-between mb-5">
-                    <div className="text-[10px] font-bold uppercase tracking-widest text-black/30 mt-1">Streak</div>
-                    <div className="w-9 h-9 rounded-2xl bg-black/5 flex items-center justify-center text-black/25 group-hover:bg-orange-50 group-hover:text-orange-500 transition-all">
-                      <Star size={17} />
-                    </div>
-                  </div>
-                  <div className="flex items-baseline gap-2">
-                    <div className="text-3xl font-serif font-bold text-orange-500">{userProfile?.streak || 0}</div>
-                    <div className="text-xl text-black/25 font-light mb-1">days</div>
-                  </div>
-                  <div className="mt-2 text-xs text-black/30">Keep writing daily!</div>
-                  <div className="h-[3px] bg-black/5 rounded-full overflow-hidden mt-4">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={{ width: `${Math.min((userProfile?.streak || 0) * 5, 100)}%` }}
-                      transition={{ duration: 0.8, delay: 0.3 }}
-                      className="h-full bg-gradient-to-r from-gold to-gold/60 rounded-full"
-                    />
-                  </div>
-                </motion.div>
-
-                {/* Tokens card */}
-                <motion.div
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.16 }}
-                  className="bg-white rounded-[1.75rem] border border-black/[0.06] p-6 shadow-sm group relative overflow-hidden hover:shadow-lg hover:shadow-gold/5 transition-all"
-                >
-                  <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-black/10 to-transparent group-hover:via-gold/50 transition-all duration-500 rounded-t-[1.75rem]" />
-                  <div className="flex items-center justify-between mb-5">
-                    <div className="text-[10px] font-bold uppercase tracking-widest text-black/30 mt-1">Tokens Available</div>
-                    <div className="w-9 h-9 rounded-2xl bg-black/5 flex items-center justify-center text-black/25 group-hover:bg-gold/10 group-hover:text-gold transition-all">
-                      <Zap size={17} />
-                    </div>
-                  </div>
-                  <div className="text-3xl font-serif font-bold text-gold">{userProfile?.tokens || 0}</div>
-                  <div className="mt-2 text-xs text-black/30">of {currentLimits.tokensPerMonth ?? 0}/mo</div>
-                  <div className="h-[3px] bg-black/5 rounded-full overflow-hidden mt-4">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={{ width: `${currentLimits.tokensPerMonth ? Math.min(((userProfile?.tokens || 0) / currentLimits.tokensPerMonth) * 100, 100) : 0}%` }}
-                      transition={{ duration: 0.8, delay: 0.4 }}
-                      className="h-full bg-gradient-to-r from-gold to-gold/60 rounded-full"
-                    />
-                  </div>
-                </motion.div>
-              </div>
-
-              {/* Story Library */}
+              {/* ── Story Library ── */}
               <StoryLibrary
                 stories={filteredStories}
                 isLoading={isLoading}

@@ -393,376 +393,258 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
             </div>
           </motion.div>
         ) : step === 'setup' ? (
-          <motion.div 
+          <motion.div
             key="setup"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 1.05 }}
-            className="min-h-[80vh] flex flex-col items-center justify-center p-8 relative"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="min-h-screen bg-[#080808] flex"
           >
-            <div className="atmosphere opacity-[0.05]" />
-            <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-10">
-              {/* Book Cover Preview */}
-              <div className="relative group perspective-1000 hidden lg:block">
-                <motion.div 
-                  initial={{ rotateY: -20 }}
-                  animate={{ rotateY: -5 }}
+            {/* ── Left: Visual Panel ── */}
+            <div className="hidden lg:flex w-[420px] flex-shrink-0 flex-col relative overflow-hidden border-r border-white/[0.05]">
+              {/* Ambient glow */}
+              <div className="absolute inset-0 pointer-events-none">
+                <div className="absolute -top-20 -left-20 w-80 h-80 rounded-full" style={{background:'radial-gradient(circle, rgba(212,175,55,0.12) 0%, transparent 65%)'}} />
+                <div className="absolute bottom-0 right-0 w-60 h-60 rounded-full" style={{background:'radial-gradient(circle, rgba(212,175,55,0.08) 0%, transparent 65%)'}} />
+              </div>
+              {/* Back button */}
+              <div className="relative p-8 flex items-center gap-3">
+                <button onClick={onCancel} className="flex items-center gap-2 text-white/30 hover:text-white/70 transition-colors text-sm font-medium">
+                  <ChevronLeft size={16} /> Cancel
+                </button>
+              </div>
+              {/* Book preview */}
+              <div className="relative flex-1 flex items-center justify-center px-10 pb-10">
+                <motion.div
+                  initial={{ rotateY: -15, scale: 0.92 }}
+                  animate={{ rotateY: -4, scale: 1 }}
                   whileHover={{ rotateY: 0 }}
                   onClick={() => openImageSource('cover')}
-                  className="aspect-[3/4] bg-night rounded-r-[2rem] shadow-2xl relative overflow-hidden border-l-8 border-gold/40 preserve-3d transition-all duration-700 cursor-pointer group/cover"
+                  className="w-full max-w-[260px] aspect-[3/4] rounded-r-[1.5rem] shadow-[0_40px_80px_-12px_rgba(0,0,0,0.8)] relative overflow-hidden border-l-[6px] border-gold/50 cursor-pointer group/cover"
+                  style={{transformStyle:'preserve-3d'}}
                 >
                   {coverImage ? (
-                    <img 
-                      src={coverImage} 
-                      alt="Cover" 
-                      className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover/cover:scale-110 transition-transform duration-1000"
-                      style={{
-                        filter: coverImageAdjustments ? 
-                          `brightness(${coverImageAdjustments.brightness}%) contrast(${coverImageAdjustments.contrast}%) saturate(${coverImageAdjustments.saturation}%) sepia(${coverImageAdjustments.sepia}%) grayscale(${coverImageAdjustments.grayscale}%) blur(${coverImageAdjustments.blur}px) hue-rotate(${coverImageAdjustments.hueRotate}deg)` : 'none',
-                        transform: coverImageAdjustments ? 
-                          `rotate(${coverImageAdjustments.rotate}deg) scaleX(${coverImageAdjustments.flipX ? -1 : 1}) scaleY(${coverImageAdjustments.flipY ? -1 : 1})` : 'none'
-                      }}
+                    <img src={coverImage} alt="Cover"
+                      className="absolute inset-0 w-full h-full object-cover group-hover/cover:scale-105 transition-transform duration-700"
+                      style={{filter: coverImageAdjustments ? `brightness(${coverImageAdjustments.brightness}%) contrast(${coverImageAdjustments.contrast}%) saturate(${coverImageAdjustments.saturation}%)` : 'none'}}
                       referrerPolicy="no-referrer"
                     />
                   ) : (
-                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/leather.png')] opacity-30" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#1a1a1a] via-[#141414] to-[#0f0f0f]" />
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent" />
-                  
-                  <div className="absolute inset-x-8 top-16 bottom-16 border-2 border-gold/20 rounded-xl flex flex-col items-center justify-center p-8 text-center bg-black/20 backdrop-blur-sm">
-                    <div className="w-16 h-16 bg-gold/10 rounded-full flex items-center justify-center text-gold mb-8">
-                      {coverImage ? <ImageIcon size={32} /> : <Sparkles size={32} />}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                  {/* Left spine */}
+                  <div className="absolute left-0 top-0 bottom-0 w-5 bg-gradient-to-r from-black/60 to-transparent" />
+                  {/* Content overlay */}
+                  <div className="absolute inset-x-6 bottom-8 top-8 flex flex-col justify-between">
+                    <div className="w-10 h-10 rounded-full bg-gold/15 border border-gold/30 flex items-center justify-center">
+                      <Sparkles size={18} className="text-gold" />
                     </div>
-                    
-                    <h1 className="text-4xl font-serif font-bold text-gold mb-4 leading-tight">
-                      {draftTitle || idea || "Untitled Masterpiece"}
-                    </h1>
-                    
-                    <div className="w-12 h-0.5 bg-gold/40 mb-6" />
-                    
-                    <p className="text-white/40 small-caps tracking-widest text-xs">
-                      A {category} Tale
-                    </p>
-                    
-                    <div className="mt-auto">
-                      <p className="text-gold/60 font-serif italic">by {authorName || userDisplayName}</p>
+                    <div>
+                      <h3 className="text-white font-serif font-bold text-xl leading-snug mb-2">
+                        {draftTitle || idea || "Your Next Masterpiece"}
+                      </h3>
+                      <div className="h-[1px] w-8 bg-gold/40 mb-2" />
+                      <p className="text-white/40 text-[10px] font-medium uppercase tracking-widest">by {authorName || 'You'}</p>
                     </div>
                   </div>
-
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/cover:opacity-100 transition-opacity bg-black/60 backdrop-blur-sm z-20">
-                    <div className="flex gap-4">
-                      <button
-                        onClick={(e) => { e.stopPropagation(); openImageSource('cover'); }}
-                        className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white hover:bg-white/40 transition-all"
-                        title="Change Cover"
-                      >
-                        <ImageIcon size={20} />
-                      </button>
-                      {coverImage && (
-                        <button 
-                          onClick={(e) => { 
-                            e.stopPropagation(); 
-                            setEditingImageIndex('cover');
-                            setShowImageEditor(true);
-                          }}
-                          className="w-12 h-12 rounded-full bg-gold/80 backdrop-blur-md flex items-center justify-center text-night hover:bg-gold transition-all"
-                          title="Edit Cover (CapCut Style)"
-                        >
-                          <Sliders size={20} />
-                        </button>
-                      )}
+                  {/* Hover to change cover */}
+                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/cover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+                    <div className="bg-white/10 backdrop-blur border border-white/20 rounded-full p-3">
+                      <ImageIconLucide size={18} className="text-white" />
                     </div>
                   </div>
-
-                  {/* Spine detail */}
-                  <div className="absolute left-0 top-0 bottom-0 w-4 bg-black/40 shadow-inner" />
                 </motion.div>
-
-                {/* Floating elements for "forging" feel */}
-                <div className="absolute -top-8 -right-8 w-24 h-24 bg-gold/10 rounded-full blur-3xl animate-pulse" />
-                <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-gold/5 rounded-full blur-3xl animate-pulse delay-700" />
+                {/* Glow under book */}
+                <div className="absolute bottom-8 w-48 h-8 blur-3xl rounded-full bg-gold/10" />
               </div>
+              {/* Bottom tip */}
+              <div className="relative p-8 border-t border-white/[0.05]">
+                <p className="text-white/20 text-xs leading-relaxed">Click the cover to set an image. Your story will be forged once you fill in the details →</p>
+              </div>
+            </div>
 
-              {/* Setup Form */}
-              <div className="space-y-8">
-                <div className="space-y-2">
-                  <h2 className="text-5xl font-serif font-bold text-night">Forge Your Story</h2>
-                  <p className="text-black/40">Define the essence of your next masterpiece.</p>
+            {/* ── Right: Form Panel ── */}
+            <div className="flex-1 overflow-y-auto">
+              <div className="max-w-xl mx-auto px-8 py-10 space-y-8">
+                {/* Title */}
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-gold/60 mb-3">New Project</p>
+                  <h2 className="text-4xl font-serif font-bold text-white leading-tight">
+                    Forge Your<br /><span className="text-gold">Story</span>
+                  </h2>
+                  <p className="text-white/35 text-sm mt-2">Fill in the details below to begin crafting.</p>
                 </div>
 
-                <div className="space-y-6">
-                  {/* Story Idea Textarea */}
-                  <div className="space-y-3">
-                    <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-black/40">Story Idea</label>
-                    <textarea
-                      value={idea}
-                      onChange={(e) => setIdea(e.target.value)}
-                      placeholder="Describe your story idea... (e.g. A brave girl discovers a hidden kingdom under her garden)"
-                      rows={3}
-                      className="w-full bg-black/5 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-gold/50 transition-all resize-none text-sm leading-relaxed placeholder:text-black/25"
-                    />
-                    {/* Quick templates */}
-                    <div className="flex flex-wrap gap-2">
-                      {TEMPLATES.map(t => (
-                        <button
-                          key={t.id}
-                          onClick={() => setIdea(t.idea)}
-                          className="text-[9px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full bg-black/5 text-black/40 hover:bg-gold/10 hover:text-gold transition-all border border-transparent hover:border-gold/20"
-                        >
-                          {t.name}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-3">
-                      <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-black/40">Story Title</label>
-                      <input 
-                        type="text"
-                        value={draftTitle}
-                        onChange={(e) => setDraftTitle(e.target.value)}
-                        placeholder="Enter a title..."
-                        className="w-full bg-black/5 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-gold/50 transition-all font-serif text-xl"
-                      />
-                    </div>
-                    <div className="space-y-3">
-                      <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-black/40">Author Name</label>
-                      <input 
-                        type="text"
-                        value={authorName}
-                        onChange={(e) => setAuthorName(e.target.value)}
-                        placeholder="Pen name..."
-                        className="w-full bg-black/5 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-gold/50 transition-all font-serif text-xl"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-3">
-                      <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-black/40">Category</label>
-                      <select 
-                        value={category}
-                        onChange={(e) => setCategory(e.target.value)}
-                        className="w-full bg-black/5 rounded-2xl px-4 py-4 outline-none border border-black/5 font-medium appearance-none"
-                      >
-                        {STORY_CATEGORIES.map(cat => (
-                          <option key={cat.id} value={cat.id}>{cat.name}</option>
-                        ))}
-                      </select>
-                    </div>
-                    <div className="space-y-3">
-                      <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-black/40">Age Group</label>
-                      <select 
-                        value={ageGroup}
-                        onChange={(e) => setAgeGroup(e.target.value)}
-                        className="w-full bg-black/5 rounded-2xl px-4 py-4 outline-none border border-black/5 font-medium appearance-none"
-                      >
-                        {AGE_GROUPS.map(age => (
-                          <option key={age.id} value={age.id}>{age.name}</option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-3">
-                      <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-black/40">Artistic Style</label>
-                      <select 
-                        value={style}
-                        onChange={(e) => setStyle(e.target.value as StoryStyle)}
-                        className="w-full bg-black/5 rounded-2xl px-4 py-4 outline-none border border-black/5 font-medium appearance-none"
-                      >
-                        {STORY_STYLES.map(s => {
-                          const isAllowed = limits.allowedStyles?.includes(s.id);
-                          return (
-                            <option key={s.id} value={s.id} disabled={!isAllowed}>
-                              {s.name} {!isAllowed ? '(Locked)' : ''}
-                            </option>
-                          );
-                        })}
-                      </select>
-                    </div>
-                    <div className="space-y-3">
-                      <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-black/40">Language</label>
-                      <select 
-                        value={language}
-                        onChange={(e) => setLanguage(e.target.value)}
-                        className="w-full bg-black/5 rounded-2xl px-4 py-4 outline-none border border-black/5 font-medium appearance-none"
-                      >
-                        {LANGUAGES.map(lang => {
-                          const isAllowed = limits.allowedLanguages?.includes(lang.code);
-                          return (
-                            <option key={lang.code} value={lang.code} disabled={!isAllowed}>
-                              {lang.name} {!isAllowed ? '(Locked)' : ''}
-                            </option>
-                          );
-                        })}
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    <div className="flex justify-between items-center">
-                      <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-black/40">Page Count</label>
-                      <span className="text-[10px] font-bold text-gold uppercase tracking-widest">Max {maxPages}</span>
-                    </div>
-                    <div className="flex items-center gap-4 bg-black/5 rounded-2xl p-2">
-                      <button 
-                        onClick={() => setPageCount(Math.max(minPages, pageCount - 1))} 
-                        className="w-10 h-10 flex items-center justify-center hover:bg-black/10 rounded-xl transition-all"
-                      >
-                        -
+                {/* Story Idea */}
+                <div className="space-y-3">
+                  <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30">Story Idea</label>
+                  <textarea
+                    value={idea}
+                    onChange={(e) => setIdea(e.target.value)}
+                    placeholder="Describe your story idea..."
+                    rows={3}
+                    className="w-full bg-white/[0.05] border border-white/10 rounded-2xl px-5 py-4 outline-none focus:border-gold/40 text-white/80 text-sm leading-relaxed placeholder:text-white/20 resize-none transition-colors"
+                  />
+                  <div className="flex flex-wrap gap-1.5">
+                    {TEMPLATES.map(t => (
+                      <button key={t.id} onClick={() => setIdea(t.idea)}
+                        className="text-[9px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full bg-white/5 text-white/30 hover:bg-gold/10 hover:text-gold transition-all border border-white/8 hover:border-gold/20">
+                        {t.name}
                       </button>
-                      <span className="flex-1 text-center font-serif text-xl italic">{pageCount}</span>
-                      <button 
-                        onClick={() => {
-                          const next = pageCount + 1;
-                          if (next > maxPages) {
-                            toast.error(`Upgrade your plan to unlock more than ${maxPages} pages!`);
-                            return;
-                          }
-                          setPageCount(next);
-                        }} 
-                        className="w-10 h-10 flex items-center justify-center hover:bg-black/10 rounded-xl transition-all"
-                      >
-                        +
-                      </button>
-                    </div>
+                    ))}
                   </div>
-                  {/* Generation Mode Cards */}
-                  <div className="pt-6 space-y-4">
-                    <div>
-                      <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-black/40 mb-3">AI Generation Mode</p>
-                      <div className="grid grid-cols-2 gap-3">
-                        {([
-                          {
-                            mode: 'script' as GenerationMode,
-                            icon: <FileText size={20} />,
-                            label: 'Script Only',
-                            desc: 'AI writes the story text for every page',
-                            color: 'blue'
-                          },
-                          {
-                            mode: 'images' as GenerationMode,
-                            icon: <ImageIconLucide size={20} />,
-                            label: 'Images Only',
-                            desc: 'AI illustrates each scene with art',
-                            color: 'purple'
-                          },
-                          {
-                            mode: 'both' as GenerationMode,
-                            icon: <Sparkles size={20} />,
-                            label: 'Script + Images',
-                            desc: 'Full AI story — text and illustrations',
-                            color: 'gold'
-                          },
-                          {
-                            mode: 'surprise' as GenerationMode,
-                            icon: <Wand2 size={20} />,
-                            label: 'Surprise Me',
-                            desc: 'AI picks the idea and creates everything',
-                            color: 'night'
-                          },
-                        ]).map(({ mode, icon, label, desc, color }) => (
-                          <button
-                            key={mode}
-                            onClick={() => {
-                              if (mode === 'surprise') {
-                                handleSurpriseMe();
-                              } else {
-                                setGenerationMode(prev => prev === mode ? null : mode);
-                              }
-                            }}
-                            className={cn(
-                              "p-4 rounded-2xl border-2 text-left transition-all group",
-                              mode === 'surprise'
-                                ? "bg-night text-white border-night hover:border-gold hover:bg-black"
-                                : generationMode === mode
-                                  ? "bg-gold/10 border-gold text-night shadow-lg shadow-gold/10"
-                                  : "bg-black/3 border-black/5 hover:border-gold/30 hover:bg-gold/5"
-                            )}
-                          >
-                            <div className={cn(
-                              "w-9 h-9 rounded-xl flex items-center justify-center mb-3 transition-all",
-                              mode === 'surprise'
-                                ? "bg-gold/20 text-gold"
-                                : generationMode === mode
-                                  ? "bg-gold text-night"
-                                  : "bg-black/5 text-black/40 group-hover:bg-gold/10 group-hover:text-gold"
-                            )}>
-                              {icon}
-                            </div>
-                            <p className={cn(
-                              "text-xs font-bold uppercase tracking-widest mb-1",
-                              mode === 'surprise' ? "text-gold" : generationMode === mode ? "text-gold" : "text-black/60"
-                            )}>
-                              {label}
-                            </p>
-                            <p className={cn(
-                              "text-[10px] leading-relaxed",
-                              mode === 'surprise' ? "text-white/40" : "text-black/30"
-                            )}>
-                              {desc}
-                            </p>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
+                </div>
 
-                    {/* Token cost + buttons */}
-                    <div className="flex items-center justify-between p-4 bg-gold/5 rounded-2xl border border-gold/10">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gold/10 rounded-xl flex items-center justify-center text-gold">
-                          <Zap size={20} />
-                        </div>
-                        <div>
-                          <p className="text-xs font-bold uppercase tracking-widest text-gold">Forging Cost</p>
-                          <p className="text-[10px] text-night/40">This masterpiece will consume {tokenCost} tokens.</p>
-                        </div>
-                      </div>
-                      <div className="text-2xl font-serif font-bold text-night">
-                        {tokenCost} <span className="text-xs uppercase tracking-widest text-black/20">Tokens</span>
-                      </div>
-                    </div>
+                {/* Title + Author */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30">Title</label>
+                    <input value={draftTitle} onChange={e => setDraftTitle(e.target.value)} placeholder="Story title"
+                      className="w-full bg-white/[0.05] border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-gold/40 text-white/80 text-sm font-serif placeholder:text-white/20 transition-colors" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30">Author</label>
+                    <input value={authorName} onChange={e => setAuthorName(e.target.value)} placeholder="Your name"
+                      className="w-full bg-white/[0.05] border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-gold/40 text-white/80 text-sm font-serif placeholder:text-white/20 transition-colors" />
+                  </div>
+                </div>
 
-                    <div className="flex gap-3">
-                      <button
-                        onClick={onCancel}
-                        className="px-6 py-4 bg-black/5 rounded-2xl font-bold hover:bg-black/10 transition-all text-black/50 text-sm"
-                      >
-                        Discard
-                      </button>
-                      <button
-                        onClick={handleAIGenerate}
-                        disabled={isAIGenerating || !generationMode || generationMode === 'surprise'}
+                {/* Category + Age */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30">Category</label>
+                    <select value={category} onChange={e => setCategory(e.target.value)}
+                      className="w-full bg-white/[0.05] border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-gold/40 text-white/70 text-sm transition-colors appearance-none">
+                      {STORY_CATEGORIES.map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
+                    </select>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30">Age Group</label>
+                    <select value={ageGroup} onChange={e => setAgeGroup(e.target.value)}
+                      className="w-full bg-white/[0.05] border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-gold/40 text-white/70 text-sm transition-colors appearance-none">
+                      {AGE_GROUPS.map(age => <option key={age.id} value={age.id}>{age.name}</option>)}
+                    </select>
+                  </div>
+                </div>
+
+                {/* Style + Language */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30">Art Style</label>
+                    <select value={style} onChange={e => setStyle(e.target.value as StoryStyle)}
+                      className="w-full bg-white/[0.05] border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-gold/40 text-white/70 text-sm transition-colors appearance-none">
+                      {STORY_STYLES.map(s => {
+                        const allowed = limits.allowedStyles?.includes(s.id);
+                        return <option key={s.id} value={s.id} disabled={!allowed}>{s.name}{!allowed ? ' 🔒' : ''}</option>;
+                      })}
+                    </select>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30">Language</label>
+                    <select value={language} onChange={e => setLanguage(e.target.value)}
+                      className="w-full bg-white/[0.05] border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-gold/40 text-white/70 text-sm transition-colors appearance-none">
+                      {LANGUAGES.map(lang => {
+                        const allowed = limits.allowedLanguages?.includes(lang.code);
+                        return <option key={lang.code} value={lang.code} disabled={!allowed}>{lang.name}{!allowed ? ' 🔒' : ''}</option>;
+                      })}
+                    </select>
+                  </div>
+                </div>
+
+                {/* Page Count */}
+                <div className="space-y-3">
+                  <div className="flex justify-between">
+                    <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30">Pages</label>
+                    <span className="text-[10px] font-bold text-gold/60 uppercase tracking-widest">Max {maxPages}</span>
+                  </div>
+                  <div className="flex items-center gap-4 bg-white/[0.04] border border-white/8 rounded-xl p-2">
+                    <button onClick={() => setPageCount(Math.max(minPages, pageCount - 1))}
+                      className="w-10 h-10 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 rounded-lg transition-all text-xl font-light">
+                      −
+                    </button>
+                    <span className="flex-1 text-center font-serif text-2xl font-bold text-white">{pageCount}</span>
+                    <button onClick={() => {
+                      const next = pageCount + 1;
+                      if (next > maxPages) { toast.error(`Upgrade to unlock more than ${maxPages} pages!`); return; }
+                      setPageCount(next);
+                    }}
+                      className="w-10 h-10 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 rounded-lg transition-all text-xl font-light">
+                      +
+                    </button>
+                  </div>
+                </div>
+
+                {/* AI Mode */}
+                <div className="space-y-3">
+                  <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30">AI Generation Mode</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {([
+                      { mode: 'script' as GenerationMode,  icon: <FileText size={16} />,        label: 'Script Only',    desc: 'AI writes the story text' },
+                      { mode: 'images' as GenerationMode,  icon: <ImageIconLucide size={16} />, label: 'Images Only',    desc: 'AI illustrates each scene' },
+                      { mode: 'both' as GenerationMode,    icon: <Sparkles size={16} />,        label: 'Script + Images',desc: 'Full AI story' },
+                      { mode: 'surprise' as GenerationMode,icon: <Wand2 size={16} />,           label: 'Surprise Me',    desc: 'AI picks everything' },
+                    ]).map(({ mode, icon, label, desc }) => (
+                      <button key={mode}
+                        onClick={() => mode === 'surprise' ? handleSurpriseMe() : setGenerationMode(prev => prev === mode ? null : mode)}
                         className={cn(
-                          "flex-1 py-4 rounded-2xl font-bold transition-all flex items-center justify-center gap-2 text-sm",
-                          generationMode && generationMode !== 'surprise'
-                            ? "bg-gold text-night hover:bg-night hover:text-gold shadow-xl shadow-gold/20"
-                            : "bg-black/5 text-black/25 cursor-not-allowed"
+                          "p-4 rounded-2xl border text-left transition-all group",
+                          mode === 'surprise'
+                            ? "bg-gold/10 border-gold/20 hover:border-gold/40"
+                            : generationMode === mode
+                              ? "bg-gold/15 border-gold/40 shadow-lg shadow-gold/10"
+                              : "bg-white/[0.03] border-white/8 hover:border-white/20 hover:bg-white/[0.06]"
                         )}
                       >
-                        {isAIGenerating ? (
-                          <><Loader2 size={18} className="animate-spin" /> Forging...</>
-                        ) : (
-                          <><Brain size={18} /> AI Forge</>
-                        )}
+                        <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center mb-2.5 transition-all",
+                          generationMode === mode || mode === 'surprise' ? "bg-gold/20 text-gold" : "bg-white/8 text-white/30 group-hover:text-white/60")}>
+                          {icon}
+                        </div>
+                        <p className={cn("text-xs font-bold uppercase tracking-widest mb-0.5",
+                          generationMode === mode || mode === 'surprise' ? "text-gold" : "text-white/50")}>{label}</p>
+                        <p className="text-[10px] text-white/25 leading-relaxed">{desc}</p>
                       </button>
-                      <button
-                        onClick={() => {
-                          if (userTokens < tokenCost) {
-                            return toast.error(`Insufficient tokens! You need ${tokenCost} tokens to start crafting.`);
-                          }
-                          handleManualStart();
-                        }}
-                        className="flex-1 py-4 bg-night text-white rounded-2xl font-bold hover:bg-black transition-all shadow-xl flex items-center justify-center gap-2 text-sm group"
-                      >
-                        <Zap size={18} className="group-hover:fill-white transition-all" />
-                        Manual
-                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Token cost */}
+                <div className="flex items-center justify-between p-4 bg-gold/[0.08] border border-gold/15 rounded-2xl">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 bg-gold/15 rounded-xl flex items-center justify-center text-gold">
+                      <Zap size={18} />
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-gold uppercase tracking-widest">Forge Cost</p>
+                      <p className="text-[10px] text-white/30">{tokenCost} token{tokenCost !== 1 ? 's' : ''} will be consumed</p>
                     </div>
                   </div>
+                  <div className="text-2xl font-serif font-bold text-gold">{tokenCost}</div>
+                </div>
+
+                {/* Action buttons */}
+                <div className="flex gap-3 pb-8">
+                  <button onClick={onCancel}
+                    className="px-5 py-3.5 bg-white/[0.05] border border-white/10 rounded-xl text-white/40 hover:text-white/70 hover:border-white/20 font-semibold text-sm transition-all">
+                    Discard
+                  </button>
+                  <button
+                    onClick={handleAIGenerate}
+                    disabled={isAIGenerating || !generationMode || generationMode === 'surprise'}
+                    className={cn("flex-1 py-3.5 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2",
+                      generationMode && generationMode !== 'surprise'
+                        ? "bg-gold text-night hover:bg-white shadow-xl shadow-gold/20"
+                        : "bg-white/5 text-white/20 cursor-not-allowed border border-white/8"
+                    )}
+                  >
+                    {isAIGenerating ? <><Loader2 size={16} className="animate-spin" /> Forging...</> : <><Brain size={16} /> AI Forge</>}
+                  </button>
+                  <button
+                    onClick={() => { if (userTokens < tokenCost) return toast.error(`Need ${tokenCost} tokens.`); handleManualStart(); }}
+                    className="flex-1 py-3.5 bg-white/8 border border-white/10 text-white/70 rounded-xl font-bold text-sm hover:bg-white/12 hover:text-white transition-all flex items-center justify-center gap-2"
+                  >
+                    <Zap size={16} /> Manual
+                  </button>
                 </div>
               </div>
             </div>
@@ -773,9 +655,9 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            className="bg-white rounded-[3rem] shadow-2xl border border-black/5 overflow-hidden flex flex-col h-[80vh]"
+            className="bg-[#0f0f0f] rounded-[2rem] shadow-2xl border border-white/[0.07] overflow-hidden flex flex-col h-[80vh]"
           >
-            <div className="p-8 border-b border-black/5 flex items-center justify-between bg-silk">
+            <div className="px-6 py-4 border-b border-white/[0.07] flex items-center justify-between bg-[#111]">
               <div className="flex items-center gap-6">
                 <button onClick={() => setStep('setup')} className="p-2 hover:bg-black/5 rounded-full transition-colors">
                   <ChevronLeft size={24} />
