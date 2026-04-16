@@ -1751,16 +1751,21 @@ export default function HeadAdminPanel() {
                         "w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-lg",
                         provider.enabled ? "bg-gold/10 text-gold" : "bg-white/[0.06] text-white/40"
                       )}>
-                        {key === 'gemini' && '✦'}
+                        {(key === 'gemini' || key === 'geminiFree') && '✦'}
                         {key === 'gemma' && '◈'}
-                        {key === 'openai' && '⊛'}
-                        {key === 'anthropic' && '◎'}
+                        {(key === 'openai' || key === 'openaiMini') && '⊛'}
+                        {(key === 'anthropic' || key === 'claudeHaiku') && '◎'}
                         {key === 'stability' && '⬡'}
-                        {key === 'mistral' && '⫿'}
+                        {(key === 'mistral' || key === 'mistralFree') && '⫿'}
+                        {key === 'groq' && '⚡'}
+                        {key === 'togetherFree' && '∞'}
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
                           <h4 className="text-lg font-bold text-white/90">{provider.name}</h4>
+                          {provider.isFree && (
+                            <span className="px-1.5 py-0.5 bg-green-500/10 border border-green-500/20 rounded-md text-[9px] font-bold text-green-400 uppercase tracking-wider">Free</span>
+                          )}
                           {isActiveText && (
                             <span className="text-[8px] bg-gold/10 text-gold font-bold px-2 py-0.5 rounded-full border border-gold/20 uppercase tracking-widest">
                               Text

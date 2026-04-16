@@ -8,6 +8,7 @@ export interface AIProvider {
   enabled: boolean;
   usedFor: ('text' | 'image')[];
   description: string;
+  isFree?: boolean;   // true = free-tier / no cost variant
 }
 
 export interface TierProviderAssignment {
@@ -23,12 +24,20 @@ export interface AIProviderSettings {
   activeEnhanceProvider: string;   // text enhancement / editing
   activeTitleProvider: string;     // title generation
   providers: {
+    // ── Paid / Full ──────────────────────────────
     gemini: AIProvider;
-    gemma: AIProvider;
     openai: AIProvider;
     anthropic: AIProvider;
     stability: AIProvider;
     mistral: AIProvider;
+    // ── Free / Lite ──────────────────────────────
+    geminiFree: AIProvider;   // Gemini Flash-Lite (Google AI free tier)
+    gemma: AIProvider;        // Gemma open-weight (Google AI free tier)
+    openaiMini: AIProvider;   // GPT-4o Mini (cheapest OpenAI)
+    claudeHaiku: AIProvider;  // Claude Haiku (cheapest Anthropic)
+    mistralFree: AIProvider;  // Open-Mistral 7B (Mistral free tier)
+    groq: AIProvider;         // Groq — genuinely free API (Llama, Gemma, Mixtral)
+    togetherFree: AIProvider; // Together AI free tier (Llama, Mistral open models)
   };
   // Per-tier AI assignments (admin configures which AI each tier uses)
   tierAssignments?: Record<string, TierProviderAssignment>;
@@ -37,10 +46,10 @@ export interface AIProviderSettings {
 }
 
 export const DEFAULT_TIER_ASSIGNMENTS: Record<string, TierProviderAssignment> = {
-  free:     { text: 'gemma',    image: 'stability', enhance: 'gemma',     title: 'gemma'    },
-  standard: { text: 'gemini',   image: 'stability', enhance: 'gemini',    title: 'gemini'   },
-  premium:  { text: 'gemini',   image: 'gemini',    enhance: 'anthropic', title: 'gemini'   },
-  ultimate: { text: 'gemini',   image: 'gemini',    enhance: 'anthropic', title: 'anthropic' },
+  free:     { text: 'geminiFree', image: 'stability',  enhance: 'geminiFree', title: 'geminiFree' },
+  standard: { text: 'gemini',    image: 'stability',  enhance: 'gemini',     title: 'gemini'     },
+  premium:  { text: 'gemini',    image: 'gemini',     enhance: 'anthropic',  title: 'gemini'     },
+  ultimate: { text: 'gemini',    image: 'gemini',     enhance: 'anthropic',  title: 'anthropic'  },
 };
 
 /**
@@ -86,19 +95,12 @@ export interface AIProgress {
 }
 
 export const AVAILABLE_MODELS: Record<string, string[]> = {
+  // ── Paid / Full ─────────────────────────────────────────────────────────────
   gemini: [
     'gemini-2.0-flash',
     'gemini-2.0-flash-lite',
     'gemini-1.5-pro',
     'gemini-1.5-flash',
-  ],
-  gemma: [
-    'gemma-4-27b-it',   // Gemma 4 27B (MoE) — latest
-    'gemma-3-27b-it',
-    'gemma-3-12b-it',
-    'gemma-3-4b-it',
-    'gemma-2-27b-it',
-    'gemma-2-9b-it',
   ],
   openai: [
     'gpt-4o',
@@ -125,6 +127,47 @@ export const AVAILABLE_MODELS: Record<string, string[]> = {
     'mistral-small-latest',
     'open-mistral-7b',
   ],
+  // ── Free / Lite ──────────────────────────────────────────────────────────────
+  geminiFree: [
+    'gemini-2.0-flash-lite',   // Google AI free tier — fastest
+    'gemini-2.0-flash',
+    'gemini-1.5-flash',
+    'gemini-1.5-flash-8b',     // Smallest/fastest free model
+  ],
+  gemma: [
+    'gemma-4-27b-it',          // Gemma 4 27B (MoE) — latest
+    'gemma-3-27b-it',
+    'gemma-3-12b-it',
+    'gemma-3-4b-it',
+    'gemma-2-27b-it',
+    'gemma-2-9b-it',
+  ],
+  openaiMini: [
+    'gpt-4o-mini',             // Cheapest OpenAI — ~20× less than GPT-4o
+    'gpt-3.5-turbo',
+  ],
+  claudeHaiku: [
+    'claude-haiku-4-5-20251001', // Cheapest & fastest Claude
+    'claude-3-5-haiku-20241022',
+    'claude-3-haiku-20240307',
+  ],
+  mistralFree: [
+    'open-mistral-7b',         // Mistral free tier open model
+    'open-mixtral-8x7b',       // Mixtral MoE free
+    'open-mixtral-8x22b',
+  ],
+  groq: [
+    'llama-3.3-70b-versatile', // Groq free API — fastest inference
+    'llama-3.1-8b-instant',
+    'gemma2-9b-it',
+    'mixtral-8x7b-32768',
+    'llama-3.1-70b-versatile',
+  ],
+  togetherFree: [
+    'meta-llama/Llama-3.3-70B-Instruct-Turbo-Free', // Together AI free
+    'meta-llama/Llama-3.2-11B-Vision-Instruct-Turbo',
+    'mistralai/Mixtral-8x7B-Instruct-v0.1',
+  ],
 };
 
 export const DEFAULT_AI_SETTINGS: AIProviderSettings = {
@@ -133,37 +176,30 @@ export const DEFAULT_AI_SETTINGS: AIProviderSettings = {
   activeEnhanceProvider: 'gemini',
   activeTitleProvider: 'gemini',
   providers: {
+    // ── Paid / Full ─────────────────────────────────────────────────────────
     gemini: {
-      name: 'Google Gemini',
+      name: 'Gemini Pro',
       apiKey: '',
       model: 'gemini-2.0-flash',
       enabled: false,
       usedFor: ['text', 'image'],
-      description: 'Google\'s multimodal AI — best for story generation & image understanding.'
-    },
-    gemma: {
-      name: 'Google Gemma',
-      apiKey: '',
-      model: 'gemma-4-27b-it',
-      enabled: false,
-      usedFor: ['text'],
-      description: 'Gemma 4 27B (MoE) — Google\'s open-weight model, fast and creative script writer. Uses your Google AI API key.'
+      description: 'Google Gemini — best quality story generation & Imagen image generation.',
     },
     openai: {
-      name: 'OpenAI GPT',
+      name: 'OpenAI GPT-4o',
       apiKey: '',
-      model: 'gpt-4o-mini',
+      model: 'gpt-4o',
       enabled: false,
       usedFor: ['text', 'image'],
-      description: 'Industry-standard language model — excellent narrative quality & DALL·E images.'
+      description: 'OpenAI GPT-4o — industry-leading narrative quality & DALL·E 3 images.',
     },
     anthropic: {
-      name: 'Anthropic Claude',
+      name: 'Claude Sonnet',
       apiKey: '',
-      model: 'claude-3-5-haiku-20241022',
+      model: 'claude-sonnet-4-5',
       enabled: false,
       usedFor: ['text'],
-      description: 'Claude excels at nuanced, creative, and long-form storytelling.'
+      description: 'Anthropic Claude Sonnet — nuanced, creative, long-form storytelling.',
     },
     stability: {
       name: 'Stability AI',
@@ -171,16 +207,80 @@ export const DEFAULT_AI_SETTINGS: AIProviderSettings = {
       model: 'stable-image-core',
       enabled: false,
       usedFor: ['image'],
-      description: 'State-of-the-art image generation for story illustrations.'
+      description: 'Stability AI — state-of-the-art Stable Diffusion image generation.',
     },
     mistral: {
-      name: 'Mistral AI',
+      name: 'Mistral Large',
       apiKey: '',
-      model: 'mistral-small-latest',
+      model: 'mistral-large-latest',
       enabled: false,
       usedFor: ['text'],
-      description: 'Efficient European language model — fast and cost-effective.'
-    }
+      description: 'Mistral Large — powerful European LLM for high-quality story writing.',
+    },
+    // ── Free / Lite ──────────────────────────────────────────────────────────
+    geminiFree: {
+      name: 'Gemini Free',
+      apiKey: '',
+      model: 'gemini-2.0-flash-lite',
+      enabled: false,
+      isFree: true,
+      usedFor: ['text', 'image'],
+      description: 'Gemini Flash-Lite — Google AI free tier. Same API key as Gemini Pro. Great for free-tier users.',
+    },
+    gemma: {
+      name: 'Gemma (Free)',
+      apiKey: '',
+      model: 'gemma-4-27b-it',
+      enabled: false,
+      isFree: true,
+      usedFor: ['text'],
+      description: 'Gemma 4 27B (MoE) — Google\'s open-weight model. Uses Google AI API key. Free quota available.',
+    },
+    openaiMini: {
+      name: 'GPT-4o Mini (Free)',
+      apiKey: '',
+      model: 'gpt-4o-mini',
+      enabled: false,
+      isFree: true,
+      usedFor: ['text', 'image'],
+      description: 'GPT-4o Mini — OpenAI\'s cheapest model, ~20× less than GPT-4o. Same API key as OpenAI.',
+    },
+    claudeHaiku: {
+      name: 'Claude Haiku (Free)',
+      apiKey: '',
+      model: 'claude-haiku-4-5-20251001',
+      enabled: false,
+      isFree: true,
+      usedFor: ['text'],
+      description: 'Claude Haiku — Anthropic\'s fastest & cheapest model. Same API key as Claude Sonnet.',
+    },
+    mistralFree: {
+      name: 'Mistral Free',
+      apiKey: '',
+      model: 'open-mistral-7b',
+      enabled: false,
+      isFree: true,
+      usedFor: ['text'],
+      description: 'Open-Mistral 7B — Mistral\'s free-tier open model. Same API key as Mistral Large.',
+    },
+    groq: {
+      name: 'Groq (Free)',
+      apiKey: '',
+      model: 'llama-3.3-70b-versatile',
+      enabled: false,
+      isFree: true,
+      usedFor: ['text'],
+      description: 'Groq — genuinely FREE API with blazing-fast inference. Uses Llama, Gemma & Mixtral. Get a free key at console.groq.com.',
+    },
+    togetherFree: {
+      name: 'Together AI (Free)',
+      apiKey: '',
+      model: 'meta-llama/Llama-3.3-70B-Instruct-Turbo-Free',
+      enabled: false,
+      isFree: true,
+      usedFor: ['text'],
+      description: 'Together AI — free tier with top open-source models (Llama 3.3, Mixtral). Get a free key at api.together.ai.',
+    },
   }
 };
 
@@ -297,6 +397,52 @@ export class AIService {
     return data.choices?.[0]?.message?.content || '';
   }
 
+  // Groq — OpenAI-compatible endpoint, free tier
+  private static async callGroq(apiKey: string, model: string, prompt: string): Promise<string> {
+    const resp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model,
+        messages: [{ role: 'user', content: prompt }],
+        max_tokens: 2048,
+        temperature: 0.9
+      })
+    });
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      throw new Error(err?.error?.message || `Groq error ${resp.status}`);
+    }
+    const data = await resp.json();
+    return data.choices?.[0]?.message?.content || '';
+  }
+
+  // Together AI — OpenAI-compatible endpoint, free models available
+  private static async callTogether(apiKey: string, model: string, prompt: string): Promise<string> {
+    const resp = await fetch('https://api.together.xyz/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model,
+        messages: [{ role: 'user', content: prompt }],
+        max_tokens: 2048,
+        temperature: 0.9
+      })
+    });
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      throw new Error(err?.error?.message || `Together AI error ${resp.status}`);
+    }
+    const data = await resp.json();
+    return data.choices?.[0]?.message?.content || '';
+  }
+
   static async generateText(
     prompt: string,
     settings: AIProviderSettings,
@@ -319,11 +465,19 @@ export class AIService {
     }
 
     switch (providerKey) {
-      case 'gemini':    return AIService.callGemini(provider.apiKey, provider.model, prompt);
-      case 'gemma':     return AIService.callGemini(provider.apiKey, provider.model, prompt); // same Google AI API
-      case 'openai':    return AIService.callOpenAI(provider.apiKey, provider.model, prompt);
-      case 'anthropic': return AIService.callAnthropic(provider.apiKey, provider.model, prompt);
-      case 'mistral':   return AIService.callMistral(provider.apiKey, provider.model, prompt);
+      // ── Paid ──
+      case 'gemini':      return AIService.callGemini(provider.apiKey, provider.model, prompt);
+      case 'openai':      return AIService.callOpenAI(provider.apiKey, provider.model, prompt);
+      case 'anthropic':   return AIService.callAnthropic(provider.apiKey, provider.model, prompt);
+      case 'mistral':     return AIService.callMistral(provider.apiKey, provider.model, prompt);
+      // ── Free / Lite (same underlying API as their paid counterpart) ──
+      case 'geminiFree':  return AIService.callGemini(provider.apiKey, provider.model, prompt);
+      case 'gemma':       return AIService.callGemini(provider.apiKey, provider.model, prompt);
+      case 'openaiMini':  return AIService.callOpenAI(provider.apiKey, provider.model, prompt);
+      case 'claudeHaiku': return AIService.callAnthropic(provider.apiKey, provider.model, prompt);
+      case 'mistralFree': return AIService.callMistral(provider.apiKey, provider.model, prompt);
+      case 'groq':        return AIService.callGroq(provider.apiKey, provider.model, prompt);
+      case 'togetherFree':return AIService.callTogether(provider.apiKey, provider.model, prompt);
       default: throw new Error(`Unknown text provider: ${providerKey}`);
     }
   }
