@@ -198,31 +198,26 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
     };
     fetchSettings();
 
-    // Token Refill Logic
-    const refillTokens = async () => {
+    // Monthly usage reset logic
+    const resetMonthlyUsage = async () => {
       if (!auth.currentUser || !userProfile) return;
-      
+
       const now = Date.now();
-      const lastRefill = userProfile.lastTokenRefill || userProfile.createdAt || now;
-      const thirtyDaysInMs = 30 * 24 * 60 * 60 * 1000;
-
-      if (now - lastRefill >= thirtyDaysInMs) {
-        const tier = userProfile.subscriptionTier || 'free';
-        const limits = dynamicSubscriptionSettings?.[tier] || getSubscriptionLimits(tier);
-        const refillAmount = limits.tokensPerMonth ?? 0;
-
+      const MONTH_MS = 30 * 24 * 60 * 60 * 1000;
+      const lastReset = userProfile.lastUsageReset || userProfile.lastTokenRefill || 0;
+      if (now - lastReset > MONTH_MS) {
         try {
-          await updateDoc(doc(db, 'users', auth.currentUser.uid), {
-            tokens: (userProfile.tokens || 0) + refillAmount,
-            lastTokenRefill: now
+          await updateDoc(doc(db, 'users', userProfile.uid), {
+            usageThisMonth: 0,
+            lastUsageReset: now,
           });
-          toast.success(`Monthly tokens refilled! You received ${refillAmount} tokens.`);
+          toast.success('Monthly AI usage reset! You\'re ready for a new month.');
         } catch (error) {
-          console.error("Failed to refill tokens:", error);
+          console.error("Failed to reset usage:", error);
         }
       }
     };
-    refillTokens();
+    resetMonthlyUsage();
 
     return () => {
       unsub1();
@@ -388,10 +383,16 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
     const tokenCost = isEditing
       ? (currentLimits.editTokenCost ?? 0)
       : (currentLimits.bookTokenCost || 1);
-    const userTokens = userProfile.tokens || 0;
+    const limits = getSubscriptionLimits(userProfile.subscriptionTier);
+    const monthlyLimit = (limits as any).tokensPerMonth ?? 0;
+    const MONTH_MS = 30 * 24 * 60 * 60 * 1000;
+    const lastReset = userProfile.lastUsageReset || userProfile.lastTokenRefill || 0;
+    const currentUsage = Date.now() - lastReset > MONTH_MS ? 0 : (userProfile.usageThisMonth ?? 0);
+    const usageLeft = monthlyLimit === 0 ? Infinity : Math.max(0, monthlyLimit - currentUsage);
+    const hasUsage = monthlyLimit === 0 || usageLeft >= tokenCost;
 
-    if (userTokens < tokenCost) {
-      toast.error(`Insufficient tokens! You need ${tokenCost} token${tokenCost !== 1 ? 's' : ''} to ${isEditing ? 'save edits' : 'forge this story'}.`);
+    if (!hasUsage) {
+      toast.error(`Monthly usage limit reached. You've used ${currentUsage}/${monthlyLimit} AI operations this month.`);
       setShowPricingModal(true);
       return;
     }
@@ -428,11 +429,9 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
           });
         }
         
-        // Deduct edit tokens if editTokenCost > 0
+        // Track usage for edit if editTokenCost > 0
         if (tokenCost > 0) {
-          await updateDoc(doc(db, 'users', auth.currentUser.uid), {
-            tokens: userTokens - tokenCost
-          });
+          await handleConsumeTokens(tokenCost, 'edit story');
         }
         toast.success("Story updated successfully!");
         setIsEditing(false);
@@ -491,9 +490,9 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
           createdAt: Date.now()
         });
         
-        const updates: any = {
-          tokens: userTokens - tokenCost
-        };
+        const updates: any = {};
+        // Track usage for story creation
+        await handleConsumeTokens(tokenCost, 'create story');
 
         // Award badge for first story
         const newBadges = [...(userProfile?.badges || [])];
@@ -544,23 +543,34 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
     }
   };
 
-  // Deduct tokens for mid-session AI operations (script, image, enhance)
+  // Track monthly AI usage (replaces token deduction)
   const handleConsumeTokens = async (amount: number, reason: string): Promise<boolean> => {
     if (!auth.currentUser || !userProfile) return false;
     if (amount <= 0) return true;
-    const currentTokens = userProfile.tokens || 0;
-    if (currentTokens < amount) {
-      toast.error(`Not enough tokens for ${reason}. Need ${amount}, have ${currentTokens}.`);
-      setShowPricingModal(true);
+    const limits = getSubscriptionLimits(userProfile.subscriptionTier);
+    const monthlyLimit = (limits as any).tokensPerMonth ?? 0;
+
+    // Monthly reset check
+    const now = Date.now();
+    const MONTH_MS = 30 * 24 * 60 * 60 * 1000;
+    const lastReset = userProfile.lastUsageReset || userProfile.lastTokenRefill || 0;
+    const shouldReset = now - lastReset > MONTH_MS;
+    const currentUsage = shouldReset ? 0 : (userProfile.usageThisMonth ?? 0);
+
+    // Unlimited if monthlyLimit === 0 (e.g. ultimate with no cap)
+    if (monthlyLimit > 0 && currentUsage + amount > monthlyLimit) {
+      toast.error(`Monthly AI usage limit reached (${currentUsage}/${monthlyLimit} operations used).`);
       return false;
     }
+
     try {
       await updateDoc(doc(db, 'users', auth.currentUser.uid), {
-        tokens: currentTokens - amount
+        usageThisMonth: currentUsage + amount,
+        ...(shouldReset ? { lastUsageReset: now } : {}),
       });
       return true;
     } catch {
-      return false;
+      return true; // don't block on tracking failure
     }
   };
 
@@ -619,6 +629,14 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
     story.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     story.style.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  // Usage display values
+  const _limits = getSubscriptionLimits(userProfile?.subscriptionTier || 'free');
+  const _monthlyLimit = (_limits as any).tokensPerMonth ?? 0;
+  const _MONTH_MS = 30 * 24 * 60 * 60 * 1000;
+  const _lastReset = (userProfile?.lastUsageReset) || (userProfile?.lastTokenRefill) || 0;
+  const _currentUsage = Date.now() - _lastReset > _MONTH_MS ? 0 : (userProfile?.usageThisMonth ?? 0);
+  const _usageLeft = _monthlyLimit === 0 ? Infinity : Math.max(0, _monthlyLimit - _currentUsage);
 
   return (
     <div className="min-h-screen bg-[#080808] text-white/90 flex selection:bg-gold selection:text-[#080808] overflow-hidden">
@@ -828,8 +846,8 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
             <div className="group relative">
               <div className="flex items-center gap-2 px-3 py-1.5 bg-gold/[0.08] border border-gold/15 rounded-lg cursor-help hover:border-gold/30 transition-colors">
                 <Zap size={13} className="text-gold" />
-                <span className="text-sm font-bold text-gold">{userProfile?.tokens || 0}</span>
-                <span className="text-[9px] font-bold uppercase tracking-widest text-gold/40 hidden sm:block">tokens</span>
+                <span className="text-sm font-bold text-gold">{_usageLeft === Infinity ? '∞' : _usageLeft}</span>
+                <span className="text-[9px] font-bold uppercase tracking-widest text-gold/40 hidden sm:block">uses left</span>
               </div>
               {/* Tooltip */}
               <div className="absolute top-full right-0 mt-2 w-72 bg-[#111] text-white p-5 rounded-2xl shadow-2xl opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all pointer-events-none z-50 border border-white/[0.08]">
@@ -992,6 +1010,7 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
                 subscriptionLimits={currentLimits}
                 userTokens={userProfile?.tokens || 0}
                 onConsumeTokens={handleConsumeTokens}
+                userPreferredAI={userProfile?.preferredAI}
                 bookType={selectedBookType}
                 config={config}
                 initialStory={editingStory}
@@ -1060,7 +1079,7 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
                     {[
                       {l:'Stories', v:stories.length, c:'text-white/80'},
                       {l:'Streak', v:userProfile?.streak||0, c:'text-orange-400'},
-                      {l:'Tokens', v:userProfile?.tokens||0, c:'text-gold'},
+                      {l:'Usage Left', v:_usageLeft === Infinity ? '∞' : _usageLeft, c:'text-gold'},
                     ].map((s, i) => (
                       <motion.div key={s.l} initial={{opacity:0,y:8}} animate={{opacity:1,y:0}} transition={{delay:i*0.06}}
                         className="bg-white/[0.05] border border-white/[0.08] rounded-xl px-5 py-4 text-center min-w-[80px]">

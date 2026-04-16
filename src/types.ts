@@ -138,12 +138,23 @@ export interface UserProfile {
   badges?: string[];
   tokens: number;
   lastTokenRefill?: number;
+  // Usage system (replaces token spending — tracks AI operations this month)
+  usageThisMonth?: number;
+  lastUsageReset?: number;
   lastActive?: number;
   createdAt: number;
   // Profile customization
   bio?: string;
   avatarEmoji?: string;
   avatarColor?: string;
+  authProvider?: 'google' | 'email';
+  // AI preferences (ultimate tier only)
+  preferredAI?: {
+    text?: string;
+    image?: string;
+    enhance?: string;
+    title?: string;
+  };
   // Preferences
   notificationsEnabled?: boolean;
   emailNotifications?: boolean;

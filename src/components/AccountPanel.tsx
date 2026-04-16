@@ -11,6 +11,7 @@ import { doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { updatePassword, reauthenticateWithCredential, EmailAuthProvider, deleteUser } from 'firebase/auth';
 import { UserProfile, SubscriptionTier } from '../types';
 import { getSubscriptionLimits, SUBSCRIPTION_PRICING } from '../constants';
+import { AIService, AIProviderSettings, DEFAULT_AI_SETTINGS, DEFAULT_TIER_ASSIGNMENTS } from '../services/AIService';
 import { toast } from 'sonner';
 import { cn } from '../lib/utils';
 
@@ -48,6 +49,13 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
   // Preferences
   const [notificationsEnabled, setNotificationsEnabled] = useState(userProfile.notificationsEnabled ?? true);
   const [emailNotifications, setEmailNotifications] = useState(userProfile.emailNotifications ?? true);
+
+  // AI preferences (ultimate tier only)
+  const [aiPrefs, setAiPrefs] = useState<{ text?: string; image?: string; enhance?: string; title?: string; }>(
+    userProfile.preferredAI ?? {}
+  );
+  const [aiProviders, setAiProviders] = useState<AIProviderSettings>(DEFAULT_AI_SETTINGS);
+  const [loadingAiProviders, setLoadingAiProviders] = useState(false);
 
   // Security state
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -106,6 +114,18 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
     }
   };
 
+  // ── Load AI providers for ultimate users ──
+  const loadAiProviders = async () => {
+    if (loadingAiProviders || userProfile.subscriptionTier !== 'ultimate') return;
+    setLoadingAiProviders(true);
+    try {
+      const settings = await AIService.loadSettings();
+      setAiProviders(settings);
+    } catch { /* silent */ } finally {
+      setLoadingAiProviders(false);
+    }
+  };
+
   // ── Save Preferences ──
   const savePreferences = async () => {
     if (!auth.currentUser) return;
@@ -113,6 +133,7 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
       await updateDoc(doc(db, 'users', auth.currentUser.uid), {
         notificationsEnabled,
         emailNotifications,
+        ...(userProfile.subscriptionTier === 'ultimate' ? { preferredAI: aiPrefs } : {}),
       });
       toast.success('Preferences saved!');
     } catch {
@@ -434,32 +455,41 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                     )}
                   </div>
 
-                  {/* Token usage bar */}
+                  {/* Usage bar */}
+                  {(() => {
+                    const MONTH_MS = 30 * 24 * 60 * 60 * 1000;
+                    const lastReset = userProfile.lastUsageReset || userProfile.lastTokenRefill || 0;
+                    const currentUsage = Date.now() - lastReset > MONTH_MS ? 0 : (userProfile.usageThisMonth ?? 0);
+                    const monthlyLimit = (limits as any).tokensPerMonth ?? 0;
+                    const usagePct = monthlyLimit > 0 ? Math.min((currentUsage / monthlyLimit) * 100, 100) : 0;
+                    return (
                   <div className="mt-5 pt-5 border-t border-white/[0.08]">
                     <div className="flex justify-between items-center mb-2">
-                      <span className="text-xs font-bold text-white/40 uppercase tracking-wider">Token Balance</span>
-                      <span className="text-sm font-bold text-gold">{userProfile.tokens || 0} <span className="text-white/25 font-normal">/ {limits.tokensPerMonth} per month</span></span>
+                      <span className="text-xs font-bold text-white/40 uppercase tracking-wider">Monthly AI Usage</span>
+                      <span className="text-sm font-bold text-gold">{currentUsage}<span className="text-white/25 font-normal"> / {monthlyLimit === 0 ? '∞' : monthlyLimit} operations</span></span>
                     </div>
                     <div className="h-2 bg-white/[0.08] rounded-full overflow-hidden">
                       <motion.div
                         initial={{ width: 0 }}
-                        animate={{ width: `${Math.min(((userProfile.tokens || 0) / limits.tokensPerMonth) * 100, 100)}%` }}
+                        animate={{ width: `${usagePct}%` }}
                         transition={{ duration: 0.8 }}
-                        className="h-full bg-gradient-to-r from-gold/60 to-gold rounded-full"
+                        className={cn('h-full rounded-full', usagePct > 85 ? 'bg-gradient-to-r from-red-500/60 to-red-500' : 'bg-gradient-to-r from-gold/60 to-gold')}
                       />
                     </div>
-                    {userProfile.lastTokenRefill && (
+                    {(userProfile.lastUsageReset || userProfile.lastTokenRefill) && (
                       <div className="flex items-center gap-1 mt-2 text-[10px] text-white/20">
                         <Clock size={10} />
-                        <span>Last refill: {new Date(userProfile.lastTokenRefill).toLocaleDateString()}</span>
+                        <span>Resets monthly · Last reset: {new Date(userProfile.lastUsageReset || userProfile.lastTokenRefill!).toLocaleDateString()}</span>
                       </div>
                     )}
                   </div>
+                  );
+                  })()}
                 </div>
 
-                {/* Token cost summary */}
+                {/* Usage cost summary */}
                 <div className="bg-white/[0.03] rounded-2xl p-5 border border-white/[0.06]">
-                  <h3 className="text-xs font-bold uppercase tracking-widest text-white/40 mb-4">Your Token Costs</h3>
+                  <h3 className="text-xs font-bold uppercase tracking-widest text-white/40 mb-4">Per-Operation Usage Cost</h3>
                   <div className="space-y-2.5">
                     {[
                       { label: 'Create Story', val: limits.bookTokenCost || 1 },
@@ -470,8 +500,8 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                     ].map(item => (
                       <div key={item.label} className="flex items-center justify-between py-1.5 border-b border-white/[0.06] last:border-0">
                         <span className="text-sm text-white/50">{item.label}</span>
-                        <span className={cn('text-sm font-bold', item.val === 0 ? 'text-green-600' : 'text-gold')}>
-                          {item.val === 0 ? 'Free' : `${item.val} token${item.val !== 1 ? 's' : ''}`}
+                        <span className={cn('text-sm font-bold', item.val === 0 ? 'text-green-400' : 'text-gold')}>
+                          {item.val === 0 ? 'Free' : `${item.val} credit${item.val !== 1 ? 's' : ''}`}
                         </span>
                       </div>
                     ))}
@@ -635,9 +665,63 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                   ))}
                 </div>
 
+                {/* AI Preferences (Ultimate only) */}
+                {userProfile.subscriptionTier === 'ultimate' && (
+                  <div className="bg-white/[0.03] rounded-2xl p-6 border border-white/[0.06] space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="text-xs font-bold uppercase tracking-widest text-white/40">AI Preferences</h3>
+                        <p className="text-[10px] text-white/25 mt-0.5">Choose which AI powers each task for you</p>
+                      </div>
+                      <div className="px-2 py-1 bg-purple-500/10 border border-purple-500/20 rounded-lg">
+                        <Sparkles size={12} className="text-purple-400" />
+                      </div>
+                    </div>
+
+                    {aiProviders === DEFAULT_AI_SETTINGS && !loadingAiProviders && (
+                      <button
+                        onClick={loadAiProviders}
+                        className="text-xs text-gold/60 hover:text-gold transition-colors"
+                      >
+                        Load available AI providers →
+                      </button>
+                    )}
+
+                    {([
+                      { key: 'text' as const,    label: 'Script Writer',    desc: 'AI that writes your story script' },
+                      { key: 'image' as const,   label: 'Image Generator',  desc: 'AI that creates illustrations' },
+                      { key: 'enhance' as const, label: 'Text Enhancer',    desc: 'AI that polishes your writing' },
+                      { key: 'title' as const,   label: 'Title Creator',    desc: 'AI that generates story titles' },
+                    ]).map(({ key, label, desc }) => {
+                      const isImageKey = key === 'image';
+                      const available = Object.entries(aiProviders.providers).filter(([, p]) =>
+                        p.usedFor.includes(isImageKey ? 'image' : 'text')
+                      );
+                      const tierDefault = DEFAULT_TIER_ASSIGNMENTS.ultimate?.[key] ?? '';
+                      return (
+                        <div key={key} className="flex items-center justify-between py-2 border-b border-white/[0.05] last:border-0">
+                          <div>
+                            <div className="text-sm font-bold text-white/80">{label}</div>
+                            <div className="text-[10px] text-white/30">{desc}</div>
+                          </div>
+                          <select
+                            value={aiPrefs[key] ?? tierDefault}
+                            onChange={e => setAiPrefs(p => ({ ...p, [key]: e.target.value }))}
+                            className="bg-white/[0.05] border border-white/[0.09] rounded-lg px-2.5 py-1.5 text-xs text-white/80 outline-none focus:border-gold/40 max-w-[140px]"
+                          >
+                            {available.map(([k, p]) => (
+                              <option key={k} value={k} className="bg-[#111] text-white">{p.name}</option>
+                            ))}
+                          </select>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
                 <button
                   onClick={savePreferences}
-                  className="w-full py-3.5 bg-black text-white rounded-xl font-bold hover:bg-gold hover:text-night transition-all text-sm flex items-center justify-center gap-2 rounded-xl"
+                  className="w-full py-3.5 bg-black text-white rounded-xl font-bold hover:bg-gold hover:text-night transition-all text-sm flex items-center justify-center gap-2"
                 >
                   <Save size={16} />
                   Save Preferences

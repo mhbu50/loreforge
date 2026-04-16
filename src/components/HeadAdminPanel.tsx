@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Shield, User, Star, Trash2, Search, CheckCircle, XCircle, Settings, BookOpen, Zap, AlertTriangle, Bug, MessageSquare, Clock, Crown, Send, Sparkles, Code, Terminal, Bot, Activity, Database, Cpu, ShieldCheck, RefreshCw, Wand2, Plus, FileText, Brain, Key, Eye, EyeOff, ToggleLeft, ToggleRight, ChevronDown, Save, Image as ImageIconLucide } from 'lucide-react';
-import { AIService, AIProviderSettings, DEFAULT_AI_SETTINGS, AVAILABLE_MODELS } from '../services/AIService';
+import { AIService, AIProviderSettings, DEFAULT_AI_SETTINGS, AVAILABLE_MODELS, TierProviderAssignment, DEFAULT_TIER_ASSIGNMENTS } from '../services/AIService';
 import { PhotoPickerService, PhotoServiceSettings, DEFAULT_PHOTO_SETTINGS } from '../services/PhotoPickerService';
 import { db, auth } from '../firebase';
 import { sendPasswordResetEmail } from 'firebase/auth';
@@ -87,6 +87,8 @@ export default function HeadAdminPanel() {
   });
 
   const [aiSettings, setAiSettings] = useState<AIProviderSettings>(DEFAULT_AI_SETTINGS);
+  const [tierAssignments, setTierAssignments] = useState<Record<string, TierProviderAssignment>>(DEFAULT_TIER_ASSIGNMENTS);
+  const [ultimateUserChoice, setUltimateUserChoice] = useState(true);
   const [aiSaving, setAiSaving] = useState(false);
   const [visibleKeys, setVisibleKeys] = useState<Record<string, boolean>>({});
 
@@ -262,6 +264,8 @@ export default function HeadAdminPanel() {
             activeTitleProvider: data.activeTitleProvider || DEFAULT_AI_SETTINGS.activeTitleProvider,
             providers: { ...DEFAULT_AI_SETTINGS.providers, ...(data.providers || {}) }
           } as AIProviderSettings);
+          if (data.tierAssignments) setTierAssignments(data.tierAssignments);
+          if (data.ultimateUserChoice !== undefined) setUltimateUserChoice(data.ultimateUserChoice);
         }
         const photoDoc = await getDoc(doc(db, 'settings', 'photo_services'));
         if (photoDoc.exists()) {
@@ -318,7 +322,8 @@ export default function HeadAdminPanel() {
   const saveAiSettings = async () => {
     setAiSaving(true);
     try {
-      await AIService.saveSettings(aiSettings);
+      const settingsToSave = { ...aiSettings, tierAssignments, ultimateUserChoice };
+      await AIService.saveSettings(settingsToSave as any);
       toast.success('AI provider settings saved!');
     } catch (error) {
       toast.error('Failed to save AI settings');
@@ -782,7 +787,7 @@ export default function HeadAdminPanel() {
                 </div>
                 <div className="grid grid-cols-3 gap-4">
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Tokens/Month</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Monthly AI Usage</label>
                     <input
                       type="number"
                       value={subscriptionSettings.free?.tokensPerMonth ?? 0}
@@ -794,7 +799,7 @@ export default function HeadAdminPanel() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Create Cost</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Create (usage)</label>
                     <input
                       type="number"
                       value={subscriptionSettings.free?.bookTokenCost ?? 0}
@@ -806,7 +811,7 @@ export default function HeadAdminPanel() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Edit Cost</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Edit (usage)</label>
                     <input
                       type="number"
                       value={subscriptionSettings.free?.editTokenCost ?? 0}
@@ -819,10 +824,10 @@ export default function HeadAdminPanel() {
                   </div>
                 </div>
                 <div className="pt-2">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-white/35 mb-3">AI Operation Costs</p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-white/35 mb-3">Per-Operation Usage Cost</p>
                   <div className="grid grid-cols-3 gap-4">
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">AI Script</label>
+                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">Script (usage)</label>
                       <input
                         type="number"
                         value={(subscriptionSettings.free as any)?.aiScriptCost ?? 0}
@@ -834,7 +839,7 @@ export default function HeadAdminPanel() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">AI Image</label>
+                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">Image (usage)</label>
                       <input
                         type="number"
                         value={(subscriptionSettings.free as any)?.aiImageCost ?? 0}
@@ -846,7 +851,7 @@ export default function HeadAdminPanel() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">AI Enhance</label>
+                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">Enhance (usage)</label>
                       <input
                         type="number"
                         value={(subscriptionSettings.free as any)?.aiEnhanceCost ?? 0}
@@ -922,7 +927,7 @@ export default function HeadAdminPanel() {
                 </div>
                 <div className="grid grid-cols-3 gap-4">
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Tokens/Month</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Monthly AI Usage</label>
                     <input
                       type="number"
                       value={subscriptionSettings.standard.tokensPerMonth ?? 0}
@@ -934,7 +939,7 @@ export default function HeadAdminPanel() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Create Cost</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Create (usage)</label>
                     <input
                       type="number"
                       value={subscriptionSettings.standard.bookTokenCost ?? 0}
@@ -946,7 +951,7 @@ export default function HeadAdminPanel() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Edit Cost</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Edit (usage)</label>
                     <input
                       type="number"
                       value={subscriptionSettings.standard.editTokenCost ?? 0}
@@ -959,10 +964,10 @@ export default function HeadAdminPanel() {
                   </div>
                 </div>
                 <div className="pt-2">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-white/35 mb-3">AI Operation Costs</p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-white/35 mb-3">Per-Operation Usage Cost</p>
                   <div className="grid grid-cols-3 gap-4">
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">AI Script</label>
+                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">Script (usage)</label>
                       <input
                         type="number"
                         value={(subscriptionSettings.standard as any)?.aiScriptCost ?? 0}
@@ -974,7 +979,7 @@ export default function HeadAdminPanel() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">AI Image</label>
+                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">Image (usage)</label>
                       <input
                         type="number"
                         value={(subscriptionSettings.standard as any)?.aiImageCost ?? 0}
@@ -986,7 +991,7 @@ export default function HeadAdminPanel() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">AI Enhance</label>
+                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">Enhance (usage)</label>
                       <input
                         type="number"
                         value={(subscriptionSettings.standard as any)?.aiEnhanceCost ?? 0}
@@ -1050,7 +1055,7 @@ export default function HeadAdminPanel() {
                 </div>
                 <div className="grid grid-cols-3 gap-4">
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Tokens/Month</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Monthly AI Usage</label>
                     <input
                       type="number"
                       value={subscriptionSettings.premium.tokensPerMonth ?? 0}
@@ -1062,7 +1067,7 @@ export default function HeadAdminPanel() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Create Cost</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Create (usage)</label>
                     <input
                       type="number"
                       value={subscriptionSettings.premium.bookTokenCost ?? 0}
@@ -1074,7 +1079,7 @@ export default function HeadAdminPanel() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Edit Cost</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Edit (usage)</label>
                     <input
                       type="number"
                       value={(subscriptionSettings.premium as any).editTokenCost ?? 0}
@@ -1087,10 +1092,10 @@ export default function HeadAdminPanel() {
                   </div>
                 </div>
                 <div className="pt-2">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-white/35 mb-3">AI Operation Costs</p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-white/35 mb-3">Per-Operation Usage Cost</p>
                   <div className="grid grid-cols-3 gap-4">
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">AI Script</label>
+                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">Script (usage)</label>
                       <input
                         type="number"
                         value={(subscriptionSettings.premium as any)?.aiScriptCost ?? 0}
@@ -1102,7 +1107,7 @@ export default function HeadAdminPanel() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">AI Image</label>
+                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">Image (usage)</label>
                       <input
                         type="number"
                         value={(subscriptionSettings.premium as any)?.aiImageCost ?? 0}
@@ -1114,7 +1119,7 @@ export default function HeadAdminPanel() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">AI Enhance</label>
+                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">Enhance (usage)</label>
                       <input
                         type="number"
                         value={(subscriptionSettings.premium as any)?.aiEnhanceCost ?? 0}
@@ -1178,7 +1183,7 @@ export default function HeadAdminPanel() {
                 </div>
                 <div className="grid grid-cols-3 gap-4">
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Tokens/Month</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Monthly AI Usage</label>
                     <input
                       type="number"
                       value={subscriptionSettings.ultimate?.tokensPerMonth ?? 0}
@@ -1190,7 +1195,7 @@ export default function HeadAdminPanel() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Create Cost</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Create (usage)</label>
                     <input
                       type="number"
                       value={subscriptionSettings.ultimate?.bookTokenCost ?? 0}
@@ -1202,7 +1207,7 @@ export default function HeadAdminPanel() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Edit Cost</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Edit (usage)</label>
                     <input
                       type="number"
                       value={(subscriptionSettings.ultimate as any)?.editTokenCost ?? 0}
@@ -1215,10 +1220,10 @@ export default function HeadAdminPanel() {
                   </div>
                 </div>
                 <div className="pt-2">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-white/35 mb-3">AI Operation Costs</p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-white/35 mb-3">Per-Operation Usage Cost</p>
                   <div className="grid grid-cols-3 gap-4">
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">AI Script</label>
+                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">Script (usage)</label>
                       <input
                         type="number"
                         value={(subscriptionSettings.ultimate as any)?.aiScriptCost ?? 0}
@@ -1230,7 +1235,7 @@ export default function HeadAdminPanel() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">AI Image</label>
+                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">Image (usage)</label>
                       <input
                         type="number"
                         value={(subscriptionSettings.ultimate as any)?.aiImageCost ?? 0}
@@ -1242,7 +1247,7 @@ export default function HeadAdminPanel() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">AI Enhance</label>
+                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">Enhance (usage)</label>
                       <input
                         type="number"
                         value={(subscriptionSettings.ultimate as any)?.aiEnhanceCost ?? 0}
@@ -1618,6 +1623,109 @@ export default function HeadAdminPanel() {
                 ))}
               </div>
             </div>
+          </div>
+
+          {/* Tier AI Assignments */}
+          <div className="bg-[#111] border border-white/[0.07] rounded-2xl p-6 space-y-5">
+            <div className="flex items-center justify-between">
+              <div>
+                <h4 className="text-sm font-bold text-white/90">Tier AI Assignments</h4>
+                <p className="text-xs text-white/35 mt-0.5">Which AI each subscription tier uses for each task</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-white/40">Ultimate can choose</span>
+                <button
+                  onClick={() => setUltimateUserChoice(p => !p)}
+                  className={cn(
+                    'relative w-10 h-5 rounded-full transition-colors',
+                    ultimateUserChoice ? 'bg-gold' : 'bg-white/[0.12]'
+                  )}
+                >
+                  <motion.div
+                    animate={{ x: ultimateUserChoice ? 20 : 2 }}
+                    className="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow-sm"
+                  />
+                </button>
+              </div>
+            </div>
+
+            {/* Column headers */}
+            <div className="grid grid-cols-5 gap-3 items-center">
+              <div className="text-[10px] font-bold uppercase tracking-widest text-white/25">Tier</div>
+              <div className="text-[10px] font-bold uppercase tracking-widest text-white/25 text-center">Script</div>
+              <div className="text-[10px] font-bold uppercase tracking-widest text-white/25 text-center">Images</div>
+              <div className="text-[10px] font-bold uppercase tracking-widest text-white/25 text-center">Enhance</div>
+              <div className="text-[10px] font-bold uppercase tracking-widest text-white/25 text-center">Titles</div>
+            </div>
+
+            {/* One row per tier */}
+            {(['free', 'standard', 'premium', 'ultimate'] as const).map(tier => {
+              const tierColors: Record<string, string> = {
+                free: 'text-white/50 bg-white/[0.06]',
+                standard: 'text-blue-400 bg-blue-500/10',
+                premium: 'text-gold bg-gold/10',
+                ultimate: 'text-purple-400 bg-purple-500/10',
+              };
+              const assignment = tierAssignments[tier] ?? DEFAULT_TIER_ASSIGNMENTS[tier];
+              const textProviders = Object.entries(aiSettings.providers).filter(([, p]) => p.usedFor.includes('text'));
+              const imageProviders = Object.entries(aiSettings.providers).filter(([, p]) => p.usedFor.includes('image'));
+
+              return (
+                <div key={tier} className="grid grid-cols-5 gap-3 items-center py-2 border-t border-white/[0.04]">
+                  <div className={cn('px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider w-fit', tierColors[tier])}>
+                    {tier}
+                  </div>
+                  {/* Script */}
+                  <select
+                    value={assignment.text}
+                    onChange={e => setTierAssignments(prev => ({
+                      ...prev,
+                      [tier]: { ...(prev[tier] ?? DEFAULT_TIER_ASSIGNMENTS[tier]), text: e.target.value }
+                    }))}
+                    className="bg-white/[0.05] border border-white/[0.09] rounded-lg px-2 py-1.5 text-xs text-white/80 outline-none focus:border-gold/40"
+                  >
+                    {textProviders.map(([k, p]) => <option key={k} value={k} className="bg-[#111] text-white">{p.name}</option>)}
+                  </select>
+                  {/* Image */}
+                  <select
+                    value={assignment.image}
+                    onChange={e => setTierAssignments(prev => ({
+                      ...prev,
+                      [tier]: { ...(prev[tier] ?? DEFAULT_TIER_ASSIGNMENTS[tier]), image: e.target.value }
+                    }))}
+                    className="bg-white/[0.05] border border-white/[0.09] rounded-lg px-2 py-1.5 text-xs text-white/80 outline-none focus:border-gold/40"
+                  >
+                    {imageProviders.map(([k, p]) => <option key={k} value={k} className="bg-[#111] text-white">{p.name}</option>)}
+                  </select>
+                  {/* Enhance */}
+                  <select
+                    value={assignment.enhance}
+                    onChange={e => setTierAssignments(prev => ({
+                      ...prev,
+                      [tier]: { ...(prev[tier] ?? DEFAULT_TIER_ASSIGNMENTS[tier]), enhance: e.target.value }
+                    }))}
+                    className="bg-white/[0.05] border border-white/[0.09] rounded-lg px-2 py-1.5 text-xs text-white/80 outline-none focus:border-gold/40"
+                  >
+                    {textProviders.map(([k, p]) => <option key={k} value={k} className="bg-[#111] text-white">{p.name}</option>)}
+                  </select>
+                  {/* Title */}
+                  <select
+                    value={assignment.title}
+                    onChange={e => setTierAssignments(prev => ({
+                      ...prev,
+                      [tier]: { ...(prev[tier] ?? DEFAULT_TIER_ASSIGNMENTS[tier]), title: e.target.value }
+                    }))}
+                    className="bg-white/[0.05] border border-white/[0.09] rounded-lg px-2 py-1.5 text-xs text-white/80 outline-none focus:border-gold/40"
+                  >
+                    {textProviders.map(([k, p]) => <option key={k} value={k} className="bg-[#111] text-white">{p.name}</option>)}
+                  </select>
+                </div>
+              );
+            })}
+
+            <p className="text-[10px] text-white/20 pt-1">
+              Note: the selected AI provider must be enabled with a valid API key for the tier to work.
+            </p>
           </div>
 
           {/* Provider Cards */}

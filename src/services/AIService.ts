@@ -10,6 +10,13 @@ export interface AIProvider {
   description: string;
 }
 
+export interface TierProviderAssignment {
+  text: string;
+  image: string;
+  enhance: string;
+  title: string;
+}
+
 export interface AIProviderSettings {
   activeTextProvider: string;      // story script generation
   activeImageProvider: string;     // image generation
@@ -22,6 +29,51 @@ export interface AIProviderSettings {
     anthropic: AIProvider;
     stability: AIProvider;
     mistral: AIProvider;
+  };
+  // Per-tier AI assignments (admin configures which AI each tier uses)
+  tierAssignments?: Record<string, TierProviderAssignment>;
+  // Whether ultimate users can override their AI in AccountPanel
+  ultimateUserChoice?: boolean;
+}
+
+export const DEFAULT_TIER_ASSIGNMENTS: Record<string, TierProviderAssignment> = {
+  free:     { text: 'gemma',    image: 'stability', enhance: 'gemma',     title: 'gemma'    },
+  standard: { text: 'gemini',   image: 'stability', enhance: 'gemini',    title: 'gemini'   },
+  premium:  { text: 'gemini',   image: 'gemini',    enhance: 'anthropic', title: 'gemini'   },
+  ultimate: { text: 'gemini',   image: 'gemini',    enhance: 'anthropic', title: 'anthropic' },
+};
+
+/**
+ * Resolve which providers to actually use for a given user tier.
+ * For ultimate users with personal AI preferences, those override the tier default.
+ */
+export function getEffectiveSettings(
+  settings: AIProviderSettings,
+  userTier: string,
+  userPreferences?: Partial<TierProviderAssignment>
+): AIProviderSettings {
+  const assignments = settings.tierAssignments ?? DEFAULT_TIER_ASSIGNMENTS;
+  const tierAssign = assignments[userTier] ?? DEFAULT_TIER_ASSIGNMENTS[userTier];
+  if (!tierAssign) return settings;
+
+  const isUltimate = userTier === 'ultimate';
+  const canChoose = isUltimate && (settings.ultimateUserChoice !== false);
+
+  const effective: TierProviderAssignment = canChoose && userPreferences
+    ? {
+        text:    userPreferences.text    ?? tierAssign.text,
+        image:   userPreferences.image   ?? tierAssign.image,
+        enhance: userPreferences.enhance ?? tierAssign.enhance,
+        title:   userPreferences.title   ?? tierAssign.title,
+      }
+    : tierAssign;
+
+  return {
+    ...settings,
+    activeTextProvider:    effective.text,
+    activeImageProvider:   effective.image,
+    activeEnhanceProvider: effective.enhance,
+    activeTitleProvider:   effective.title,
   };
 }
 

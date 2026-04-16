@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Sparkles, FileText, Loader2, ImageIcon, Plus, Trash2, Wand2, ChevronLeft, ChevronRight, X, Edit3, Mic, MicOff, Languages, Layout, Zap, Type, Image as ImageIconLucide, AlignLeft, AlignCenter, AlignRight, Bold, Italic, Underline, Settings, Sliders, Brain, Upload, Grid } from 'lucide-react';
-import { AIService, GenerationMode, AIProgress } from '../services/AIService';
+import { AIService, GenerationMode, AIProgress, getEffectiveSettings } from '../services/AIService';
 import { StoryStyle, StoryPage, SubscriptionTier, ImageAdjustments } from '../types';
 import ImageEditor from './ImageEditor';
 import PhotoPicker from './PhotoPicker';
@@ -22,6 +22,7 @@ interface StoryCreatorProps {
   bookType: 'story' | 'comic' | 'anime' | 'novel' | 'manga' | 'biography' | 'other';
   config?: any;
   initialStory?: any;
+  userPreferredAI?: { text?: string; image?: string; enhance?: string; title?: string; };
 }
 
 // Removed NarratorVoice type as AI narration is disabled
@@ -51,7 +52,7 @@ const AGE_GROUPS = [
   { id: 'Adult', name: 'Adult' }
 ];
 
-export default function StoryCreator({ onComplete, onCancel, userDisplayName, userSubscriptionTier, subscriptionLimits, userId, userTokens, onConsumeTokens, bookType, config, initialStory }: StoryCreatorProps) {
+export default function StoryCreator({ onComplete, onCancel, userDisplayName, userSubscriptionTier, subscriptionLimits, userId, userTokens, onConsumeTokens, bookType, config, initialStory, userPreferredAI }: StoryCreatorProps) {
   const limits = subscriptionLimits || getSubscriptionLimits(userSubscriptionTier);
   const tokenCost = initialStory ? 0 : (limits.bookTokenCost || 1);
   const [step, setStep] = useState<'setup' | 'manual'>(initialStory ? 'manual' : 'setup');
@@ -218,22 +219,23 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
     setAiProgress({ step: 'Loading AI engines...', current: 0, total: 1 });
     try {
       const aiSettings = await AIService.loadSettings();
+      const effectiveSettings = getEffectiveSettings(aiSettings, userSubscriptionTier || 'free', userPreferredAI);
       let result: { title: string; pages: { text: string; imageUrl?: string }[] };
 
       if (mode === 'script') {
         setAiProgress({ step: 'Writing your story...', current: 0, total: 1 });
-        result = await AIService.generateStoryPages(finalIdea, pageCount, style, ageGroup, language, aiSettings);
+        result = await AIService.generateStoryPages(finalIdea, pageCount, style, ageGroup, language, effectiveSettings);
 
       } else if (mode === 'images') {
         result = await AIService.generateImagesOnly(
-          finalIdea, pageCount, style, ageGroup, aiSettings,
+          finalIdea, pageCount, style, ageGroup, effectiveSettings,
           (p) => setAiProgress(p)
         );
 
       } else {
         // 'both' or 'surprise'
         result = await AIService.generateFullStory(
-          finalIdea, pageCount, style, ageGroup, language, aiSettings,
+          finalIdea, pageCount, style, ageGroup, language, effectiveSettings,
           (p) => setAiProgress(p)
         );
       }
@@ -616,7 +618,7 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                     </div>
                     <div>
                       <p className="text-xs font-bold text-gold uppercase tracking-widest">Forge Cost</p>
-                      <p className="text-[10px] text-white/30">{tokenCost} token{tokenCost !== 1 ? 's' : ''} will be consumed</p>
+                      <p className="text-[10px] text-white/30">{tokenCost} usage credit{tokenCost !== 1 ? 's' : ''} will be consumed</p>
                     </div>
                   </div>
                   <div className="text-2xl font-serif font-bold text-gold">{tokenCost}</div>
@@ -640,7 +642,7 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                     {isAIGenerating ? <><Loader2 size={16} className="animate-spin" /> Forging...</> : <><Brain size={16} /> AI Forge</>}
                   </button>
                   <button
-                    onClick={() => { if (userTokens < tokenCost) return toast.error(`Need ${tokenCost} tokens.`); handleManualStart(); }}
+                    onClick={() => { if (userTokens < tokenCost) return toast.error(`Monthly usage limit reached. Check your usage in Account Settings.`); handleManualStart(); }}
                     className="flex-1 py-3.5 bg-white/8 border border-white/10 text-white/70 rounded-xl font-bold text-sm hover:bg-white/12 hover:text-white transition-all flex items-center justify-center gap-2"
                   >
                     <Zap size={16} /> Manual
@@ -1101,7 +1103,8 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                           setIsAIGenerating(true);
                           try {
                             const aiSettings = await AIService.loadSettings();
-                            const enhanced = await AIService.enhanceText(currentText, aiSettings);
+                            const effectiveSettings = getEffectiveSettings(aiSettings, userSubscriptionTier || 'free', userPreferredAI);
+                            const enhanced = await AIService.enhanceText(currentText, effectiveSettings);
                             handleUpdatePage(currentPageIndex, { text: enhanced.trim() });
                             toast.success('Page enhanced by AI!');
                           } catch (err: any) {
