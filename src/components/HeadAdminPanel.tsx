@@ -787,7 +787,7 @@ export default function HeadAdminPanel() {
                 </div>
                 <div className="grid grid-cols-3 gap-4">
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Monthly AI Usage</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Tokens / Month</label>
                     <input
                       type="number"
                       value={subscriptionSettings.free?.tokensPerMonth ?? 0}
@@ -799,7 +799,7 @@ export default function HeadAdminPanel() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Create (usage)</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Create Story (tokens)</label>
                     <input
                       type="number"
                       value={subscriptionSettings.free?.bookTokenCost ?? 0}
@@ -811,7 +811,7 @@ export default function HeadAdminPanel() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Edit (usage)</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Edit Story (tokens)</label>
                     <input
                       type="number"
                       value={subscriptionSettings.free?.editTokenCost ?? 0}
@@ -824,10 +824,10 @@ export default function HeadAdminPanel() {
                   </div>
                 </div>
                 <div className="pt-2">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-white/35 mb-3">Per-Operation Usage Cost</p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-white/35 mb-3">Token Cost Per Operation</p>
                   <div className="grid grid-cols-3 gap-4">
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">Script (usage)</label>
+                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">AI Script (tokens)</label>
                       <input
                         type="number"
                         value={(subscriptionSettings.free as any)?.aiScriptCost ?? 0}
@@ -839,7 +839,7 @@ export default function HeadAdminPanel() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">Image (usage)</label>
+                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">AI Image (tokens)</label>
                       <input
                         type="number"
                         value={(subscriptionSettings.free as any)?.aiImageCost ?? 0}
@@ -851,7 +851,7 @@ export default function HeadAdminPanel() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">Enhance (usage)</label>
+                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">AI Enhance (tokens)</label>
                       <input
                         type="number"
                         value={(subscriptionSettings.free as any)?.aiEnhanceCost ?? 0}
@@ -927,7 +927,7 @@ export default function HeadAdminPanel() {
                 </div>
                 <div className="grid grid-cols-3 gap-4">
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Monthly AI Usage</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Tokens / Month</label>
                     <input
                       type="number"
                       value={subscriptionSettings.standard.tokensPerMonth ?? 0}
@@ -939,7 +939,7 @@ export default function HeadAdminPanel() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Create (usage)</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Create Story (tokens)</label>
                     <input
                       type="number"
                       value={subscriptionSettings.standard.bookTokenCost ?? 0}
@@ -951,7 +951,7 @@ export default function HeadAdminPanel() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Edit (usage)</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Edit Story (tokens)</label>
                     <input
                       type="number"
                       value={subscriptionSettings.standard.editTokenCost ?? 0}
@@ -964,10 +964,10 @@ export default function HeadAdminPanel() {
                   </div>
                 </div>
                 <div className="pt-2">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-white/35 mb-3">Per-Operation Usage Cost</p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-white/35 mb-3">Token Cost Per Operation</p>
                   <div className="grid grid-cols-3 gap-4">
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">Script (usage)</label>
+                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">AI Script (tokens)</label>
                       <input
                         type="number"
                         value={(subscriptionSettings.standard as any)?.aiScriptCost ?? 0}
@@ -979,7 +979,7 @@ export default function HeadAdminPanel() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">Image (usage)</label>
+                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">AI Image (tokens)</label>
                       <input
                         type="number"
                         value={(subscriptionSettings.standard as any)?.aiImageCost ?? 0}
@@ -991,7 +991,7 @@ export default function HeadAdminPanel() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">Enhance (usage)</label>
+                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">AI Enhance (tokens)</label>
                       <input
                         type="number"
                         value={(subscriptionSettings.standard as any)?.aiEnhanceCost ?? 0}
@@ -1055,7 +1055,7 @@ export default function HeadAdminPanel() {
                 </div>
                 <div className="grid grid-cols-3 gap-4">
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Monthly AI Usage</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Tokens / Month</label>
                     <input
                       type="number"
                       value={subscriptionSettings.premium.tokensPerMonth ?? 0}
@@ -1067,7 +1067,7 @@ export default function HeadAdminPanel() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Create (usage)</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Create Story (tokens)</label>
                     <input
                       type="number"
                       value={subscriptionSettings.premium.bookTokenCost ?? 0}
@@ -1079,7 +1079,7 @@ export default function HeadAdminPanel() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Edit (usage)</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Edit Story (tokens)</label>
                     <input
                       type="number"
                       value={(subscriptionSettings.premium as any).editTokenCost ?? 0}
@@ -1092,10 +1092,10 @@ export default function HeadAdminPanel() {
                   </div>
                 </div>
                 <div className="pt-2">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-white/35 mb-3">Per-Operation Usage Cost</p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-white/35 mb-3">Token Cost Per Operation</p>
                   <div className="grid grid-cols-3 gap-4">
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">Script (usage)</label>
+                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">AI Script (tokens)</label>
                       <input
                         type="number"
                         value={(subscriptionSettings.premium as any)?.aiScriptCost ?? 0}
@@ -1107,7 +1107,7 @@ export default function HeadAdminPanel() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">Image (usage)</label>
+                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">AI Image (tokens)</label>
                       <input
                         type="number"
                         value={(subscriptionSettings.premium as any)?.aiImageCost ?? 0}
@@ -1119,7 +1119,7 @@ export default function HeadAdminPanel() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">Enhance (usage)</label>
+                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">AI Enhance (tokens)</label>
                       <input
                         type="number"
                         value={(subscriptionSettings.premium as any)?.aiEnhanceCost ?? 0}
@@ -1183,7 +1183,7 @@ export default function HeadAdminPanel() {
                 </div>
                 <div className="grid grid-cols-3 gap-4">
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Monthly AI Usage</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Tokens / Month</label>
                     <input
                       type="number"
                       value={subscriptionSettings.ultimate?.tokensPerMonth ?? 0}
@@ -1195,7 +1195,7 @@ export default function HeadAdminPanel() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Create (usage)</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Create Story (tokens)</label>
                     <input
                       type="number"
                       value={subscriptionSettings.ultimate?.bookTokenCost ?? 0}
@@ -1207,7 +1207,7 @@ export default function HeadAdminPanel() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Edit (usage)</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/35">Edit Story (tokens)</label>
                     <input
                       type="number"
                       value={(subscriptionSettings.ultimate as any)?.editTokenCost ?? 0}
@@ -1220,10 +1220,10 @@ export default function HeadAdminPanel() {
                   </div>
                 </div>
                 <div className="pt-2">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-white/35 mb-3">Per-Operation Usage Cost</p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-white/35 mb-3">Token Cost Per Operation</p>
                   <div className="grid grid-cols-3 gap-4">
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">Script (usage)</label>
+                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">AI Script (tokens)</label>
                       <input
                         type="number"
                         value={(subscriptionSettings.ultimate as any)?.aiScriptCost ?? 0}
@@ -1235,7 +1235,7 @@ export default function HeadAdminPanel() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">Image (usage)</label>
+                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">AI Image (tokens)</label>
                       <input
                         type="number"
                         value={(subscriptionSettings.ultimate as any)?.aiImageCost ?? 0}
@@ -1247,7 +1247,7 @@ export default function HeadAdminPanel() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">Enhance (usage)</label>
+                      <label className="text-xs font-bold uppercase tracking-widest text-white/35">AI Enhance (tokens)</label>
                       <input
                         type="number"
                         value={(subscriptionSettings.ultimate as any)?.aiEnhanceCost ?? 0}

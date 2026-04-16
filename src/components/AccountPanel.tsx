@@ -378,7 +378,7 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                     {[
                       { icon: <BookOpen size={16} />, val: stories.length, label: 'Stories Forged', color: 'text-white/80' },
                       { icon: <Flame size={16} />, val: userProfile.streak || 0, label: 'Day Streak', color: 'text-orange-500' },
-                      { icon: <Zap size={16} />, val: userProfile.tokens || 0, label: 'Tokens Left', color: 'text-gold' },
+                      { icon: <Zap size={16} />, val: (() => { const lim = (getSubscriptionLimits(userProfile.subscriptionTier) as any).tokensPerMonth ?? 0; const used = userProfile.usageThisMonth ?? 0; return lim === 0 ? '∞' : `${Math.min(100, Math.round((used/lim)*100))}%`; })(), label: 'Tokens Used', color: 'text-gold' },
                       { icon: <TrendingUp size={16} />, val: stories.filter(s => s.isPublished).length, label: 'Published', color: 'text-green-400' },
                     ].map(stat => (
                       <div key={stat.label} className="flex items-center gap-3 p-4 bg-white/[0.03] rounded-2xl border border-white/[0.06]">
@@ -464,17 +464,23 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                     const usagePct = monthlyLimit > 0 ? Math.min((currentUsage / monthlyLimit) * 100, 100) : 0;
                     return (
                   <div className="mt-5 pt-5 border-t border-white/[0.08]">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-xs font-bold text-white/40 uppercase tracking-wider">Monthly AI Usage</span>
-                      <span className="text-sm font-bold text-gold">{currentUsage}<span className="text-white/25 font-normal"> / {monthlyLimit === 0 ? '∞' : monthlyLimit} operations</span></span>
+                    <div className="flex justify-between items-center mb-1.5">
+                      <span className="text-xs font-bold text-white/40 uppercase tracking-wider">Monthly Token Usage</span>
+                      <span className={cn('text-sm font-bold', usagePct > 85 ? 'text-red-400' : 'text-gold')}>
+                        {monthlyLimit === 0 ? '∞' : `${usagePct}%`}
+                      </span>
                     </div>
-                    <div className="h-2 bg-white/[0.08] rounded-full overflow-hidden">
+                    <div className="h-2 bg-white/[0.08] rounded-full overflow-hidden mb-1.5">
                       <motion.div
                         initial={{ width: 0 }}
-                        animate={{ width: `${usagePct}%` }}
+                        animate={{ width: monthlyLimit === 0 ? '100%' : `${usagePct}%` }}
                         transition={{ duration: 0.8 }}
-                        className={cn('h-full rounded-full', usagePct > 85 ? 'bg-gradient-to-r from-red-500/60 to-red-500' : 'bg-gradient-to-r from-gold/60 to-gold')}
+                        className={cn('h-full rounded-full', usagePct > 85 ? 'bg-gradient-to-r from-red-500/60 to-red-500' : usagePct > 70 ? 'bg-gradient-to-r from-amber-500/60 to-amber-400' : 'bg-gradient-to-r from-gold/60 to-gold')}
                       />
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-[10px] text-white/25">{currentUsage.toLocaleString()} / {monthlyLimit === 0 ? '∞' : monthlyLimit.toLocaleString()} tokens</span>
+                      {monthlyLimit > 0 && <span className="text-[10px] text-white/20">{Math.max(0, monthlyLimit - currentUsage).toLocaleString()} remaining</span>}
                     </div>
                     {(userProfile.lastUsageReset || userProfile.lastTokenRefill) && (
                       <div className="flex items-center gap-1 mt-2 text-[10px] text-white/20">
@@ -489,7 +495,7 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
 
                 {/* Usage cost summary */}
                 <div className="bg-white/[0.03] rounded-2xl p-5 border border-white/[0.06]">
-                  <h3 className="text-xs font-bold uppercase tracking-widest text-white/40 mb-4">Per-Operation Usage Cost</h3>
+                  <h3 className="text-xs font-bold uppercase tracking-widest text-white/40 mb-4">Token Cost Per Operation</h3>
                   <div className="space-y-2.5">
                     {[
                       { label: 'Create Story', val: limits.bookTokenCost || 1 },
@@ -501,7 +507,7 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                       <div key={item.label} className="flex items-center justify-between py-1.5 border-b border-white/[0.06] last:border-0">
                         <span className="text-sm text-white/50">{item.label}</span>
                         <span className={cn('text-sm font-bold', item.val === 0 ? 'text-green-400' : 'text-gold')}>
-                          {item.val === 0 ? 'Free' : `${item.val} credit${item.val !== 1 ? 's' : ''}`}
+                          {item.val === 0 ? 'Free' : `${item.val.toLocaleString()} tokens`}
                         </span>
                       </div>
                     ))}
@@ -539,9 +545,9 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                           const price = billingCycle === 'yearly' ? (pricing.yearly / 12).toFixed(2) : pricing.monthly.toFixed(2);
                           const tierLimits = getSubscriptionLimits(tier);
                           const highlights: Record<string, string> = {
-                            standard: `${tierLimits.tokensPerMonth} tokens/mo · 3 stories/mo · Collaboration`,
-                            premium: `${tierLimits.tokensPerMonth} tokens/mo · Unlimited stories · All styles`,
-                            ultimate: `${tierLimits.tokensPerMonth} tokens/mo · All styles · Marketplace`,
+                            standard: `${tierLimits.tokensPerMonth.toLocaleString()} tokens/mo · 3 stories/mo · Collaboration`,
+                            premium: `${tierLimits.tokensPerMonth.toLocaleString()} tokens/mo · Unlimited stories · All styles`,
+                            ultimate: `${tierLimits.tokensPerMonth.toLocaleString()} tokens/mo · All styles · Marketplace`,
                           };
                           return (
                             <div key={tier} className={cn(

@@ -211,7 +211,7 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
             usageThisMonth: 0,
             lastUsageReset: now,
           });
-          toast.success('Monthly AI usage reset! You\'re ready for a new month.');
+          toast.success('Monthly token budget reset! You\'re ready for a new month.');
         } catch (error) {
           console.error("Failed to reset usage:", error);
         }
@@ -392,7 +392,8 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
     const hasUsage = monthlyLimit === 0 || usageLeft >= tokenCost;
 
     if (!hasUsage) {
-      toast.error(`Monthly usage limit reached. You've used ${currentUsage}/${monthlyLimit} AI operations this month.`);
+      const pct = monthlyLimit > 0 ? Math.round((currentUsage / monthlyLimit) * 100) : 0;
+      toast.error(`Monthly token limit reached. ${currentUsage.toLocaleString()} / ${monthlyLimit.toLocaleString()} tokens used (${pct}%).`);
       setShowPricingModal(true);
       return;
     }
@@ -559,7 +560,8 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
 
     // Unlimited if monthlyLimit === 0 (e.g. ultimate with no cap)
     if (monthlyLimit > 0 && currentUsage + amount > monthlyLimit) {
-      toast.error(`Monthly AI usage limit reached (${currentUsage}/${monthlyLimit} operations used).`);
+      const pct = Math.round((currentUsage / monthlyLimit) * 100);
+      toast.error(`Monthly token limit reached — ${currentUsage.toLocaleString()} / ${monthlyLimit.toLocaleString()} tokens (${pct}%).`);
       return false;
     }
 
@@ -637,6 +639,8 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
   const _lastReset = (userProfile?.lastUsageReset) || (userProfile?.lastTokenRefill) || 0;
   const _currentUsage = Date.now() - _lastReset > _MONTH_MS ? 0 : (userProfile?.usageThisMonth ?? 0);
   const _usageLeft = _monthlyLimit === 0 ? Infinity : Math.max(0, _monthlyLimit - _currentUsage);
+  const _usagePct = _monthlyLimit === 0 ? 0 : Math.min(100, Math.round((_currentUsage / _monthlyLimit) * 100));
+  const _isUnlimited = _monthlyLimit === 0;
 
   return (
     <div className="min-h-screen bg-[#080808] text-white/90 flex selection:bg-gold selection:text-[#080808] overflow-hidden">
@@ -842,44 +846,66 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
 
           {/* Right: actions */}
           <div className="flex items-center gap-2">
-            {/* Token pill */}
+            {/* Usage pill */}
             <div className="group relative">
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-gold/[0.08] border border-gold/15 rounded-lg cursor-help hover:border-gold/30 transition-colors">
-                <Zap size={13} className="text-gold" />
-                <span className="text-sm font-bold text-gold">{_usageLeft === Infinity ? '∞' : _usageLeft}</span>
-                <span className="text-[9px] font-bold uppercase tracking-widest text-gold/40 hidden sm:block">uses left</span>
+              <div className={`flex items-center gap-2.5 px-3 py-1.5 border rounded-lg cursor-help transition-colors ${_usagePct >= 90 ? 'bg-red-500/[0.08] border-red-500/20 hover:border-red-500/40' : 'bg-gold/[0.08] border-gold/15 hover:border-gold/30'}`}>
+                <Zap size={13} className={_usagePct >= 90 ? 'text-red-400' : 'text-gold'} />
+                {_isUnlimited ? (
+                  <span className="text-sm font-bold text-gold">∞</span>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    {/* Mini progress bar */}
+                    <div className="w-16 h-1.5 bg-white/[0.08] rounded-full overflow-hidden hidden sm:block">
+                      <div
+                        className={`h-full rounded-full transition-all ${_usagePct >= 90 ? 'bg-red-400' : _usagePct >= 70 ? 'bg-amber-400' : 'bg-gold'}`}
+                        style={{ width: `${_usagePct}%` }}
+                      />
+                    </div>
+                    <span className={`text-sm font-bold ${_usagePct >= 90 ? 'text-red-400' : 'text-gold'}`}>{_usagePct}%</span>
+                  </div>
+                )}
+                <span className={`text-[9px] font-bold uppercase tracking-widest hidden sm:block ${_usagePct >= 90 ? 'text-red-400/50' : 'text-gold/40'}`}>used</span>
               </div>
               {/* Tooltip */}
-              <div className="absolute top-full right-0 mt-2 w-72 bg-[#111] text-white p-5 rounded-2xl shadow-2xl opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all pointer-events-none z-50 border border-white/[0.08]">
-                <div className="flex items-center gap-2 mb-3 text-gold">
+              <div className="absolute top-full right-0 mt-2 w-80 bg-[#111] text-white p-5 rounded-2xl shadow-2xl opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all pointer-events-none z-50 border border-white/[0.08]">
+                <div className="flex items-center gap-2 mb-4 text-gold">
                   <Sparkles size={14} />
-                  <span className="text-[10px] font-bold uppercase tracking-widest">Token Costs</span>
+                  <span className="text-[10px] font-bold uppercase tracking-widest">Monthly Token Usage</span>
                 </div>
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center py-1.5 border-b border-white/[0.06]">
-                    <span className="text-xs text-white/45">Create Story</span>
-                    <span className="text-xs font-bold text-gold">{currentLimits.bookTokenCost || 1} Token{(currentLimits.bookTokenCost || 1) !== 1 ? 's' : ''}</span>
+                {/* Usage bar in tooltip */}
+                {!_isUnlimited && (
+                  <div className="mb-4">
+                    <div className="flex justify-between items-center mb-1.5">
+                      <span className="text-xs text-white/40">{_currentUsage.toLocaleString()} / {_monthlyLimit.toLocaleString()} tokens</span>
+                      <span className={`text-xs font-bold ${_usagePct >= 90 ? 'text-red-400' : 'text-gold'}`}>{_usagePct}%</span>
+                    </div>
+                    <div className="h-2 bg-white/[0.08] rounded-full overflow-hidden">
+                      <div
+                        className={`h-full rounded-full transition-all ${_usagePct >= 90 ? 'bg-gradient-to-r from-red-500/60 to-red-400' : _usagePct >= 70 ? 'bg-gradient-to-r from-amber-500/60 to-amber-400' : 'bg-gradient-to-r from-gold/60 to-gold'}`}
+                        style={{ width: `${_usagePct}%` }}
+                      />
+                    </div>
+                    <div className="text-[10px] text-white/25 mt-1">{_usageLeft.toLocaleString()} tokens remaining</div>
                   </div>
-                  <div className="flex justify-between items-center py-1.5 border-b border-white/[0.06]">
-                    <span className="text-xs text-white/45">Edit Story</span>
-                    <span className="text-xs font-bold text-gold">{(currentLimits.editTokenCost ?? 0) === 0 ? 'Free' : `${currentLimits.editTokenCost} Token${currentLimits.editTokenCost !== 1 ? 's' : ''}`}</span>
-                  </div>
-                  <div className="flex justify-between items-center py-1.5 border-b border-white/[0.06]">
-                    <span className="text-xs text-white/45">AI Script</span>
-                    <span className="text-xs font-bold text-gold">{(currentLimits.aiScriptCost ?? 1) === 0 ? 'Free' : `${currentLimits.aiScriptCost ?? 1} Token${(currentLimits.aiScriptCost ?? 1) !== 1 ? 's' : ''}`}</span>
-                  </div>
-                  <div className="flex justify-between items-center py-1.5 border-b border-white/[0.06]">
-                    <span className="text-xs text-white/45">AI Image (per image)</span>
-                    <span className="text-xs font-bold text-gold">{(currentLimits.aiImageCost ?? 1) === 0 ? 'Free' : `${currentLimits.aiImageCost ?? 1} Token${(currentLimits.aiImageCost ?? 1) !== 1 ? 's' : ''}`}</span>
-                  </div>
-                  <div className="flex justify-between items-center py-1.5">
-                    <span className="text-xs text-white/45">AI Enhance</span>
-                    <span className="text-xs font-bold text-gold">{(currentLimits.aiEnhanceCost ?? 0) === 0 ? 'Free' : `${currentLimits.aiEnhanceCost} Token${currentLimits.aiEnhanceCost !== 1 ? 's' : ''}`}</span>
-                  </div>
+                )}
+                <div className="space-y-1.5 border-t border-white/[0.06] pt-3">
+                  <p className="text-[9px] font-bold uppercase tracking-widest text-white/25 mb-2">Token Cost Per Operation</p>
+                  {[
+                    { label: 'Create Story', cost: currentLimits.bookTokenCost || 100 },
+                    { label: 'Edit Story', cost: currentLimits.editTokenCost ?? 0 },
+                    { label: 'AI Script', cost: (currentLimits as any).aiScriptCost ?? 50 },
+                    { label: 'AI Image', cost: (currentLimits as any).aiImageCost ?? 100 },
+                    { label: 'AI Enhance', cost: (currentLimits as any).aiEnhanceCost ?? 25 },
+                  ].map(({ label, cost }) => (
+                    <div key={label} className="flex justify-between items-center py-1 border-b border-white/[0.04] last:border-0">
+                      <span className="text-xs text-white/45">{label}</span>
+                      <span className={`text-xs font-bold ${cost === 0 ? 'text-green-400' : 'text-gold'}`}>
+                        {cost === 0 ? 'Free' : `${cost.toLocaleString()} tokens`}
+                      </span>
+                    </div>
+                  ))}
                 </div>
-                <div className="mt-3 pt-3 border-t border-white/[0.06]">
-                  <p className="text-[10px] text-white/25 leading-relaxed italic">Tokens refresh monthly. Costs set by admin.</p>
-                </div>
+                <p className="text-[10px] text-white/20 leading-relaxed italic mt-3">Resets monthly. Limits set by admin.</p>
               </div>
             </div>
 
@@ -1079,7 +1105,7 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
                     {[
                       {l:'Stories', v:stories.length, c:'text-white/80'},
                       {l:'Streak', v:userProfile?.streak||0, c:'text-orange-400'},
-                      {l:'Usage Left', v:_usageLeft === Infinity ? '∞' : _usageLeft, c:'text-gold'},
+                      {l:'Tokens Used', v:_isUnlimited ? '∞' : `${_usagePct}%`, c: _usagePct >= 90 ? 'text-red-400' : 'text-gold'},
                     ].map((s, i) => (
                       <motion.div key={s.l} initial={{opacity:0,y:8}} animate={{opacity:1,y:0}} transition={{delay:i*0.06}}
                         className="bg-white/[0.05] border border-white/[0.08] rounded-xl px-5 py-4 text-center min-w-[80px]">
