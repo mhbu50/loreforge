@@ -11,7 +11,7 @@ import { doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { updatePassword, reauthenticateWithCredential, EmailAuthProvider, deleteUser } from 'firebase/auth';
 import { UserProfile, SubscriptionTier } from '../types';
 import { getSubscriptionLimits, SUBSCRIPTION_PRICING } from '../constants';
-import { AIService, AIProviderSettings, DEFAULT_AI_SETTINGS, DEFAULT_TIER_ASSIGNMENTS } from '../services/AIService';
+import { AIService, AISettings, DEFAULT_AI_SETTINGS, OPENROUTER_MODELS, getEffectiveModel } from '../services/AIService';
 import { toast } from 'sonner';
 import { cn } from '../lib/utils';
 
@@ -54,7 +54,7 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
   const [aiPrefs, setAiPrefs] = useState<{ text?: string; image?: string; enhance?: string; title?: string; }>(
     userProfile.preferredAI ?? {}
   );
-  const [aiProviders, setAiProviders] = useState<AIProviderSettings>(DEFAULT_AI_SETTINGS);
+  const [aiProviders, setAiProviders] = useState<AISettings>(DEFAULT_AI_SETTINGS);
   const [loadingAiProviders, setLoadingAiProviders] = useState(false);
 
   // Security state
@@ -689,39 +689,27 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                         onClick={loadAiProviders}
                         className="text-xs text-gold/60 hover:text-gold transition-colors"
                       >
-                        Load available AI providers →
+                        Load AI settings →
                       </button>
                     )}
 
-                    {([
-                      { key: 'text' as const,    label: 'Script Writer',    desc: 'AI that writes your story script' },
-                      { key: 'image' as const,   label: 'Image Generator',  desc: 'AI that creates illustrations' },
-                      { key: 'enhance' as const, label: 'Text Enhancer',    desc: 'AI that polishes your writing' },
-                      { key: 'title' as const,   label: 'Title Creator',    desc: 'AI that generates story titles' },
-                    ]).map(({ key, label, desc }) => {
-                      const isImageKey = key === 'image';
-                      const available = Object.entries(aiProviders.providers).filter(([, p]) =>
-                        p.usedFor.includes(isImageKey ? 'image' : 'text')
-                      );
-                      const tierDefault = DEFAULT_TIER_ASSIGNMENTS.ultimate?.[key] ?? '';
-                      return (
-                        <div key={key} className="flex items-center justify-between py-2 border-b border-white/[0.05] last:border-0">
-                          <div>
-                            <div className="text-sm font-bold text-white/80">{label}</div>
-                            <div className="text-[10px] text-white/30">{desc}</div>
-                          </div>
-                          <select
-                            value={aiPrefs[key] ?? tierDefault}
-                            onChange={e => setAiPrefs(p => ({ ...p, [key]: e.target.value }))}
-                            className="bg-white/[0.05] border border-white/[0.09] rounded-lg px-2.5 py-1.5 text-xs text-white/80 outline-none focus:border-gold/40 max-w-[140px]"
-                          >
-                            {available.map(([k, p]) => (
-                              <option key={k} value={k} className="bg-[#111] text-white">{p.name}</option>
-                            ))}
-                          </select>
-                        </div>
-                      );
-                    })}
+                    <div className="flex items-center justify-between py-2">
+                      <div>
+                        <div className="text-sm font-bold text-white/80">AI Model</div>
+                        <div className="text-[10px] text-white/30">Model used for all story writing tasks</div>
+                      </div>
+                      <select
+                        value={aiPrefs.text ?? getEffectiveModel(aiProviders, 'ultimate')}
+                        onChange={e => setAiPrefs(p => ({ ...p, text: e.target.value }))}
+                        className="bg-white/[0.05] border border-white/[0.09] rounded-lg px-2.5 py-1.5 text-xs text-white/80 outline-none focus:border-gold/40 max-w-[180px]"
+                      >
+                        {OPENROUTER_MODELS.map(m => (
+                          <option key={m.id} value={m.id} className="bg-[#111] text-white">
+                            {m.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
                 )}
 

@@ -5,7 +5,7 @@ import {
   Sword, Crown, Map, Shield, StickyNote, Plus, Trash2, ChevronDown, ChevronUp, X, Copy, Check
 } from 'lucide-react';
 import { StoryBible } from '../types';
-import { AIService, AIProviderSettings, DEFAULT_AI_SETTINGS } from '../services/AIService';
+import { AIService, AISettings, DEFAULT_AI_SETTINGS, getEffectiveModel } from '../services/AIService';
 import { db, auth } from '../firebase';
 import { collection, addDoc, query, where, onSnapshot, deleteDoc, doc, updateDoc, getDocs } from 'firebase/firestore';
 import { toast } from 'sonner';
@@ -54,7 +54,7 @@ export default function StoryBiblePanel({ storyId, onBibleContext }: StoryBibleP
   const [saving, setSaving] = useState(false);
   const [aiLoading, setAiLoading] = useState<string | null>(null);
   const [expandedSection, setExpandedSection] = useState<string | null>('overview');
-  const [aiSettings, setAiSettings] = useState<AIProviderSettings>(DEFAULT_AI_SETTINGS);
+  const [aiSettings, setAiSettings] = useState<AISettings>(DEFAULT_AI_SETTINGS);
   const [genreHint, setGenreHint] = useState('');
   const [storyIdeaHint, setStoryIdeaHint] = useState('');
   const [copied, setCopied] = useState(false);
@@ -130,8 +130,9 @@ export default function StoryBiblePanel({ storyId, onBibleContext }: StoryBibleP
     if (!storyIdeaHint && !draft.overview) return toast.error('Add a story idea or world overview first.');
     setAiLoading(sectionKey);
     try {
+      const model = getEffectiveModel(aiSettings, 'free');
       const result = await AIService.generateStoryBible(
-        storyIdeaHint || draft.overview, genreHint || 'fiction', hint, aiSettings
+        storyIdeaHint || draft.overview, genreHint || 'fiction', hint, model, aiSettings.apiKey
       );
       const val = (result as any)[sectionKey];
       if (val) setDraft(d => ({ ...d, [sectionKey]: val }));
@@ -147,8 +148,9 @@ export default function StoryBiblePanel({ storyId, onBibleContext }: StoryBibleP
     if (!storyIdeaHint && !draft.title) return toast.error('Enter a story idea below before generating.');
     setAiLoading('all');
     try {
+      const model = getEffectiveModel(aiSettings, 'free');
       const result = await AIService.generateStoryBible(
-        storyIdeaHint || draft.title, genreHint || 'fiction', genreHint || 'a story', aiSettings
+        storyIdeaHint || draft.title, genreHint || 'fiction', genreHint || 'a story', model, aiSettings.apiKey
       );
       setDraft(d => ({ ...d, ...result }));
       toast.success('Story Bible auto-filled! Review and edit each section.');

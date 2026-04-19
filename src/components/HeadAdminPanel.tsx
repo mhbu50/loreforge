@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Shield, User, Star, Trash2, Search, CheckCircle, XCircle, Settings, BookOpen, Zap, AlertTriangle, Bug, MessageSquare, Clock, Crown, Send, Sparkles, Code, Terminal, Bot, Activity, Database, Cpu, ShieldCheck, RefreshCw, Wand2, Plus, FileText, Brain, Key, Eye, EyeOff, ToggleLeft, ToggleRight, ChevronDown, Save, Image as ImageIconLucide } from 'lucide-react';
-import { AIService, AIProviderSettings, DEFAULT_AI_SETTINGS, AVAILABLE_MODELS, TierProviderAssignment, DEFAULT_TIER_ASSIGNMENTS } from '../services/AIService';
+import { AIService, AISettings, DEFAULT_AI_SETTINGS, OPENROUTER_MODELS } from '../services/AIService';
 import { PhotoPickerService, PhotoServiceSettings, DEFAULT_PHOTO_SETTINGS } from '../services/PhotoPickerService';
 import { db, auth } from '../firebase';
 import { sendPasswordResetEmail } from 'firebase/auth';
@@ -86,11 +86,10 @@ export default function HeadAdminPanel() {
     }
   });
 
-  const [aiSettings, setAiSettings] = useState<AIProviderSettings>(DEFAULT_AI_SETTINGS);
-  const [tierAssignments, setTierAssignments] = useState<Record<string, TierProviderAssignment>>(DEFAULT_TIER_ASSIGNMENTS);
-  const [ultimateUserChoice, setUltimateUserChoice] = useState(true);
+  const [aiSettings, setAiSettings] = useState<AISettings>(DEFAULT_AI_SETTINGS);
   const [aiSaving, setAiSaving] = useState(false);
-  const [visibleKeys, setVisibleKeys] = useState<Record<string, boolean>>({});
+  const [showApiKey, setShowApiKey] = useState(false);
+  const [showImageKey, setShowImageKey] = useState(false);
 
   const [photoSettings, setPhotoSettings] = useState<PhotoServiceSettings>(DEFAULT_PHOTO_SETTINGS);
   const [photoSaving, setPhotoSaving] = useState(false);
@@ -254,19 +253,8 @@ export default function HeadAdminPanel() {
         } else if (auth.currentUser?.email === 'alaa.abukhamseen@gmail.com') {
           await setDoc(doc(db, 'settings', 'subscription'), subscriptionSettings);
         }
-        const aiDoc = await getDoc(doc(db, 'settings', 'ai_providers'));
-        if (aiDoc.exists()) {
-          const data = aiDoc.data();
-          setAiSettings({
-            ...DEFAULT_AI_SETTINGS,
-            ...data,
-            activeEnhanceProvider: data.activeEnhanceProvider || DEFAULT_AI_SETTINGS.activeEnhanceProvider,
-            activeTitleProvider: data.activeTitleProvider || DEFAULT_AI_SETTINGS.activeTitleProvider,
-            providers: { ...DEFAULT_AI_SETTINGS.providers, ...(data.providers || {}) }
-          } as AIProviderSettings);
-          if (data.tierAssignments) setTierAssignments(data.tierAssignments);
-          if (data.ultimateUserChoice !== undefined) setUltimateUserChoice(data.ultimateUserChoice);
-        }
+        const loaded = await AIService.loadSettings();
+        setAiSettings(loaded);
         const photoDoc = await getDoc(doc(db, 'settings', 'photo_services'));
         if (photoDoc.exists()) {
           const d = photoDoc.data();
@@ -322,9 +310,8 @@ export default function HeadAdminPanel() {
   const saveAiSettings = async () => {
     setAiSaving(true);
     try {
-      const settingsToSave = { ...aiSettings, tierAssignments, ultimateUserChoice };
-      await AIService.saveSettings(settingsToSave as any);
-      toast.success('AI provider settings saved!');
+      await AIService.saveSettings(aiSettings);
+      toast.success('AI settings saved!');
     } catch (error) {
       toast.error('Failed to save AI settings');
     } finally {
@@ -348,16 +335,6 @@ export default function HeadAdminPanel() {
     setPhotoSettings(prev => ({
       ...prev,
       [service]: { ...prev[service], [field]: value }
-    }));
-  };
-
-  const updateProvider = (key: keyof AIProviderSettings['providers'], field: string, value: any) => {
-    setAiSettings(prev => ({
-      ...prev,
-      providers: {
-        ...prev.providers,
-        [key]: { ...prev.providers[key], [field]: value }
-      }
     }));
   };
 
@@ -1588,77 +1565,72 @@ export default function HeadAdminPanel() {
           {/* Header */}
           <div className="bg-night text-white rounded-[2.5rem] p-8 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-gold/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
-            <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 bg-gold/20 rounded-2xl flex items-center justify-center text-gold">
-                  <Brain size={28} />
-                </div>
-                <div>
-                  <h3 className="text-2xl font-serif font-bold">AI Providers</h3>
-                  <p className="text-white/40 text-sm">Configure API keys for each AI engine powering StoryCraft.</p>
-                </div>
+            <div className="relative z-10 flex items-center gap-4">
+              <div className="w-14 h-14 bg-gold/20 rounded-2xl flex items-center justify-center text-gold">
+                <Brain size={28} />
               </div>
-              <div className="grid grid-cols-2 gap-3">
-                {([
-                  { label: '✍️ Writing AI', key: 'activeTextProvider', filter: 'text', desc: 'Story script & page text' },
-                  { label: '🖼️ Image AI', key: 'activeImageProvider', filter: 'image', desc: 'Illustration generation' },
-                  { label: '✨ Enhance AI', key: 'activeEnhanceProvider', filter: 'text', desc: 'Text improvement & editing' },
-                  { label: '🏷️ Title AI', key: 'activeTitleProvider', filter: 'text', desc: 'Story title generation' },
-                ] as const).map(({ label, key, filter, desc }) => (
-                  <div key={key} className="bg-white/5 border border-white/10 rounded-2xl p-3 space-y-1.5">
-                    <p className="text-[9px] uppercase tracking-widest text-white/40 font-bold">{label}</p>
-                    <select
-                      value={(aiSettings as any)[key]}
-                      onChange={(e) => setAiSettings(prev => ({ ...prev, [key]: e.target.value }))}
-                      className="w-full bg-white/10 border border-white/20 rounded-xl px-3 py-2 text-xs font-bold text-white outline-none focus:border-gold/40"
-                    >
-                      {Object.entries(aiSettings.providers)
-                        .filter(([, p]) => p.usedFor.includes(filter))
-                        .map(([k, p]) => (
-                          <option key={k} value={k} className="text-black">{p.name}</option>
-                        ))}
-                    </select>
-                    <p className="text-[9px] text-white/25">{desc}</p>
-                  </div>
-                ))}
+              <div>
+                <h3 className="text-2xl font-serif font-bold">OpenRouter AI</h3>
+                <p className="text-white/40 text-sm">One API key for all AI models — text generation via OpenRouter.</p>
               </div>
             </div>
           </div>
 
-          {/* Tier AI Assignments */}
+          {/* OpenRouter API Key */}
+          <div className="bg-[#111] border border-white/[0.07] rounded-2xl p-6 space-y-4">
+            <div>
+              <h4 className="text-sm font-bold text-white/90">OpenRouter API Key</h4>
+              <p className="text-xs text-white/35 mt-0.5">
+                Get a free key at <span className="text-gold">openrouter.ai</span>. 
+                Leave empty to use the <code className="text-gold/80">OPENROUTER_API_KEY</code> environment variable.
+              </p>
+            </div>
+            <div className="relative">
+              <input
+                type={showApiKey ? 'text' : 'password'}
+                value={aiSettings.apiKey}
+                onChange={e => setAiSettings(prev => ({ ...prev, apiKey: e.target.value }))}
+                placeholder="sk-or-v1-..."
+                className="w-full bg-white/[0.05] border border-white/[0.09] rounded-xl px-4 py-3 pr-12 text-sm text-white/80 outline-none focus:border-gold/40 font-mono"
+              />
+              <button
+                onClick={() => setShowApiKey(v => !v)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors"
+              >
+                {showApiKey ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
+            {aiSettings.apiKey && (
+              <p className="text-[10px] text-green-400 flex items-center gap-1">
+                <CheckCircle size={10} /> Key stored — {aiSettings.apiKey.length} characters
+              </p>
+            )}
+          </div>
+
+          {/* Per-Tier Model Selection */}
           <div className="bg-[#111] border border-white/[0.07] rounded-2xl p-6 space-y-5">
             <div className="flex items-center justify-between">
               <div>
-                <h4 className="text-sm font-bold text-white/90">Tier AI Assignments</h4>
-                <p className="text-xs text-white/35 mt-0.5">Which AI each subscription tier uses for each task</p>
+                <h4 className="text-sm font-bold text-white/90">Model per Subscription Tier</h4>
+                <p className="text-xs text-white/35 mt-0.5">Choose which OpenRouter model each tier uses for story generation</p>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-xs text-white/40">Ultimate can choose</span>
                 <button
-                  onClick={() => setUltimateUserChoice(p => !p)}
+                  onClick={() => setAiSettings(prev => ({ ...prev, allowUltimateChoice: !prev.allowUltimateChoice }))}
                   className={cn(
                     'relative w-10 h-5 rounded-full transition-colors',
-                    ultimateUserChoice ? 'bg-gold' : 'bg-white/[0.12]'
+                    aiSettings.allowUltimateChoice ? 'bg-gold' : 'bg-white/[0.12]'
                   )}
                 >
-                  <motion.div
-                    animate={{ x: ultimateUserChoice ? 20 : 2 }}
-                    className="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow-sm"
+                  <div
+                    className="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow-sm transition-transform"
+                    style={{ transform: aiSettings.allowUltimateChoice ? 'translateX(20px)' : 'translateX(2px)' }}
                   />
                 </button>
               </div>
             </div>
 
-            {/* Column headers */}
-            <div className="grid grid-cols-5 gap-3 items-center">
-              <div className="text-[10px] font-bold uppercase tracking-widest text-white/25">Tier</div>
-              <div className="text-[10px] font-bold uppercase tracking-widest text-white/25 text-center">Script</div>
-              <div className="text-[10px] font-bold uppercase tracking-widest text-white/25 text-center">Images</div>
-              <div className="text-[10px] font-bold uppercase tracking-widest text-white/25 text-center">Enhance</div>
-              <div className="text-[10px] font-bold uppercase tracking-widest text-white/25 text-center">Titles</div>
-            </div>
-
-            {/* One row per tier */}
             {(['free', 'standard', 'premium', 'ultimate'] as const).map(tier => {
               const tierColors: Record<string, string> = {
                 free: 'text-white/50 bg-white/[0.06]',
@@ -1666,196 +1638,81 @@ export default function HeadAdminPanel() {
                 premium: 'text-gold bg-gold/10',
                 ultimate: 'text-purple-400 bg-purple-500/10',
               };
-              const assignment = tierAssignments[tier] ?? DEFAULT_TIER_ASSIGNMENTS[tier];
-              const textProviders = Object.entries(aiSettings.providers).filter(([, p]) => p.usedFor.includes('text'));
-              const imageProviders = Object.entries(aiSettings.providers).filter(([, p]) => p.usedFor.includes('image'));
-
+              const freeModels = OPENROUTER_MODELS.filter(m => m.free);
+              const paidModels = OPENROUTER_MODELS.filter(m => !m.free);
               return (
-                <div key={tier} className="grid grid-cols-5 gap-3 items-center py-2 border-t border-white/[0.04]">
-                  <div className={cn('px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider w-fit', tierColors[tier])}>
+                <div key={tier} className="flex items-center gap-4 py-3 border-t border-white/[0.04]">
+                  <div className={cn('px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider w-20 text-center flex-shrink-0', tierColors[tier])}>
                     {tier}
                   </div>
-                  {/* Script */}
                   <select
-                    value={assignment.text}
-                    onChange={e => setTierAssignments(prev => ({
+                    value={aiSettings.tierModels[tier] ?? ''}
+                    onChange={e => setAiSettings(prev => ({
                       ...prev,
-                      [tier]: { ...(prev[tier] ?? DEFAULT_TIER_ASSIGNMENTS[tier]), text: e.target.value }
+                      tierModels: { ...prev.tierModels, [tier]: e.target.value }
                     }))}
-                    className="bg-white/[0.05] border border-white/[0.09] rounded-lg px-2 py-1.5 text-xs text-white/80 outline-none focus:border-gold/40"
+                    className="flex-1 bg-white/[0.05] border border-white/[0.09] rounded-xl px-3 py-2 text-xs text-white/80 outline-none focus:border-gold/40"
                   >
-                    {textProviders.map(([k, p]) => <option key={k} value={k} className="bg-[#111] text-white">{p.name}</option>)}
+                    <optgroup label="Free Models">
+                      {freeModels.map(m => <option key={m.id} value={m.id} className="bg-[#111] text-white">{m.name}</option>)}
+                    </optgroup>
+                    <optgroup label="Paid Models (require credits)">
+                      {paidModels.map(m => <option key={m.id} value={m.id} className="bg-[#111] text-white">{m.name}</option>)}
+                    </optgroup>
                   </select>
-                  {/* Image */}
-                  <select
-                    value={assignment.image}
-                    onChange={e => setTierAssignments(prev => ({
-                      ...prev,
-                      [tier]: { ...(prev[tier] ?? DEFAULT_TIER_ASSIGNMENTS[tier]), image: e.target.value }
-                    }))}
-                    className="bg-white/[0.05] border border-white/[0.09] rounded-lg px-2 py-1.5 text-xs text-white/80 outline-none focus:border-gold/40"
-                  >
-                    {imageProviders.map(([k, p]) => <option key={k} value={k} className="bg-[#111] text-white">{p.name}</option>)}
-                  </select>
-                  {/* Enhance */}
-                  <select
-                    value={assignment.enhance}
-                    onChange={e => setTierAssignments(prev => ({
-                      ...prev,
-                      [tier]: { ...(prev[tier] ?? DEFAULT_TIER_ASSIGNMENTS[tier]), enhance: e.target.value }
-                    }))}
-                    className="bg-white/[0.05] border border-white/[0.09] rounded-lg px-2 py-1.5 text-xs text-white/80 outline-none focus:border-gold/40"
-                  >
-                    {textProviders.map(([k, p]) => <option key={k} value={k} className="bg-[#111] text-white">{p.name}</option>)}
-                  </select>
-                  {/* Title */}
-                  <select
-                    value={assignment.title}
-                    onChange={e => setTierAssignments(prev => ({
-                      ...prev,
-                      [tier]: { ...(prev[tier] ?? DEFAULT_TIER_ASSIGNMENTS[tier]), title: e.target.value }
-                    }))}
-                    className="bg-white/[0.05] border border-white/[0.09] rounded-lg px-2 py-1.5 text-xs text-white/80 outline-none focus:border-gold/40"
-                  >
-                    {textProviders.map(([k, p]) => <option key={k} value={k} className="bg-[#111] text-white">{p.name}</option>)}
-                  </select>
+                  <div className="text-[10px] text-white/25 w-32 text-right flex-shrink-0">
+                    {OPENROUTER_MODELS.find(m => m.id === aiSettings.tierModels[tier])?.free
+                      ? <span className="text-green-400/70">Free</span>
+                      : <span className="text-yellow-400/70">Paid</span>
+                    }
+                  </div>
                 </div>
               );
             })}
-
-            <p className="text-[10px] text-white/20 pt-1">
-              Note: the selected AI provider must be enabled with a valid API key for the tier to work.
-            </p>
           </div>
 
-          {/* Provider Cards */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {(Object.entries(aiSettings.providers) as [keyof AIProviderSettings['providers'], any][]).map(([key, provider]) => {
-              const isActiveText = aiSettings.activeTextProvider === key;
-              const isActiveImage = aiSettings.activeImageProvider === key;
-              const isActive = isActiveText || isActiveImage;
-              const showKey = visibleKeys[key];
-
-              return (
-                <div
-                  key={key}
-                  className={cn(
-                    "bg-[#111] rounded-2xl border-2 p-6 space-y-6 transition-all",
-                    provider.enabled ? "border-gold/30 shadow-lg shadow-gold/5" : "border-white/[0.07]"
-                  )}
-                >
-                  {/* Card Header */}
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className={cn(
-                        "w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-lg",
-                        provider.enabled ? "bg-gold/10 text-gold" : "bg-white/[0.06] text-white/40"
-                      )}>
-                        {(key === 'gemini' || key === 'geminiFree') && '✦'}
-                        {key === 'gemma' && '◈'}
-                        {(key === 'openai' || key === 'openaiMini') && '⊛'}
-                        {(key === 'anthropic' || key === 'claudeHaiku') && '◎'}
-                        {key === 'stability' && '⬡'}
-                        {(key === 'mistral' || key === 'mistralFree') && '⫿'}
-                        {key === 'groq' && '⚡'}
-                        {key === 'togetherFree' && '∞'}
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <h4 className="text-lg font-bold text-white/90">{provider.name}</h4>
-                          {provider.isFree && (
-                            <span className="px-1.5 py-0.5 bg-green-500/10 border border-green-500/20 rounded-md text-[9px] font-bold text-green-400 uppercase tracking-wider">Free</span>
-                          )}
-                          {isActiveText && (
-                            <span className="text-[8px] bg-gold/10 text-gold font-bold px-2 py-0.5 rounded-full border border-gold/20 uppercase tracking-widest">
-                              Text
-                            </span>
-                          )}
-                          {isActiveImage && (
-                            <span className="text-[8px] bg-blue-500/10 text-blue-400 font-bold px-2 py-0.5 rounded-full border border-blue-500/20 uppercase tracking-widest">
-                              Image
-                            </span>
-                          )}
-                        </div>
-                        <p className="text-xs text-white/35 mt-0.5">{provider.description}</p>
-                      </div>
-                    </div>
-                    {/* Enable Toggle */}
-                    <button
-                      onClick={() => updateProvider(key, 'enabled', !provider.enabled)}
-                      className={cn(
-                        "flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all",
-                        provider.enabled
-                          ? "bg-gold/10 text-gold hover:bg-gold/20"
-                          : "bg-white/[0.06] text-white/40 hover:bg-white/[0.1]"
-                      )}
-                    >
-                      {provider.enabled ? <ToggleRight size={16} /> : <ToggleLeft size={16} />}
-                      {provider.enabled ? 'Enabled' : 'Disabled'}
-                    </button>
-                  </div>
-
-                  {/* API Key */}
-                  <div className="space-y-2">
-                    <label className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-white/35">
-                      <Key size={12} />
-                      API Key
-                    </label>
-                    <div className="relative">
-                      <input
-                        type={showKey ? 'text' : 'password'}
-                        value={provider.apiKey}
-                        onChange={(e) => updateProvider(key, 'apiKey', e.target.value)}
-                        placeholder={`Enter your ${provider.name} API key...`}
-                        className="w-full pr-12 pl-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl font-mono text-sm text-white/90 placeholder:text-white/25 outline-none focus:border-gold/40 transition-all"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setVisibleKeys(prev => ({ ...prev, [key]: !prev[key] }))}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-white/25 hover:text-white/60 transition-colors"
-                      >
-                        {showKey ? <EyeOff size={16} /> : <Eye size={16} />}
-                      </button>
-                    </div>
-                    {provider.apiKey && (
-                      <p className="text-[10px] text-green-500 font-bold flex items-center gap-1">
-                        <CheckCircle size={10} /> Key entered — {provider.apiKey.length} characters
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Model Selector */}
-                  <div className="space-y-2">
-                    <label className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-white/35">
-                      <Cpu size={12} />
-                      Model
-                    </label>
-                    <div className="relative">
-                      <select
-                        value={provider.model}
-                        onChange={(e) => updateProvider(key, 'model', e.target.value)}
-                        className="w-full appearance-none px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl text-sm font-bold text-white/90 outline-none focus:border-gold/40 transition-all"
-                      >
-                        {(AVAILABLE_MODELS[key] || []).map(m => (
-                          <option key={m} value={m} className="text-black">{m}</option>
-                        ))}
-                      </select>
-                      <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/35 pointer-events-none" />
-                    </div>
-                  </div>
-
-                  {/* Capabilities */}
-                  <div className="flex items-center gap-2 pt-2 border-t border-white/[0.06]">
-                    <span className="text-[10px] uppercase tracking-widest text-white/25 font-bold">Used for:</span>
-                    {provider.usedFor.map((cap: string) => (
-                      <span key={cap} className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 bg-white/[0.06] text-white/40 rounded-full">
-                        {cap}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
+          {/* Image Generation (Stability AI) */}
+          <div className="bg-[#111] border border-white/[0.07] rounded-2xl p-6 space-y-4">
+            <div>
+              <h4 className="text-sm font-bold text-white/90">Image Generation — Stability AI (Optional)</h4>
+              <p className="text-xs text-white/35 mt-0.5">
+                OpenRouter handles text only. For AI illustrations, add a Stability AI key from <span className="text-gold">platform.stability.ai</span>.
+                Without a key, story scripts still generate — images are just skipped.
+              </p>
+            </div>
+            <div className="relative">
+              <input
+                type={showImageKey ? 'text' : 'password'}
+                value={aiSettings.imageApiKey}
+                onChange={e => setAiSettings(prev => ({ ...prev, imageApiKey: e.target.value }))}
+                placeholder="sk-..."
+                className="w-full bg-white/[0.05] border border-white/[0.09] rounded-xl px-4 py-3 pr-12 text-sm text-white/80 outline-none focus:border-gold/40 font-mono"
+              />
+              <button
+                onClick={() => setShowImageKey(v => !v)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors"
+              >
+                {showImageKey ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
+            {aiSettings.imageApiKey && (
+              <p className="text-[10px] text-green-400 flex items-center gap-1">
+                <CheckCircle size={10} /> Key stored — {aiSettings.imageApiKey.length} characters
+              </p>
+            )}
+            <div>
+              <label className="text-[10px] text-white/35 uppercase tracking-widest font-bold">Image Model</label>
+              <select
+                value={aiSettings.imageModel}
+                onChange={e => setAiSettings(prev => ({ ...prev, imageModel: e.target.value }))}
+                className="mt-1.5 w-full bg-white/[0.05] border border-white/[0.09] rounded-xl px-3 py-2 text-xs text-white/80 outline-none focus:border-gold/40"
+              >
+                <option value="stable-image-core" className="bg-[#111] text-white">Stable Image Core (Fast, High Quality)</option>
+                <option value="stable-image-ultra" className="bg-[#111] text-white">Stable Image Ultra (Best Quality)</option>
+                <option value="sd3-medium" className="bg-[#111] text-white">SD3 Medium</option>
+                <option value="sd3-large" className="bg-[#111] text-white">SD3 Large</option>
+              </select>
+            </div>
           </div>
 
           {/* Save Button */}

@@ -6,7 +6,7 @@ import {
   Sword, Heart, Star, Users, BookOpen, Zap, Eye
 } from 'lucide-react';
 import { Character, CharacterRole } from '../types';
-import { AIService, AIProviderSettings, DEFAULT_AI_SETTINGS } from '../services/AIService';
+import { AIService, AISettings, DEFAULT_AI_SETTINGS, getEffectiveModel } from '../services/AIService';
 import { db, auth } from '../firebase';
 import { collection, addDoc, query, where, onSnapshot, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { toast } from 'sonner';
@@ -60,7 +60,7 @@ export default function CharacterArchitect({ storyId, userSubscriptionTier }: Ch
   const [aiLoading, setAiLoading] = useState<string | null>(null);  // which field is generating
   const [portraitLoading, setPortraitLoading] = useState(false);
   const [appearanceLocked, setAppearanceLocked] = useState(false);
-  const [aiSettings, setAiSettings] = useState<AIProviderSettings>(DEFAULT_AI_SETTINGS);
+  const [aiSettings, setAiSettings] = useState<AISettings>(DEFAULT_AI_SETTINGS);
   const [genreContext, setGenreContext] = useState('');
 
   useEffect(() => {
@@ -130,8 +130,9 @@ export default function CharacterArchitect({ storyId, userSubscriptionTier }: Ch
     if (!draft.name) return toast.error('Enter a character name first.');
     setAiLoading(fieldKey);
     try {
+      const model = getEffectiveModel(aiSettings, userSubscriptionTier || 'free');
       const profile = await AIService.generateCharacterProfile(
-        draft.name, draft.role, genreContext || 'fiction', genreContext || 'an original story', aiSettings
+        draft.name, draft.role, genreContext || 'fiction', genreContext || 'an original story', model, aiSettings.apiKey
       );
       const val = (profile as any)[fieldKey];
       if (val) setDraft(d => ({ ...d, [fieldKey]: val }));
@@ -146,8 +147,9 @@ export default function CharacterArchitect({ storyId, userSubscriptionTier }: Ch
     if (!draft.name) return toast.error('Enter a character name first.');
     setAiLoading('all');
     try {
+      const model = getEffectiveModel(aiSettings, userSubscriptionTier || 'free');
       const profile = await AIService.generateCharacterProfile(
-        draft.name, draft.role, genreContext || 'fiction', genreContext || 'an original story', aiSettings
+        draft.name, draft.role, genreContext || 'fiction', genreContext || 'an original story', model, aiSettings.apiKey
       );
       setDraft(d => ({ ...d, ...profile }));
       toast.success('Character profile generated!');
