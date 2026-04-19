@@ -11,7 +11,7 @@ import { doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { updatePassword, reauthenticateWithCredential, EmailAuthProvider, deleteUser } from 'firebase/auth';
 import { UserProfile, SubscriptionTier } from '../types';
 import { getSubscriptionLimits, SUBSCRIPTION_PRICING } from '../constants';
-import { AIService, AISettings, DEFAULT_AI_SETTINGS, OPENROUTER_MODELS, getEffectiveModel } from '../services/AIService';
+import { AIService, AISettings, DEFAULT_AI_SETTINGS, PROVIDER_INFO, getEffectiveProvider } from '../services/AIService';
 import { toast } from 'sonner';
 import { cn } from '../lib/utils';
 
@@ -695,19 +695,22 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
 
                     <div className="flex items-center justify-between py-2">
                       <div>
-                        <div className="text-sm font-bold text-white/80">AI Model</div>
-                        <div className="text-[10px] text-white/30">Model used for all story writing tasks</div>
+                        <div className="text-sm font-bold text-white/80">AI Provider</div>
+                        <div className="text-[10px] text-white/30">Which AI service generates your stories</div>
                       </div>
                       <select
-                        value={aiPrefs.text ?? getEffectiveModel(aiProviders, 'ultimate')}
+                        value={aiPrefs.text ?? getEffectiveProvider(aiProviders, 'ultimate').providerKey}
                         onChange={e => setAiPrefs(p => ({ ...p, text: e.target.value }))}
                         className="bg-white/[0.05] border border-white/[0.09] rounded-lg px-2.5 py-1.5 text-xs text-white/80 outline-none focus:border-gold/40 max-w-[180px]"
                       >
-                        {OPENROUTER_MODELS.map(m => (
-                          <option key={m.id} value={m.id} className="bg-[#111] text-white">
-                            {m.name}
-                          </option>
-                        ))}
+                        {Object.entries(aiProviders.providers)
+                          .filter(([, p]) => p.enabled)
+                          .map(([key, p]) => (
+                            <option key={key} value={key} className="bg-[#111] text-white">
+                              {PROVIDER_INFO[key]?.icon ?? ''} {p.name}
+                            </option>
+                          ))
+                        }
                       </select>
                     </div>
                   </div>

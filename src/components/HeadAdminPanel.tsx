@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Shield, User, Star, Trash2, Search, CheckCircle, XCircle, Settings, BookOpen, Zap, AlertTriangle, Bug, MessageSquare, Clock, Crown, Send, Sparkles, Code, Terminal, Bot, Activity, Database, Cpu, ShieldCheck, RefreshCw, Wand2, Plus, FileText, Brain, Key, Eye, EyeOff, ToggleLeft, ToggleRight, ChevronDown, Save, Image as ImageIconLucide } from 'lucide-react';
-import { AIService, AISettings, DEFAULT_AI_SETTINGS, OPENROUTER_MODELS } from '../services/AIService';
+import { AIService, AISettings, DEFAULT_AI_SETTINGS, PROVIDER_MODELS, PROVIDER_INFO } from '../services/AIService';
 import { PhotoPickerService, PhotoServiceSettings, DEFAULT_PHOTO_SETTINGS } from '../services/PhotoPickerService';
 import { db, auth } from '../firebase';
 import { sendPasswordResetEmail } from 'firebase/auth';
@@ -88,8 +88,7 @@ export default function HeadAdminPanel() {
 
   const [aiSettings, setAiSettings] = useState<AISettings>(DEFAULT_AI_SETTINGS);
   const [aiSaving, setAiSaving] = useState(false);
-  const [showApiKey, setShowApiKey] = useState(false);
-  const [showImageKey, setShowImageKey] = useState(false);
+  const [showApiKey, setShowApiKey] = useState<string | null>(null);
 
   const [photoSettings, setPhotoSettings] = useState<PhotoServiceSettings>(DEFAULT_PHOTO_SETTINGS);
   const [photoSaving, setPhotoSaving] = useState(false);
@@ -1562,66 +1561,132 @@ export default function HeadAdminPanel() {
       )}
       {activeTab === 'ai' && (
         <div className="space-y-8">
+
           {/* Header */}
           <div className="bg-night text-white rounded-[2.5rem] p-8 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-gold/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
             <div className="relative z-10 flex items-center gap-4">
-              <div className="w-14 h-14 bg-gold/20 rounded-2xl flex items-center justify-center text-gold">
-                <Brain size={28} />
-              </div>
+              <div className="w-14 h-14 bg-gold/20 rounded-2xl flex items-center justify-center text-gold text-2xl">🤖</div>
               <div>
-                <h3 className="text-2xl font-serif font-bold">OpenRouter AI</h3>
-                <p className="text-white/40 text-sm">One API key for all AI models — text generation via OpenRouter.</p>
+                <h3 className="text-2xl font-serif font-bold">AI Providers</h3>
+                <p className="text-white/40 text-sm">Enable any provider, add its API key, choose a model — then assign it per subscription tier.</p>
               </div>
             </div>
           </div>
 
-          {/* OpenRouter API Key */}
-          <div className="bg-[#111] border border-white/[0.07] rounded-2xl p-6 space-y-4">
-            <div>
-              <h4 className="text-sm font-bold text-white/90">OpenRouter API Key</h4>
-              <p className="text-xs text-white/35 mt-0.5">
-                Get a free key at <span className="text-gold">openrouter.ai</span>. 
-                Leave empty to use the <code className="text-gold/80">OPENROUTER_API_KEY</code> environment variable.
-              </p>
-            </div>
-            <div className="relative">
-              <input
-                type={showApiKey ? 'text' : 'password'}
-                value={aiSettings.apiKey}
-                onChange={e => setAiSettings(prev => ({ ...prev, apiKey: e.target.value }))}
-                placeholder="sk-or-v1-..."
-                className="w-full bg-white/[0.05] border border-white/[0.09] rounded-xl px-4 py-3 pr-12 text-sm text-white/80 outline-none focus:border-gold/40 font-mono"
-              />
-              <button
-                onClick={() => setShowApiKey(v => !v)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors"
-              >
-                {showApiKey ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
-            </div>
-            {aiSettings.apiKey && (
-              <p className="text-[10px] text-green-400 flex items-center gap-1">
-                <CheckCircle size={10} /> Key stored — {aiSettings.apiKey.length} characters
-              </p>
-            )}
+          {/* Provider Cards */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            {(Object.entries(aiSettings.providers) as [string, any][]).map(([key, provider]) => {
+              const info = PROVIDER_INFO[key];
+              const models = PROVIDER_MODELS[key] ?? [];
+              const showKey = showApiKey === key;
+              return (
+                <div
+                  key={key}
+                  className={cn(
+                    "bg-[#111] rounded-2xl border-2 p-6 space-y-4 transition-all",
+                    provider.enabled ? "border-gold/30 shadow-lg shadow-gold/5" : "border-white/[0.07]"
+                  )}
+                >
+                  {/* Card header */}
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className={cn(
+                        "w-11 h-11 rounded-xl flex items-center justify-center text-xl font-bold",
+                        provider.enabled ? "bg-gold/10" : "bg-white/[0.06]"
+                      )}>
+                        {info?.icon ?? '🤖'}
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h4 className="font-bold text-white/90">{provider.name}</h4>
+                          {info?.isFree && <span className="px-1.5 py-0.5 bg-green-500/10 border border-green-500/20 rounded text-[9px] font-bold text-green-400 uppercase">Free</span>}
+                        </div>
+                        <p className="text-[10px] text-white/35 mt-0.5 max-w-[240px]">{provider.description}</p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setAiSettings(prev => ({
+                        ...prev,
+                        providers: { ...prev.providers, [key]: { ...prev.providers[key], enabled: !provider.enabled } }
+                      }))}
+                      className={cn(
+                        "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all border",
+                        provider.enabled
+                          ? "bg-gold/10 text-gold border-gold/20 hover:bg-gold/20"
+                          : "bg-white/[0.05] text-white/40 border-white/[0.08] hover:bg-white/[0.10]"
+                      )}
+                    >
+                      {provider.enabled ? <ToggleRight size={14} /> : <ToggleLeft size={14} />}
+                      {provider.enabled ? 'On' : 'Off'}
+                    </button>
+                  </div>
+
+                  {/* API Key */}
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-white/30">
+                      API Key {info?.keyUrl && <a href={info.keyUrl} target="_blank" rel="noreferrer" className="text-gold/60 hover:text-gold normal-case ml-1">Get key →</a>}
+                    </label>
+                    <div className="relative">
+                      <input
+                        type={showKey ? 'text' : 'password'}
+                        value={provider.apiKey}
+                        onChange={e => setAiSettings(prev => ({
+                          ...prev,
+                          providers: { ...prev.providers, [key]: { ...prev.providers[key], apiKey: e.target.value } }
+                        }))}
+                        placeholder={info?.keyHint ?? 'Enter API key...'}
+                        className="w-full bg-white/[0.05] border border-white/[0.09] rounded-xl px-3 py-2 pr-10 text-xs text-white/80 outline-none focus:border-gold/40 font-mono"
+                      />
+                      <button
+                        onClick={() => setShowApiKey(prev => prev === key ? null : key)}
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-white/25 hover:text-white/60 transition-colors"
+                      >
+                        {showKey ? <EyeOff size={13} /> : <Eye size={13} />}
+                      </button>
+                    </div>
+                    {provider.apiKey && (
+                      <p className="text-[10px] text-green-400/80 flex items-center gap-1">
+                        <CheckCircle size={9} /> Key stored ({provider.apiKey.length} chars)
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Model */}
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-white/30">Model</label>
+                    <select
+                      value={provider.model}
+                      onChange={e => setAiSettings(prev => ({
+                        ...prev,
+                        providers: { ...prev.providers, [key]: { ...prev.providers[key], model: e.target.value } }
+                      }))}
+                      className="w-full bg-white/[0.05] border border-white/[0.09] rounded-xl px-3 py-2 text-xs text-white/80 outline-none focus:border-gold/40"
+                    >
+                      {models.map(m => (
+                        <option key={m.id} value={m.id} className="bg-[#111] text-white">
+                          {m.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              );
+            })}
           </div>
 
-          {/* Per-Tier Model Selection */}
+          {/* Tier Assignments */}
           <div className="bg-[#111] border border-white/[0.07] rounded-2xl p-6 space-y-5">
             <div className="flex items-center justify-between">
               <div>
-                <h4 className="text-sm font-bold text-white/90">Model per Subscription Tier</h4>
-                <p className="text-xs text-white/35 mt-0.5">Choose which OpenRouter model each tier uses for story generation</p>
+                <h4 className="text-sm font-bold text-white/90">Provider per Tier</h4>
+                <p className="text-xs text-white/35 mt-0.5">Which AI provider each subscription tier uses</p>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-xs text-white/40">Ultimate can choose</span>
                 <button
                   onClick={() => setAiSettings(prev => ({ ...prev, allowUltimateChoice: !prev.allowUltimateChoice }))}
-                  className={cn(
-                    'relative w-10 h-5 rounded-full transition-colors',
-                    aiSettings.allowUltimateChoice ? 'bg-gold' : 'bg-white/[0.12]'
-                  )}
+                  className={cn('relative w-10 h-5 rounded-full transition-colors', aiSettings.allowUltimateChoice ? 'bg-gold' : 'bg-white/[0.12]')}
                 >
                   <div
                     className="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow-sm transition-transform"
@@ -1633,79 +1698,74 @@ export default function HeadAdminPanel() {
 
             {(['free', 'standard', 'premium', 'ultimate'] as const).map(tier => {
               const tierColors: Record<string, string> = {
-                free: 'text-white/50 bg-white/[0.06]',
-                standard: 'text-blue-400 bg-blue-500/10',
-                premium: 'text-gold bg-gold/10',
-                ultimate: 'text-purple-400 bg-purple-500/10',
+                free: 'text-white/50 bg-white/[0.06]', standard: 'text-blue-400 bg-blue-500/10',
+                premium: 'text-gold bg-gold/10', ultimate: 'text-purple-400 bg-purple-500/10',
               };
-              const freeModels = OPENROUTER_MODELS.filter(m => m.free);
-              const paidModels = OPENROUTER_MODELS.filter(m => !m.free);
+              const enabledProviders = Object.entries(aiSettings.providers).filter(([, p]) => p.enabled);
               return (
                 <div key={tier} className="flex items-center gap-4 py-3 border-t border-white/[0.04]">
                   <div className={cn('px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider w-20 text-center flex-shrink-0', tierColors[tier])}>
                     {tier}
                   </div>
                   <select
-                    value={aiSettings.tierModels[tier] ?? ''}
+                    value={aiSettings.tierAssignments[tier] ?? 'openrouter'}
                     onChange={e => setAiSettings(prev => ({
                       ...prev,
-                      tierModels: { ...prev.tierModels, [tier]: e.target.value }
+                      tierAssignments: { ...prev.tierAssignments, [tier]: e.target.value }
                     }))}
                     className="flex-1 bg-white/[0.05] border border-white/[0.09] rounded-xl px-3 py-2 text-xs text-white/80 outline-none focus:border-gold/40"
                   >
-                    <optgroup label="Free Models">
-                      {freeModels.map(m => <option key={m.id} value={m.id} className="bg-[#111] text-white">{m.name}</option>)}
-                    </optgroup>
-                    <optgroup label="Paid Models (require credits)">
-                      {paidModels.map(m => <option key={m.id} value={m.id} className="bg-[#111] text-white">{m.name}</option>)}
-                    </optgroup>
+                    {enabledProviders.length === 0 && (
+                      <option value="openrouter" className="bg-[#111] text-white">No providers enabled — enable one above</option>
+                    )}
+                    {enabledProviders.map(([k, p]) => (
+                      <option key={k} value={k} className="bg-[#111] text-white">
+                        {PROVIDER_INFO[k]?.icon ?? ''} {p.name} — {p.model}
+                      </option>
+                    ))}
                   </select>
-                  <div className="text-[10px] text-white/25 w-32 text-right flex-shrink-0">
-                    {OPENROUTER_MODELS.find(m => m.id === aiSettings.tierModels[tier])?.free
-                      ? <span className="text-green-400/70">Free</span>
-                      : <span className="text-yellow-400/70">Paid</span>
-                    }
-                  </div>
+                  <span className={cn(
+                    'text-[10px] font-bold w-12 text-right flex-shrink-0',
+                    PROVIDER_INFO[aiSettings.tierAssignments[tier] ?? 'openrouter']?.isFree ? 'text-green-400/70' : 'text-yellow-400/70'
+                  )}>
+                    {PROVIDER_INFO[aiSettings.tierAssignments[tier] ?? 'openrouter']?.isFree ? 'Free' : 'Paid'}
+                  </span>
                 </div>
               );
             })}
           </div>
 
-          {/* Image Generation (Stability AI) */}
+          {/* Image Generation */}
           <div className="bg-[#111] border border-white/[0.07] rounded-2xl p-6 space-y-4">
             <div>
-              <h4 className="text-sm font-bold text-white/90">Image Generation — Stability AI (Optional)</h4>
+              <h4 className="text-sm font-bold text-white/90">🖼️ Image Generation — Stability AI (Optional)</h4>
               <p className="text-xs text-white/35 mt-0.5">
-                OpenRouter handles text only. For AI illustrations, add a Stability AI key from <span className="text-gold">platform.stability.ai</span>.
-                Without a key, story scripts still generate — images are just skipped.
+                Without a key, story scripts still work — illustrations are skipped.
+                Get a key at <a href="https://platform.stability.ai" target="_blank" rel="noreferrer" className="text-gold hover:underline">platform.stability.ai</a>.
               </p>
             </div>
             <div className="relative">
               <input
-                type={showImageKey ? 'text' : 'password'}
+                type={showApiKey === 'image' ? 'text' : 'password'}
                 value={aiSettings.imageApiKey}
                 onChange={e => setAiSettings(prev => ({ ...prev, imageApiKey: e.target.value }))}
                 placeholder="sk-..."
                 className="w-full bg-white/[0.05] border border-white/[0.09] rounded-xl px-4 py-3 pr-12 text-sm text-white/80 outline-none focus:border-gold/40 font-mono"
               />
               <button
-                onClick={() => setShowImageKey(v => !v)}
+                onClick={() => setShowApiKey(prev => prev === 'image' ? null : 'image')}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors"
               >
-                {showImageKey ? <EyeOff size={16} /> : <Eye size={16} />}
+                {showApiKey === 'image' ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
-            {aiSettings.imageApiKey && (
-              <p className="text-[10px] text-green-400 flex items-center gap-1">
-                <CheckCircle size={10} /> Key stored — {aiSettings.imageApiKey.length} characters
-              </p>
-            )}
-            <div>
-              <label className="text-[10px] text-white/35 uppercase tracking-widest font-bold">Image Model</label>
+            {aiSettings.imageApiKey && <p className="text-[10px] text-green-400 flex items-center gap-1"><CheckCircle size={10} /> Key stored ({aiSettings.imageApiKey.length} chars)</p>}
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold uppercase tracking-widest text-white/30">Image Model</label>
               <select
                 value={aiSettings.imageModel}
                 onChange={e => setAiSettings(prev => ({ ...prev, imageModel: e.target.value }))}
-                className="mt-1.5 w-full bg-white/[0.05] border border-white/[0.09] rounded-xl px-3 py-2 text-xs text-white/80 outline-none focus:border-gold/40"
+                className="w-full bg-white/[0.05] border border-white/[0.09] rounded-xl px-3 py-2 text-xs text-white/80 outline-none focus:border-gold/40"
               >
                 <option value="stable-image-core" className="bg-[#111] text-white">Stable Image Core (Fast, High Quality)</option>
                 <option value="stable-image-ultra" className="bg-[#111] text-white">Stable Image Ultra (Best Quality)</option>
@@ -1715,23 +1775,21 @@ export default function HeadAdminPanel() {
             </div>
           </div>
 
-          {/* Save Button */}
+          {/* Save */}
           <div className="flex justify-end">
             <button
               onClick={saveAiSettings}
               disabled={aiSaving}
               className="flex items-center gap-3 px-10 py-5 bg-gold text-night rounded-2xl font-bold hover:scale-105 transition-all shadow-xl shadow-gold/20 disabled:opacity-50"
             >
-              {aiSaving ? (
-                <RefreshCw size={20} className="animate-spin" />
-              ) : (
-                <Save size={20} />
-              )}
+              {aiSaving ? <RefreshCw size={20} className="animate-spin" /> : <Save size={20} />}
               {aiSaving ? 'Saving...' : 'Save AI Settings'}
             </button>
           </div>
         </div>
       )}
+
+
 
       {activeTab === 'photos' && (
         <div className="space-y-8">

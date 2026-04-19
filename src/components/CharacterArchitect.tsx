@@ -6,7 +6,7 @@ import {
   Sword, Heart, Star, Users, BookOpen, Zap, Eye
 } from 'lucide-react';
 import { Character, CharacterRole } from '../types';
-import { AIService, AISettings, DEFAULT_AI_SETTINGS, getEffectiveModel } from '../services/AIService';
+import { AIService, AISettings, DEFAULT_AI_SETTINGS, getEffectiveProvider } from '../services/AIService';
 import { db, auth } from '../firebase';
 import { collection, addDoc, query, where, onSnapshot, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { toast } from 'sonner';
@@ -130,9 +130,9 @@ export default function CharacterArchitect({ storyId, userSubscriptionTier }: Ch
     if (!draft.name) return toast.error('Enter a character name first.');
     setAiLoading(fieldKey);
     try {
-      const model = getEffectiveModel(aiSettings, userSubscriptionTier || 'free');
+      const resolved = getEffectiveProvider(aiSettings, userSubscriptionTier || 'free');
       const profile = await AIService.generateCharacterProfile(
-        draft.name, draft.role, genreContext || 'fiction', genreContext || 'an original story', model, aiSettings.apiKey
+        draft.name, draft.role, genreContext || 'fiction', genreContext || 'an original story', resolved
       );
       const val = (profile as any)[fieldKey];
       if (val) setDraft(d => ({ ...d, [fieldKey]: val }));
@@ -147,9 +147,9 @@ export default function CharacterArchitect({ storyId, userSubscriptionTier }: Ch
     if (!draft.name) return toast.error('Enter a character name first.');
     setAiLoading('all');
     try {
-      const model = getEffectiveModel(aiSettings, userSubscriptionTier || 'free');
+      const resolved = getEffectiveProvider(aiSettings, userSubscriptionTier || 'free');
       const profile = await AIService.generateCharacterProfile(
-        draft.name, draft.role, genreContext || 'fiction', genreContext || 'an original story', model, aiSettings.apiKey
+        draft.name, draft.role, genreContext || 'fiction', genreContext || 'an original story', resolved
       );
       setDraft(d => ({ ...d, ...profile }));
       toast.success('Character profile generated!');

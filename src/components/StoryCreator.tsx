@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Sparkles, FileText, Loader2, ImageIcon, Plus, Trash2, Wand2, ChevronLeft, ChevronRight, X, Edit3, Mic, MicOff, Languages, Layout, Zap, Type, Image as ImageIconLucide, AlignLeft, AlignCenter, AlignRight, Bold, Italic, Underline, Settings, Sliders, Brain, Upload, Grid, GitBranch, BookOpen, Map, Sword, Users } from 'lucide-react';
-import { AIService, GenerationMode, AIProgress, getEffectiveModel } from '../services/AIService';
+import { AIService, GenerationMode, AIProgress, getEffectiveProvider } from '../services/AIService';
 import { StoryStyle, StoryPage, SubscriptionTier, ImageAdjustments, NarrativeStructure, BranchChoice } from '../types';
 import ImageEditor from './ImageEditor';
 import PhotoPicker from './PhotoPicker';
@@ -231,23 +231,23 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
     setAiProgress({ step: 'Loading AI engines...', current: 0, total: 1 });
     try {
       const aiSettings = await AIService.loadSettings();
-      const model = getEffectiveModel(aiSettings, userSubscriptionTier || 'free', userPreferredAI?.text);
+      const resolved = getEffectiveProvider(aiSettings, userSubscriptionTier || 'free', userPreferredAI?.text);
       let result: { title: string; pages: { text: string; imageUrl?: string }[] };
 
       if (mode === 'script') {
         setAiProgress({ step: 'Writing your story...', current: 0, total: 1 });
-        result = await AIService.generateStoryPages(finalIdea, pageCount, style, ageGroup, language, model, narrativeStructure, storyBibleContext, aiSettings.apiKey);
+        result = await AIService.generateStoryPages(finalIdea, pageCount, style, ageGroup, language, resolved, narrativeStructure, storyBibleContext);
 
       } else if (mode === 'images') {
         result = await AIService.generateImagesOnly(
-          finalIdea, pageCount, style, ageGroup, model, aiSettings,
+          finalIdea, pageCount, style, ageGroup, resolved, aiSettings,
           (p) => setAiProgress(p)
         );
 
       } else {
         // 'both' or 'surprise'
         result = await AIService.generateFullStory(
-          finalIdea, pageCount, style, ageGroup, language, model, aiSettings,
+          finalIdea, pageCount, style, ageGroup, language, resolved, aiSettings,
           (p) => setAiProgress(p)
         );
       }
@@ -709,10 +709,10 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                           setRpgLoading(true);
                           try {
                             const aiSettings = await AIService.loadSettings();
-                            const model = getEffectiveModel(aiSettings, userSubscriptionTier || 'free', userPreferredAI?.text);
+                            const resolved = getEffectiveProvider(aiSettings, userSubscriptionTier || 'free', userPreferredAI?.text);
                             const result = rpgMode === 'npc'
-                              ? await AIService.generateNPCProfile(rpgConcept, rpgSetting || 'fantasy', model, aiSettings.apiKey)
-                              : await AIService.generateQuestLore(rpgConcept, rpgSetting || 'fantasy', model, aiSettings.apiKey);
+                              ? await AIService.generateNPCProfile(rpgConcept, rpgSetting || 'fantasy', resolved)
+                              : await AIService.generateQuestLore(rpgConcept, rpgSetting || 'fantasy', resolved);
                             setRpgResult(result);
                           } catch (e: any) { toast.error(e.message); }
                           finally { setRpgLoading(false); }
@@ -1231,8 +1231,8 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                           setIsAIGenerating(true);
                           try {
                             const aiSettings = await AIService.loadSettings();
-                            const model = getEffectiveModel(aiSettings, userSubscriptionTier || 'free', userPreferredAI?.text);
-                            const enhanced = await AIService.enhanceText(currentText, model, aiSettings.apiKey);
+                            const resolved = getEffectiveProvider(aiSettings, userSubscriptionTier || 'free', userPreferredAI?.text);
+                            const enhanced = await AIService.enhanceText(currentText, resolved);
                             handleUpdatePage(currentPageIndex, { text: enhanced.trim() });
                             toast.success('Page enhanced by AI!');
                           } catch (err: any) {
@@ -1288,9 +1288,9 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                                   setBranchLoading(ci);
                                   try {
                                     const aiSettings = await AIService.loadSettings();
-                                    const branchModel = getEffectiveModel(aiSettings, userSubscriptionTier || 'free', userPreferredAI?.text);
+                                    const resolved = getEffectiveProvider(aiSettings, userSubscriptionTier || 'free', userPreferredAI?.text);
                                     const result = await AIService.generateBranchPath(
-                                      draftPages[currentPageIndex].text, choiceText, 2, style, ageGroup, language, draftTitle, branchModel, aiSettings.apiKey
+                                      draftPages[currentPageIndex].text, choiceText, 2, style, ageGroup, language, draftTitle, resolved
                                     );
                                     const updated = [...(draftPages[currentPageIndex].choices || [])];
                                     updated[ci] = { ...updated[ci], branchPages: result.pages };

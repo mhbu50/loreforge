@@ -1,81 +1,194 @@
 import { db } from '../firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 
-// ─── Settings ─────────────────────────────────────────────────────────────────
+// ─── Provider config ───────────────────────────────────────────────────────────
+
+export interface ProviderConfig {
+  name: string;
+  apiKey: string;
+  model: string;
+  enabled: boolean;
+  isFree?: boolean;
+  description: string;
+}
 
 export interface AISettings {
-  /** OpenRouter API key. If empty the env var OPENROUTER_API_KEY is used. */
-  apiKey: string;
-  /** Which OpenRouter model to use for each subscription tier */
-  tierModels: {
-    free: string;
+  providers: {
+    openrouter: ProviderConfig;
+    gemini:     ProviderConfig;
+    groq:       ProviderConfig;
+    together:   ProviderConfig;
+    openai:     ProviderConfig;
+    anthropic:  ProviderConfig;
+    [key: string]: ProviderConfig;
+  };
+  /** Which provider key each subscription tier uses */
+  tierAssignments: {
+    free:     string;
     standard: string;
-    premium: string;
+    premium:  string;
     ultimate: string;
     [key: string]: string;
   };
-  /** Allow ultimate-tier users to pick their own model in Account settings */
+  /** Allow ultimate users to pick their own provider in Account settings */
   allowUltimateChoice: boolean;
-  /** Stability AI key for image generation (optional — images disabled when empty) */
+  /** Stability AI key for image generation (optional) */
   imageApiKey: string;
-  /** Stability AI model */
   imageModel: string;
 }
 
-export interface OpenRouterModel {
-  id: string;
-  name: string;
-  free: boolean;
-  description?: string;
+/** What a resolved provider looks like — passed to all generate methods */
+export interface ResolvedProvider {
+  providerKey: string;
+  model: string;
+  apiKey: string;
 }
 
-export const OPENROUTER_MODELS: OpenRouterModel[] = [
-  // ── Free models (sorted by reliability) ──────────────────────────────────────
-  { id: 'meta-llama/llama-3.1-8b-instruct:free',                   name: 'Llama 3.1 8B (Free) ✓',          free: true,  description: 'Meta Llama 3.1 8B — very reliable free model, great for stories.' },
-  { id: 'meta-llama/llama-3.2-11b-vision-instruct:free',           name: 'Llama 3.2 11B (Free) ✓',         free: true,  description: 'Meta Llama 3.2 11B — reliable and capable.' },
-  { id: 'meta-llama/llama-3.3-70b-instruct:free',                  name: 'Llama 3.3 70B (Free)',            free: true,  description: 'Meta Llama 3.3 — strong instruction-following & creativity.' },
-  { id: 'mistralai/mistral-7b-instruct:free',                      name: 'Mistral 7B (Free)',               free: true,  description: 'Mistral 7B — lightweight and reliable for story generation.' },
-  { id: 'microsoft/phi-3-mini-128k-instruct:free',                  name: 'Phi-3 Mini 128k (Free)',         free: true,  description: 'Microsoft Phi-3 Mini — efficient, long context window.' },
-  { id: 'google/gemma-2-9b-it:free',                               name: 'Gemma 2 9B (Free)',               free: true,  description: 'Google Gemma 2 9B — good creative writing quality.' },
-  { id: 'google/gemma-3-27b-it:free',                              name: 'Gemma 3 27B (Free)',              free: true,  description: 'Google Gemma 3 27B — great for creative writing.' },
-  { id: 'nousresearch/hermes-3-llama-3.1-405b:free',               name: 'Hermes 3 405B (Free)',            free: true,  description: 'Hermes 3 on Llama 405B — highest-quality free model when available.' },
-  // ── Paid models (require OpenRouter credits) ─────────────────────────────────
-  { id: 'anthropic/claude-3.5-sonnet',                             name: 'Claude 3.5 Sonnet',               free: false, description: 'Anthropic — best narrative quality & nuanced storytelling.' },
-  { id: 'anthropic/claude-3.5-haiku',                              name: 'Claude 3.5 Haiku',                free: false, description: 'Anthropic — fast Claude at lower cost.' },
-  { id: 'openai/gpt-4o',                                           name: 'GPT-4o',                          free: false, description: 'OpenAI — top-tier creativity and instruction following.' },
-  { id: 'openai/gpt-4o-mini',                                      name: 'GPT-4o Mini',                     free: false, description: 'OpenAI — cheaper GPT-4o with good quality.' },
-  { id: 'google/gemini-pro-1.5',                                   name: 'Gemini 1.5 Pro',                  free: false, description: 'Google Gemini — excellent long-context story generation.' },
-  { id: 'google/gemini-flash-1.5',                                 name: 'Gemini 1.5 Flash',                free: false, description: 'Google Gemini Flash — fast and affordable.' },
-  { id: 'mistralai/mistral-large',                                 name: 'Mistral Large',                   free: false, description: 'Mistral — powerful European LLM for long-form writing.' },
-  { id: 'meta-llama/llama-3.1-405b-instruct',                      name: 'Llama 3.1 405B',                  free: false, description: 'Meta — largest Llama for highest quality outputs.' },
-];
+// ─── Available models per provider ────────────────────────────────────────────
+
+export const PROVIDER_MODELS: Record<string, { id: string; name: string; free?: boolean }[]> = {
+  openrouter: [
+    { id: 'meta-llama/llama-3.1-8b-instruct:free',         name: 'Llama 3.1 8B (Free)',          free: true },
+    { id: 'meta-llama/llama-3.2-11b-vision-instruct:free', name: 'Llama 3.2 11B (Free)',         free: true },
+    { id: 'meta-llama/llama-3.3-70b-instruct:free',        name: 'Llama 3.3 70B (Free)',         free: true },
+    { id: 'google/gemma-2-9b-it:free',                     name: 'Gemma 2 9B (Free)',            free: true },
+    { id: 'google/gemma-3-27b-it:free',                    name: 'Gemma 3 27B (Free)',           free: true },
+    { id: 'mistralai/mistral-7b-instruct:free',            name: 'Mistral 7B (Free)',            free: true },
+    { id: 'microsoft/phi-3-mini-128k-instruct:free',       name: 'Phi-3 Mini 128k (Free)',       free: true },
+    { id: 'nousresearch/hermes-3-llama-3.1-405b:free',     name: 'Hermes 3 405B (Free)',         free: true },
+    { id: 'anthropic/claude-3.5-sonnet',                   name: 'Claude 3.5 Sonnet (Paid)' },
+    { id: 'openai/gpt-4o',                                 name: 'GPT-4o (Paid)' },
+    { id: 'openai/gpt-4o-mini',                            name: 'GPT-4o Mini (Paid)' },
+    { id: 'google/gemini-pro-1.5',                         name: 'Gemini 1.5 Pro (Paid)' },
+    { id: 'mistralai/mistral-large',                       name: 'Mistral Large (Paid)' },
+  ],
+  gemini: [
+    { id: 'gemini-2.0-flash-lite',  name: 'Gemini 2.0 Flash Lite (Free)', free: true },
+    { id: 'gemini-2.0-flash',       name: 'Gemini 2.0 Flash',             free: true },
+    { id: 'gemini-1.5-flash',       name: 'Gemini 1.5 Flash (Free)',      free: true },
+    { id: 'gemini-1.5-flash-8b',    name: 'Gemini 1.5 Flash-8B (Free)',   free: true },
+    { id: 'gemini-1.5-pro',         name: 'Gemini 1.5 Pro' },
+    { id: 'gemini-2.0-pro-exp',     name: 'Gemini 2.0 Pro (Exp)' },
+  ],
+  groq: [
+    { id: 'llama-3.3-70b-versatile',     name: 'Llama 3.3 70B (Free)',    free: true },
+    { id: 'llama-3.1-70b-versatile',     name: 'Llama 3.1 70B (Free)',    free: true },
+    { id: 'llama-3.1-8b-instant',        name: 'Llama 3.1 8B Fast (Free)', free: true },
+    { id: 'gemma2-9b-it',               name: 'Gemma 2 9B (Free)',        free: true },
+    { id: 'mixtral-8x7b-32768',         name: 'Mixtral 8x7B (Free)',      free: true },
+  ],
+  together: [
+    { id: 'meta-llama/Llama-3.3-70B-Instruct-Turbo-Free',           name: 'Llama 3.3 70B (Free)',  free: true },
+    { id: 'meta-llama/Llama-3.2-11B-Vision-Instruct-Turbo',         name: 'Llama 3.2 11B (Free)',  free: true },
+    { id: 'mistralai/Mixtral-8x7B-Instruct-v0.1',                   name: 'Mixtral 8x7B (Free)',   free: true },
+    { id: 'meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo',          name: 'Llama 3.1 405B (Paid)' },
+  ],
+  openai: [
+    { id: 'gpt-4o',       name: 'GPT-4o' },
+    { id: 'gpt-4o-mini',  name: 'GPT-4o Mini' },
+    { id: 'gpt-4-turbo',  name: 'GPT-4 Turbo' },
+    { id: 'gpt-3.5-turbo', name: 'GPT-3.5 Turbo' },
+  ],
+  anthropic: [
+    { id: 'claude-opus-4-5',              name: 'Claude Opus 4.5' },
+    { id: 'claude-sonnet-4-6',            name: 'Claude Sonnet 4.6' },
+    { id: 'claude-3-5-sonnet-20241022',   name: 'Claude 3.5 Sonnet' },
+    { id: 'claude-haiku-4-5-20251001',    name: 'Claude Haiku 4.5 (Cheapest)' },
+    { id: 'claude-3-5-haiku-20241022',    name: 'Claude 3.5 Haiku' },
+  ],
+};
+
+export const PROVIDER_INFO: Record<string, { label: string; icon: string; isFree?: boolean; keyHint: string; keyUrl: string }> = {
+  openrouter: { label: 'OpenRouter',   icon: '🔀', isFree: true,  keyHint: 'sk-or-v1-...',   keyUrl: 'https://openrouter.ai/keys' },
+  gemini:     { label: 'Google Gemini',icon: '✦',  isFree: true,  keyHint: 'AIza...',         keyUrl: 'https://aistudio.google.com/app/apikey' },
+  groq:       { label: 'Groq',         icon: '⚡', isFree: true,  keyHint: 'gsk_...',         keyUrl: 'https://console.groq.com/keys' },
+  together:   { label: 'Together AI',  icon: '∞',  isFree: true,  keyHint: 'Enter key...',    keyUrl: 'https://api.together.ai/settings/api-keys' },
+  openai:     { label: 'OpenAI',       icon: '⊛',  isFree: false, keyHint: 'sk-...',          keyUrl: 'https://platform.openai.com/api-keys' },
+  anthropic:  { label: 'Anthropic',    icon: '◎',  isFree: false, keyHint: 'sk-ant-...',      keyUrl: 'https://console.anthropic.com/settings/keys' },
+};
 
 export const DEFAULT_AI_SETTINGS: AISettings = {
-  apiKey: '',
-  tierModels: {
-    free:     'meta-llama/llama-3.1-8b-instruct:free',
-    standard: 'meta-llama/llama-3.2-11b-vision-instruct:free',
-    premium:  'meta-llama/llama-3.3-70b-instruct:free',
-    ultimate: 'meta-llama/llama-3.3-70b-instruct:free',
+  providers: {
+    openrouter: {
+      name: 'OpenRouter',
+      apiKey: '',
+      model: 'meta-llama/llama-3.1-8b-instruct:free',
+      enabled: true,
+      isFree: true,
+      description: 'Unified API — access hundreds of models including many free ones. Great default choice.',
+    },
+    gemini: {
+      name: 'Google Gemini',
+      apiKey: '',
+      model: 'gemini-2.0-flash-lite',
+      enabled: false,
+      isFree: true,
+      description: 'Google AI — free tier available with Gemini Flash. Excellent for creative writing.',
+    },
+    groq: {
+      name: 'Groq',
+      apiKey: '',
+      model: 'llama-3.3-70b-versatile',
+      enabled: false,
+      isFree: true,
+      description: 'Groq — genuinely FREE API with blazing-fast inference. Llama, Gemma & Mixtral.',
+    },
+    together: {
+      name: 'Together AI',
+      apiKey: '',
+      model: 'meta-llama/Llama-3.3-70B-Instruct-Turbo-Free',
+      enabled: false,
+      isFree: true,
+      description: 'Together AI — free tier with top open-source models.',
+    },
+    openai: {
+      name: 'OpenAI',
+      apiKey: '',
+      model: 'gpt-4o-mini',
+      enabled: false,
+      isFree: false,
+      description: 'OpenAI GPT — industry-leading quality. Paid API.',
+    },
+    anthropic: {
+      name: 'Anthropic Claude',
+      apiKey: '',
+      model: 'claude-3-5-sonnet-20241022',
+      enabled: false,
+      isFree: false,
+      description: 'Claude — nuanced, creative, long-form storytelling. Paid API.',
+    },
+  },
+  tierAssignments: {
+    free:     'openrouter',
+    standard: 'openrouter',
+    premium:  'openrouter',
+    ultimate: 'openrouter',
   },
   allowUltimateChoice: true,
   imageApiKey: '',
   imageModel: 'stable-image-core',
 };
 
-/**
- * Resolve which OpenRouter model to use for a given user.
- * Ultimate users with a saved preferred model use that if `allowUltimateChoice` is on.
- */
-export function getEffectiveModel(
+// ─── Resolve which provider to use for a user ─────────────────────────────────
+
+export function getEffectiveProvider(
   settings: AISettings,
   userTier: string,
-  userPreferredModel?: string
-): string {
-  if (userTier === 'ultimate' && settings.allowUltimateChoice && userPreferredModel) {
-    return userPreferredModel;
-  }
-  return settings.tierModels[userTier] ?? settings.tierModels.free ?? 'google/gemma-4-26b-a4b-it:free';
+  preferredProviderKey?: string
+): ResolvedProvider {
+  // Ultimate users can override if allowed
+  const usePreferred = userTier === 'ultimate' && settings.allowUltimateChoice && preferredProviderKey;
+  const providerKey = usePreferred ? preferredProviderKey! : (settings.tierAssignments[userTier] ?? 'openrouter');
+
+  const provider = settings.providers[providerKey] ?? settings.providers.openrouter;
+
+  return {
+    providerKey,
+    model: provider.model,
+    apiKey: providerKey === 'openrouter'
+      ? (provider.apiKey?.trim() || process.env.OPENROUTER_API_KEY || '')
+      : provider.apiKey?.trim() || '',
+  };
 }
 
 export type GenerationMode = 'script' | 'images' | 'both' | 'surprise';
@@ -86,7 +199,7 @@ export interface AIProgress {
   total: number;
 }
 
-// ─── Config ────────────────────────────────────────────────────────────────────
+// ─── AIService class ──────────────────────────────────────────────────────────
 
 export class AIService {
 
@@ -98,7 +211,14 @@ export class AIService {
         return {
           ...DEFAULT_AI_SETTINGS,
           ...data,
-          tierModels: { ...DEFAULT_AI_SETTINGS.tierModels, ...(data.tierModels || {}) },
+          providers: {
+            ...DEFAULT_AI_SETTINGS.providers,
+            ...(data.providers ?? {}),
+          },
+          tierAssignments: {
+            ...DEFAULT_AI_SETTINGS.tierAssignments,
+            ...(data.tierAssignments ?? {}),
+          },
         } as AISettings;
       }
     } catch (e) {
@@ -111,69 +231,157 @@ export class AIService {
     await setDoc(doc(db, 'settings', 'ai_providers'), settings);
   }
 
-  // ─── Core OpenRouter call ───────────────────────────────────────────────────
+  // ─── Provider-specific callers ─────────────────────────────────────────────
 
-  private static async callOpenRouter(model: string, prompt: string, apiKey?: string): Promise<string> {
-    const key = apiKey?.trim() || process.env.OPENROUTER_API_KEY || '';
-    if (!key) throw new Error('OpenRouter API key is not configured. Add OPENROUTER_API_KEY to your .env file or enter it in Admin → AI.');
-
+  private static async callOpenRouter(model: string, prompt: string, apiKey: string): Promise<string> {
+    if (!apiKey) throw new Error('OpenRouter API key is not set. Enter it in Admin → AI → OpenRouter.');
     const resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${key}`,
-        'HTTP-Referer': typeof window !== 'undefined' ? window.location.origin : 'https://storycraft.app',
+        'Authorization': `Bearer ${apiKey}`,
+        'HTTP-Referer': typeof window !== 'undefined' ? window.location.origin : '',
         'X-Title': 'StoryCraft',
       },
-      body: JSON.stringify({
-        model,
-        messages: [{ role: 'user', content: prompt }],
-        max_tokens: 2048,
-        temperature: 0.9,
-      }),
+      body: JSON.stringify({ model, messages: [{ role: 'user', content: prompt }], max_tokens: 2048, temperature: 0.9 }),
     });
     if (!resp.ok) {
       const err = await resp.json().catch(() => ({}));
-      const msg = err?.error?.message || `OpenRouter error ${resp.status}`;
-      const provider = err?.error?.metadata?.provider_name;
-      const raw = err?.error?.metadata?.raw;
-      if (resp.status === 401) throw new Error('Invalid OpenRouter API key. Check Admin → AI and make sure your key starts with "sk-or-v1-".');
-      if (resp.status === 402) throw new Error('OpenRouter account has no credits. Free models should still work — check openrouter.ai/credits.');
-      if (resp.status === 429) throw new Error('Rate limited by OpenRouter. Wait a moment and try again.');
+      const msg = err?.error?.message || '';
+      const provider = err?.error?.metadata?.provider_name ?? '';
+      if (resp.status === 401) throw new Error('Invalid OpenRouter API key.');
+      if (resp.status === 429) throw new Error('Rate limited by OpenRouter. Wait a moment and retry.');
+      if (resp.status === 402) throw new Error('OpenRouter account out of credits. Switch to a free model.');
       if (resp.status === 502 || msg.includes('Provider returned error')) {
-        throw new Error(`Model "${model}" is currently unavailable (provider error${provider ? ` from ${provider}` : ''}). Try a different model in Admin → AI, or retry in a moment.${raw ? `\n\nDetails: ${String(raw).slice(0, 200)}` : ''}`);
+        throw new Error(`Model "${model}" is currently unavailable${provider ? ` (provider: ${provider})` : ''}. Try a different model in Admin → AI.`);
       }
-      throw new Error(`${msg}${provider ? ` (${provider})` : ''}`);
+      throw new Error(msg || `OpenRouter error ${resp.status}`);
     }
     const data = await resp.json();
-    const content = data.choices?.[0]?.message?.content;
-    if (!content) throw new Error(`Model "${model}" returned an empty response. Try a different model in Admin → AI.`);
-    return content;
+    return data.choices?.[0]?.message?.content || '';
   }
 
-  // ─── Text Generation ────────────────────────────────────────────────────────
+  private static async callGemini(model: string, prompt: string, apiKey: string): Promise<string> {
+    if (!apiKey) throw new Error('Gemini API key is not set. Enter it in Admin → AI → Google Gemini.');
+    const resp = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { maxOutputTokens: 2048, temperature: 0.9 } }),
+      }
+    );
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      if (resp.status === 400) throw new Error(`Gemini: Invalid request — ${err?.error?.message ?? 'check model name'}.`);
+      if (resp.status === 403) throw new Error('Gemini API key is invalid or API not enabled.');
+      if (resp.status === 429) throw new Error('Gemini rate limit hit. Wait and retry, or upgrade your Google AI plan.');
+      throw new Error(err?.error?.message || `Gemini error ${resp.status}`);
+    }
+    const data = await resp.json();
+    return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  }
 
-  /** Generate text using the OpenRouter model resolved for this user. */
-  static async generateText(prompt: string, model: string, apiKey?: string): Promise<string> {
-    return AIService.callOpenRouter(model, prompt, apiKey);
+  private static async callGroq(model: string, prompt: string, apiKey: string): Promise<string> {
+    if (!apiKey) throw new Error('Groq API key is not set. Get a free key at console.groq.com, then enter it in Admin → AI → Groq.');
+    const resp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+      body: JSON.stringify({ model, messages: [{ role: 'user', content: prompt }], max_tokens: 2048, temperature: 0.9 }),
+    });
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      if (resp.status === 401) throw new Error('Invalid Groq API key.');
+      if (resp.status === 429) throw new Error('Groq rate limit hit. Wait a moment and retry.');
+      throw new Error(err?.error?.message || `Groq error ${resp.status}`);
+    }
+    const data = await resp.json();
+    return data.choices?.[0]?.message?.content || '';
+  }
+
+  private static async callTogether(model: string, prompt: string, apiKey: string): Promise<string> {
+    if (!apiKey) throw new Error('Together AI key is not set. Get a free key at api.together.ai, then enter it in Admin → AI → Together AI.');
+    const resp = await fetch('https://api.together.xyz/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+      body: JSON.stringify({ model, messages: [{ role: 'user', content: prompt }], max_tokens: 2048, temperature: 0.9 }),
+    });
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      if (resp.status === 401) throw new Error('Invalid Together AI key.');
+      if (resp.status === 429) throw new Error('Together AI rate limit hit. Retry in a moment.');
+      throw new Error(err?.error?.message || `Together AI error ${resp.status}`);
+    }
+    const data = await resp.json();
+    return data.choices?.[0]?.message?.content || '';
+  }
+
+  private static async callOpenAI(model: string, prompt: string, apiKey: string): Promise<string> {
+    if (!apiKey) throw new Error('OpenAI API key is not set. Enter it in Admin → AI → OpenAI.');
+    const resp = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+      body: JSON.stringify({ model, messages: [{ role: 'user', content: prompt }], max_tokens: 2048, temperature: 0.9 }),
+    });
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      if (resp.status === 401) throw new Error('Invalid OpenAI API key.');
+      if (resp.status === 429) throw new Error('OpenAI rate limit or quota exceeded.');
+      throw new Error(err?.error?.message || `OpenAI error ${resp.status}`);
+    }
+    const data = await resp.json();
+    return data.choices?.[0]?.message?.content || '';
+  }
+
+  private static async callAnthropic(model: string, prompt: string, apiKey: string): Promise<string> {
+    if (!apiKey) throw new Error('Anthropic API key is not set. Enter it in Admin → AI → Anthropic Claude.');
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true',
+      },
+      body: JSON.stringify({ model, max_tokens: 2048, messages: [{ role: 'user', content: prompt }] }),
+    });
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      if (resp.status === 401) throw new Error('Invalid Anthropic API key.');
+      if (resp.status === 429) throw new Error('Anthropic rate limit hit. Retry in a moment.');
+      throw new Error(err?.error?.message || `Anthropic error ${resp.status}`);
+    }
+    const data = await resp.json();
+    return data.content?.[0]?.text || '';
+  }
+
+  // ─── Dispatch ──────────────────────────────────────────────────────────────
+
+  static async generateText(prompt: string, resolved: ResolvedProvider): Promise<string> {
+    const { providerKey, model, apiKey } = resolved;
+    switch (providerKey) {
+      case 'openrouter': return AIService.callOpenRouter(model, prompt, apiKey);
+      case 'gemini':     return AIService.callGemini(model, prompt, apiKey);
+      case 'groq':       return AIService.callGroq(model, prompt, apiKey);
+      case 'together':   return AIService.callTogether(model, prompt, apiKey);
+      case 'openai':     return AIService.callOpenAI(model, prompt, apiKey);
+      case 'anthropic':  return AIService.callAnthropic(model, prompt, apiKey);
+      default: throw new Error(`Unknown AI provider: "${providerKey}". Check Admin → AI settings.`);
+    }
   }
 
   // ─── Image Generation ───────────────────────────────────────────────────────
 
   static async generateImage(prompt: string, settings: AISettings): Promise<string> {
     if (!settings.imageApiKey?.trim()) {
-      throw new Error('Image generation requires a Stability AI API key. Add it in Admin → AI.');
+      throw new Error('Image generation requires a Stability AI key. Add it in Admin → AI → Image Generation.');
     }
-
     const formData = new FormData();
     formData.append('prompt', prompt.slice(0, 10000));
     formData.append('output_format', 'jpeg');
     const resp = await fetch('https://api.stability.ai/v2beta/stable-image/generate/core', {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${settings.imageApiKey}`,
-        'Accept': 'image/*',
-      },
+      headers: { 'Authorization': `Bearer ${settings.imageApiKey}`, 'Accept': 'image/*' },
       body: formData,
     });
     if (!resp.ok) {
@@ -191,86 +399,53 @@ export class AIService {
 
   // ─── Image prompt helper ───────────────────────────────────────────────────
 
-  static async generateImagePrompt(
-    pageText: string,
-    storyStyle: string,
-    ageGroup: string,
-    model: string,
-    apiKey?: string
-  ): Promise<string> {
+  static async generateImagePrompt(pageText: string, storyStyle: string, ageGroup: string, resolved: ResolvedProvider): Promise<string> {
     const prompt = `Write a short image-generation prompt (max 120 words) for a children's book illustration.
 Art style: ${storyStyle}. Age group: ${ageGroup}.
 Scene text: "${pageText}"
 Return ONLY the image prompt — no explanation, no quotes.
-Focus on: characters, setting, mood, lighting, color palette.
-Keep it family-friendly and visually rich.`;
-    return AIService.generateText(prompt, model, apiKey);
+Focus on: characters, setting, mood, lighting, color palette. Keep it family-friendly and visually rich.`;
+    return AIService.generateText(prompt, resolved);
   }
 
   // ─── Story Script ──────────────────────────────────────────────────────────
 
   static async generateStoryPages(
-    idea: string,
-    pageCount: number,
-    style: string,
-    ageGroup: string,
-    language: string,
-    model: string,
-    narrativeStructure?: string,
-    storyBibleContext?: string,
-    apiKey?: string
+    idea: string, pageCount: number, style: string, ageGroup: string, language: string,
+    resolved: ResolvedProvider, narrativeStructure?: string, storyBibleContext?: string
   ): Promise<{ title: string; pages: { text: string }[] }> {
     const structureGuide = narrativeStructure === 'hero-journey'
-      ? `Structure this as a Hero's Journey (monomyth):
-- Ordinary World → Call to Adventure → Crossing the Threshold → Tests & Allies → The Ordeal → Road Back → Return Transformed.
-Distribute these beats proportionally across the ${pageCount} pages.`
+      ? `Structure this as a Hero's Journey: Ordinary World → Call to Adventure → Crossing the Threshold → Tests & Allies → The Ordeal → Road Back → Return Transformed. Distribute beats across ${pageCount} pages.`
       : narrativeStructure === '3-act'
-      ? `Use a 3-Act structure:
-- Act 1 (first ~25% of pages): Establish hero, world, and inciting incident.
-- Act 2 (middle ~50%): Rising tension, obstacles, midpoint twist, dark night of the soul.
-- Act 3 (last ~25%): Climax, resolution, final image that mirrors the opening.`
+      ? `3-Act structure: Act 1 (25%): setup & inciting incident. Act 2 (50%): rising tension, midpoint twist. Act 3 (25%): climax & resolution.`
       : narrativeStructure === '5-act'
-      ? `Use a 5-Act structure (Freytag's Pyramid):
-- Act 1 Exposition, Act 2 Rising Action, Act 3 Climax, Act 4 Falling Action, Act 5 Dénouement.
-Each act should roughly span ${Math.ceil(pageCount / 5)} pages.`
+      ? `5-Act (Freytag's Pyramid): Exposition, Rising Action, Climax, Falling Action, Dénouement. ~${Math.ceil(pageCount/5)} pages each.`
       : narrativeStructure === 'in-medias-res'
-      ? `Start IN MEDIAS RES — drop the reader into the most thrilling moment first. Then reveal the build-up through the middle pages before reaching a satisfying climax and resolution.`
-      : `Use a clear beginning → middle → end arc.`;
+      ? `Start IN MEDIAS RES — drop the reader into the most thrilling moment first. Reveal the build-up through the middle, then reach a satisfying climax and resolution.`
+      : `Clear beginning → middle → end arc.`;
 
-    const bibleSection = storyBibleContext
-      ? `\nWorld/Lore Context (the AI must stay consistent with this):\n${storyBibleContext}\n`
-      : '';
+    const bibleSection = storyBibleContext ? `\nWorld/Lore Context (stay consistent with this):\n${storyBibleContext}\n` : '';
 
-    const prompt = `You are a master storyteller and author. Write a ${pageCount}-page illustrated story in ${language}, for readers aged ${ageGroup}.
+    const prompt = `You are a master storyteller. Write a ${pageCount}-page illustrated story in ${language}, for readers aged ${ageGroup}.
 
 Story idea: "${idea}"
 Illustration style: ${style}
 ${bibleSection}
 Narrative structure: ${structureGuide}
 
-Return ONLY a valid JSON object — no markdown, no code fences. Exact shape:
-{
-  "title": "Story Title",
-  "pages": [
-    { "text": "Page 1 text." },
-    { "text": "Page 2 text." }
-  ]
-}
+Return ONLY valid JSON — no markdown, no code fences:
+{"title":"Story Title","pages":[{"text":"Page 1 text."},{"text":"Page 2 text."}]}
 
 Rules:
 - EXACTLY ${pageCount} items in "pages".
 - Each page: 2–4 sentences, ${ageGroup} reading level.
-- Ages 0–5: simple words, wonder, repetition.
-- Ages 6–12: light adventure, curiosity, lessons.
-- YA/Adult: rich vocabulary, deeper themes.
-- Follow the specified narrative structure beat by beat.
-- Output ONLY the JSON object, nothing else.`;
+- Ages 0–5: simple words, wonder. Ages 6–12: light adventure. YA/Adult: rich vocabulary.
+- Output ONLY the JSON.`;
 
-    const rawText = await AIService.generateText(prompt, model, apiKey);
+    const rawText = await AIService.generateText(prompt, resolved);
     const cleaned = rawText.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
-    const s = cleaned.indexOf('{');
-    const e = cleaned.lastIndexOf('}');
-    if (s === -1 || e === -1) throw new Error('AI returned unexpected format. Please try again.');
+    const s = cleaned.indexOf('{'), e = cleaned.lastIndexOf('}');
+    if (s === -1 || e === -1) throw new Error('AI returned an unexpected format. Please try again.');
     const parsed = JSON.parse(cleaned.slice(s, e + 1));
     if (!parsed.title || !Array.isArray(parsed.pages) || parsed.pages.length === 0) {
       throw new Error('AI response missing required fields. Please try again.');
@@ -281,35 +456,16 @@ Rules:
   // ─── Character Architect ───────────────────────────────────────────────────
 
   static async generateCharacterProfile(
-    name: string,
-    role: string,
-    genre: string,
-    storyIdea: string,
-    model: string,
-    apiKey?: string
+    name: string, role: string, genre: string, storyIdea: string, resolved: ResolvedProvider
   ): Promise<{ appearance: string; personality: string; backstory: string; motivations: string; flaws: string; voiceStyle: string; arc: string }> {
-    const prompt = `You are a master character designer. Create a rich, complex character profile for a ${genre} story.
-
-Character name: "${name}"
-Role: ${role}
-Story concept: "${storyIdea}"
-
-Return ONLY a valid JSON object with this exact shape:
-{
-  "appearance": "Detailed physical description — face, build, distinguishing marks, typical clothing. Be specific enough to use as an image generation prompt (face-lock).",
-  "personality": "Core personality traits — 3 to 5 defining characteristics.",
-  "backstory": "2–3 sentences of formative backstory that explains WHY this character is who they are.",
-  "motivations": "Their deepest want and deepest need (these should be different).",
-  "flaws": "2–3 genuine flaws that create conflict and feel earned, not cosmetic.",
-  "voiceStyle": "How they speak — sentence length, vocabulary level, verbal tics, tone.",
-  "arc": "The transformation this character undergoes across the story."
-}
-
-Output ONLY the JSON. No markdown, no explanation.`;
-
-    const rawText = await AIService.generateText(prompt, model, apiKey);
+    const prompt = `You are a master character designer. Create a rich character profile for a ${genre} story.
+Character name: "${name}", Role: ${role}, Story: "${storyIdea}"
+Return ONLY valid JSON:
+{"appearance":"...","personality":"...","backstory":"...","motivations":"...","flaws":"...","voiceStyle":"...","arc":"..."}
+Output ONLY the JSON.`;
+    const rawText = await AIService.generateText(prompt, resolved);
     const cleaned = rawText.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
-    const s = cleaned.indexOf('{'); const e = cleaned.lastIndexOf('}');
+    const s = cleaned.indexOf('{'), e = cleaned.lastIndexOf('}');
     if (s === -1 || e === -1) throw new Error('AI returned unexpected format for character profile.');
     return JSON.parse(cleaned.slice(s, e + 1));
   }
@@ -317,75 +473,33 @@ Output ONLY the JSON. No markdown, no explanation.`;
   // ─── Story Bible Generator ─────────────────────────────────────────────────
 
   static async generateStoryBible(
-    storyIdea: string,
-    genre: string,
-    style: string,
-    model: string,
-    apiKey?: string
+    storyIdea: string, genre: string, style: string, resolved: ResolvedProvider
   ): Promise<{ title: string; overview: string; history: string; magicSystem: string; politics: string; geography: string; rules: string }> {
-    const prompt = `You are a master world-builder. Create a deep, consistent Story Bible for a ${genre} story.
-
-Story concept: "${storyIdea}"
-Visual tone: ${style}
-
-Return ONLY a valid JSON object:
-{
-  "title": "Name of this world or story universe",
-  "overview": "2–3 sentence quick summary of this world — what makes it unique and compelling.",
-  "history": "Key historical events that shaped this world — the wars, discoveries, or turning points that authors must know.",
-  "magicSystem": "If applicable: how powers/magic work, their rules, costs, limits, and who can use them. If no magic, describe the world's governing technology or unusual physics instead.",
-  "politics": "The factions, power structures, governments, and ongoing conflicts. Who holds power? Who wants it?",
-  "geography": "The key locations — 3–5 places authors will set scenes. What makes each unique and atmospheric?",
-  "rules": "The 5–7 iron laws of this world that must NEVER be violated for consistency. These are the plot-hole prevention rules."
-}
-
-Output ONLY the JSON. No markdown, no explanation.`;
-
-    const rawText = await AIService.generateText(prompt, model, apiKey);
+    const prompt = `You are a master world-builder. Create a Story Bible for a ${genre} story.
+Concept: "${storyIdea}", Tone: ${style}
+Return ONLY valid JSON:
+{"title":"...","overview":"...","history":"...","magicSystem":"...","politics":"...","geography":"...","rules":"..."}
+Output ONLY the JSON.`;
+    const rawText = await AIService.generateText(prompt, resolved);
     const cleaned = rawText.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
-    const s = cleaned.indexOf('{'); const e = cleaned.lastIndexOf('}');
+    const s = cleaned.indexOf('{'), e = cleaned.lastIndexOf('}');
     if (s === -1 || e === -1) throw new Error('AI returned unexpected format for story bible.');
     return JSON.parse(cleaned.slice(s, e + 1));
   }
 
-  // ─── Branching Path Generator ──────────────────────────────────────────────
+  // ─── Branching Path ────────────────────────────────────────────────────────
 
   static async generateBranchPath(
-    currentPageText: string,
-    choiceText: string,
-    pageCount: number,
-    style: string,
-    ageGroup: string,
-    language: string,
-    storyTitle: string,
-    model: string,
-    apiKey?: string
+    currentPageText: string, choiceText: string, pageCount: number,
+    style: string, ageGroup: string, language: string, storyTitle: string, resolved: ResolvedProvider
   ): Promise<{ pages: { text: string }[] }> {
     const prompt = `You are writing a branching "Choose Your Own Adventure" story.
-
-Story title: "${storyTitle}"
-The reader just read: "${currentPageText}"
-They chose: "${choiceText}"
-
-Continue this story branch for ${pageCount} more page(s) in ${language} (age group: ${ageGroup}, style: ${style}).
-This branch should feel like a distinct, satisfying path with its own mini-arc: a consequence of the choice, escalation, and resolution.
-
-Return ONLY a valid JSON object:
-{
-  "pages": [
-    { "text": "Branch page 1 text." }
-  ]
-}
-
-Rules:
-- EXACTLY ${pageCount} items in "pages".
-- Each page: 2–4 sentences.
-- The branch must feel meaningfully different from choosing otherwise.
-- Output ONLY the JSON object.`;
-
-    const rawText = await AIService.generateText(prompt, model, apiKey);
+Title: "${storyTitle}", Reader chose: "${choiceText}" after reading: "${currentPageText}"
+Continue for ${pageCount} page(s) in ${language} (age: ${ageGroup}, style: ${style}).
+Return ONLY valid JSON: {"pages":[{"text":"..."}]}`;
+    const rawText = await AIService.generateText(prompt, resolved);
     const cleaned = rawText.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
-    const s = cleaned.indexOf('{'); const e = cleaned.lastIndexOf('}');
+    const s = cleaned.indexOf('{'), e = cleaned.lastIndexOf('}');
     if (s === -1 || e === -1) throw new Error('AI returned unexpected format for branch path.');
     return JSON.parse(cleaned.slice(s, e + 1));
   }
@@ -393,63 +507,25 @@ Rules:
   // ─── RPG Tools ─────────────────────────────────────────────────────────────
 
   static async generateNPCProfile(
-    concept: string,
-    setting: string,
-    model: string,
-    apiKey?: string
+    concept: string, setting: string, resolved: ResolvedProvider
   ): Promise<{ name: string; race?: string; class?: string; appearance: string; personality: string; hook: string; questSeed: string; secretMotivation: string }> {
-    const prompt = `You are a Game Master assistant. Generate a vivid, usable NPC for a tabletop RPG session.
-
-NPC concept: "${concept}"
-Setting/world: "${setting}"
-
-Return ONLY a valid JSON object:
-{
-  "name": "Full name",
-  "race": "Species/race if applicable",
-  "class": "Occupation or class if applicable",
-  "appearance": "Vivid 2-sentence physical description a GM can read aloud instantly.",
-  "personality": "3 words that capture their vibe, plus one memorable quirk or habit.",
-  "hook": "One-sentence reason a player would want to talk to them.",
-  "questSeed": "A plot hook this NPC can kick off — one sentence.",
-  "secretMotivation": "What they really want, hidden from the players."
-}
-
-Output ONLY the JSON.`;
-
-    const rawText = await AIService.generateText(prompt, model, apiKey);
+    const prompt = `Generate a vivid NPC for a tabletop RPG. Concept: "${concept}", Setting: "${setting}"
+Return ONLY valid JSON: {"name":"...","race":"...","class":"...","appearance":"...","personality":"...","hook":"...","questSeed":"...","secretMotivation":"..."}`;
+    const rawText = await AIService.generateText(prompt, resolved);
     const cleaned = rawText.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
-    const s = cleaned.indexOf('{'); const e = cleaned.lastIndexOf('}');
+    const s = cleaned.indexOf('{'), e = cleaned.lastIndexOf('}');
     if (s === -1 || e === -1) throw new Error('AI returned unexpected format for NPC.');
     return JSON.parse(cleaned.slice(s, e + 1));
   }
 
   static async generateQuestLore(
-    premise: string,
-    setting: string,
-    model: string,
-    apiKey?: string
+    premise: string, setting: string, resolved: ResolvedProvider
   ): Promise<{ title: string; hook: string; backstory: string; objectives: string[]; twists: string[]; rewards: string }> {
-    const prompt = `You are a Game Master assistant. Create detailed quest lore for a tabletop RPG.
-
-Quest premise: "${premise}"
-Setting: "${setting}"
-
-Return ONLY a valid JSON object:
-{
-  "title": "Quest name",
-  "hook": "The inciting event or rumor that draws players in (2 sentences).",
-  "backstory": "The full lore of why this quest exists — the history behind it (3–4 sentences).",
-  "objectives": ["Primary objective", "Optional secondary objective", "Hidden objective"],
-  "twists": ["Mid-quest reveal", "Final revelation that recontextualizes everything"],
-  "rewards": "What players gain — tangible and intangible."
-}
-
-Output ONLY the JSON.`;
-
-    const rawText = await AIService.generateText(prompt, model, apiKey);
+    const prompt = `Create detailed quest lore for a tabletop RPG. Premise: "${premise}", Setting: "${setting}"
+Return ONLY valid JSON: {"title":"...","hook":"...","backstory":"...","objectives":["..."],"twists":["..."],"rewards":"..."}`;
+    const rawText = await AIService.generateText(prompt, resolved);
     const cleaned = rawText.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
-    const s = cleaned.indexOf('{'); const e = cleaned.lastIndexOf('}');
+    const s = cleaned.indexOf('{'), e = cleaned.lastIndexOf('}');
     if (s === -1 || e === -1) throw new Error('AI returned unexpected format for quest lore.');
     return JSON.parse(cleaned.slice(s, e + 1));
   }
@@ -457,102 +533,61 @@ Output ONLY the JSON.`;
   // ─── Images Only ───────────────────────────────────────────────────────────
 
   static async generateImagesOnly(
-    idea: string,
-    pageCount: number,
-    style: string,
-    ageGroup: string,
-    model: string,
-    settings: AISettings,
-    onProgress?: (p: AIProgress) => void
+    idea: string, pageCount: number, style: string, ageGroup: string,
+    resolved: ResolvedProvider, settings: AISettings, onProgress?: (p: AIProgress) => void
   ): Promise<{ title: string; pages: { text: string; imageUrl?: string }[] }> {
     onProgress?.({ step: 'Planning scenes...', current: 0, total: pageCount + 1 });
-
     const scenesPrompt = `Break a children's story into ${pageCount} illustrated scenes.
-Story idea: "${idea}"
-Art style: ${style}, age group ${ageGroup}.
-
-Return ONLY a JSON object:
-{
-  "title": "Story Title",
-  "scenes": [
-    { "caption": "Short 1-sentence caption.", "imagePrompt": "Detailed illustration prompt for this scene." }
-  ]
-}
-
-Rules:
-- EXACTLY ${pageCount} scenes.
-- Each imagePrompt: vivid, detailed, ${style} art style, family-friendly, max 100 words.
-- Output ONLY the JSON.`;
-
-    const rawText = await AIService.generateText(scenesPrompt, model, settings.apiKey);
+Story: "${idea}", Style: ${style}, Age: ${ageGroup}
+Return ONLY JSON: {"title":"...","scenes":[{"caption":"...","imagePrompt":"..."}]}`;
+    const rawText = await AIService.generateText(scenesPrompt, resolved);
     const cleaned = rawText.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
-    const s = cleaned.indexOf('{');
-    const e = cleaned.lastIndexOf('}');
+    const s = cleaned.indexOf('{'), e = cleaned.lastIndexOf('}');
     if (s === -1 || e === -1) throw new Error('AI returned unexpected format.');
     const parsed = JSON.parse(cleaned.slice(s, e + 1));
-
     const pages: { text: string; imageUrl?: string }[] = [];
     for (let i = 0; i < parsed.scenes.length; i++) {
       const scene = parsed.scenes[i];
-      onProgress?.({ step: `Illustrating scene ${i + 1} of ${parsed.scenes.length}...`, current: i + 1, total: pageCount + 1 });
+      onProgress?.({ step: `Illustrating scene ${i + 1}/${parsed.scenes.length}...`, current: i + 1, total: pageCount + 1 });
       try {
-        const imageUrl = await AIService.generateImage(
-          `${scene.imagePrompt}, ${style} art style, children's book illustration, high quality, vibrant`,
-          settings
-        );
+        const imageUrl = await AIService.generateImage(`${scene.imagePrompt}, ${style} art style, children's book illustration`, settings);
         pages.push({ text: scene.caption || '', imageUrl });
-      } catch {
-        pages.push({ text: scene.caption || '' });
-      }
+      } catch { pages.push({ text: scene.caption || '' }); }
     }
-
     return { title: parsed.title, pages };
   }
 
-  // ─── Full Story (Script + Images) ──────────────────────────────────────────
+  // ─── Full Story ────────────────────────────────────────────────────────────
 
   static async generateFullStory(
-    idea: string,
-    pageCount: number,
-    style: string,
-    ageGroup: string,
-    language: string,
-    model: string,
-    settings: AISettings,
-    onProgress?: (p: AIProgress) => void
+    idea: string, pageCount: number, style: string, ageGroup: string, language: string,
+    resolved: ResolvedProvider, settings: AISettings, onProgress?: (p: AIProgress) => void
   ): Promise<{ title: string; pages: { text: string; imageUrl?: string }[] }> {
     onProgress?.({ step: 'Writing story script...', current: 0, total: pageCount + 1 });
-    const storyResult = await AIService.generateStoryPages(idea, pageCount, style, ageGroup, language, model, undefined, undefined, settings.apiKey);
-
+    const storyResult = await AIService.generateStoryPages(idea, pageCount, style, ageGroup, language, resolved);
     const pagesWithImages: { text: string; imageUrl?: string }[] = [];
     for (let i = 0; i < storyResult.pages.length; i++) {
       const page = storyResult.pages[i];
-      onProgress?.({ step: `Illustrating page ${i + 1} of ${storyResult.pages.length}...`, current: i + 1, total: pageCount + 1 });
+      onProgress?.({ step: `Illustrating page ${i + 1}/${storyResult.pages.length}...`, current: i + 1, total: pageCount + 1 });
       try {
-        const imgPrompt = await AIService.generateImagePrompt(page.text, style, ageGroup, model, settings.apiKey);
-        const imageUrl = await AIService.generateImage(
-          `${imgPrompt}, ${style} art style, children's book illustration, high quality, vibrant`,
-          settings
-        );
+        const imgPrompt = await AIService.generateImagePrompt(page.text, style, ageGroup, resolved);
+        const imageUrl = await AIService.generateImage(`${imgPrompt}, ${style} art style, children's book illustration`, settings);
         pagesWithImages.push({ text: page.text, imageUrl });
-      } catch {
-        pagesWithImages.push({ text: page.text });
-      }
+      } catch { pagesWithImages.push({ text: page.text }); }
     }
-
     return { title: storyResult.title, pages: pagesWithImages };
   }
 
   // ─── Utilities ─────────────────────────────────────────────────────────────
 
-  static async enhanceText(text: string, model: string, apiKey?: string): Promise<string> {
-    const prompt = `Improve the following children's story page text. Make it more vivid, engaging, and age-appropriate. Keep roughly the same length. Return ONLY the improved text, nothing else.\n\nOriginal:\n${text}`;
-    return AIService.generateText(prompt, model, apiKey);
+  static async enhanceText(text: string, resolved: ResolvedProvider): Promise<string> {
+    const prompt = `Improve the following story page text. Make it more vivid and engaging. Keep roughly the same length. Return ONLY the improved text.\n\nOriginal:\n${text}`;
+    return AIService.generateText(prompt, resolved);
   }
 
-  static async generateTitle(idea: string, model: string, apiKey?: string): Promise<string> {
-    const prompt = `Create a single creative, catchy title for a children's story about: "${idea}". Return ONLY the title, no quotes, no explanation.`;
-    const result = await AIService.generateText(prompt, model, apiKey);
+  static async generateTitle(idea: string, resolved: ResolvedProvider): Promise<string> {
+    const prompt = `Create a single creative, catchy title for a story about: "${idea}". Return ONLY the title, no quotes, no explanation.`;
+    const result = await AIService.generateText(prompt, resolved);
     return result.trim().replace(/^["']|["']$/g, '');
   }
 }

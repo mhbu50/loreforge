@@ -5,7 +5,7 @@ import {
   Sword, Crown, Map, Shield, StickyNote, Plus, Trash2, ChevronDown, ChevronUp, X, Copy, Check
 } from 'lucide-react';
 import { StoryBible } from '../types';
-import { AIService, AISettings, DEFAULT_AI_SETTINGS, getEffectiveModel } from '../services/AIService';
+import { AIService, AISettings, DEFAULT_AI_SETTINGS, getEffectiveProvider } from '../services/AIService';
 import { db, auth } from '../firebase';
 import { collection, addDoc, query, where, onSnapshot, deleteDoc, doc, updateDoc, getDocs } from 'firebase/firestore';
 import { toast } from 'sonner';
@@ -130,9 +130,9 @@ export default function StoryBiblePanel({ storyId, onBibleContext }: StoryBibleP
     if (!storyIdeaHint && !draft.overview) return toast.error('Add a story idea or world overview first.');
     setAiLoading(sectionKey);
     try {
-      const model = getEffectiveModel(aiSettings, 'free');
+      const resolved = getEffectiveProvider(aiSettings, 'free');
       const result = await AIService.generateStoryBible(
-        storyIdeaHint || draft.overview, genreHint || 'fiction', hint, model, aiSettings.apiKey
+        storyIdeaHint || draft.overview, genreHint || 'fiction', hint, resolved
       );
       const val = (result as any)[sectionKey];
       if (val) setDraft(d => ({ ...d, [sectionKey]: val }));
@@ -148,9 +148,9 @@ export default function StoryBiblePanel({ storyId, onBibleContext }: StoryBibleP
     if (!storyIdeaHint && !draft.title) return toast.error('Enter a story idea below before generating.');
     setAiLoading('all');
     try {
-      const model = getEffectiveModel(aiSettings, 'free');
+      const resolved = getEffectiveProvider(aiSettings, 'free');
       const result = await AIService.generateStoryBible(
-        storyIdeaHint || draft.title, genreHint || 'fiction', genreHint || 'a story', model, aiSettings.apiKey
+        storyIdeaHint || draft.title, genreHint || 'fiction', genreHint || 'a story', resolved
       );
       setDraft(d => ({ ...d, ...result }));
       toast.success('Story Bible auto-filled! Review and edit each section.');
