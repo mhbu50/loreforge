@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Sparkles, Plus, LogOut, ShieldAlert, BookOpen, Shield, Star, Bug, MessageSquare, Send, X, UserPlus, Crown, CreditCard, Loader2, Check, Zap, Share2, Monitor, FileText, Maximize2, Command, Eye, ChevronRight, ChevronLeft, Settings as SettingsIcon, Layout, Edit3, Image as ImageIcon, Palette, LifeBuoy, Bot, CheckCircle, Moon, Sun, Pencil } from 'lucide-react';
-import { Story, StoryPage, StoryStyle, UserProfile, ImageAdjustments } from '../types';
+import { Sparkles, Plus, LogOut, ShieldAlert, BookOpen, Shield, Star, Bug, MessageSquare, Send, X, UserPlus, Crown, CreditCard, Loader2, Check, Zap, Share2, Monitor, FileText, Maximize2, Command, Eye, ChevronRight, ChevronLeft, Settings as SettingsIcon, Layout, Edit3, Image as ImageIcon, Palette, LifeBuoy, Bot, CheckCircle, Moon, Sun, Pencil, Users, Scroll } from 'lucide-react';
+import { Story, StoryPage, StoryStyle, UserProfile, ImageAdjustments, NarrativeStructure } from '../types';
 import { auth, db } from '../firebase';
 import { collection, addDoc, query, where, onSnapshot, deleteDoc, doc, orderBy, updateDoc, getDocs, getDoc, increment } from 'firebase/firestore';
 import { handleFirestoreError, OperationType } from '../lib/firestore-utils';
@@ -27,6 +27,8 @@ import { WordCountWidget, ImagePreviewWidget, ProgressWidget } from './Widgets';
 import { Book as BookEntity, BookType } from '../types';
 import { ConfigService } from '../services/ConfigService';
 import AccountPanel from './AccountPanel';
+import CharacterArchitect from './CharacterArchitect';
+import StoryBiblePanel from './StoryBiblePanel';
 
 interface DashboardProps {
   userProfile: UserProfile | null;
@@ -48,7 +50,8 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
   const [selectedBookType, setSelectedBookType] = useState<BookType | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showAdmin, setShowAdmin] = useState(false);
-  const [activeView, setActiveView] = useState<'library' | 'workspace' | 'themes' | 'forge-settings' | 'support' | 'publish'>('library');
+  const [activeView, setActiveView] = useState<'library' | 'workspace' | 'themes' | 'forge-settings' | 'support' | 'publish' | 'characters' | 'bible'>('library');
+  const [storyBibleContext, setStoryBibleContext] = useState<string>('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -376,7 +379,7 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
     }
   };
 
-  const handleCreateComplete = async (title: string, pages: StoryPage[], style: StoryStyle, category: string, language: string, ageGroup: string, bookType: BookType = 'story', authorName?: string, coverImage?: string, coverImageAdjustments?: ImageAdjustments) => {
+  const handleCreateComplete = async (title: string, pages: StoryPage[], style: StoryStyle, category: string, language: string, ageGroup: string, bookType: BookType = 'story', authorName?: string, coverImage?: string, coverImageAdjustments?: ImageAdjustments, narrativeStructure?: NarrativeStructure, isBranching?: boolean) => {
     if (!auth.currentUser || !userProfile) return;
     
     setIsForging(true);
@@ -475,9 +478,11 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
           isPublished: false,
           price: 9.99,
           likes: 0,
-          createdAt: Date.now()
+          createdAt: Date.now(),
+          ...(narrativeStructure && narrativeStructure !== 'freeform' ? { narrativeStructure } : {}),
+          ...(isBranching ? { isBranching: true } : {}),
         };
-        
+
         await addDoc(collection(db, 'stories'), newStoryData);
         
         // Also create a first chapter for the workspace
@@ -767,6 +772,8 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
           {([
             { view: 'library', icon: <Layout size={15} />, label: 'Library' },
             { view: 'workspace', icon: <Edit3 size={15} />, label: 'Workspace' },
+            { view: 'characters', icon: <Users size={15} />, label: 'Characters' },
+            { view: 'bible', icon: <Scroll size={15} />, label: 'Story Bible' },
             { view: 'themes', icon: <Palette size={15} />, label: 'Themes' },
             { view: 'forge-settings', icon: <SettingsIcon size={15} />, label: 'Settings' },
             { view: 'support', icon: <LifeBuoy size={15} />, label: 'Support' },
@@ -1040,6 +1047,7 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
                 bookType={selectedBookType}
                 config={config}
                 initialStory={editingStory}
+                storyBibleContext={storyBibleContext}
               />
             </motion.div>
           ) : currentStory ? (
@@ -1213,6 +1221,27 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
               exit={{ opacity: 0, y: -20 }}
             >
               <Support />
+            </motion.div>
+          ) : activeView === 'characters' ? (
+            <motion.div
+              key="characters"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+            >
+              <CharacterArchitect
+                storyId={undefined}
+                userSubscriptionTier={userProfile?.subscriptionTier}
+              />
+            </motion.div>
+          ) : activeView === 'bible' ? (
+            <motion.div
+              key="bible"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+            >
+              <StoryBiblePanel onBibleContext={setStoryBibleContext} />
             </motion.div>
           ) : activeView === 'publish' ? (
             <motion.div

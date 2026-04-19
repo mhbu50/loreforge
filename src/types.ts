@@ -20,6 +20,14 @@ export interface ImageAdjustments {
   flipY: boolean;
 }
 
+export interface BranchChoice {
+  id: string;
+  text: string;           // Shown to reader as a choice button
+  label?: string;         // Short internal label for the author
+  nextPageIndex?: number; // Jump to existing page index
+  branchPages?: { text: string; imageUrl?: string }[]; // AI-generated branch pages
+}
+
 export interface StoryPage {
   text: string;
   content?: string; // Alias for text used in some parts of the app
@@ -30,8 +38,11 @@ export interface StoryPage {
   alignment?: 'left' | 'center' | 'right';
   fontSize?: string;
   color?: string;
+  choices?: BranchChoice[]; // Branching narrative choices shown at end of this page
 }
 export type StoryCategory = 'adventure' | 'fantasy' | 'mystery' | 'sci-fi' | 'educational' | 'drama' | 'comedy' | 'horror' | 'romance' | 'thriller' | 'biography' | 'historical' | 'other';
+
+export type NarrativeStructure = 'freeform' | 'hero-journey' | '3-act' | '5-act' | 'in-medias-res';
 
 export interface Story {
   id: string;
@@ -52,6 +63,55 @@ export interface Story {
   likes?: number;
   collaborators?: string[]; // Array of UIDs
   createdAt: number;
+  // Narrative intelligence
+  narrativeStructure?: NarrativeStructure;
+  isBranching?: boolean;
+  storyBibleId?: string; // Reference to linked StoryBible
+}
+
+// ── Character Architect ──────────────────────────────────────────────────────
+
+export type CharacterRole = 'protagonist' | 'antagonist' | 'supporting' | 'npc' | 'mentor' | 'trickster';
+
+export interface Character {
+  id: string;
+  userId: string;
+  storyId?: string;      // Optional — characters can be global or story-specific
+  name: string;
+  role: CharacterRole;
+  age?: string;
+  // Face-lock: visual consistency descriptor used in every image generation prompt
+  appearance: string;
+  // Personality & depth
+  personality: string;
+  backstory: string;
+  motivations: string;
+  flaws: string;
+  voiceStyle: string;    // Dialogue style description (e.g. "sardonic, short sentences")
+  arc?: string;          // Character arc summary
+  // Visuals
+  portraitUrl?: string;
+  portraitStyle?: string; // Visual style locked for this character
+  createdAt: number;
+  updatedAt: number;
+}
+
+// ── Story Bible ──────────────────────────────────────────────────────────────
+
+export interface StoryBible {
+  id: string;
+  userId: string;
+  storyId?: string;    // Optional — bibles can be global world-builds
+  title: string;       // World/series name
+  overview: string;    // Quick world summary
+  history: string;     // Timeline of major events
+  magicSystem: string; // Powers, rules, limits
+  politics: string;    // Factions, power structures, conflicts
+  geography: string;   // Locations, maps, regions
+  rules: string;       // World-logic rules that must never be broken
+  notes: string;       // Free-form lore dump
+  createdAt: number;
+  updatedAt: number;
 }
 
 export interface Feedback {

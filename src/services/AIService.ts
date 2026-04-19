@@ -31,6 +31,7 @@ export interface AIProviderSettings {
     stability: AIProvider;
     mistral: AIProvider;
     // ── Free / Lite ──────────────────────────────
+    openrouter: AIProvider;   // OpenRouter — unified free API (Gemma 4, Llama, Mistral…)
     geminiFree: AIProvider;   // Gemini Flash-Lite (Google AI free tier)
     gemma: AIProvider;        // Gemma open-weight (Google AI free tier)
     openaiMini: AIProvider;   // GPT-4o Mini (cheapest OpenAI)
@@ -46,10 +47,10 @@ export interface AIProviderSettings {
 }
 
 export const DEFAULT_TIER_ASSIGNMENTS: Record<string, TierProviderAssignment> = {
-  free:     { text: 'geminiFree', image: 'stability',  enhance: 'geminiFree', title: 'geminiFree' },
-  standard: { text: 'gemini',    image: 'stability',  enhance: 'gemini',     title: 'gemini'     },
-  premium:  { text: 'gemini',    image: 'gemini',     enhance: 'anthropic',  title: 'gemini'     },
-  ultimate: { text: 'gemini',    image: 'gemini',     enhance: 'anthropic',  title: 'anthropic'  },
+  free:     { text: 'openrouter', image: 'stability',  enhance: 'openrouter', title: 'openrouter' },
+  standard: { text: 'openrouter', image: 'stability',  enhance: 'openrouter', title: 'openrouter' },
+  premium:  { text: 'openrouter', image: 'gemini',     enhance: 'openrouter', title: 'openrouter' },
+  ultimate: { text: 'openrouter', image: 'gemini',     enhance: 'openrouter', title: 'openrouter' },
 };
 
 /**
@@ -168,6 +169,13 @@ export const AVAILABLE_MODELS: Record<string, string[]> = {
     'meta-llama/Llama-3.2-11B-Vision-Instruct-Turbo',
     'mistralai/Mixtral-8x7B-Instruct-v0.1',
   ],
+  openrouter: [
+    'google/gemma-4-26b-a4b-it:free',   // Gemma 4 26B MoE — default free model
+    'meta-llama/llama-3.3-70b-instruct:free',
+    'mistralai/mistral-7b-instruct:free',
+    'microsoft/phi-3-mini-128k-instruct:free',
+    'nousresearch/hermes-3-llama-3.1-405b:free',
+  ],
 };
 
 export const DEFAULT_AI_SETTINGS: AIProviderSettings = {
@@ -280,6 +288,15 @@ export const DEFAULT_AI_SETTINGS: AIProviderSettings = {
       isFree: true,
       usedFor: ['text'],
       description: 'Together AI — free tier with top open-source models (Llama 3.3, Mixtral). Get a free key at api.together.ai.',
+    },
+    openrouter: {
+      name: 'OpenRouter (Free)',
+      apiKey: '',
+      model: 'google/gemma-4-26b-a4b-it:free',
+      enabled: true,
+      isFree: true,
+      usedFor: ['text'],
+      description: 'OpenRouter — unified free API. Uses Gemma 4 26B by default. API key from environment variable OPENROUTER_API_KEY.',
     },
   }
 };
@@ -397,6 +414,32 @@ export class AIService {
     return data.choices?.[0]?.message?.content || '';
   }
 
+  // OpenRouter — unified free API (OpenAI-compatible)
+  private static async callOpenRouter(model: string, prompt: string): Promise<string> {
+    const apiKey = process.env.OPENROUTER_API_KEY || '';
+    const resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+        'HTTP-Referer': window.location.origin,
+        'X-Title': 'StoryCraft'
+      },
+      body: JSON.stringify({
+        model,
+        messages: [{ role: 'user', content: prompt }],
+        max_tokens: 2048,
+        temperature: 0.9
+      })
+    });
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      throw new Error(err?.error?.message || `OpenRouter error ${resp.status}`);
+    }
+    const data = await resp.json();
+    return data.choices?.[0]?.message?.content || '';
+  }
+
   // Groq — OpenAI-compatible endpoint, free tier
   private static async callGroq(apiKey: string, model: string, prompt: string): Promise<string> {
     const resp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
@@ -460,7 +503,8 @@ export class AIService {
     if (!provider?.enabled) {
       throw new Error(`${purpose === 'enhance' ? 'Enhancement' : purpose === 'title' ? 'Title' : 'Text'} provider "${provider?.name || providerKey}" is disabled. Enable it in Admin Panel → AI.`);
     }
-    if (!provider?.apiKey?.trim()) {
+    // openrouter uses env var API key — skip the stored key check
+    if (providerKey !== 'openrouter' && !provider?.apiKey?.trim()) {
       throw new Error(`No API key for "${provider?.name}". Add it in Admin Panel → AI Providers.`);
     }
 
@@ -478,6 +522,7 @@ export class AIService {
       case 'mistralFree': return AIService.callMistral(provider.apiKey, provider.model, prompt);
       case 'groq':        return AIService.callGroq(provider.apiKey, provider.model, prompt);
       case 'togetherFree':return AIService.callTogether(provider.apiKey, provider.model, prompt);
+      case 'openrouter':  return AIService.callOpenRouter(provider.model, prompt);
       default: throw new Error(`Unknown text provider: ${providerKey}`);
     }
   }
@@ -596,12 +641,37 @@ Keep it family-friendly and visually rich.`;
     style: string,
     ageGroup: string,
     language: string,
-    settings: AIProviderSettings
+    settings: AIProviderSettings,
+    narrativeStructure?: string,
+    storyBibleContext?: string
   ): Promise<{ title: string; pages: { text: string }[] }> {
-    const prompt = `You are a master children's book author. Write a ${pageCount}-page illustrated story in ${language}, for readers aged ${ageGroup}.
+    const structureGuide = narrativeStructure === 'hero-journey'
+      ? `Structure this as a Hero's Journey (monomyth):
+- Ordinary World → Call to Adventure → Crossing the Threshold → Tests & Allies → The Ordeal → Road Back → Return Transformed.
+Distribute these beats proportionally across the ${pageCount} pages.`
+      : narrativeStructure === '3-act'
+      ? `Use a 3-Act structure:
+- Act 1 (first ~25% of pages): Establish hero, world, and inciting incident.
+- Act 2 (middle ~50%): Rising tension, obstacles, midpoint twist, dark night of the soul.
+- Act 3 (last ~25%): Climax, resolution, final image that mirrors the opening.`
+      : narrativeStructure === '5-act'
+      ? `Use a 5-Act structure (Freytag's Pyramid):
+- Act 1 Exposition, Act 2 Rising Action, Act 3 Climax, Act 4 Falling Action, Act 5 Dénouement.
+Each act should roughly span ${Math.ceil(pageCount / 5)} pages.`
+      : narrativeStructure === 'in-medias-res'
+      ? `Start IN MEDIAS RES — drop the reader into the most thrilling moment first. Then reveal the build-up through the middle pages before reaching a satisfying climax and resolution.`
+      : `Use a clear beginning → middle → end arc.`;
+
+    const bibleSection = storyBibleContext
+      ? `\nWorld/Lore Context (the AI must stay consistent with this):\n${storyBibleContext}\n`
+      : '';
+
+    const prompt = `You are a master storyteller and author. Write a ${pageCount}-page illustrated story in ${language}, for readers aged ${ageGroup}.
 
 Story idea: "${idea}"
 Illustration style: ${style}
+${bibleSection}
+Narrative structure: ${structureGuide}
 
 Return ONLY a valid JSON object — no markdown, no code fences. Exact shape:
 {
@@ -618,7 +688,7 @@ Rules:
 - Ages 0–5: simple words, wonder, repetition.
 - Ages 6–12: light adventure, curiosity, lessons.
 - YA/Adult: rich vocabulary, deeper themes.
-- Clear beginning → middle → end arc.
+- Follow the specified narrative structure beat by beat.
 - Output ONLY the JSON object, nothing else.`;
 
     const rawText = await AIService.generateText(prompt, settings);
@@ -631,6 +701,177 @@ Rules:
       throw new Error('AI response missing required fields. Please try again.');
     }
     return { title: parsed.title, pages: parsed.pages };
+  }
+
+  // ─── Character Architect ───────────────────────────────────────────────────
+
+  static async generateCharacterProfile(
+    name: string,
+    role: string,
+    genre: string,
+    storyIdea: string,
+    settings: AIProviderSettings
+  ): Promise<{ appearance: string; personality: string; backstory: string; motivations: string; flaws: string; voiceStyle: string; arc: string }> {
+    const prompt = `You are a master character designer. Create a rich, complex character profile for a ${genre} story.
+
+Character name: "${name}"
+Role: ${role}
+Story concept: "${storyIdea}"
+
+Return ONLY a valid JSON object with this exact shape:
+{
+  "appearance": "Detailed physical description — face, build, distinguishing marks, typical clothing. Be specific enough to use as an image generation prompt (face-lock).",
+  "personality": "Core personality traits — 3 to 5 defining characteristics.",
+  "backstory": "2–3 sentences of formative backstory that explains WHY this character is who they are.",
+  "motivations": "Their deepest want and deepest need (these should be different).",
+  "flaws": "2–3 genuine flaws that create conflict and feel earned, not cosmetic.",
+  "voiceStyle": "How they speak — sentence length, vocabulary level, verbal tics, tone.",
+  "arc": "The transformation this character undergoes across the story."
+}
+
+Output ONLY the JSON. No markdown, no explanation.`;
+
+    const rawText = await AIService.generateText(prompt, settings);
+    const cleaned = rawText.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+    const s = cleaned.indexOf('{'); const e = cleaned.lastIndexOf('}');
+    if (s === -1 || e === -1) throw new Error('AI returned unexpected format for character profile.');
+    return JSON.parse(cleaned.slice(s, e + 1));
+  }
+
+  // ─── Story Bible Generator ─────────────────────────────────────────────────
+
+  static async generateStoryBible(
+    storyIdea: string,
+    genre: string,
+    style: string,
+    settings: AIProviderSettings
+  ): Promise<{ title: string; overview: string; history: string; magicSystem: string; politics: string; geography: string; rules: string }> {
+    const prompt = `You are a master world-builder. Create a deep, consistent Story Bible for a ${genre} story.
+
+Story concept: "${storyIdea}"
+Visual tone: ${style}
+
+Return ONLY a valid JSON object:
+{
+  "title": "Name of this world or story universe",
+  "overview": "2–3 sentence quick summary of this world — what makes it unique and compelling.",
+  "history": "Key historical events that shaped this world — the wars, discoveries, or turning points that authors must know.",
+  "magicSystem": "If applicable: how powers/magic work, their rules, costs, limits, and who can use them. If no magic, describe the world's governing technology or unusual physics instead.",
+  "politics": "The factions, power structures, governments, and ongoing conflicts. Who holds power? Who wants it?",
+  "geography": "The key locations — 3–5 places authors will set scenes. What makes each unique and atmospheric?",
+  "rules": "The 5–7 iron laws of this world that must NEVER be violated for consistency. These are the plot-hole prevention rules."
+}
+
+Output ONLY the JSON. No markdown, no explanation.`;
+
+    const rawText = await AIService.generateText(prompt, settings);
+    const cleaned = rawText.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+    const s = cleaned.indexOf('{'); const e = cleaned.lastIndexOf('}');
+    if (s === -1 || e === -1) throw new Error('AI returned unexpected format for story bible.');
+    return JSON.parse(cleaned.slice(s, e + 1));
+  }
+
+  // ─── Branching Path Generator ──────────────────────────────────────────────
+
+  static async generateBranchPath(
+    currentPageText: string,
+    choiceText: string,
+    pageCount: number,
+    style: string,
+    ageGroup: string,
+    language: string,
+    storyTitle: string,
+    settings: AIProviderSettings
+  ): Promise<{ pages: { text: string }[] }> {
+    const prompt = `You are writing a branching "Choose Your Own Adventure" story.
+
+Story title: "${storyTitle}"
+The reader just read: "${currentPageText}"
+They chose: "${choiceText}"
+
+Continue this story branch for ${pageCount} more page(s) in ${language} (age group: ${ageGroup}, style: ${style}).
+This branch should feel like a distinct, satisfying path with its own mini-arc: a consequence of the choice, escalation, and resolution.
+
+Return ONLY a valid JSON object:
+{
+  "pages": [
+    { "text": "Branch page 1 text." }
+  ]
+}
+
+Rules:
+- EXACTLY ${pageCount} items in "pages".
+- Each page: 2–4 sentences.
+- The branch must feel meaningfully different from choosing otherwise.
+- Output ONLY the JSON object.`;
+
+    const rawText = await AIService.generateText(prompt, settings);
+    const cleaned = rawText.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+    const s = cleaned.indexOf('{'); const e = cleaned.lastIndexOf('}');
+    if (s === -1 || e === -1) throw new Error('AI returned unexpected format for branch path.');
+    return JSON.parse(cleaned.slice(s, e + 1));
+  }
+
+  // ─── RPG Tools ─────────────────────────────────────────────────────────────
+
+  static async generateNPCProfile(
+    concept: string,
+    setting: string,
+    settings: AIProviderSettings
+  ): Promise<{ name: string; race?: string; class?: string; appearance: string; personality: string; hook: string; questSeed: string; secretMotivation: string }> {
+    const prompt = `You are a Game Master assistant. Generate a vivid, usable NPC for a tabletop RPG session.
+
+NPC concept: "${concept}"
+Setting/world: "${setting}"
+
+Return ONLY a valid JSON object:
+{
+  "name": "Full name",
+  "race": "Species/race if applicable",
+  "class": "Occupation or class if applicable",
+  "appearance": "Vivid 2-sentence physical description a GM can read aloud instantly.",
+  "personality": "3 words that capture their vibe, plus one memorable quirk or habit.",
+  "hook": "One-sentence reason a player would want to talk to them.",
+  "questSeed": "A plot hook this NPC can kick off — one sentence.",
+  "secretMotivation": "What they really want, hidden from the players."
+}
+
+Output ONLY the JSON.`;
+
+    const rawText = await AIService.generateText(prompt, settings);
+    const cleaned = rawText.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+    const s = cleaned.indexOf('{'); const e = cleaned.lastIndexOf('}');
+    if (s === -1 || e === -1) throw new Error('AI returned unexpected format for NPC.');
+    return JSON.parse(cleaned.slice(s, e + 1));
+  }
+
+  static async generateQuestLore(
+    premise: string,
+    setting: string,
+    settings: AIProviderSettings
+  ): Promise<{ title: string; hook: string; backstory: string; objectives: string[]; twists: string[]; rewards: string }> {
+    const prompt = `You are a Game Master assistant. Create detailed quest lore for a tabletop RPG.
+
+Quest premise: "${premise}"
+Setting: "${setting}"
+
+Return ONLY a valid JSON object:
+{
+  "title": "Quest name",
+  "hook": "The inciting event or rumor that draws players in (2 sentences).",
+  "backstory": "The full lore of why this quest exists — the history behind it (3–4 sentences).",
+  "objectives": ["Primary objective", "Optional secondary objective", "Hidden objective"],
+  "twists": ["Mid-quest reveal", "Final revelation that recontextualizes everything"],
+  "rewards": "What players gain — tangible and intangible."
+}
+
+Output ONLY the JSON.`;
+
+    const rawText = await AIService.generateText(prompt, settings);
+    const cleaned = rawText.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+    const s = cleaned.indexOf('{'); const e = cleaned.lastIndexOf('}');
+    if (s === -1 || e === -1) throw new Error('AI returned unexpected format for quest lore.');
+    return JSON.parse(cleaned.slice(s, e + 1));
   }
 
   // ─── Images Only ───────────────────────────────────────────────────────────

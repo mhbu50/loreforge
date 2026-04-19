@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Sparkles, FileText, Loader2, ImageIcon, Plus, Trash2, Wand2, ChevronLeft, ChevronRight, X, Edit3, Mic, MicOff, Languages, Layout, Zap, Type, Image as ImageIconLucide, AlignLeft, AlignCenter, AlignRight, Bold, Italic, Underline, Settings, Sliders, Brain, Upload, Grid } from 'lucide-react';
+import { Sparkles, FileText, Loader2, ImageIcon, Plus, Trash2, Wand2, ChevronLeft, ChevronRight, X, Edit3, Mic, MicOff, Languages, Layout, Zap, Type, Image as ImageIconLucide, AlignLeft, AlignCenter, AlignRight, Bold, Italic, Underline, Settings, Sliders, Brain, Upload, Grid, GitBranch, BookOpen, Map, Sword, Users } from 'lucide-react';
 import { AIService, GenerationMode, AIProgress, getEffectiveSettings } from '../services/AIService';
-import { StoryStyle, StoryPage, SubscriptionTier, ImageAdjustments } from '../types';
+import { StoryStyle, StoryPage, SubscriptionTier, ImageAdjustments, NarrativeStructure, BranchChoice } from '../types';
 import ImageEditor from './ImageEditor';
 import PhotoPicker from './PhotoPicker';
 import { getSubscriptionLimits, STORY_STYLES, STORY_CATEGORIES, FONTS } from '../constants';
@@ -11,7 +11,7 @@ import { cn } from '../lib/utils';
 import confetti from 'canvas-confetti';
 
 interface StoryCreatorProps {
-  onComplete: (title: string, pages: StoryPage[], style: StoryStyle, category: string, language: string, ageGroup: string, bookType: 'story' | 'comic' | 'anime' | 'novel' | 'manga' | 'biography' | 'other', authorName: string, coverImage: string, coverImageAdjustments?: ImageAdjustments) => void;
+  onComplete: (title: string, pages: StoryPage[], style: StoryStyle, category: string, language: string, ageGroup: string, bookType: 'story' | 'comic' | 'anime' | 'novel' | 'manga' | 'biography' | 'other', authorName: string, coverImage: string, coverImageAdjustments?: ImageAdjustments, narrativeStructure?: NarrativeStructure, isBranching?: boolean) => void;
   onCancel: () => void;
   userDisplayName: string;
   userSubscriptionTier: SubscriptionTier;
@@ -23,6 +23,7 @@ interface StoryCreatorProps {
   config?: any;
   initialStory?: any;
   userPreferredAI?: { text?: string; image?: string; enhance?: string; title?: string; };
+  storyBibleContext?: string; // Injected world-lore context from StoryBiblePanel
 }
 
 // Removed NarratorVoice type as AI narration is disabled
@@ -52,7 +53,7 @@ const AGE_GROUPS = [
   { id: 'Adult', name: 'Adult' }
 ];
 
-export default function StoryCreator({ onComplete, onCancel, userDisplayName, userSubscriptionTier, subscriptionLimits, userId, userTokens, onConsumeTokens, bookType, config, initialStory, userPreferredAI }: StoryCreatorProps) {
+export default function StoryCreator({ onComplete, onCancel, userDisplayName, userSubscriptionTier, subscriptionLimits, userId, userTokens, onConsumeTokens, bookType, config, initialStory, userPreferredAI, storyBibleContext }: StoryCreatorProps) {
   const limits = subscriptionLimits || getSubscriptionLimits(userSubscriptionTier);
   const tokenCost = initialStory ? 0 : (limits.bookTokenCost || 1);
   const [step, setStep] = useState<'setup' | 'manual'>(initialStory ? 'manual' : 'setup');
@@ -67,7 +68,7 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
   const [authorName, setAuthorName] = useState(initialStory?.authorName || userDisplayName);
   const [coverImage, setCoverImage] = useState(initialStory?.coverImage || '');
   const [coverImageAdjustments, setCoverImageAdjustments] = useState<ImageAdjustments | undefined>(initialStory?.coverImageAdjustments);
-  const [draftPages, setDraftPages] = useState<{ text: string; imageUrl?: string; imageAdjustments?: ImageAdjustments; style?: StoryStyle; font?: string; alignment?: 'left' | 'center' | 'right'; fontSize?: string; color?: string }[]>(initialStory?.pages || []);
+  const [draftPages, setDraftPages] = useState<StoryPage[]>(initialStory?.pages || []);
   const [currentPageIndex, setCurrentPageIndex] = useState(0);
 
   const [showMetadataEditor, setShowMetadataEditor] = useState(false);
@@ -81,6 +82,17 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
   const [isAIGenerating, setIsAIGenerating] = useState(false);
   const [generationMode, setGenerationMode] = useState<GenerationMode | null>(null);
   const [aiProgress, setAiProgress] = useState<AIProgress | null>(null);
+  const [narrativeStructure, setNarrativeStructure] = useState<NarrativeStructure>('freeform');
+  const [isBranching, setIsBranching] = useState(false);
+  const [showRPGTools, setShowRPGTools] = useState(false);
+  const [rpgConcept, setRpgConcept] = useState('');
+  const [rpgSetting, setRpgSetting] = useState('');
+  const [rpgResult, setRpgResult] = useState<any>(null);
+  const [rpgMode, setRpgMode] = useState<'npc' | 'quest'>('npc');
+  const [rpgLoading, setRpgLoading] = useState(false);
+  const [generatingCover, setGeneratingCover] = useState(false);
+  // Branching: store branch pages per page index
+  const [branchLoading, setBranchLoading] = useState<number | null>(null);
 
   const maxPages = limits.maxPagesPerStory;
   const minPages = 1;
@@ -224,7 +236,7 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
 
       if (mode === 'script') {
         setAiProgress({ step: 'Writing your story...', current: 0, total: 1 });
-        result = await AIService.generateStoryPages(finalIdea, pageCount, style, ageGroup, language, effectiveSettings);
+        result = await AIService.generateStoryPages(finalIdea, pageCount, style, ageGroup, language, effectiveSettings, narrativeStructure, storyBibleContext);
 
       } else if (mode === 'images') {
         result = await AIService.generateImagesOnly(
@@ -610,6 +622,121 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                   </div>
                 </div>
 
+                {/* Narrative Structure */}
+                <div className="space-y-3">
+                  <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30">Narrative Structure</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {([
+                      { id: 'freeform' as NarrativeStructure, label: 'Freeform', desc: 'Classic beginning → middle → end' },
+                      { id: 'hero-journey' as NarrativeStructure, label: "Hero's Journey", desc: 'Monomyth — 12 archetypal beats' },
+                      { id: '3-act' as NarrativeStructure, label: '3-Act Structure', desc: 'Hollywood pacing formula' },
+                      { id: '5-act' as NarrativeStructure, label: "5-Act / Freytag's", desc: 'Classical dramatic pyramid' },
+                      { id: 'in-medias-res' as NarrativeStructure, label: 'In Medias Res', desc: 'Start mid-action, reveal backstory' },
+                    ] as { id: NarrativeStructure; label: string; desc: string }[]).map(s => (
+                      <button key={s.id}
+                        onClick={() => setNarrativeStructure(s.id)}
+                        className={cn(
+                          'p-3 rounded-xl border text-left transition-all',
+                          narrativeStructure === s.id
+                            ? 'bg-gold/15 border-gold/40 shadow-lg shadow-gold/10'
+                            : 'bg-white/[0.03] border-white/8 hover:border-white/20 hover:bg-white/[0.05]'
+                        )}
+                      >
+                        <p className={cn('text-xs font-bold mb-0.5', narrativeStructure === s.id ? 'text-gold' : 'text-white/50')}>{s.label}</p>
+                        <p className="text-[10px] text-white/25 leading-relaxed">{s.desc}</p>
+                      </button>
+                    ))}
+                    {/* Branching toggle */}
+                    <button
+                      onClick={() => setIsBranching(!isBranching)}
+                      className={cn(
+                        'p-3 rounded-xl border text-left transition-all flex items-start gap-2',
+                        isBranching
+                          ? 'bg-purple-500/10 border-purple-500/30'
+                          : 'bg-white/[0.03] border-white/8 hover:border-white/20 hover:bg-white/[0.05]'
+                      )}
+                    >
+                      <GitBranch size={14} className={isBranching ? 'text-purple-400 mt-0.5' : 'text-white/25 mt-0.5'} />
+                      <div>
+                        <p className={cn('text-xs font-bold mb-0.5', isBranching ? 'text-purple-400' : 'text-white/50')}>Branching Story</p>
+                        <p className="text-[10px] text-white/25 leading-relaxed">Choose Your Own Adventure paths</p>
+                      </div>
+                    </button>
+                  </div>
+                  {storyBibleContext && (
+                    <div className="flex items-center gap-2 p-2.5 bg-green-500/5 border border-green-500/15 rounded-xl">
+                      <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
+                      <p className="text-[10px] text-green-400/70">Story Bible context will be injected into AI generation.</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* RPG Tools */}
+                <div className="space-y-3">
+                  <button
+                    onClick={() => setShowRPGTools(!showRPGTools)}
+                    className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-white/25 hover:text-white/50 transition-colors"
+                  >
+                    <Sword size={12} /> RPG Game Master Tools
+                    <span className="ml-1 text-[9px] px-1.5 py-0.5 bg-purple-500/10 border border-purple-500/20 rounded-md text-purple-400">GM</span>
+                  </button>
+                  {showRPGTools && (
+                    <div className="p-4 bg-purple-500/[0.04] border border-purple-500/15 rounded-2xl space-y-4">
+                      <div className="flex gap-2">
+                        {(['npc', 'quest'] as const).map(m => (
+                          <button key={m} onClick={() => setRpgMode(m)}
+                            className={cn('flex-1 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all',
+                              rpgMode === m ? 'bg-purple-500/20 border border-purple-500/30 text-purple-400' : 'bg-white/5 border border-white/10 text-white/30 hover:text-white/50')}>
+                            {m === 'npc' ? '⚔️ NPC Profile' : '📜 Quest Lore'}
+                          </button>
+                        ))}
+                      </div>
+                      <input
+                        value={rpgConcept}
+                        onChange={e => setRpgConcept(e.target.value)}
+                        placeholder={rpgMode === 'npc' ? 'NPC concept (e.g. corrupt city guard)…' : 'Quest premise (e.g. stolen artifact from the museum)…'}
+                        className="w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white/70 outline-none focus:border-purple-500/30 placeholder:text-white/15 transition-colors"
+                      />
+                      <input
+                        value={rpgSetting}
+                        onChange={e => setRpgSetting(e.target.value)}
+                        placeholder="Setting / world context…"
+                        className="w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white/70 outline-none focus:border-purple-500/30 placeholder:text-white/15 transition-colors"
+                      />
+                      <button
+                        onClick={async () => {
+                          if (!rpgConcept) return toast.error('Enter a concept first.');
+                          setRpgLoading(true);
+                          try {
+                            const aiSettings = await AIService.loadSettings();
+                            const effectiveSettings = getEffectiveSettings(aiSettings, userSubscriptionTier || 'free', userPreferredAI);
+                            const result = rpgMode === 'npc'
+                              ? await AIService.generateNPCProfile(rpgConcept, rpgSetting || 'fantasy', effectiveSettings)
+                              : await AIService.generateQuestLore(rpgConcept, rpgSetting || 'fantasy', effectiveSettings);
+                            setRpgResult(result);
+                          } catch (e: any) { toast.error(e.message); }
+                          finally { setRpgLoading(false); }
+                        }}
+                        disabled={rpgLoading}
+                        className="w-full flex items-center justify-center gap-2 py-2.5 bg-purple-500/15 border border-purple-500/25 rounded-xl text-purple-300 text-xs font-bold hover:bg-purple-500/20 transition-all disabled:opacity-40"
+                      >
+                        {rpgLoading ? <Loader2 size={13} className="animate-spin" /> : <Wand2 size={13} />}
+                        {rpgLoading ? 'Generating…' : `Generate ${rpgMode === 'npc' ? 'NPC' : 'Quest'}`}
+                      </button>
+                      {rpgResult && (
+                        <div className="bg-black/30 rounded-xl p-4 text-xs text-white/60 space-y-2 max-h-52 overflow-y-auto">
+                          {Object.entries(rpgResult).map(([k, v]) => (
+                            <div key={k}>
+                              <span className="font-bold text-purple-400/80 capitalize">{k.replace(/([A-Z])/g, ' $1')}: </span>
+                              <span>{Array.isArray(v) ? (v as string[]).join(' · ') : String(v)}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+
                 {/* Token cost */}
                 <div className="flex items-center justify-between p-4 bg-gold/[0.08] border border-gold/15 rounded-2xl">
                   <div className="flex items-center gap-3">
@@ -705,8 +832,9 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                         text: p.text,
                         imageUrl: p.imageUrl || '',
                         imageAdjustments: p.imageAdjustments,
-                        style: p.style || style
-                      })), style, category, language, ageGroup, bookType, authorName, coverImage, coverImageAdjustments);
+                        style: p.style || style,
+                        choices: p.choices,
+                      })), style, category, language, ageGroup, bookType, authorName, coverImage, coverImageAdjustments, narrativeStructure, isBranching);
                       setIsFinalForging(false);
                     }, 2000);
                   }}
@@ -1120,6 +1248,81 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                         {isAIGenerating ? <Loader2 size={12} className="animate-spin" /> : <Brain size={12} />}
                         AI Enhance
                       </button>
+
+                      {/* Branching choices manager */}
+                      {isBranching && (
+                        <div className="border-t border-black/10 pt-3 space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-black/30 flex items-center gap-1.5">
+                              <GitBranch size={10} /> Branch Choices
+                            </span>
+                            <button
+                              onClick={() => {
+                                const page = draftPages[currentPageIndex];
+                                const existing = page.choices || [];
+                                handleUpdatePage(currentPageIndex, {
+                                  choices: [...existing, { id: Date.now().toString(), text: '', label: `Choice ${existing.length + 1}` }]
+                                });
+                              }}
+                              className="flex items-center gap-1 text-[10px] text-purple-600/60 hover:text-purple-700 font-bold"
+                            >
+                              <Plus size={10} /> Add Choice
+                            </button>
+                          </div>
+                          {(draftPages[currentPageIndex].choices || []).map((choice, ci) => (
+                            <div key={choice.id} className="flex gap-2 items-start">
+                              <input
+                                value={choice.text}
+                                onChange={e => {
+                                  const updated = [...(draftPages[currentPageIndex].choices || [])];
+                                  updated[ci] = { ...updated[ci], text: e.target.value };
+                                  handleUpdatePage(currentPageIndex, { choices: updated });
+                                }}
+                                placeholder={`Choice ${ci + 1} text…`}
+                                className="flex-1 bg-purple-50 border border-purple-200/60 rounded-lg px-3 py-1.5 text-xs text-black/70 outline-none focus:border-purple-400/60 placeholder:text-black/20"
+                              />
+                              <button
+                                onClick={async () => {
+                                  const choiceText = draftPages[currentPageIndex].choices?.[ci]?.text;
+                                  if (!choiceText) return toast.error('Enter choice text first.');
+                                  setBranchLoading(ci);
+                                  try {
+                                    const aiSettings = await AIService.loadSettings();
+                                    const eff = getEffectiveSettings(aiSettings, userSubscriptionTier || 'free', userPreferredAI);
+                                    const result = await AIService.generateBranchPath(
+                                      draftPages[currentPageIndex].text, choiceText, 2, style, ageGroup, language, draftTitle, eff
+                                    );
+                                    const updated = [...(draftPages[currentPageIndex].choices || [])];
+                                    updated[ci] = { ...updated[ci], branchPages: result.pages };
+                                    handleUpdatePage(currentPageIndex, { choices: updated });
+                                    toast.success('Branch path generated!');
+                                  } catch (e: any) { toast.error(e.message); }
+                                  finally { setBranchLoading(null); }
+                                }}
+                                disabled={branchLoading === ci}
+                                className="flex items-center gap-1 px-2 py-1.5 bg-purple-100 border border-purple-200/60 rounded-lg text-[10px] font-bold text-purple-700 hover:bg-purple-200 transition-all disabled:opacity-40"
+                                title="AI: generate this branch"
+                              >
+                                {branchLoading === ci ? <Loader2 size={10} className="animate-spin" /> : <Wand2 size={10} />}
+                              </button>
+                              <button
+                                onClick={() => {
+                                  const updated = (draftPages[currentPageIndex].choices || []).filter((_, i) => i !== ci);
+                                  handleUpdatePage(currentPageIndex, { choices: updated });
+                                }}
+                                className="p-1.5 hover:bg-red-100 rounded-lg text-red-400/50 hover:text-red-500 transition-all"
+                              >
+                                <X size={10} />
+                              </button>
+                            </div>
+                          ))}
+                          {(draftPages[currentPageIndex].choices || []).some(c => c.branchPages?.length) && (
+                            <p className="text-[10px] text-purple-600/50 flex items-center gap-1">
+                              <GitBranch size={9} /> Branch paths generated — readers will see choices here.
+                            </p>
+                          )}
+                        </div>
+                      )}
 
                       <textarea
                         id={`page-text-${currentPageIndex}`}

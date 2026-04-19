@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   ChevronLeft,
@@ -18,8 +18,11 @@ import {
   Globe,
   Sparkles,
   Edit3,
+  Scroll,
+  GitBranch,
+  BookOpen,
 } from 'lucide-react';
-import { Story, StoryPage } from '../types';
+import { Story, StoryPage, BranchChoice } from '../types';
 import { FONTS } from '../constants';
 import { toast } from 'sonner';
 import { cn } from '../lib/utils';
@@ -41,6 +44,15 @@ export default function StoryViewer({ story, onClose, onEdit, narrator }: StoryV
   const [isCinemaMode, setIsCinemaMode] = useState(true);
   const [isDyslexicFont, setIsDyslexicFont] = useState(false);
   const [isBedtimeMode, setIsBedtimeMode] = useState(false);
+  // Immersive reader mode — vertical scroll with image reveals
+  const [isImmersiveMode, setIsImmersiveMode] = useState(false);
+  // Branching: track which branch path is active per page (pageIndex → choiceId)
+  const [activeBranches, setActiveBranches] = useState<Record<number, string>>({});
+  // Branching: which branch pages we're reading (pageIndex → pages)
+  const [branchPageStack, setBranchPageStack] = useState<{ choiceText: string; pages: { text: string; imageUrl?: string }[] } | null>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  // Intersection observer for immersive image reveals
+  const imageObserverRef = useRef<IntersectionObserver | null>(null);
 
   const handleShare = () => {
     const url = `${window.location.origin}/story/${story.id}`;
@@ -94,6 +106,20 @@ export default function StoryViewer({ story, onClose, onEdit, narrator }: StoryV
 
         {/* Right: toolbar */}
         <div className="flex items-center gap-2">
+          {/* Immersive Reader toggle */}
+          <button
+            onClick={() => setIsImmersiveMode(!isImmersiveMode)}
+            className={cn(
+              "p-3 rounded-2xl border transition-all",
+              isImmersiveMode
+                ? "bg-gold/20 border-gold/40 text-gold"
+                : "bg-white/8 border-white/10 text-white/60 hover:bg-gold/10 hover:border-gold/20 hover:text-gold"
+            )}
+            title="Immersive Reader Mode (scroll)"
+          >
+            <Scroll size={18} />
+          </button>
+
           <button
             onClick={() => setIsDyslexicFont(!isDyslexicFont)}
             className={cn(
@@ -320,6 +346,57 @@ export default function StoryViewer({ story, onClose, onEdit, narrator }: StoryV
                       </span>
                     </div>
                   )}
+
+                  {/* Branching choices */}
+                  {story.isBranching && story.pages[currentPage]?.choices?.length ? (
+                    <div className="pt-4 border-t border-white/[0.07] space-y-3">
+                      {branchPageStack ? (
+                        <div className="space-y-4">
+                          <div className="flex items-center gap-2 text-[10px] font-bold text-purple-400/70 uppercase tracking-widest">
+                            <GitBranch size={10} /> Branch: {branchPageStack.choiceText}
+                          </div>
+                          {branchPageStack.pages.map((bp, bi) => (
+                            <div key={bi} className="space-y-3 pl-4 border-l-2 border-purple-500/20">
+                              {bp.imageUrl && <img src={bp.imageUrl} alt="" className="w-full rounded-xl object-cover max-h-48" />}
+                              <p className="text-white/80 text-base leading-relaxed font-serif">{bp.text}</p>
+                            </div>
+                          ))}
+                          <button
+                            onClick={() => setBranchPageStack(null)}
+                            className="flex items-center gap-1.5 text-[10px] text-white/30 hover:text-white/60 transition-colors"
+                          >
+                            <ChevronLeft size={11} /> Return to main path
+                          </button>
+                        </div>
+                      ) : (
+                        <>
+                          <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/30 flex items-center gap-1.5">
+                            <GitBranch size={10} /> Your choice shapes the story
+                          </p>
+                          <div className="grid gap-2">
+                            {story.pages[currentPage].choices!.map((choice) => (
+                              <button
+                                key={choice.id}
+                                onClick={() => {
+                                  if (choice.branchPages?.length) {
+                                    setBranchPageStack({ choiceText: choice.text, pages: choice.branchPages });
+                                  } else if (choice.nextPageIndex !== undefined) {
+                                    setCurrentPage(choice.nextPageIndex);
+                                  }
+                                }}
+                                className="w-full text-left px-5 py-4 bg-white/[0.05] border border-white/[0.08] rounded-2xl hover:bg-gold/10 hover:border-gold/20 transition-all group"
+                              >
+                                <div className="flex items-center justify-between gap-3">
+                                  <span className="text-white/75 text-sm font-medium leading-snug group-hover:text-white transition-colors">{choice.text}</span>
+                                  <ChevronRight size={14} className="text-white/25 group-hover:text-gold flex-shrink-0 transition-colors" />
+                                </div>
+                              </button>
+                            ))}
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  ) : null}
                 </div>
               )}
             </motion.div>
@@ -349,6 +426,145 @@ export default function StoryViewer({ story, onClose, onEdit, narrator }: StoryV
           ))}
         </div>
       </div>
+
+      {/* ── Immersive Reader Mode (full-scroll with image reveals) ── */}
+      <AnimatePresence>
+        {isImmersiveMode && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[110] bg-[#030303] overflow-y-auto"
+          >
+            {/* Close bar */}
+            <div className="sticky top-0 z-20 flex items-center justify-between px-8 py-4 bg-[#030303]/95 backdrop-blur border-b border-white/[0.05]">
+              <div>
+                <p className="text-[9px] font-bold uppercase tracking-[0.4em] text-gold/50">Immersive Reader</p>
+                <h3 className="text-lg font-serif font-bold text-white">{story.title}</h3>
+              </div>
+              <button
+                onClick={() => setIsImmersiveMode(false)}
+                className="p-3 bg-white/5 border border-white/10 rounded-2xl hover:bg-gold/10 hover:border-gold/20 text-white/50 hover:text-gold transition-all"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="max-w-2xl mx-auto px-8 pb-24">
+              {/* Cover */}
+              {story.coverImage && (
+                <div className="py-16 text-center space-y-8">
+                  <img
+                    src={story.coverImage}
+                    alt={story.title}
+                    className="w-64 mx-auto rounded-2xl shadow-2xl shadow-black/80"
+                  />
+                  <div>
+                    <h1 className="text-5xl font-serif font-bold text-white mb-4">{story.title}</h1>
+                    <div className="w-12 h-px bg-gold/50 mx-auto mb-4" />
+                    <p className="text-white/40 italic font-serif">by {story.authorName}</p>
+                  </div>
+                </div>
+              )}
+
+              {/* All pages in scroll */}
+              {story.pages.map((page, i) => (
+                <div key={i} className="py-12 border-t border-white/[0.05] space-y-8">
+                  {/* Chapter marker */}
+                  <div className="flex items-center gap-3">
+                    <span className="w-8 h-px bg-gold/30" />
+                    <span className="text-[9px] font-bold uppercase tracking-[0.5em] text-gold/40">
+                      {story.narrativeStructure === 'hero-journey' && i === 0 ? 'Ordinary World'
+                       : story.narrativeStructure === 'hero-journey' && i === Math.floor(story.pages.length * 0.15) ? 'The Call'
+                       : `Chapter ${i + 1}`}
+                    </span>
+                  </div>
+
+                  {/* Image reveal on scroll */}
+                  {page.imageUrl && (
+                    <ImmersiveImage src={page.imageUrl} adjustments={page.imageAdjustments} />
+                  )}
+
+                  {/* Text */}
+                  <div
+                    className={cn(
+                      "font-serif leading-[1.9] text-white/80 text-xl",
+                      page.fontSize,
+                      isDyslexicFont && 'font-dyslexic'
+                    )}
+                    style={{
+                      color: page.color || undefined,
+                      fontFamily: FONTS.find(f => f.id === (page.font || 'serif'))?.family || 'inherit',
+                    }}
+                  >
+                    <ReactMarkdown rehypePlugins={[rehypeRaw]}>
+                      {page.text || page.content || ''}
+                    </ReactMarkdown>
+                  </div>
+
+                  {/* Branch choices in immersive mode */}
+                  {story.isBranching && page.choices?.length && (
+                    <div className="pt-4 border-t border-white/[0.05] space-y-3">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-white/25 flex items-center gap-2">
+                        <GitBranch size={10} /> Choose your path
+                      </p>
+                      <div className="grid gap-2">
+                        {page.choices.map(c => (
+                          <div key={c.id} className="px-5 py-4 bg-white/[0.04] border border-white/[0.06] rounded-2xl">
+                            <p className="text-white/70 text-sm font-medium mb-3">{c.text}</p>
+                            {c.branchPages?.map((bp, bi) => (
+                              <p key={bi} className="text-white/45 text-sm leading-relaxed font-serif italic border-l-2 border-gold/20 pl-4 mt-2">{bp.text}</p>
+                            ))}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+
+              {/* End card */}
+              <div className="py-16 text-center space-y-4">
+                <div className="w-12 h-px bg-gold/30 mx-auto" />
+                <p className="text-white/20 text-sm font-serif italic">~ The End ~</p>
+                <p className="text-[10px] text-white/10 uppercase tracking-[0.4em]">A StoryCraft Verse</p>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
+  );
+}
+
+// ── Immersive image component with scroll-reveal ─────────────────────────────
+function ImmersiveImage({ src, adjustments }: { src: string; adjustments?: any }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setVisible(true); obs.disconnect(); } },
+      { threshold: 0.15 }
+    );
+    if (ref.current) obs.observe(ref.current);
+    return () => obs.disconnect();
+  }, []);
+  return (
+    <div ref={ref} className="w-full overflow-hidden rounded-2xl">
+      <motion.img
+        src={src}
+        alt=""
+        initial={{ opacity: 0, scale: 1.04, y: 16 }}
+        animate={visible ? { opacity: 1, scale: 1, y: 0 } : {}}
+        transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
+        className="w-full object-cover max-h-[420px] shadow-2xl shadow-black/70"
+        style={{
+          filter: adjustments
+            ? `brightness(${adjustments.brightness}%) contrast(${adjustments.contrast}%) saturate(${adjustments.saturation}%) sepia(${adjustments.sepia}%) grayscale(${adjustments.grayscale}%)`
+            : undefined,
+        }}
+        referrerPolicy="no-referrer"
+      />
+    </div>
   );
 }
