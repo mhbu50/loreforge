@@ -30,13 +30,15 @@ export interface OpenRouterModel {
 }
 
 export const OPENROUTER_MODELS: OpenRouterModel[] = [
-  // ── Free models ──────────────────────────────────────────────────────────────
-  { id: 'google/gemma-4-26b-a4b-it:free',                          name: 'Gemma 4 26B MoE (Free)',          free: true,  description: 'Google\'s latest Gemma MoE — fast, free, great story writing.' },
+  // ── Free models (sorted by reliability) ──────────────────────────────────────
+  { id: 'meta-llama/llama-3.1-8b-instruct:free',                   name: 'Llama 3.1 8B (Free) ✓',          free: true,  description: 'Meta Llama 3.1 8B — very reliable free model, great for stories.' },
+  { id: 'meta-llama/llama-3.2-11b-vision-instruct:free',           name: 'Llama 3.2 11B (Free) ✓',         free: true,  description: 'Meta Llama 3.2 11B — reliable and capable.' },
   { id: 'meta-llama/llama-3.3-70b-instruct:free',                  name: 'Llama 3.3 70B (Free)',            free: true,  description: 'Meta Llama 3.3 — strong instruction-following & creativity.' },
   { id: 'mistralai/mistral-7b-instruct:free',                      name: 'Mistral 7B (Free)',               free: true,  description: 'Mistral 7B — lightweight and reliable for story generation.' },
-  { id: 'nousresearch/hermes-3-llama-3.1-405b:free',               name: 'Hermes 3 405B (Free)',            free: true,  description: 'Hermes 3 on Llama 405B — highest-quality free model.' },
   { id: 'microsoft/phi-3-mini-128k-instruct:free',                  name: 'Phi-3 Mini 128k (Free)',         free: true,  description: 'Microsoft Phi-3 Mini — efficient, long context window.' },
+  { id: 'google/gemma-2-9b-it:free',                               name: 'Gemma 2 9B (Free)',               free: true,  description: 'Google Gemma 2 9B — good creative writing quality.' },
   { id: 'google/gemma-3-27b-it:free',                              name: 'Gemma 3 27B (Free)',              free: true,  description: 'Google Gemma 3 27B — great for creative writing.' },
+  { id: 'nousresearch/hermes-3-llama-3.1-405b:free',               name: 'Hermes 3 405B (Free)',            free: true,  description: 'Hermes 3 on Llama 405B — highest-quality free model when available.' },
   // ── Paid models (require OpenRouter credits) ─────────────────────────────────
   { id: 'anthropic/claude-3.5-sonnet',                             name: 'Claude 3.5 Sonnet',               free: false, description: 'Anthropic — best narrative quality & nuanced storytelling.' },
   { id: 'anthropic/claude-3.5-haiku',                              name: 'Claude 3.5 Haiku',                free: false, description: 'Anthropic — fast Claude at lower cost.' },
@@ -51,10 +53,10 @@ export const OPENROUTER_MODELS: OpenRouterModel[] = [
 export const DEFAULT_AI_SETTINGS: AISettings = {
   apiKey: '',
   tierModels: {
-    free:     'google/gemma-4-26b-a4b-it:free',
-    standard: 'meta-llama/llama-3.3-70b-instruct:free',
-    premium:  'nousresearch/hermes-3-llama-3.1-405b:free',
-    ultimate: 'nousresearch/hermes-3-llama-3.1-405b:free',
+    free:     'meta-llama/llama-3.1-8b-instruct:free',
+    standard: 'meta-llama/llama-3.2-11b-vision-instruct:free',
+    premium:  'meta-llama/llama-3.3-70b-instruct:free',
+    ultimate: 'meta-llama/llama-3.3-70b-instruct:free',
   },
   allowUltimateChoice: true,
   imageApiKey: '',
@@ -132,10 +134,21 @@ export class AIService {
     });
     if (!resp.ok) {
       const err = await resp.json().catch(() => ({}));
-      throw new Error(err?.error?.message || `OpenRouter error ${resp.status}`);
+      const msg = err?.error?.message || `OpenRouter error ${resp.status}`;
+      const provider = err?.error?.metadata?.provider_name;
+      const raw = err?.error?.metadata?.raw;
+      if (resp.status === 401) throw new Error('Invalid OpenRouter API key. Check Admin → AI and make sure your key starts with "sk-or-v1-".');
+      if (resp.status === 402) throw new Error('OpenRouter account has no credits. Free models should still work — check openrouter.ai/credits.');
+      if (resp.status === 429) throw new Error('Rate limited by OpenRouter. Wait a moment and try again.');
+      if (resp.status === 502 || msg.includes('Provider returned error')) {
+        throw new Error(`Model "${model}" is currently unavailable (provider error${provider ? ` from ${provider}` : ''}). Try a different model in Admin → AI, or retry in a moment.${raw ? `\n\nDetails: ${String(raw).slice(0, 200)}` : ''}`);
+      }
+      throw new Error(`${msg}${provider ? ` (${provider})` : ''}`);
     }
     const data = await resp.json();
-    return data.choices?.[0]?.message?.content || '';
+    const content = data.choices?.[0]?.message?.content;
+    if (!content) throw new Error(`Model "${model}" returned an empty response. Try a different model in Admin → AI.`);
+    return content;
   }
 
   // ─── Text Generation ────────────────────────────────────────────────────────
