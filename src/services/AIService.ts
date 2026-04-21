@@ -180,7 +180,7 @@ export function getEffectiveProvider(
   const usePreferred = userTier === 'ultimate' && settings.allowUltimateChoice && preferredProviderKey;
   const providerKey = usePreferred ? preferredProviderKey! : (settings.tierAssignments[userTier] ?? 'openrouter');
 
-  const provider = settings.providers[providerKey] ?? settings.providers.openrouter;
+  const provider = settings.providers[providerKey] ?? settings.providers.openrouter ?? { model: 'meta-llama/llama-3.1-8b-instruct:free', apiKey: '' };
 
   return {
     providerKey,

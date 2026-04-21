@@ -130,7 +130,7 @@ export default function StoryBiblePanel({ storyId, onBibleContext }: StoryBibleP
     if (!storyIdeaHint && !draft.overview) return toast.error('Add a story idea or world overview first.');
     setAiLoading(sectionKey);
     try {
-      const resolved = getEffectiveProvider(aiSettings, 'free');
+      const resolved = getEffectiveProvider(aiSettings, 'standard');
       const result = await AIService.generateStoryBible(
         storyIdeaHint || draft.overview, genreHint || 'fiction', hint, resolved
       );
@@ -148,7 +148,7 @@ export default function StoryBiblePanel({ storyId, onBibleContext }: StoryBibleP
     if (!storyIdeaHint && !draft.title) return toast.error('Enter a story idea below before generating.');
     setAiLoading('all');
     try {
-      const resolved = getEffectiveProvider(aiSettings, 'free');
+      const resolved = getEffectiveProvider(aiSettings, 'standard');
       const result = await AIService.generateStoryBible(
         storyIdeaHint || draft.title, genreHint || 'fiction', genreHint || 'a story', resolved
       );

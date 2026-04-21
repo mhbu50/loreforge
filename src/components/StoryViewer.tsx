@@ -216,7 +216,7 @@ export default function StoryViewer({ story, onClose, onEdit, narrator }: StoryV
         <motion.div
           className="h-full bg-gold shadow-[0_0_8px_rgba(212,175,55,0.6)]"
           initial={{ width: 0 }}
-          animate={{ width: `${((currentPage + 2) / (totalPages + 1)) * 100}%` }}
+          animate={{ width: `${currentPage === -1 ? 0 : ((currentPage + 1) / totalPages) * 100}%` }}
           transition={{ type: 'spring', stiffness: 80, damping: 20 }}
         />
       </div>

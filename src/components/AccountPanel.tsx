@@ -699,7 +699,7 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                         <div className="text-[10px] text-white/30">Which AI service generates your stories</div>
                       </div>
                       <select
-                        value={aiPrefs.text ?? getEffectiveProvider(aiProviders, 'ultimate').providerKey}
+                        value={aiPrefs.text ?? (aiProviders !== DEFAULT_AI_SETTINGS ? getEffectiveProvider(aiProviders, 'ultimate').providerKey : '')}
                         onChange={e => setAiPrefs(p => ({ ...p, text: e.target.value }))}
                         className="bg-white/[0.05] border border-white/[0.09] rounded-lg px-2.5 py-1.5 text-xs text-white/80 outline-none focus:border-gold/40 max-w-[180px]"
                       >
