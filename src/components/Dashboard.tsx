@@ -648,7 +648,7 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
   const _isUnlimited = _monthlyLimit === 0;
 
   return (
-    <div className="min-h-screen bg-[#080808] text-white/90 flex selection:bg-gold selection:text-[#080808] overflow-hidden">
+    <div className="min-h-screen bg-[#1a1a1a] text-white/90 flex selection:bg-[#D97757]/30 overflow-hidden">
       <div className="atmosphere opacity-[0.03]" />
       
       {/* Forging Overlay */}
@@ -658,7 +658,7 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[200] bg-night/95 backdrop-blur-3xl flex flex-col items-center justify-center text-center p-8 overflow-hidden"
+            className="fixed inset-0 z-[200] bg-[#111]/95 backdrop-blur-3xl flex flex-col items-center justify-center text-center p-8 overflow-hidden"
           >
             <div className="atmosphere opacity-40" />
             
@@ -748,13 +748,13 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
       <aside
         style={{ width: sidebarWidth }}
         className={cn(
-          "fixed left-0 top-0 bottom-0 bg-[#0d0d0d] border-r border-white/[0.06] z-[60] flex flex-col transition-transform duration-500",
+          "fixed left-0 top-0 bottom-0 bg-[#141414] border-r border-white/[0.06] z-[60] flex flex-col transition-transform duration-500",
           isZenMode && "-translate-x-full"
         )}
       >
         {/* Logo */}
         <div className="h-16 px-5 flex items-center gap-3 border-b border-white/[0.06]">
-          <div className="w-8 h-8 bg-gold rounded-lg flex items-center justify-center text-[#080808] flex-shrink-0">
+          <div className="w-8 h-8 bg-gold rounded-lg flex items-center justify-center text-white flex-shrink-0">
             {appIcon?.startsWith('http') ? (
               <img src={appIcon} className="w-full h-full object-cover rounded-lg" alt="icon" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
             ) : appIcon ? (
@@ -819,7 +819,7 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
           >
             <div
               className="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold flex-shrink-0 shadow-md"
-              style={{ backgroundColor: userProfile?.avatarColor || '#d4af37', color: '#080808' }}
+              style={{ backgroundColor: userProfile?.avatarColor || '#D97757', color: '#ffffff' }}
             >
               {userProfile?.avatarEmoji || userProfile?.displayName?.[0]?.toUpperCase() || 'U'}
             </div>
@@ -838,10 +838,10 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
         />
       </aside>
 
-      <div className="flex-1 flex flex-col min-w-0 transition-all duration-500 bg-[#080808]" style={{ marginLeft: isZenMode ? 0 : sidebarWidth }}>
+      <div className="flex-1 flex flex-col min-w-0 transition-all duration-500 bg-[#1a1a1a]" style={{ marginLeft: isZenMode ? 0 : sidebarWidth }}>
         {/* Header */}
         <header className={cn(
-          "h-14 border-b border-white/[0.06] bg-[#080808]/90 backdrop-blur-xl flex items-center justify-between px-8 sticky top-0 z-40 transition-all duration-500",
+          "h-14 border-b border-white/[0.06] bg-[#1a1a1a]/90 backdrop-blur-xl flex items-center justify-between px-8 sticky top-0 z-40 transition-all duration-500",
           isZenMode && "-translate-y-full"
         )}>
           {/* Left: breadcrumb */}
@@ -874,7 +874,7 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
                 <span className={`text-[9px] font-bold uppercase tracking-widest hidden sm:block ${_usagePct >= 90 ? 'text-red-400/50' : 'text-gold/40'}`}>used</span>
               </div>
               {/* Tooltip */}
-              <div className="absolute top-full right-0 mt-2 w-80 bg-[#111] text-white p-5 rounded-2xl shadow-2xl opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all pointer-events-none z-50 border border-white/[0.08]">
+              <div className="absolute top-full right-0 mt-2 w-80 bg-[#212121] text-white p-5 rounded-2xl shadow-2xl opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all pointer-events-none z-50 border border-white/[0.08]">
                 <div className="flex items-center gap-2 mb-4 text-gold">
                   <Sparkles size={14} />
                   <span className="text-[10px] font-bold uppercase tracking-widest">Monthly Token Usage</span>
@@ -920,7 +920,7 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
               <button
                 onClick={() => setShowAdmin(!showAdmin)}
                 className={cn("flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all",
-                  showAdmin ? "bg-gold text-[#080808]" : "bg-white/[0.07] text-white/50 hover:bg-white/[0.12] hover:text-white/80 border border-white/[0.08]"
+                  showAdmin ? "bg-[#D97757] text-white" : "bg-white/[0.06] text-white/50 hover:bg-white/[0.10] hover:text-white/80 border border-white/[0.08]"
                 )}
               >
                 <Shield size={13} /><span className="hidden md:inline">Admin</span>
@@ -940,7 +940,7 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
                   );
                 }
               }}
-              className="flex items-center gap-1.5 px-4 py-2 bg-gold text-[#080808] rounded-lg font-bold text-xs hover:bg-white transition-all shadow-lg shadow-gold/15"
+              className="flex items-center gap-1.5 px-4 py-2 bg-[#D97757] hover:bg-[#C86A48] text-white rounded-lg font-semibold text-xs transition-all shadow-lg shadow-[#D97757]/20"
             >
               <Plus size={14} /> New
             </button>
@@ -996,14 +996,14 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
             >
               <button
                 onClick={() => { setShowSupportMenu(false); setActiveView('support'); }}
-                className="flex items-center gap-3 px-6 py-3 bg-[#111] text-white/70 rounded-2xl shadow-2xl border border-white/[0.08] hover:bg-gold/10 hover:text-gold transition-all group"
+                className="flex items-center gap-3 px-6 py-3 bg-[#212121] text-white/70 rounded-2xl shadow-2xl border border-white/[0.08] hover:bg-[#D97757]/10 hover:text-[#D97757] transition-all group"
               >
                 <Bug size={18} className="group-hover:animate-bounce" />
                 <span className="text-xs font-bold uppercase tracking-widest">Report Bug</span>
               </button>
               <button
                 onClick={() => { setShowSupportMenu(false); setActiveView('support'); }}
-                className="flex items-center gap-3 px-6 py-3 bg-[#111] text-white/70 rounded-2xl shadow-2xl border border-white/[0.08] hover:bg-gold/10 hover:text-gold transition-all group"
+                className="flex items-center gap-3 px-6 py-3 bg-[#212121] text-white/70 rounded-2xl shadow-2xl border border-white/[0.08] hover:bg-[#D97757]/10 hover:text-[#D97757] transition-all group"
               >
                 <MessageSquare size={18} className="group-hover:animate-bounce" />
                 <span className="text-xs font-bold uppercase tracking-widest">Suggestion</span>
@@ -1015,7 +1015,7 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
           onClick={() => setShowSupportMenu(!showSupportMenu)}
           className={cn(
             "w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-all hover:scale-110 active:scale-95",
-            showSupportMenu ? "bg-white/[0.08] text-white border border-white/10" : "bg-gold text-[#080808]"
+            showSupportMenu ? "bg-white/[0.08] text-white border border-white/10" : "bg-[#D97757] text-white"
           )}
         >
           {showSupportMenu ? <X size={20} /> : <LifeBuoy size={20} />}
@@ -1127,7 +1127,7 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
                 <div className="border-t border-white/[0.06] px-8 py-3 flex items-center gap-2">
                   <button
                     onClick={() => canCreateStory ? setShowTypeSelector(true) : setShowPricingModal(true)}
-                    className="flex items-center gap-2 px-5 py-2 bg-gold text-[#080808] rounded-lg font-bold text-xs hover:bg-white transition-all shadow-lg shadow-gold/15"
+                    className="flex items-center gap-2 px-5 py-2 bg-[#D97757] hover:bg-[#C86A48] text-white rounded-lg font-semibold text-xs transition-all shadow-lg shadow-[#D97757]/20"
                   >
                     <Plus size={14} /> New Project
                   </button>
@@ -1292,7 +1292,7 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
                         <div className="text-lg font-bold text-gold">8</div>
                       </div>
                     </div>
-                    <button className="mt-6 w-full py-3 bg-gold text-[#080808] rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-white transition-all">
+                    <button className="mt-6 w-full py-3 bg-[#D97757] hover:bg-[#C86A48] text-white rounded-xl font-bold text-xs uppercase tracking-widest transition-all">
                       Open Architect Console
                     </button>
                   </div>
@@ -1332,7 +1332,7 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[200] bg-night flex flex-col items-center justify-center p-12 text-center"
+            className="fixed inset-0 z-[200] bg-[#111] flex flex-col items-center justify-center p-12 text-center"
           >
             <div className="atmosphere opacity-20" />
             <motion.div
@@ -1350,7 +1350,7 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
               </div>
               <button 
                 onClick={() => setIsZenMode(false)}
-                className="px-12 py-4 bg-gold text-night rounded-full font-bold uppercase tracking-widest hover:scale-105 transition-all shadow-2xl shadow-gold/20"
+                className="px-12 py-4 bg-[#D97757] hover:bg-[#C86A48] text-white rounded-full font-bold uppercase tracking-widest hover:scale-105 transition-all shadow-2xl shadow-[#D97757]/20"
               >
                 Return to Reality
               </button>
@@ -1365,7 +1365,7 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
 
       <footer className="py-10 border-t border-white/[0.05] text-center">
         <div className="flex items-center justify-center gap-3 mb-4">
-          <div className="w-7 h-7 bg-gold rounded-lg flex items-center justify-center text-[#080808]">
+          <div className="w-7 h-7 bg-gold rounded-lg flex items-center justify-center text-white">
             <Sparkles size={14} />
           </div>
           <span className="font-serif font-bold text-white/40">{appName}</span>
@@ -1417,10 +1417,10 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
               <button
                 onClick={handleAddPartner}
                 disabled={isAddingPartner || !partnerEmail.trim()}
-                className="w-full py-3 bg-gold text-[#080808] rounded-xl font-bold hover:bg-white transition-all flex items-center justify-center gap-2 disabled:opacity-50 shadow-lg shadow-gold/15"
+                className="w-full py-3 bg-[#D97757] hover:bg-[#C86A48] text-white rounded-xl font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 shadow-lg shadow-[#D97757]/20"
               >
                 {isAddingPartner ? (
-                  <div className="w-5 h-5 border-2 border-[#080808]/30 border-t-[#080808] rounded-full animate-spin" />
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                 ) : (
                   <>
                     <UserPlus size={16} />
@@ -1452,7 +1452,7 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
               <div className="lg:w-1/3 bg-[#111] border-r border-white/[0.06] p-10 flex flex-col justify-between">
                 <div>
                   <div className="flex items-center gap-3 mb-6">
-                    <div className="w-9 h-9 bg-gold rounded-xl flex items-center justify-center text-[#080808]">
+                    <div className="w-9 h-9 bg-gold rounded-xl flex items-center justify-center text-white">
                       <Sparkles size={18} />
                     </div>
                     <span className="text-xs font-bold tracking-widest text-gold uppercase">{appName} Premium</span>
@@ -1531,7 +1531,7 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
                     <button
                       onClick={() => handleUpgrade('standard', billingCycle)}
                       disabled={userProfile?.subscriptionTier === 'standard' || isUpgrading}
-                      className="w-full py-3 bg-white/[0.08] border border-white/[0.1] text-white/80 rounded-xl font-bold text-sm hover:bg-gold hover:text-[#080808] hover:border-gold transition-all disabled:opacity-40"
+                      className="w-full py-3 bg-white/[0.08] border border-white/[0.1] text-white/80 rounded-xl font-bold text-sm hover:bg-[#D97757] hover:text-white hover:border-[#D97757] transition-all disabled:opacity-40"
                     >
                       {userProfile?.subscriptionTier === 'standard' ? 'Current Plan' : 'Select Standard'}
                     </button>
@@ -1560,7 +1560,7 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
                     <button
                       onClick={() => handleUpgrade('premium', billingCycle)}
                       disabled={userProfile?.subscriptionTier === 'premium' || isUpgrading}
-                      className="w-full py-3 bg-gold text-[#080808] rounded-xl font-bold text-sm hover:bg-white transition-all shadow-lg shadow-gold/15 disabled:opacity-40"
+                      className="w-full py-3 bg-[#D97757] hover:bg-[#C86A48] text-white rounded-xl font-bold text-sm transition-all shadow-lg shadow-[#D97757]/20 disabled:opacity-40"
                     >
                       {userProfile?.subscriptionTier === 'premium' ? 'Current Plan' : 'Go Premium'}
                     </button>
@@ -1575,7 +1575,7 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-3">
                           <span className="text-xs font-bold uppercase tracking-widest text-gold">Ultimate</span>
-                          <span className="bg-gold text-[#080808] text-[8px] px-2 py-0.5 rounded-full font-bold">BEST VALUE</span>
+                          <span className="bg-gold text-white text-[8px] px-2 py-0.5 rounded-full font-bold">BEST VALUE</span>
                           <Zap className="w-4 h-4 text-gold ml-auto" />
                         </div>
                         <div className="flex items-baseline gap-1 mb-4">
@@ -1595,7 +1595,7 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
                         <button
                           onClick={() => handleUpgrade('ultimate', billingCycle)}
                           disabled={userProfile?.subscriptionTier === 'ultimate' || isUpgrading}
-                          className="w-full py-4 bg-gold text-[#080808] rounded-xl font-bold text-base hover:bg-white transition-all shadow-2xl shadow-gold/15 disabled:opacity-40"
+                          className="w-full py-4 bg-[#D97757] hover:bg-[#C86A48] text-white rounded-xl font-bold text-base transition-all shadow-2xl shadow-[#D97757]/15 disabled:opacity-40"
                         >
                           {userProfile?.subscriptionTier === 'ultimate' ? 'Current Plan' : 'Become Ultimate'}
                         </button>
@@ -1616,7 +1616,7 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
                         <button
                           key={amount}
                           onClick={() => toast.success(`Thank you for your $${amount} donation! (Demo)`)}
-                          className="px-5 py-2.5 bg-white/[0.06] border border-white/[0.09] rounded-lg font-bold text-sm text-white/60 hover:bg-gold hover:text-[#080808] hover:border-gold transition-all"
+                          className="px-5 py-2.5 bg-white/[0.06] border border-white/[0.09] rounded-lg font-bold text-sm text-white/60 hover:bg-[#D97757] hover:text-white hover:border-[#D97757] transition-all"
                         >
                           ${amount}
                         </button>
@@ -1715,7 +1715,7 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
               <button
                 onClick={handleRedeemCode}
                 disabled={redeemCode.length !== 12 || isRedeeming}
-                className="w-full py-3.5 bg-gold text-[#080808] rounded-xl font-bold text-base hover:bg-white transition-all shadow-lg shadow-gold/15 disabled:opacity-40 flex items-center justify-center gap-3"
+                className="w-full py-3.5 bg-[#D97757] hover:bg-[#C86A48] text-white rounded-xl font-bold text-base transition-all shadow-lg shadow-[#D97757]/20 disabled:opacity-40 flex items-center justify-center gap-3"
               >
                 {isRedeeming ? (
                   <>
