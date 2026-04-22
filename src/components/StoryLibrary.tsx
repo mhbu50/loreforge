@@ -1,6 +1,6 @@
-import React from 'react';
-import { motion, useMotionValue, useTransform, useSpring } from 'motion/react';
-import { LayoutGrid, List, Heart, Star, DollarSign, Trash2, BookOpen, Sparkles, Globe, Layers, UserPlus, Pencil, Plus } from 'lucide-react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { LayoutGrid, List, Heart, Trash2, BookOpen, Globe, Layers, UserPlus, Pencil, Plus, Search, X, DollarSign, Clock, Feather } from 'lucide-react';
 import { Story } from '../types';
 import { cn } from '../lib/utils';
 
@@ -20,295 +20,395 @@ interface StoryLibraryProps {
 }
 
 export default function StoryLibrary({
-  stories,
-  isLoading,
-  searchTerm,
-  setSearchTerm,
-  viewMode,
-  setViewMode,
-  onSelect,
-  onEdit,
-  onPublish,
-  onDelete,
-  onAddPartner,
-  onCreate
+  stories, isLoading, searchTerm, setSearchTerm,
+  viewMode, setViewMode, onSelect, onEdit, onPublish, onDelete, onAddPartner, onCreate
 }: StoryLibraryProps) {
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-    >
-      {/* Header */}
-      <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+    <div className="h-full flex flex-col">
+      {/* ── Page Header ── */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
-          <p className="text-[9px] font-bold uppercase tracking-[0.25em] text-white/20 mb-1">Archive</p>
-          <h2 className="text-3xl font-serif font-bold text-white">Your <span className="text-gold italic">Library</span></h2>
-          <p className="text-white/30 text-xs mt-1">{stories.length > 0 ? `${stories.length} stor${stories.length !== 1 ? 'ies' : 'y'}` : 'No stories yet'}</p>
+          <h1 className="text-[22px] font-semibold text-white tracking-tight">Library</h1>
+          <p className="text-[13px] text-white/35 mt-0.5">
+            {stories.length > 0
+              ? `${stories.length} stor${stories.length !== 1 ? 'ies' : 'y'}`
+              : 'No stories yet'}
+          </p>
         </div>
+
         <div className="flex items-center gap-2">
           {/* Search */}
-          <div className="flex items-center gap-2 px-3 py-2 bg-white/[0.05] border border-white/[0.09] rounded-xl min-w-[220px] focus-within:border-gold/30 transition-colors">
-            <Sparkles size={13} className="text-white/20 flex-shrink-0" />
+          <div className="flex items-center gap-2 px-3 py-2 bg-white/[0.04] border border-white/[0.08] hover:border-white/[0.14] focus-within:border-[#D97757]/40 focus-within:bg-[#D97757]/[0.03] rounded-xl min-w-[200px] transition-all">
+            <Search size={13} className="text-white/25 flex-shrink-0" />
             <input
               type="text"
-              placeholder="Search..."
+              placeholder="Search stories..."
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
-              className="flex-1 bg-transparent text-sm text-white/80 placeholder:text-white/20 outline-none"
+              className="flex-1 bg-transparent text-[13px] text-white/80 placeholder:text-white/20 outline-none"
             />
-            {searchTerm && (
-              <button onClick={() => setSearchTerm('')} className="text-white/20 hover:text-white/60 text-xs">✕</button>
-            )}
+            <AnimatePresence>
+              {searchTerm && (
+                <motion.button
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  onClick={() => setSearchTerm('')}
+                  className="text-white/25 hover:text-white/60 transition-colors"
+                >
+                  <X size={13} />
+                </motion.button>
+              )}
+            </AnimatePresence>
           </div>
+
           {/* View toggle */}
-          <div className="flex items-center p-1 bg-white/[0.05] border border-white/[0.08] rounded-xl gap-0.5">
+          <div className="flex items-center bg-white/[0.04] border border-white/[0.07] rounded-xl p-1 gap-0.5">
             <button
               onClick={() => setViewMode('grid')}
-              className={cn("p-2 rounded-lg transition-all", viewMode === 'grid' ? "bg-gold/20 text-gold" : "text-white/25 hover:text-white/60")}
+              className={cn(
+                "p-2 rounded-lg transition-all",
+                viewMode === 'grid'
+                  ? "bg-white/[0.09] text-white"
+                  : "text-white/25 hover:text-white/55"
+              )}
+              title="Grid view"
             >
-              <LayoutGrid size={15} />
+              <LayoutGrid size={14} />
             </button>
             <button
               onClick={() => setViewMode('list')}
-              className={cn("p-2 rounded-lg transition-all", viewMode === 'list' ? "bg-gold/20 text-gold" : "text-white/25 hover:text-white/60")}
+              className={cn(
+                "p-2 rounded-lg transition-all",
+                viewMode === 'list'
+                  ? "bg-white/[0.09] text-white"
+                  : "text-white/25 hover:text-white/55"
+              )}
+              title="List view"
             >
-              <List size={15} />
+              <List size={14} />
             </button>
           </div>
         </div>
-      </header>
+      </div>
 
+      {/* ── Content ── */}
       {isLoading ? (
-        <div className={cn(
-          "grid gap-5",
-          viewMode === 'grid' ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"
-        )}>
-          {[1, 2, 3, 4, 5, 6].map(i => (
-            <div key={i} className="bg-[#111] border border-white/[0.07] rounded-2xl h-72 animate-pulse" />
-          ))}
-        </div>
+        <SkeletonGrid viewMode={viewMode} />
       ) : stories.length === 0 ? (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center py-24 bg-[#111] border border-dashed border-white/[0.08] rounded-2xl relative overflow-hidden"
-        >
-          <div className="absolute inset-0 pointer-events-none" style={{background:'radial-gradient(circle at 50% 40%, rgba(212,175,55,0.05) 0%, transparent 60%)'}} />
-          <div className="relative">
-            <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-gold/10 border border-gold/20 flex items-center justify-center">
-              <BookOpen size={28} className="text-gold/60" />
-            </div>
-            <h3 className="text-2xl font-serif font-bold text-white mb-2">No Stories Yet</h3>
-            <p className="text-white/30 text-sm mb-6">Every great storyteller starts with a single tale.</p>
-            <button
-              onClick={onCreate}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-gold text-[#080808] rounded-xl font-bold text-sm hover:bg-white transition-all shadow-lg shadow-gold/20"
-            >
-              <Plus size={16} /> Create Your First Story
-            </button>
-          </div>
-        </motion.div>
+        <EmptyState onCreate={onCreate} hasSearch={!!searchTerm} />
       ) : (
-        <div className={cn(
-          "grid gap-5",
-          viewMode === 'grid' ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"
-        )}>
-          {stories.map((story, i) => (
-            <StoryCard
-              key={story.id}
-              story={story}
-              index={i}
-              viewMode={viewMode}
-              onSelect={onSelect}
-              onEdit={onEdit}
-              onPublish={onPublish}
-              onDelete={onDelete}
-              onAddPartner={onAddPartner}
-            />
-          ))}
-        </div>
+        <motion.div
+          layout
+          className={cn(
+            "grid gap-3",
+            viewMode === 'grid'
+              ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+              : "grid-cols-1"
+          )}
+        >
+          <AnimatePresence>
+            {stories.map((story, i) => (
+              <StoryCard
+                key={story.id}
+                story={story}
+                index={i}
+                viewMode={viewMode}
+                onSelect={onSelect}
+                onEdit={onEdit}
+                onPublish={onPublish}
+                onDelete={onDelete}
+                onAddPartner={onAddPartner}
+              />
+            ))}
+          </AnimatePresence>
+        </motion.div>
       )}
-    </motion.div>
+    </div>
   );
 }
 
+/* ─────────────────────────────────────────────────────────── */
+/*  Story Card                                                 */
+/* ─────────────────────────────────────────────────────────── */
 function StoryCard({ story, index, viewMode, onSelect, onEdit, onPublish, onDelete, onAddPartner }: {
-  story: Story,
-  index: number,
-  viewMode: 'grid' | 'list',
-  onSelect: (s: Story) => void,
-  onEdit: (s: Story, e: React.MouseEvent) => void,
-  onPublish: (id: string, e: React.MouseEvent) => void,
-  onDelete: (id: string, e: React.MouseEvent) => void,
-  onAddPartner: (story: Story, e: React.MouseEvent) => void
+  story: Story; index: number; viewMode: 'grid' | 'list';
+  onSelect: (s: Story) => void; onEdit: (s: Story, e: React.MouseEvent) => void;
+  onPublish: (id: string, e: React.MouseEvent) => void; onDelete: (id: string, e: React.MouseEvent) => void;
+  onAddPartner: (story: Story, e: React.MouseEvent) => void;
 }) {
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
+  const [hovered, setHovered] = useState(false);
+  const hasCover = !!(story.coverImage || story.pages[0]?.imageUrl);
+  const coverSrc = story.coverImage || story.pages[0]?.imageUrl || '';
+  const adj = story.coverImageAdjustments;
+  const imgStyle = adj ? {
+    filter: `brightness(${adj.brightness}%) contrast(${adj.contrast}%) saturate(${adj.saturation}%) sepia(${adj.sepia}%) grayscale(${adj.grayscale}%) blur(${adj.blur}px) hue-rotate(${adj.hueRotate}deg)`,
+    transform: `rotate(${adj.rotate}deg) scaleX(${adj.flipX ? -1 : 1}) scaleY(${adj.flipY ? -1 : 1})`,
+  } : undefined;
 
-  const mouseXSpring = useSpring(x);
-  const mouseYSpring = useSpring(y);
+  const pageCount = story.pages.length;
+  const dateStr = story.createdAt
+    ? new Date(story.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+    : '';
 
-  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["17.5deg", "-17.5deg"]);
-  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-17.5deg", "17.5deg"]);
+  if (viewMode === 'list') {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -10 }}
+        transition={{ delay: index * 0.04 }}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        onClick={() => onSelect(story)}
+        className="group flex items-center gap-4 p-4 bg-[#1e1e1e] hover:bg-[#242424] border border-white/[0.06] hover:border-white/[0.12] rounded-2xl cursor-pointer transition-all"
+      >
+        {/* Thumbnail */}
+        <div className="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 bg-[#2a2a2a]">
+          {hasCover ? (
+            <img src={coverSrc} alt="" className="w-full h-full object-cover" style={imgStyle} onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} referrerPolicy="no-referrer" />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center">
+              <Feather size={20} className="text-white/20" />
+            </div>
+          )}
+        </div>
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const width = rect.width;
-    const height = rect.height;
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
-    const xPct = mouseX / width - 0.5;
-    const yPct = mouseY / height - 0.5;
-    x.set(xPct);
-    y.set(yPct);
-  };
-
-  const handleMouseLeave = () => {
-    x.set(0);
-    y.set(0);
-  };
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.07 }}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      style={{
-        rotateX: viewMode === 'grid' ? rotateX : 0,
-        rotateY: viewMode === 'grid' ? rotateY : 0,
-        transformStyle: "preserve-3d",
-      }}
-      onClick={() => onSelect(story)}
-      className={cn(
-        "group bg-[#111] border border-white/[0.07] rounded-2xl overflow-hidden cursor-pointer hover:border-gold/20 transition-all duration-300 hover:shadow-2xl hover:shadow-gold/5",
-        viewMode === 'list' ? "flex h-52" : "flex flex-col"
-      )}
-    >
-      {/* Image area */}
-      <div className={cn(
-        "relative overflow-hidden",
-        viewMode === 'list' ? "w-48 h-full flex-shrink-0" : "aspect-[4/5]"
-      )} style={{ transform: "translateZ(50px)" }}>
-        {/* Progress circle */}
-        <div className="absolute top-4 right-4 z-10">
-          <svg className="w-9 h-9 transform -rotate-90">
-            <circle cx="18" cy="18" r="14" stroke="currentColor" strokeWidth="2.5" fill="transparent" className="text-white/[0.08]" />
-            <motion.circle
-              cx="18" cy="18" r="14"
-              stroke="currentColor" strokeWidth="2.5" fill="transparent"
-              strokeDasharray="88"
-              initial={{ strokeDashoffset: 88 }}
-              animate={{ strokeDashoffset: 88 - (Math.min(story.pages.length, 10) * 8.8) }}
-              transition={{ duration: 1.5, ease: "easeOut" }}
-              className="text-gold"
-            />
-          </svg>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-[8px] font-bold text-white/70">{story.pages.length}</span>
+        {/* Info */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-1">
+            <h3 className="text-[15px] font-semibold text-white/90 truncate">{story.title}</h3>
+            {story.isPublished && (
+              <span className="text-[10px] font-semibold px-2 py-0.5 bg-[#D97757]/10 text-[#D97757] border border-[#D97757]/20 rounded-full flex-shrink-0">Published</span>
+            )}
+          </div>
+          <div className="flex items-center gap-3 text-[12px] text-white/30">
+            <span className="truncate capitalize">{story.style?.replace(/-/g, ' ')}</span>
+            <span>·</span>
+            <span>{pageCount} page{pageCount !== 1 ? 's' : ''}</span>
+            {dateStr && <><span>·</span><span>{dateStr}</span></>}
+            {story.language && (
+              <><span>·</span><span className="flex items-center gap-1"><Globe size={10} />{story.language}</span></>
+            )}
           </div>
         </div>
 
-        {(story.coverImage || story.pages[0]?.imageUrl) ? (
+        {/* Actions */}
+        <div className={cn("flex items-center gap-1.5 transition-all", hovered ? "opacity-100" : "opacity-0")}>
+          <ActionBtn icon={<Pencil size={13} />} title="Edit" onClick={e => onEdit(story, e)} />
+          <ActionBtn icon={<UserPlus size={13} />} title="Add partner" onClick={e => onAddPartner(story, e)} />
+          {!story.isPublished && <ActionBtn icon={<DollarSign size={13} />} title="Publish" onClick={e => onPublish(story.id, e)} />}
+          <ActionBtn icon={<Trash2 size={13} />} title="Delete" onClick={e => onDelete(story.id, e)} danger />
+        </div>
+
+        <div className="text-white/20 group-hover:text-white/50 transition-colors flex-shrink-0">
+          <BookOpen size={15} />
+        </div>
+      </motion.div>
+    );
+  }
+
+  /* Grid card */
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.96 }}
+      transition={{ delay: index * 0.05 }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onClick={() => onSelect(story)}
+      className="group bg-[#1e1e1e] border border-white/[0.06] hover:border-white/[0.12] rounded-2xl overflow-hidden cursor-pointer transition-all hover:shadow-xl hover:shadow-black/40 flex flex-col"
+    >
+      {/* Cover */}
+      <div className="relative aspect-[3/4] overflow-hidden bg-[#2a2a2a] flex-shrink-0">
+        {hasCover ? (
           <img
-            src={story.coverImage || story.pages[0].imageUrl}
-            alt=""
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-            style={{
-              filter: story.coverImageAdjustments ?
-                `brightness(${story.coverImageAdjustments.brightness}%) contrast(${story.coverImageAdjustments.contrast}%) saturate(${story.coverImageAdjustments.saturation}%) sepia(${story.coverImageAdjustments.sepia}%) grayscale(${story.coverImageAdjustments.grayscale}%) blur(${story.coverImageAdjustments.blur}px) hue-rotate(${story.coverImageAdjustments.hueRotate}deg)` : 'none',
-              transform: story.coverImageAdjustments ?
-                `rotate(${story.coverImageAdjustments.rotate}deg) scaleX(${story.coverImageAdjustments.flipX ? -1 : 1}) scaleY(${story.coverImageAdjustments.flipY ? -1 : 1})` : 'none'
-            }}
+            src={coverSrc} alt=""
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+            style={imgStyle}
             onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
             referrerPolicy="no-referrer"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-[#1a1a1a] to-[#111] flex items-center justify-center">
-            <BookOpen className="text-white/[0.08]" size={40} />
+          <div className="w-full h-full flex flex-col items-center justify-center gap-3">
+            <Feather size={32} className="text-white/[0.12]" />
+            <span className="text-[11px] text-white/20 font-medium uppercase tracking-wide">No cover</span>
           </div>
         )}
 
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+        {/* Overlay gradient */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#1e1e1e] via-transparent to-transparent opacity-70" />
 
-        {/* Read Now hover CTA */}
-        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-400 pointer-events-none">
-          <div className="bg-gold text-[#080808] px-6 py-2.5 rounded-full font-bold flex items-center gap-2 transform translate-y-6 group-hover:translate-y-0 transition-transform duration-400 shadow-2xl text-sm">
-            <BookOpen size={16} />
-            <span>Read Now</span>
-          </div>
-        </div>
-
-        {/* Language & Series badges */}
-        <div className="absolute top-4 left-4 flex flex-col gap-1.5">
+        {/* Top badges */}
+        <div className="absolute top-3 left-3 flex flex-col gap-1.5">
           {story.language && (
-            <div className="bg-black/60 backdrop-blur-md px-2 py-1 rounded-lg flex items-center gap-1 border border-white/10">
-              <Globe size={9} className="text-gold" />
-              <span className="text-[8px] font-bold uppercase tracking-widest text-white/80">{story.language}</span>
+            <div className="bg-black/50 backdrop-blur-sm px-2 py-1 rounded-lg flex items-center gap-1 border border-white/[0.08]">
+              <Globe size={9} className="text-white/60" />
+              <span className="text-[9px] font-semibold text-white/70 uppercase tracking-wide">{story.language}</span>
             </div>
           )}
           {story.seriesId && (
-            <div className="bg-gold/20 backdrop-blur-md px-2 py-1 rounded-lg flex items-center gap-1 border border-gold/20">
-              <Layers size={9} className="text-gold" />
-              <span className="text-[8px] font-bold uppercase tracking-widest text-white/80">Series</span>
+            <div className="bg-black/50 backdrop-blur-sm px-2 py-1 rounded-lg flex items-center gap-1 border border-white/[0.08]">
+              <Layers size={9} className="text-white/60" />
+              <span className="text-[9px] font-semibold text-white/70 uppercase tracking-wide">Series</span>
             </div>
           )}
         </div>
+
+        {/* Published badge */}
+        {story.isPublished && (
+          <div className="absolute top-3 right-3 bg-[#D97757] px-2 py-0.5 rounded-lg">
+            <span className="text-[9px] font-bold text-white uppercase tracking-wide">Live</span>
+          </div>
+        )}
+
+        {/* Hover read overlay */}
+        <motion.div
+          animate={{ opacity: hovered ? 1 : 0, y: hovered ? 0 : 6 }}
+          transition={{ duration: 0.18 }}
+          className="absolute inset-0 flex items-center justify-center pointer-events-none"
+        >
+          <div className="bg-white/10 backdrop-blur-sm border border-white/20 px-5 py-2 rounded-full flex items-center gap-2 text-[13px] font-semibold text-white shadow-xl">
+            <BookOpen size={14} />
+            Open
+          </div>
+        </motion.div>
       </div>
 
-      {/* Card body */}
-      <div className="p-5 flex flex-col flex-1" style={{ transform: "translateZ(30px)" }}>
-        <div className="flex items-center gap-2 mb-2.5 flex-wrap">
-          <span className="bg-white/[0.06] text-white/40 text-[8px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-md">{story.style}</span>
-          <span className="bg-white/[0.06] text-white/40 text-[8px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-md">{story.pages.length} Pages</span>
-          {story.isPublished && (
-            <span className="bg-gold/10 text-gold border border-gold/15 text-[8px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-md">Published</span>
+      {/* Body */}
+      <div className="p-4 flex flex-col gap-2 flex-1">
+        <h3 className="text-[14px] font-semibold text-white/90 line-clamp-2 leading-snug">{story.title}</h3>
+
+        <div className="flex items-center gap-1.5 flex-wrap mt-auto">
+          <span className="text-[10px] font-medium px-2 py-0.5 bg-white/[0.05] text-white/35 rounded-md capitalize">
+            {story.style?.replace(/-/g, ' ') || 'story'}
+          </span>
+          <span className="text-[10px] font-medium px-2 py-0.5 bg-white/[0.05] text-white/35 rounded-md">
+            {pageCount}p
+          </span>
+        </div>
+
+        {/* Footer */}
+        <div className="flex items-center justify-between pt-2.5 border-t border-white/[0.05] mt-1">
+          <div className="flex items-center gap-2 text-[11px] text-white/20">
+            <Heart size={11} />
+            <span>{story.likes || 0}</span>
+          </div>
+
+          <motion.div
+            animate={{ opacity: hovered ? 1 : 0, x: hovered ? 0 : 4 }}
+            transition={{ duration: 0.15 }}
+            className="flex items-center gap-1"
+            onClick={e => e.stopPropagation()}
+          >
+            <ActionBtn icon={<Pencil size={12} />} title="Edit" onClick={e => onEdit(story, e)} small />
+            <ActionBtn icon={<UserPlus size={12} />} title="Collaborate" onClick={e => onAddPartner(story, e)} small />
+            {!story.isPublished && <ActionBtn icon={<DollarSign size={12} />} title="Publish" onClick={e => onPublish(story.id, e)} small />}
+            <ActionBtn icon={<Trash2 size={12} />} title="Delete" onClick={e => onDelete(story.id, e)} small danger />
+          </motion.div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/*  Action button                                              */
+/* ─────────────────────────────────────────────────────────── */
+function ActionBtn({ icon, title, onClick, danger, small }: {
+  icon: React.ReactNode; title: string; onClick: (e: React.MouseEvent) => void;
+  danger?: boolean; small?: boolean;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      title={title}
+      className={cn(
+        "rounded-lg transition-all",
+        small ? "p-1.5" : "p-2",
+        danger
+          ? "text-white/25 hover:bg-red-500/10 hover:text-red-400"
+          : "text-white/35 hover:bg-white/[0.08] hover:text-white/80"
+      )}
+    >
+      {icon}
+    </button>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/*  Skeleton loading                                           */
+/* ─────────────────────────────────────────────────────────── */
+function SkeletonGrid({ viewMode }: { viewMode: 'grid' | 'list' }) {
+  return (
+    <div className={cn(
+      "grid gap-3",
+      viewMode === 'grid'
+        ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+        : "grid-cols-1"
+    )}>
+      {[...Array(8)].map((_, i) => (
+        <div
+          key={i}
+          className={cn(
+            "bg-[#1e1e1e] border border-white/[0.05] rounded-2xl overflow-hidden",
+            viewMode === 'list' ? "h-[78px] flex items-center gap-4 p-4" : ""
+          )}
+        >
+          {viewMode === 'list' ? (
+            <>
+              <div className="w-14 h-14 rounded-xl bg-white/[0.05] shimmer flex-shrink-0" />
+              <div className="flex-1 space-y-2">
+                <div className="h-3.5 bg-white/[0.05] rounded-full shimmer w-2/3" />
+                <div className="h-2.5 bg-white/[0.04] rounded-full shimmer w-1/3" />
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="aspect-[3/4] bg-white/[0.05] shimmer" />
+              <div className="p-4 space-y-3">
+                <div className="h-3.5 bg-white/[0.05] rounded-full shimmer w-3/4" />
+                <div className="h-3 bg-white/[0.04] rounded-full shimmer w-1/2" />
+              </div>
+            </>
           )}
         </div>
-        <h3 className="text-lg font-serif font-bold text-white/90 group-hover:text-gold transition-colors leading-snug mb-auto">{story.title}</h3>
+      ))}
+    </div>
+  );
+}
 
-        <div className="mt-4 pt-4 border-t border-white/[0.06] flex items-center justify-between">
-          <div className="flex items-center gap-3 text-white/20 text-xs">
-            <div className="flex items-center gap-1.5"><Heart size={12} /><span>{story.likes || 0}</span></div>
-            <div className="flex items-center gap-1.5"><Star size={12} /><span>4.9</span></div>
-          </div>
-
-          <div className="flex gap-1.5 opacity-0 group-hover:opacity-100 transition-all translate-x-3 group-hover:translate-x-0">
-            <button
-              onClick={(e) => onEdit(story, e)}
-              className="bg-white/[0.08] text-white/50 rounded-lg p-2 hover:bg-gold/10 hover:text-gold transition-all"
-              title="Edit Story"
-            >
-              <Pencil size={14} />
-            </button>
-            <button
-              onClick={(e) => onAddPartner(story, e)}
-              className="bg-white/[0.08] text-white/50 rounded-lg p-2 hover:bg-gold/10 hover:text-gold transition-all"
-              title="Add Partner"
-            >
-              <UserPlus size={14} />
-            </button>
-            {!story.isPublished && (
-              <button
-                onClick={(e) => onPublish(story.id, e)}
-                className="bg-white/[0.08] text-white/50 rounded-lg p-2 hover:bg-gold/10 hover:text-gold transition-all"
-                title="Publish"
-              >
-                <DollarSign size={14} />
-              </button>
-            )}
-            <button
-              onClick={(e) => onDelete(story.id, e)}
-              className="bg-white/[0.06] text-white/30 rounded-lg p-2 hover:bg-red-500/10 hover:text-red-400 transition-all"
-              title="Delete"
-            >
-              <Trash2 size={14} />
-            </button>
-          </div>
-        </div>
+/* ─────────────────────────────────────────────────────────── */
+/*  Empty state                                                */
+/* ─────────────────────────────────────────────────────────── */
+function EmptyState({ onCreate, hasSearch }: { onCreate: () => void; hasSearch: boolean }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="flex-1 flex flex-col items-center justify-center py-24 px-6 text-center"
+    >
+      <div className="w-14 h-14 rounded-2xl bg-[#2a2a2a] border border-white/[0.07] flex items-center justify-center mb-5">
+        {hasSearch ? <Search size={24} className="text-white/25" /> : <Feather size={24} className="text-white/25" />}
       </div>
+      <h3 className="text-[18px] font-semibold text-white/80 mb-2">
+        {hasSearch ? 'No results found' : 'No stories yet'}
+      </h3>
+      <p className="text-[13px] text-white/30 mb-7 max-w-[260px] leading-relaxed">
+        {hasSearch
+          ? 'Try a different search term or clear the filter.'
+          : 'Start writing your first story. It only takes a moment.'}
+      </p>
+      {!hasSearch && (
+        <button
+          onClick={onCreate}
+          className="flex items-center gap-2 px-5 py-2.5 bg-[#D97757] hover:bg-[#C86A48] text-white font-semibold text-[14px] rounded-xl transition-colors shadow-lg shadow-[#D97757]/20"
+        >
+          <Plus size={16} />
+          Create story
+        </button>
+      )}
     </motion.div>
   );
 }

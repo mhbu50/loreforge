@@ -196,7 +196,7 @@ export default function StoryBiblePanel({ storyId, onBibleContext }: StoryBibleP
           <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/30 mb-3">Story Bibles</p>
           <button
             onClick={startNew}
-            className="w-full flex items-center justify-center gap-2 py-2.5 bg-gold/10 border border-gold/20 rounded-xl text-gold text-xs font-bold hover:bg-gold/15 transition-all"
+            className="w-full flex items-center justify-center gap-2 py-2.5 bg-[#D97757]/10 border border-[#D97757]/20 rounded-xl text-[#D97757] text-xs font-bold hover:bg-[#D97757]/15 transition-all"
           >
             <Plus size={13} /> New Bible
           </button>
@@ -215,7 +215,7 @@ export default function StoryBiblePanel({ storyId, onBibleContext }: StoryBibleP
               className={cn(
                 'w-full text-left p-3 rounded-xl border transition-all group flex items-center justify-between gap-2',
                 activeBible?.id === b.id
-                  ? 'bg-gold/10 border-gold/20'
+                  ? 'bg-[#D97757]/10 border-[#D97757]/20'
                   : 'bg-white/[0.03] border-white/[0.06] hover:border-white/15 hover:bg-white/[0.05]'
               )}
             >
@@ -240,16 +240,16 @@ export default function StoryBiblePanel({ storyId, onBibleContext }: StoryBibleP
       <div className="flex-1 overflow-y-auto">
         {!isEditing ? (
           <div className="flex flex-col items-center justify-center h-full text-center p-12">
-            <div className="w-20 h-20 rounded-3xl bg-gold/5 border border-gold/10 flex items-center justify-center mb-6">
-              <BookOpen size={36} className="text-gold/30" />
+            <div className="w-20 h-20 rounded-3xl bg-[#D97757]/5 border border-[#D97757]/10 flex items-center justify-center mb-6">
+              <BookOpen size={36} className="text-[#D97757]/30" />
             </div>
-            <h2 className="text-2xl font-serif font-bold text-white/60 mb-2">Story Bible Engine</h2>
+            <h2 className="text-2xl font-semibold text-white/60 mb-2">Story Bible Engine</h2>
             <p className="text-white/25 text-sm max-w-sm leading-relaxed">
               Your persistent world-building knowledge base. The AI reads this before every scene to prevent plot holes and maintain lore consistency.
             </p>
             <button
               onClick={startNew}
-              className="mt-8 flex items-center gap-2 px-6 py-3 bg-gold text-[#080808] rounded-xl font-bold text-sm hover:bg-white transition-all shadow-lg shadow-gold/20"
+              className="mt-8 flex items-center gap-2 px-6 py-3 bg-[#D97757] text-[#080808] rounded-xl font-bold text-sm hover:bg-white transition-all shadow-lg shadow-[#D97757]/20"
             >
               <Plus size={16} /> Create Story Bible
             </button>
@@ -259,10 +259,10 @@ export default function StoryBiblePanel({ storyId, onBibleContext }: StoryBibleP
             {/* Header */}
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-gold/60 mb-1">
+                <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#D97757]/60 mb-1">
                   {isCreating ? 'New Story Bible' : 'Edit Bible'}
                 </p>
-                <h2 className="text-2xl font-serif font-bold text-white">
+                <h2 className="text-2xl font-semibold text-white">
                   {draft.title || 'Untitled World'}
                 </h2>
               </div>
@@ -290,13 +290,13 @@ export default function StoryBiblePanel({ storyId, onBibleContext }: StoryBibleP
                 value={draft.title}
                 onChange={e => setDraft(d => ({ ...d, title: e.target.value }))}
                 placeholder="e.g. The Shattered Realm, The Far Future Chronicles…"
-                className="w-full bg-white/[0.05] border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-gold/40 text-white/80 text-sm font-serif placeholder:text-white/20 transition-colors"
+                className="w-full bg-white/[0.05] border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-[#D97757]/40 text-white/80 text-sm font-sans placeholder:text-white/20 transition-colors"
               />
             </div>
 
             {/* AI context inputs */}
-            <div className="p-4 bg-gold/[0.04] border border-gold/10 rounded-2xl space-y-3">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-gold/50">AI Generation Context</p>
+            <div className="p-4 bg-[#D97757]/[0.04] border border-[#D97757]/10 rounded-2xl space-y-3">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-[#D97757]/50">AI Generation Context</p>
               <input
                 value={storyIdeaHint}
                 onChange={e => setStoryIdeaHint(e.target.value)}
@@ -315,7 +315,7 @@ export default function StoryBiblePanel({ storyId, onBibleContext }: StoryBibleP
             <button
               onClick={handleAIFillAll}
               disabled={aiLoading === 'all'}
-              className="w-full flex items-center justify-center gap-2 py-3.5 bg-gold/10 border border-gold/20 rounded-2xl text-gold text-sm font-bold hover:bg-gold/15 hover:border-gold/30 transition-all disabled:opacity-40"
+              className="w-full flex items-center justify-center gap-2 py-3.5 bg-[#D97757]/10 border border-[#D97757]/20 rounded-2xl text-[#D97757] text-sm font-bold hover:bg-[#D97757]/15 hover:border-[#D97757]/30 transition-all disabled:opacity-40"
             >
               {aiLoading === 'all' ? <Loader2 size={15} className="animate-spin" /> : <Wand2 size={15} />}
               {aiLoading === 'all' ? 'Building World…' : 'AI: Auto-Build Entire Bible'}
@@ -338,7 +338,7 @@ export default function StoryBiblePanel({ storyId, onBibleContext }: StoryBibleP
                   className={cn(
                     'border rounded-2xl transition-all overflow-hidden',
                     expandedSection === section.key
-                      ? 'border-gold/20 bg-gold/[0.03]'
+                      ? 'border-[#D97757]/20 bg-[#D97757]/[0.03]'
                       : 'border-white/[0.07] bg-white/[0.02]'
                   )}
                 >
@@ -347,15 +347,15 @@ export default function StoryBiblePanel({ storyId, onBibleContext }: StoryBibleP
                     onClick={() => setExpandedSection(expandedSection === section.key ? null : section.key)}
                     className="w-full flex items-center gap-3 px-4 py-3.5 text-left"
                   >
-                    <span className={cn('flex-shrink-0', expandedSection === section.key ? 'text-gold' : 'text-white/30')}>
+                    <span className={cn('flex-shrink-0', expandedSection === section.key ? 'text-[#D97757]' : 'text-white/30')}>
                       {section.icon}
                     </span>
                     <span className={cn('text-xs font-bold uppercase tracking-widest flex-1',
-                      expandedSection === section.key ? 'text-gold' : 'text-white/40')}>
+                      expandedSection === section.key ? 'text-[#D97757]' : 'text-white/40')}>
                       {section.label}
                     </span>
                     {(draft as any)[section.key] && (
-                      <span className="w-1.5 h-1.5 bg-gold/60 rounded-full" />
+                      <span className="w-1.5 h-1.5 bg-[#D97757]/60 rounded-full" />
                     )}
                     {expandedSection === section.key
                       ? <ChevronUp size={14} className="text-white/30" />
@@ -370,12 +370,12 @@ export default function StoryBiblePanel({ storyId, onBibleContext }: StoryBibleP
                         onChange={e => setDraft(d => ({ ...d, [section.key]: e.target.value }))}
                         placeholder={section.placeholder}
                         rows={section.rows}
-                        className="w-full bg-white/[0.04] border border-white/[0.07] rounded-xl px-4 py-3 outline-none focus:border-gold/30 text-white/75 text-sm leading-relaxed placeholder:text-white/15 resize-none transition-colors"
+                        className="w-full bg-white/[0.04] border border-white/[0.07] rounded-xl px-4 py-3 outline-none focus:border-[#D97757]/30 text-white/75 text-sm leading-relaxed placeholder:text-white/15 resize-none transition-colors"
                       />
                       <button
                         onClick={() => handleAIFillSection(section.key, section.aiHint)}
                         disabled={!!aiLoading}
-                        className="flex items-center gap-1.5 text-[10px] text-white/25 hover:text-gold transition-colors disabled:opacity-30"
+                        className="flex items-center gap-1.5 text-[10px] text-white/25 hover:text-[#D97757] transition-colors disabled:opacity-30"
                       >
                         {aiLoading === section.key ? <Loader2 size={10} className="animate-spin" /> : <Sparkles size={10} />}
                         AI fill this section
@@ -397,7 +397,7 @@ export default function StoryBiblePanel({ storyId, onBibleContext }: StoryBibleP
               <button
                 onClick={handleSave}
                 disabled={saving || !draft.title.trim()}
-                className="flex-1 flex items-center justify-center gap-2 py-3 bg-gold text-[#080808] rounded-xl font-bold text-sm hover:bg-white transition-all shadow-lg shadow-gold/20 disabled:opacity-50"
+                className="flex-1 flex items-center justify-center gap-2 py-3 bg-[#D97757] text-[#080808] rounded-xl font-bold text-sm hover:bg-white transition-all shadow-lg shadow-[#D97757]/20 disabled:opacity-50"
               >
                 {saving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
                 {saving ? 'Saving…' : isCreating ? 'Create Bible' : 'Save Bible'}

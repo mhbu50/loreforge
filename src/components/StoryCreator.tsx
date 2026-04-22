@@ -353,24 +353,24 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
               <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                className="w-36 h-36 border-2 border-gold/20 rounded-full border-t-gold"
+                className="w-36 h-36 border-2 border-[#D97757]/20 rounded-full border-t-gold"
               />
               <motion.div
                 animate={{ rotate: -360 }}
                 transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                className="absolute inset-4 border border-gold/10 rounded-full border-b-gold/40"
+                className="absolute inset-4 border border-[#D97757]/10 rounded-full border-b-gold/40"
               />
               <motion.div
                 animate={{ scale: [0.8, 1.2, 0.8], opacity: [0.5, 1, 0.5] }}
                 transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute inset-0 flex items-center justify-center text-gold"
+                className="absolute inset-0 flex items-center justify-center text-[#D97757]"
               >
                 {aiProgress ? <Brain size={44} /> : <Sparkles size={44} />}
               </motion.div>
             </div>
 
             <div className="space-y-4 max-w-sm">
-              <h2 className="text-3xl font-serif font-bold text-night">
+              <h2 className="text-3xl font-semibold text-[#1a1a1a]">
                 {aiProgress ? 'AI Forging in Progress' : 'Preparing the Forge'}
               </h2>
 
@@ -381,7 +381,7 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                     key={aiProgress.step}
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="text-gold font-bold text-sm tracking-wide"
+                    className="text-[#D97757] font-bold text-sm tracking-wide"
                   >
                     {aiProgress.step}
                   </motion.p>
@@ -389,7 +389,7 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                   {/* Progress bar */}
                   <div className="w-full h-2 bg-black/5 rounded-full overflow-hidden">
                     <motion.div
-                      className="h-full bg-gold rounded-full"
+                      className="h-full bg-[#D97757] rounded-full"
                       initial={{ width: '0%' }}
                       animate={{ width: `${aiProgress.total > 0 ? Math.round((aiProgress.current / aiProgress.total) * 100) : 0}%` }}
                       transition={{ duration: 0.5, ease: 'easeOut' }}
@@ -418,8 +418,8 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
             <div className="hidden lg:flex w-[420px] flex-shrink-0 flex-col relative overflow-hidden border-r border-white/[0.05]">
               {/* Ambient glow */}
               <div className="absolute inset-0 pointer-events-none">
-                <div className="absolute -top-20 -left-20 w-80 h-80 rounded-full" style={{background:'radial-gradient(circle, rgba(212,175,55,0.12) 0%, transparent 65%)'}} />
-                <div className="absolute bottom-0 right-0 w-60 h-60 rounded-full" style={{background:'radial-gradient(circle, rgba(212,175,55,0.08) 0%, transparent 65%)'}} />
+                <div className="absolute -top-20 -left-20 w-80 h-80 rounded-full" style={{background:'radial-gradient(circle, rgba(217,119,87,0.12) 0%, transparent 65%)'}} />
+                <div className="absolute bottom-0 right-0 w-60 h-60 rounded-full" style={{background:'radial-gradient(circle, rgba(217,119,87,0.08) 0%, transparent 65%)'}} />
               </div>
               {/* Back button */}
               <div className="relative p-8 flex items-center gap-3">
@@ -434,7 +434,7 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                   animate={{ rotateY: -4, scale: 1 }}
                   whileHover={{ rotateY: 0 }}
                   onClick={() => openImageSource('cover')}
-                  className="w-full max-w-[260px] aspect-[3/4] rounded-r-[1.5rem] shadow-[0_40px_80px_-12px_rgba(0,0,0,0.8)] relative overflow-hidden border-l-[6px] border-gold/50 cursor-pointer group/cover"
+                  className="w-full max-w-[260px] aspect-[3/4] rounded-r-[1.5rem] shadow-[0_40px_80px_-12px_rgba(0,0,0,0.8)] relative overflow-hidden border-l-[6px] border-[#D97757]/50 cursor-pointer group/cover"
                   style={{transformStyle:'preserve-3d'}}
                 >
                   {coverImage ? (
@@ -451,14 +451,14 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                   <div className="absolute left-0 top-0 bottom-0 w-5 bg-gradient-to-r from-black/60 to-transparent" />
                   {/* Content overlay */}
                   <div className="absolute inset-x-6 bottom-8 top-8 flex flex-col justify-between">
-                    <div className="w-10 h-10 rounded-full bg-gold/15 border border-gold/30 flex items-center justify-center">
-                      <Sparkles size={18} className="text-gold" />
+                    <div className="w-10 h-10 rounded-full bg-[#D97757]/15 border border-[#D97757]/30 flex items-center justify-center">
+                      <Sparkles size={18} className="text-[#D97757]" />
                     </div>
                     <div>
-                      <h3 className="text-white font-serif font-bold text-xl leading-snug mb-2">
+                      <h3 className="text-white font-semibold text-xl leading-snug mb-2">
                         {draftTitle || idea || "Your Next Masterpiece"}
                       </h3>
-                      <div className="h-[1px] w-8 bg-gold/40 mb-2" />
+                      <div className="h-[1px] w-8 bg-[#D97757]/40 mb-2" />
                       <p className="text-white/40 text-[10px] font-medium uppercase tracking-widest">by {authorName || 'You'}</p>
                     </div>
                   </div>
@@ -470,7 +470,7 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                   </div>
                 </motion.div>
                 {/* Glow under book */}
-                <div className="absolute bottom-8 w-48 h-8 blur-3xl rounded-full bg-gold/10" />
+                <div className="absolute bottom-8 w-48 h-8 blur-3xl rounded-full bg-[#D97757]/10" />
               </div>
               {/* Bottom tip */}
               <div className="relative p-8 border-t border-white/[0.05]">
@@ -483,9 +483,9 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
               <div className="max-w-xl mx-auto px-8 py-10 space-y-8">
                 {/* Title */}
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-gold/60 mb-3">New Project</p>
-                  <h2 className="text-4xl font-serif font-bold text-white leading-tight">
-                    Forge Your<br /><span className="text-gold">Story</span>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#D97757]/60 mb-3">New Project</p>
+                  <h2 className="text-4xl font-semibold text-white leading-tight">
+                    Forge Your<br /><span className="text-[#D97757]">Story</span>
                   </h2>
                   <p className="text-white/35 text-sm mt-2">Fill in the details below to begin crafting.</p>
                 </div>
@@ -498,12 +498,12 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                     onChange={(e) => setIdea(e.target.value)}
                     placeholder="Describe your story idea..."
                     rows={3}
-                    className="w-full bg-white/[0.05] border border-white/10 rounded-2xl px-5 py-4 outline-none focus:border-gold/40 text-white/80 text-sm leading-relaxed placeholder:text-white/20 resize-none transition-colors"
+                    className="w-full bg-white/[0.05] border border-white/10 rounded-2xl px-5 py-4 outline-none focus:border-[#D97757]/40 text-white/80 text-sm leading-relaxed placeholder:text-white/20 resize-none transition-colors"
                   />
                   <div className="flex flex-wrap gap-1.5">
                     {TEMPLATES.map(t => (
                       <button key={t.id} onClick={() => setIdea(t.idea)}
-                        className="text-[9px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full bg-white/5 text-white/30 hover:bg-gold/10 hover:text-gold transition-all border border-white/8 hover:border-gold/20">
+                        className="text-[9px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full bg-white/5 text-white/30 hover:bg-[#D97757]/10 hover:text-[#D97757] transition-all border border-white/8 hover:border-[#D97757]/20">
                         {t.name}
                       </button>
                     ))}
@@ -515,12 +515,12 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                   <div className="space-y-2">
                     <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30">Title</label>
                     <input value={draftTitle} onChange={e => setDraftTitle(e.target.value)} placeholder="Story title"
-                      className="w-full bg-white/[0.05] border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-gold/40 text-white/80 text-sm font-serif placeholder:text-white/20 transition-colors" />
+                      className="w-full bg-white/[0.05] border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-[#D97757]/40 text-white/80 text-sm font-sans placeholder:text-white/20 transition-colors" />
                   </div>
                   <div className="space-y-2">
                     <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30">Author</label>
                     <input value={authorName} onChange={e => setAuthorName(e.target.value)} placeholder="Your name"
-                      className="w-full bg-white/[0.05] border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-gold/40 text-white/80 text-sm font-serif placeholder:text-white/20 transition-colors" />
+                      className="w-full bg-white/[0.05] border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-[#D97757]/40 text-white/80 text-sm font-sans placeholder:text-white/20 transition-colors" />
                   </div>
                 </div>
 
@@ -529,14 +529,14 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                   <div className="space-y-2">
                     <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30">Category</label>
                     <select value={category} onChange={e => setCategory(e.target.value)}
-                      className="w-full bg-white/[0.05] border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-gold/40 text-white/70 text-sm transition-colors appearance-none">
+                      className="w-full bg-white/[0.05] border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-[#D97757]/40 text-white/70 text-sm transition-colors appearance-none">
                       {STORY_CATEGORIES.map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
                     </select>
                   </div>
                   <div className="space-y-2">
                     <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30">Age Group</label>
                     <select value={ageGroup} onChange={e => setAgeGroup(e.target.value)}
-                      className="w-full bg-white/[0.05] border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-gold/40 text-white/70 text-sm transition-colors appearance-none">
+                      className="w-full bg-white/[0.05] border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-[#D97757]/40 text-white/70 text-sm transition-colors appearance-none">
                       {AGE_GROUPS.map(age => <option key={age.id} value={age.id}>{age.name}</option>)}
                     </select>
                   </div>
@@ -547,7 +547,7 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                   <div className="space-y-2">
                     <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30">Art Style</label>
                     <select value={style} onChange={e => setStyle(e.target.value as StoryStyle)}
-                      className="w-full bg-white/[0.05] border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-gold/40 text-white/70 text-sm transition-colors appearance-none">
+                      className="w-full bg-white/[0.05] border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-[#D97757]/40 text-white/70 text-sm transition-colors appearance-none">
                       {STORY_STYLES.map(s => {
                         const allowed = limits.allowedStyles?.includes(s.id);
                         return <option key={s.id} value={s.id} disabled={!allowed}>{s.name}{!allowed ? ' 🔒' : ''}</option>;
@@ -557,7 +557,7 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                   <div className="space-y-2">
                     <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30">Language</label>
                     <select value={language} onChange={e => setLanguage(e.target.value)}
-                      className="w-full bg-white/[0.05] border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-gold/40 text-white/70 text-sm transition-colors appearance-none">
+                      className="w-full bg-white/[0.05] border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-[#D97757]/40 text-white/70 text-sm transition-colors appearance-none">
                       {LANGUAGES.map(lang => {
                         const allowed = limits.allowedLanguages?.includes(lang.code);
                         return <option key={lang.code} value={lang.code} disabled={!allowed}>{lang.name}{!allowed ? ' 🔒' : ''}</option>;
@@ -570,14 +570,14 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                 <div className="space-y-3">
                   <div className="flex justify-between">
                     <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30">Pages</label>
-                    <span className="text-[10px] font-bold text-gold/60 uppercase tracking-widest">Max {maxPages}</span>
+                    <span className="text-[10px] font-bold text-[#D97757]/60 uppercase tracking-widest">Max {maxPages}</span>
                   </div>
                   <div className="flex items-center gap-4 bg-white/[0.04] border border-white/8 rounded-xl p-2">
                     <button onClick={() => setPageCount(Math.max(minPages, pageCount - 1))}
                       className="w-10 h-10 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 rounded-lg transition-all text-xl font-light">
                       −
                     </button>
-                    <span className="flex-1 text-center font-serif text-2xl font-bold text-white">{pageCount}</span>
+                    <span className="flex-1 text-center font-sans text-2xl font-bold text-white">{pageCount}</span>
                     <button onClick={() => {
                       const next = pageCount + 1;
                       if (next > maxPages) { toast.error(`Upgrade to unlock more than ${maxPages} pages!`); return; }
@@ -604,18 +604,18 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                         className={cn(
                           "p-4 rounded-2xl border text-left transition-all group",
                           mode === 'surprise'
-                            ? "bg-gold/10 border-gold/20 hover:border-gold/40"
+                            ? "bg-[#D97757]/10 border-[#D97757]/20 hover:border-[#D97757]/40"
                             : generationMode === mode
-                              ? "bg-gold/15 border-gold/40 shadow-lg shadow-gold/10"
+                              ? "bg-[#D97757]/15 border-[#D97757]/40 shadow-lg shadow-[#D97757]/10"
                               : "bg-white/[0.03] border-white/8 hover:border-white/20 hover:bg-white/[0.06]"
                         )}
                       >
                         <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center mb-2.5 transition-all",
-                          generationMode === mode || mode === 'surprise' ? "bg-gold/20 text-gold" : "bg-white/8 text-white/30 group-hover:text-white/60")}>
+                          generationMode === mode || mode === 'surprise' ? "bg-[#D97757]/20 text-[#D97757]" : "bg-white/8 text-white/30 group-hover:text-white/60")}>
                           {icon}
                         </div>
                         <p className={cn("text-xs font-bold uppercase tracking-widest mb-0.5",
-                          generationMode === mode || mode === 'surprise' ? "text-gold" : "text-white/50")}>{label}</p>
+                          generationMode === mode || mode === 'surprise' ? "text-[#D97757]" : "text-white/50")}>{label}</p>
                         <p className="text-[10px] text-white/25 leading-relaxed">{desc}</p>
                       </button>
                     ))}
@@ -638,11 +638,11 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                         className={cn(
                           'p-3 rounded-xl border text-left transition-all',
                           narrativeStructure === s.id
-                            ? 'bg-gold/15 border-gold/40 shadow-lg shadow-gold/10'
+                            ? 'bg-[#D97757]/15 border-[#D97757]/40 shadow-lg shadow-[#D97757]/10'
                             : 'bg-white/[0.03] border-white/8 hover:border-white/20 hover:bg-white/[0.05]'
                         )}
                       >
-                        <p className={cn('text-xs font-bold mb-0.5', narrativeStructure === s.id ? 'text-gold' : 'text-white/50')}>{s.label}</p>
+                        <p className={cn('text-xs font-bold mb-0.5', narrativeStructure === s.id ? 'text-[#D97757]' : 'text-white/50')}>{s.label}</p>
                         <p className="text-[10px] text-white/25 leading-relaxed">{s.desc}</p>
                       </button>
                     ))}
@@ -738,17 +738,17 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                 </div>
 
                 {/* Token cost */}
-                <div className="flex items-center justify-between p-4 bg-gold/[0.08] border border-gold/15 rounded-2xl">
+                <div className="flex items-center justify-between p-4 bg-[#D97757]/[0.08] border border-[#D97757]/15 rounded-2xl">
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 bg-gold/15 rounded-xl flex items-center justify-center text-gold">
+                    <div className="w-9 h-9 bg-[#D97757]/15 rounded-xl flex items-center justify-center text-[#D97757]">
                       <Zap size={18} />
                     </div>
                     <div>
-                      <p className="text-xs font-bold text-gold uppercase tracking-widest">Forge Cost</p>
+                      <p className="text-xs font-bold text-[#D97757] uppercase tracking-widest">Forge Cost</p>
                       <p className="text-[10px] text-white/30">{tokenCost} usage credit{tokenCost !== 1 ? 's' : ''} will be consumed</p>
                     </div>
                   </div>
-                  <div className="text-2xl font-serif font-bold text-gold">{tokenCost}</div>
+                  <div className="text-2xl font-semibold text-[#D97757]">{tokenCost}</div>
                 </div>
 
                 {/* Action buttons */}
@@ -762,7 +762,7 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                     disabled={isAIGenerating || !generationMode || generationMode === 'surprise'}
                     className={cn("flex-1 py-3.5 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2",
                       generationMode && generationMode !== 'surprise'
-                        ? "bg-gold text-night hover:bg-white shadow-xl shadow-gold/20"
+                        ? "bg-[#D97757] text-[#1a1a1a] hover:bg-white shadow-xl shadow-[#D97757]/20"
                         : "bg-white/5 text-white/20 cursor-not-allowed border border-white/8"
                     )}
                   >
@@ -795,7 +795,7 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                   value={draftTitle}
                   onChange={(e) => setDraftTitle(e.target.value)}
                   placeholder="Untitled Masterpiece"
-                  className="bg-transparent text-2xl font-serif font-bold outline-none border-b border-transparent focus:border-gold transition-all"
+                  className="bg-transparent text-2xl font-semibold outline-none border-b border-transparent focus:border-[#D97757] transition-all"
                 />
               </div>
               <div className="flex items-center gap-4">
@@ -803,7 +803,7 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                   onClick={() => setShowMetadataEditor(!showMetadataEditor)}
                   className={cn(
                     "p-3 rounded-xl transition-all",
-                    showMetadataEditor ? "bg-gold text-night" : "bg-black/5 text-black/40 hover:text-black"
+                    showMetadataEditor ? "bg-[#D97757] text-[#1a1a1a]" : "bg-black/5 text-black/40 hover:text-black"
                   )}
                   title="Book Settings"
                 >
@@ -824,7 +824,7 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                       particleCount: 150,
                       spread: 70,
                       origin: { y: 0.6 },
-                      colors: ['#d4af37', '#ffffff', '#000000']
+                      colors: ['#D97757', '#ffffff', '#000000']
                     });
 
                     setTimeout(() => {
@@ -838,9 +838,9 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                       setIsFinalForging(false);
                     }, 2000);
                   }}
-                  className="px-10 py-4 bg-night text-white rounded-2xl font-bold uppercase tracking-[0.2em] hover:bg-gold hover:text-night transition-all shadow-2xl flex items-center gap-3 group relative overflow-hidden disabled:opacity-50"
+                  className="px-10 py-4 bg-[#141414] text-white rounded-2xl font-bold uppercase tracking-[0.2em] hover:bg-[#D97757] hover:text-[#1a1a1a] transition-all shadow-2xl flex items-center gap-3 group relative overflow-hidden disabled:opacity-50"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-gold/0 via-gold/10 to-gold/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#D97757]/0 via-[#D97757]/10 to-[#D97757]/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
                   {isFinalForging ? <Loader2 className="animate-spin" size={18} /> : <Zap size={18} className="group-hover:fill-night transition-all" />}
                   <span>{isFinalForging ? 'Forging...' : 'Forge Masterpiece'}</span>
                 </button>
@@ -860,7 +860,7 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                     className="absolute inset-y-0 right-0 w-80 bg-white border-l border-black/5 z-50 shadow-2xl p-8 overflow-y-auto custom-scrollbar"
                   >
                     <div className="flex items-center justify-between mb-8">
-                      <h3 className="text-xl font-serif font-bold">Book Settings</h3>
+                      <h3 className="text-xl font-semibold">Book Settings</h3>
                       <button onClick={() => setShowMetadataEditor(false)} className="p-2 hover:bg-black/5 rounded-xl">
                         <X size={20} />
                       </button>
@@ -873,7 +873,7 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                           type="text"
                           value={authorName}
                           onChange={(e) => setAuthorName(e.target.value)}
-                          className="w-full bg-black/5 rounded-xl p-3 outline-none border border-black/5 text-sm font-serif"
+                          className="w-full bg-black/5 rounded-xl p-3 outline-none border border-black/5 text-sm font-sans"
                         />
                       </div>
 
@@ -893,7 +893,7 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                                 setEditingImageIndex('cover');
                                 setShowImageEditor(true);
                               }}
-                              className="p-3 bg-gold/10 text-gold rounded-xl border border-gold/20 hover:bg-gold hover:text-night transition-all"
+                              className="p-3 bg-[#D97757]/10 text-[#D97757] rounded-xl border border-[#D97757]/20 hover:bg-[#D97757] hover:text-[#1a1a1a] transition-all"
                               title="Edit Image"
                             >
                               <Sliders size={16} />
@@ -965,9 +965,9 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                       </div>
                     </div>
 
-                    <div className="mt-12 p-6 bg-gold/5 rounded-2xl border border-gold/10">
-                      <p className="text-[10px] text-gold font-bold uppercase tracking-widest mb-2">Pro Tip</p>
-                      <p className="text-xs text-night/60 leading-relaxed italic">Changing these settings will affect how the book is finalized and indexed in the library.</p>
+                    <div className="mt-12 p-6 bg-[#D97757]/5 rounded-2xl border border-[#D97757]/10">
+                      <p className="text-[10px] text-[#D97757] font-bold uppercase tracking-widest mb-2">Pro Tip</p>
+                      <p className="text-xs text-[#1a1a1a]/60 leading-relaxed italic">Changing these settings will affect how the book is finalized and indexed in the library.</p>
                     </div>
                   </motion.div>
                 )}
@@ -991,7 +991,7 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                       onClick={() => setCurrentPageIndex(idx)}
                       className={cn(
                         "w-full p-4 rounded-2xl text-left transition-all border group relative",
-                        currentPageIndex === idx ? "bg-white border-gold shadow-lg" : "bg-transparent border-transparent hover:bg-white/50"
+                        currentPageIndex === idx ? "bg-white border-[#D97757] shadow-lg" : "bg-transparent border-transparent hover:bg-white/50"
                       )}
                     >
                       <div className="text-[10px] font-bold text-black/20 mb-1">PAGE {idx + 1}</div>
@@ -1012,7 +1012,7 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
               </div>
 
               {/* Main Editor: Book-like Page */}
-              <div className="flex-1 bg-night p-12 overflow-y-auto custom-scrollbar flex flex-col items-center justify-center">
+              <div className="flex-1 bg-[#141414] p-12 overflow-y-auto custom-scrollbar flex flex-col items-center justify-center">
                 <div className="w-full max-w-5xl flex items-stretch justify-center relative">
                   {/* Left Side: Illustration */}
                   <div className="flex-1">
@@ -1053,7 +1053,7 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                                   setEditingImageIndex(currentPageIndex);
                                   setShowImageEditor(true);
                                 }}
-                                className="w-12 h-12 rounded-full bg-gold/80 backdrop-blur-md flex items-center justify-center text-night hover:bg-gold transition-all"
+                                className="w-12 h-12 rounded-full bg-[#D97757]/80 backdrop-blur-md flex items-center justify-center text-[#1a1a1a] hover:bg-[#D97757] transition-all"
                                 title="Edit Image (CapCut Style)"
                               >
                                 <Sliders size={20} />
@@ -1064,7 +1064,7 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                         </>
                       ) : (
                         <>
-                          <div className="w-16 h-16 bg-black/5 rounded-2xl flex items-center justify-center text-black/20 group-hover:text-gold transition-colors shadow-sm">
+                          <div className="w-16 h-16 bg-black/5 rounded-2xl flex items-center justify-center text-black/20 group-hover:text-[#D97757] transition-colors shadow-sm">
                             <ImageIconLucide size={32} />
                           </div>
                           <div className="text-center">
@@ -1073,7 +1073,7 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                           </div>
                           <button
                             onClick={(e) => { e.stopPropagation(); openImageSource(currentPageIndex); }}
-                            className="mt-4 px-6 py-2 bg-night text-white rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-gold hover:text-night transition-all shadow-lg"
+                            className="mt-4 px-6 py-2 bg-[#141414] text-white rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-[#D97757] hover:text-[#1a1a1a] transition-all shadow-lg"
                           >
                             Add Image
                           </button>
@@ -1198,7 +1198,7 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                                 onClick={() => handleUpdatePage(currentPageIndex, { color: c })}
                                 className={cn(
                                   "w-4 h-4 rounded-full border border-black/5 transition-transform hover:scale-125",
-                                  draftPages[currentPageIndex].color === c && "ring-2 ring-gold ring-offset-1"
+                                  draftPages[currentPageIndex].color === c && "ring-2 ring-[#D97757] ring-offset-1"
                                 )}
                                 style={{ backgroundColor: c }}
                               />
@@ -1242,7 +1242,7 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                           }
                         }}
                         disabled={isAIGenerating}
-                        className="flex items-center gap-1.5 px-3 py-1.5 bg-gold/10 text-gold rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-gold hover:text-night transition-all border border-gold/20 disabled:opacity-40"
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-[#D97757]/10 text-[#D97757] rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-[#D97757] hover:text-[#1a1a1a] transition-all border border-[#D97757]/20 disabled:opacity-40"
                         title="Enhance this page's text with AI"
                       >
                         {isAIGenerating ? <Loader2 size={12} className="animate-spin" /> : <Brain size={12} />}
@@ -1390,7 +1390,7 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-xl font-serif font-bold text-night">Add Image</h3>
+                  <h3 className="text-xl font-semibold text-[#1a1a1a]">Add Image</h3>
                   <p className="text-xs text-black/35 mt-0.5">
                     {imageSourceTarget === 'cover' ? 'Choose a cover image' : `Page ${(imageSourceTarget as number) + 1} illustration`}
                   </p>
@@ -1410,9 +1410,9 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                     setShowImageSource(false);
                     handleImageUpload(imageSourceTarget);
                   }}
-                  className="w-full flex items-center gap-4 p-5 bg-black/5 hover:bg-night hover:text-white rounded-2xl border-2 border-transparent hover:border-gold/30 transition-all group text-left"
+                  className="w-full flex items-center gap-4 p-5 bg-black/5 hover:bg-[#141414] hover:text-white rounded-2xl border-2 border-transparent hover:border-[#D97757]/30 transition-all group text-left"
                 >
-                  <div className="w-12 h-12 rounded-2xl bg-white group-hover:bg-gold/20 flex items-center justify-center text-black/50 group-hover:text-gold transition-all shadow-sm flex-shrink-0">
+                  <div className="w-12 h-12 rounded-2xl bg-white group-hover:bg-[#D97757]/20 flex items-center justify-center text-black/50 group-hover:text-[#D97757] transition-all shadow-sm flex-shrink-0">
                     <Upload size={22} />
                   </div>
                   <div>
@@ -1427,14 +1427,14 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
                     setShowImageSource(false);
                     setShowPhotoPicker(true);
                   }}
-                  className="w-full flex items-center gap-4 p-5 bg-gold/5 hover:bg-gold hover:text-night rounded-2xl border-2 border-gold/20 hover:border-gold transition-all group text-left"
+                  className="w-full flex items-center gap-4 p-5 bg-[#D97757]/5 hover:bg-[#D97757] hover:text-[#1a1a1a] rounded-2xl border-2 border-[#D97757]/20 hover:border-[#D97757] transition-all group text-left"
                 >
-                  <div className="w-12 h-12 rounded-2xl bg-gold/20 group-hover:bg-night/20 flex items-center justify-center text-gold group-hover:text-night transition-all shadow-sm flex-shrink-0">
+                  <div className="w-12 h-12 rounded-2xl bg-[#D97757]/20 group-hover:bg-[#141414]/20 flex items-center justify-center text-[#D97757] group-hover:text-[#1a1a1a] transition-all shadow-sm flex-shrink-0">
                     <Grid size={22} />
                   </div>
                   <div>
                     <p className="font-bold text-sm">Browse Stock Photos</p>
-                    <p className="text-[11px] text-black/40 group-hover:text-night/50 mt-0.5">Unsplash, Pexels, Pixabay, Vecteezy &amp; Pinterest</p>
+                    <p className="text-[11px] text-black/40 group-hover:text-[#1a1a1a]/50 mt-0.5">Unsplash, Pexels, Pixabay, Vecteezy &amp; Pinterest</p>
                   </div>
                 </button>
               </div>

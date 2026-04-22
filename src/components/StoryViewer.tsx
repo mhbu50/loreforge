@@ -94,12 +94,12 @@ export default function StoryViewer({ story, onClose, onEdit, narrator }: StoryV
         <div className="flex items-center gap-4">
           <button
             onClick={onClose}
-            className="p-3 bg-white/8 border border-white/10 rounded-2xl hover:bg-gold/10 hover:border-gold/20 text-white/60 hover:text-gold transition-all"
+            className="p-3 bg-white/8 border border-white/10 rounded-2xl hover:bg-[#D97757]/10 hover:border-[#D97757]/20 text-white/60 hover:text-[#D97757] transition-all"
           >
             <X size={20} />
           </button>
           <div>
-            <h2 className="text-xl font-serif font-bold leading-none text-white">{story.title}</h2>
+            <h2 className="text-xl font-semibold leading-none text-white">{story.title}</h2>
             <p className="text-[10px] small-caps tracking-widest text-white/30 mt-0.5">By {story.authorName}</p>
           </div>
         </div>
@@ -112,8 +112,8 @@ export default function StoryViewer({ story, onClose, onEdit, narrator }: StoryV
             className={cn(
               "p-3 rounded-2xl border transition-all",
               isImmersiveMode
-                ? "bg-gold/20 border-gold/40 text-gold"
-                : "bg-white/8 border-white/10 text-white/60 hover:bg-gold/10 hover:border-gold/20 hover:text-gold"
+                ? "bg-[#D97757]/20 border-[#D97757]/40 text-[#D97757]"
+                : "bg-white/8 border-white/10 text-white/60 hover:bg-[#D97757]/10 hover:border-[#D97757]/20 hover:text-[#D97757]"
             )}
             title="Immersive Reader Mode (scroll)"
           >
@@ -126,7 +126,7 @@ export default function StoryViewer({ story, onClose, onEdit, narrator }: StoryV
               "p-3 rounded-2xl border transition-all",
               isDyslexicFont
                 ? "bg-blue-500/20 border-blue-500/40 text-blue-400"
-                : "bg-white/8 border-white/10 text-white/60 hover:bg-gold/10 hover:border-gold/20 hover:text-gold"
+                : "bg-white/8 border-white/10 text-white/60 hover:bg-[#D97757]/10 hover:border-[#D97757]/20 hover:text-[#D97757]"
             )}
             title="Dyslexia Friendly Font"
           >
@@ -135,14 +135,14 @@ export default function StoryViewer({ story, onClose, onEdit, narrator }: StoryV
 
           <button
             onClick={handleShare}
-            className="p-3 bg-white/8 border border-white/10 rounded-2xl hover:bg-gold/10 hover:border-gold/20 text-white/60 hover:text-gold transition-all"
+            className="p-3 bg-white/8 border border-white/10 rounded-2xl hover:bg-[#D97757]/10 hover:border-[#D97757]/20 text-white/60 hover:text-[#D97757] transition-all"
             title="Share Story"
           >
             <Share2 size={18} />
           </button>
 
           <div className="relative group">
-            <button className="p-3 bg-white/8 border border-white/10 rounded-2xl hover:bg-gold/10 hover:border-gold/20 text-white/60 hover:text-gold transition-all">
+            <button className="p-3 bg-white/8 border border-white/10 rounded-2xl hover:bg-[#D97757]/10 hover:border-[#D97757]/20 text-white/60 hover:text-[#D97757] transition-all">
               <Download size={18} />
             </button>
             <div className="absolute right-0 top-full mt-2 hidden group-hover:block bg-[#1a1a1a] border border-white/10 rounded-2xl overflow-hidden shadow-2xl z-50 min-w-[120px]">
@@ -167,7 +167,7 @@ export default function StoryViewer({ story, onClose, onEdit, narrator }: StoryV
               "p-3 rounded-2xl border transition-all",
               isBedtimeMode
                 ? "bg-orange-500/20 border-orange-500/40 text-orange-400"
-                : "bg-white/8 border-white/10 text-white/60 hover:bg-gold/10 hover:border-gold/20 hover:text-gold"
+                : "bg-white/8 border-white/10 text-white/60 hover:bg-[#D97757]/10 hover:border-[#D97757]/20 hover:text-[#D97757]"
             )}
             title="Bedtime Mode (Warm Colors)"
           >
@@ -179,8 +179,8 @@ export default function StoryViewer({ story, onClose, onEdit, narrator }: StoryV
             className={cn(
               "p-3 rounded-2xl border transition-all",
               isCinemaMode
-                ? "bg-gold/20 border-gold/40 text-gold"
-                : "bg-white/8 border-white/10 text-white/60 hover:bg-gold/10 hover:border-gold/20 hover:text-gold"
+                ? "bg-[#D97757]/20 border-[#D97757]/40 text-[#D97757]"
+                : "bg-white/8 border-white/10 text-white/60 hover:bg-[#D97757]/10 hover:border-[#D97757]/20 hover:text-[#D97757]"
             )}
             title="Cinema Mode"
           >
@@ -190,7 +190,7 @@ export default function StoryViewer({ story, onClose, onEdit, narrator }: StoryV
           {onEdit && (
             <button
               onClick={() => onEdit(story)}
-              className="p-3 bg-white/8 border border-white/10 rounded-2xl hover:bg-gold/10 hover:border-gold/20 text-white/60 hover:text-gold transition-all"
+              className="p-3 bg-white/8 border border-white/10 rounded-2xl hover:bg-[#D97757]/10 hover:border-[#D97757]/20 text-white/60 hover:text-[#D97757] transition-all"
               title="Edit Story"
             >
               <Edit3 size={18} />
@@ -203,7 +203,7 @@ export default function StoryViewer({ story, onClose, onEdit, narrator }: StoryV
               "p-3 rounded-2xl border transition-all",
               showScript
                 ? "bg-white/15 border-white/20 text-white"
-                : "bg-white/8 border-white/10 text-white/60 hover:bg-gold/10 hover:border-gold/20 hover:text-gold"
+                : "bg-white/8 border-white/10 text-white/60 hover:bg-[#D97757]/10 hover:border-[#D97757]/20 hover:text-[#D97757]"
             )}
           >
             <FileText size={18} />
@@ -214,7 +214,7 @@ export default function StoryViewer({ story, onClose, onEdit, narrator }: StoryV
       {/* Progress bar */}
       <div className="h-px bg-white/5 relative z-20">
         <motion.div
-          className="h-full bg-gold shadow-[0_0_8px_rgba(212,175,55,0.6)]"
+          className="h-full bg-[#D97757] shadow-[0_0_8px_rgba(217,119,87,0.6)]"
           initial={{ width: 0 }}
           animate={{ width: `${currentPage === -1 ? 0 : ((currentPage + 1) / totalPages) * 100}%` }}
           transition={{ type: 'spring', stiffness: 80, damping: 20 }}
@@ -228,7 +228,7 @@ export default function StoryViewer({ story, onClose, onEdit, narrator }: StoryV
           <button
             onClick={() => setCurrentPage(p => Math.max(hasCovers ? -1 : 0, p - 1))}
             disabled={currentPage === (hasCovers ? -1 : 0)}
-            className="absolute -left-16 top-1/2 -translate-y-1/2 p-4 bg-white/8 border border-white/10 rounded-2xl hover:bg-gold/10 hover:border-gold/20 text-white/60 hover:text-gold transition-all disabled:opacity-0"
+            className="absolute -left-16 top-1/2 -translate-y-1/2 p-4 bg-white/8 border border-white/10 rounded-2xl hover:bg-[#D97757]/10 hover:border-[#D97757]/20 text-white/60 hover:text-[#D97757] transition-all disabled:opacity-0"
           >
             <ChevronLeft size={24} />
           </button>
@@ -237,7 +237,7 @@ export default function StoryViewer({ story, onClose, onEdit, narrator }: StoryV
           <button
             onClick={() => setCurrentPage(p => Math.min(totalPages - 1, p + 1))}
             disabled={currentPage === totalPages - 1}
-            className="absolute -right-16 top-1/2 -translate-y-1/2 p-4 bg-white/8 border border-white/10 rounded-2xl hover:bg-gold/10 hover:border-gold/20 text-white/60 hover:text-gold transition-all disabled:opacity-0"
+            className="absolute -right-16 top-1/2 -translate-y-1/2 p-4 bg-white/8 border border-white/10 rounded-2xl hover:bg-[#D97757]/10 hover:border-[#D97757]/20 text-white/60 hover:text-[#D97757] transition-all disabled:opacity-0"
           >
             <ChevronRight size={24} />
           </button>
@@ -274,9 +274,9 @@ export default function StoryViewer({ story, onClose, onEdit, narrator }: StoryV
                     </div>
                   )}
                   <div>
-                    <h1 className="text-5xl font-serif font-bold text-white mb-4">{story.title}</h1>
-                    <div className="w-12 h-0.5 bg-gold/50 mx-auto mb-4" />
-                    <p className="text-white/50 font-serif italic text-xl">by {story.authorName}</p>
+                    <h1 className="text-5xl font-semibold text-white mb-4">{story.title}</h1>
+                    <div className="w-12 h-0.5 bg-[#D97757]/50 mx-auto mb-4" />
+                    <p className="text-white/50 font-sans italic text-xl">by {story.authorName}</p>
                   </div>
                   <p className="text-[10px] small-caps tracking-[0.3em] text-white/20 font-bold">
                     A StoryCraft Masterpiece
@@ -307,8 +307,8 @@ export default function StoryViewer({ story, onClose, onEdit, narrator }: StoryV
 
                   {/* Chapter label */}
                   <div className="flex items-center gap-3">
-                    <span className="w-10 h-px bg-gold/40" />
-                    <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-gold">
+                    <span className="w-10 h-px bg-[#D97757]/40" />
+                    <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-[#D97757]">
                       Chapter {currentPage + 1}
                     </span>
                   </div>
@@ -316,7 +316,7 @@ export default function StoryViewer({ story, onClose, onEdit, narrator }: StoryV
                   {/* Text */}
                   <div
                     className={cn(
-                      "font-serif leading-relaxed text-white/90 text-xl",
+                      "font-sans leading-relaxed text-white/90 text-xl",
                       story.pages[currentPage].fontSize,
                       story.pages[currentPage].alignment === 'center'
                         ? 'text-center'
@@ -340,7 +340,7 @@ export default function StoryViewer({ story, onClose, onEdit, narrator }: StoryV
                   {/* Language tag */}
                   {story.language && (
                     <div className="inline-flex items-center gap-2 bg-black/50 backdrop-blur-md px-3 py-1 rounded-full border border-white/10">
-                      <Globe size={12} className="text-gold" />
+                      <Globe size={12} className="text-[#D97757]" />
                       <span className="text-[10px] font-bold uppercase tracking-widest text-white">
                         {story.language}
                       </span>
@@ -358,7 +358,7 @@ export default function StoryViewer({ story, onClose, onEdit, narrator }: StoryV
                           {branchPageStack.pages.map((bp, bi) => (
                             <div key={bi} className="space-y-3 pl-4 border-l-2 border-purple-500/20">
                               {bp.imageUrl && <img src={bp.imageUrl} alt="" className="w-full rounded-xl object-cover max-h-48" />}
-                              <p className="text-white/80 text-base leading-relaxed font-serif">{bp.text}</p>
+                              <p className="text-white/80 text-base leading-relaxed font-sans">{bp.text}</p>
                             </div>
                           ))}
                           <button
@@ -384,11 +384,11 @@ export default function StoryViewer({ story, onClose, onEdit, narrator }: StoryV
                                     setCurrentPage(choice.nextPageIndex);
                                   }
                                 }}
-                                className="w-full text-left px-5 py-4 bg-white/[0.05] border border-white/[0.08] rounded-2xl hover:bg-gold/10 hover:border-gold/20 transition-all group"
+                                className="w-full text-left px-5 py-4 bg-white/[0.05] border border-white/[0.08] rounded-2xl hover:bg-[#D97757]/10 hover:border-[#D97757]/20 transition-all group"
                               >
                                 <div className="flex items-center justify-between gap-3">
                                   <span className="text-white/75 text-sm font-medium leading-snug group-hover:text-white transition-colors">{choice.text}</span>
-                                  <ChevronRight size={14} className="text-white/25 group-hover:text-gold flex-shrink-0 transition-colors" />
+                                  <ChevronRight size={14} className="text-white/25 group-hover:text-[#D97757] flex-shrink-0 transition-colors" />
                                 </div>
                               </button>
                             ))}
@@ -410,7 +410,7 @@ export default function StoryViewer({ story, onClose, onEdit, narrator }: StoryV
               onClick={() => setCurrentPage(-1)}
               className={cn(
                 "h-1.5 rounded-full transition-all duration-300",
-                currentPage === -1 ? "bg-gold w-10" : "bg-white/15 w-4 hover:bg-white/30"
+                currentPage === -1 ? "bg-[#D97757] w-10" : "bg-white/15 w-4 hover:bg-white/30"
               )}
             />
           )}
@@ -420,7 +420,7 @@ export default function StoryViewer({ story, onClose, onEdit, narrator }: StoryV
               onClick={() => setCurrentPage(i)}
               className={cn(
                 "h-1.5 rounded-full transition-all duration-300",
-                i === currentPage ? "bg-gold w-10" : "bg-white/15 w-4 hover:bg-white/30"
+                i === currentPage ? "bg-[#D97757] w-10" : "bg-white/15 w-4 hover:bg-white/30"
               )}
             />
           ))}
@@ -439,12 +439,12 @@ export default function StoryViewer({ story, onClose, onEdit, narrator }: StoryV
             {/* Close bar */}
             <div className="sticky top-0 z-20 flex items-center justify-between px-8 py-4 bg-[#030303]/95 backdrop-blur border-b border-white/[0.05]">
               <div>
-                <p className="text-[9px] font-bold uppercase tracking-[0.4em] text-gold/50">Immersive Reader</p>
-                <h3 className="text-lg font-serif font-bold text-white">{story.title}</h3>
+                <p className="text-[9px] font-bold uppercase tracking-[0.4em] text-[#D97757]/50">Immersive Reader</p>
+                <h3 className="text-lg font-semibold text-white">{story.title}</h3>
               </div>
               <button
                 onClick={() => setIsImmersiveMode(false)}
-                className="p-3 bg-white/5 border border-white/10 rounded-2xl hover:bg-gold/10 hover:border-gold/20 text-white/50 hover:text-gold transition-all"
+                className="p-3 bg-white/5 border border-white/10 rounded-2xl hover:bg-[#D97757]/10 hover:border-[#D97757]/20 text-white/50 hover:text-[#D97757] transition-all"
               >
                 <X size={18} />
               </button>
@@ -460,9 +460,9 @@ export default function StoryViewer({ story, onClose, onEdit, narrator }: StoryV
                     className="w-64 mx-auto rounded-2xl shadow-2xl shadow-black/80"
                   />
                   <div>
-                    <h1 className="text-5xl font-serif font-bold text-white mb-4">{story.title}</h1>
-                    <div className="w-12 h-px bg-gold/50 mx-auto mb-4" />
-                    <p className="text-white/40 italic font-serif">by {story.authorName}</p>
+                    <h1 className="text-5xl font-semibold text-white mb-4">{story.title}</h1>
+                    <div className="w-12 h-px bg-[#D97757]/50 mx-auto mb-4" />
+                    <p className="text-white/40 italic font-sans">by {story.authorName}</p>
                   </div>
                 </div>
               )}
@@ -472,8 +472,8 @@ export default function StoryViewer({ story, onClose, onEdit, narrator }: StoryV
                 <div key={i} className="py-12 border-t border-white/[0.05] space-y-8">
                   {/* Chapter marker */}
                   <div className="flex items-center gap-3">
-                    <span className="w-8 h-px bg-gold/30" />
-                    <span className="text-[9px] font-bold uppercase tracking-[0.5em] text-gold/40">
+                    <span className="w-8 h-px bg-[#D97757]/30" />
+                    <span className="text-[9px] font-bold uppercase tracking-[0.5em] text-[#D97757]/40">
                       {story.narrativeStructure === 'hero-journey' && i === 0 ? 'Ordinary World'
                        : story.narrativeStructure === 'hero-journey' && i === Math.floor(story.pages.length * 0.15) ? 'The Call'
                        : `Chapter ${i + 1}`}
@@ -488,7 +488,7 @@ export default function StoryViewer({ story, onClose, onEdit, narrator }: StoryV
                   {/* Text */}
                   <div
                     className={cn(
-                      "font-serif leading-[1.9] text-white/80 text-xl",
+                      "font-sans leading-[1.9] text-white/80 text-xl",
                       page.fontSize,
                       isDyslexicFont && 'font-dyslexic'
                     )}
@@ -513,7 +513,7 @@ export default function StoryViewer({ story, onClose, onEdit, narrator }: StoryV
                           <div key={c.id} className="px-5 py-4 bg-white/[0.04] border border-white/[0.06] rounded-2xl">
                             <p className="text-white/70 text-sm font-medium mb-3">{c.text}</p>
                             {c.branchPages?.map((bp, bi) => (
-                              <p key={bi} className="text-white/45 text-sm leading-relaxed font-serif italic border-l-2 border-gold/20 pl-4 mt-2">{bp.text}</p>
+                              <p key={bi} className="text-white/45 text-sm leading-relaxed font-sans italic border-l-2 border-[#D97757]/20 pl-4 mt-2">{bp.text}</p>
                             ))}
                           </div>
                         ))}
@@ -525,8 +525,8 @@ export default function StoryViewer({ story, onClose, onEdit, narrator }: StoryV
 
               {/* End card */}
               <div className="py-16 text-center space-y-4">
-                <div className="w-12 h-px bg-gold/30 mx-auto" />
-                <p className="text-white/20 text-sm font-serif italic">~ The End ~</p>
+                <div className="w-12 h-px bg-[#D97757]/30 mx-auto" />
+                <p className="text-white/20 text-sm font-sans italic">~ The End ~</p>
                 <p className="text-[10px] text-white/10 uppercase tracking-[0.4em]">A StoryCraft Verse</p>
               </div>
             </div>

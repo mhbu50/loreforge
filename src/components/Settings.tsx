@@ -18,7 +18,7 @@ function Toggle({ on, onToggle }: { on: boolean; onToggle: () => void }) {
       onClick={onToggle}
       className={cn(
         "w-11 h-6 rounded-full transition-colors duration-200 relative flex-shrink-0",
-        on ? "bg-gold" : "bg-black/10"
+        on ? "bg-[#D97757]" : "bg-black/10"
       )}
     >
       <motion.div
@@ -43,11 +43,11 @@ function Row({ label, description, children }: { label: string; description?: st
 }
 
 const TABS = [
-  { id: 'writing',      icon: Pen,           label: 'Writing',      color: 'text-gold',     bg: 'bg-gold/10' },
+  { id: 'writing',      icon: Pen,           label: 'Writing',      color: 'text-[#D97757]',     bg: 'bg-[#D97757]/10' },
   { id: 'security',     icon: Shield,        label: 'Security',     color: 'text-red-400',  bg: 'bg-red-500/10' },
   { id: 'interface',    icon: Layout,        label: 'Interface',    color: 'text-blue-400', bg: 'bg-blue-500/10' },
   { id: 'accessibility',icon: Accessibility, label: 'Accessibility',color: 'text-green-400',bg: 'bg-green-500/10' },
-  { id: 'subscription', icon: Ticket,        label: 'Subscription', color: 'text-gold',     bg: 'bg-gold/10' },
+  { id: 'subscription', icon: Ticket,        label: 'Subscription', color: 'text-[#D97757]',     bg: 'bg-[#D97757]/10' },
 ] as const;
 
 type TabId = typeof TABS[number]['id'];
@@ -98,10 +98,10 @@ export default function Settings({ onRedeem }: SettingsProps) {
               onClick={() => setTab(t.id)}
               className={cn(
                 "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all text-left group",
-                active ? "bg-night text-white shadow-md" : "text-black/40 hover:bg-black/[0.04] hover:text-black/70"
+                active ? "bg-[#141414] text-white shadow-md" : "text-black/40 hover:bg-black/[0.04] hover:text-black/70"
               )}
             >
-              <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors", active ? "bg-gold/20 text-gold" : cn(t.bg, t.color))}>
+              <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors", active ? "bg-[#D97757]/20 text-[#D97757]" : cn(t.bg, t.color))}>
                 <Icon size={15} />
               </div>
               <span className="text-[12px] font-semibold">{t.label}</span>
@@ -128,7 +128,7 @@ export default function Settings({ onRedeem }: SettingsProps) {
                 <activeTab.icon size={22} />
               </div>
               <div>
-                <h2 className="text-3xl font-serif font-bold">{activeTab.label}</h2>
+                <h2 className="text-3xl font-semibold">{activeTab.label}</h2>
                 <p className="text-xs text-black/35 mt-0.5 font-medium">
                   {tab === 'writing' && 'Focus mode, sound, and writing experience'}
                   {tab === 'security' && 'App lock and privacy controls'}
@@ -172,7 +172,7 @@ export default function Settings({ onRedeem }: SettingsProps) {
                         <input type="number" min="1" max="120"
                           value={config.writing.pomodoroWorkTime}
                           onChange={e => upd('writing', { pomodoroWorkTime: parseInt(e.target.value) || 25 })}
-                          className="w-full px-4 py-3 bg-black/[0.03] border border-black/[0.06] rounded-xl outline-none focus:border-gold/40 text-sm font-medium transition-colors"
+                          className="w-full px-4 py-3 bg-black/[0.03] border border-black/[0.06] rounded-xl outline-none focus:border-[#D97757]/40 text-sm font-medium transition-colors"
                         />
                       </div>
                       <div className="space-y-2">
@@ -180,7 +180,7 @@ export default function Settings({ onRedeem }: SettingsProps) {
                         <input type="number" min="1" max="60"
                           value={config.writing.pomodoroBreakTime}
                           onChange={e => upd('writing', { pomodoroBreakTime: parseInt(e.target.value) || 5 })}
-                          className="w-full px-4 py-3 bg-black/[0.03] border border-black/[0.06] rounded-xl outline-none focus:border-gold/40 text-sm font-medium transition-colors"
+                          className="w-full px-4 py-3 bg-black/[0.03] border border-black/[0.06] rounded-xl outline-none focus:border-[#D97757]/40 text-sm font-medium transition-colors"
                         />
                       </div>
                     </div>
@@ -203,7 +203,7 @@ export default function Settings({ onRedeem }: SettingsProps) {
                         className={cn(
                           "py-3 px-4 rounded-xl text-sm font-semibold transition-all border text-left",
                           config.writing.ambientSound === v
-                            ? "bg-night text-white border-night"
+                            ? "bg-[#141414] text-white border-[#141414]"
                             : "bg-black/[0.03] border-black/[0.06] text-black/50 hover:border-black/20 hover:text-black/80"
                         )}
                       >
@@ -236,12 +236,12 @@ export default function Settings({ onRedeem }: SettingsProps) {
                   <div className="space-y-2">
                     <div className="flex justify-between text-xs font-semibold text-black/40">
                       <span>Save interval</span>
-                      <span className="text-gold font-bold">{config.security.autoSaveInterval}s</span>
+                      <span className="text-[#D97757] font-bold">{config.security.autoSaveInterval}s</span>
                     </div>
                     <input type="range" min="10" max="300" step="10"
                       value={config.security.autoSaveInterval}
                       onChange={e => upd('security', { autoSaveInterval: parseInt(e.target.value) })}
-                      className="w-full accent-gold"
+                      className="w-full accent-[#D97757]"
                     />
                     <div className="flex justify-between text-[10px] text-black/25">
                       <span>10s</span><span>5 min</span>
@@ -263,7 +263,7 @@ export default function Settings({ onRedeem }: SettingsProps) {
                         onClick={() => upd('ui', { theme: t })}
                         className={cn(
                           "py-3 rounded-xl text-xs font-bold uppercase tracking-widest border transition-all",
-                          config.ui.theme === t ? "bg-night text-white border-night" : "border-black/[0.06] text-black/40 hover:border-black/20 hover:text-black/70"
+                          config.ui.theme === t ? "bg-[#141414] text-white border-[#141414]" : "border-black/[0.06] text-black/40 hover:border-black/20 hover:text-black/70"
                         )}
                       >
                         {t}
@@ -277,31 +277,31 @@ export default function Settings({ onRedeem }: SettingsProps) {
                   <div className="space-y-2">
                     <div className="flex justify-between text-xs font-semibold text-black/40">
                       <span>Font Size</span>
-                      <span className="text-gold font-bold">{config.ui.fontSize}px</span>
+                      <span className="text-[#D97757] font-bold">{config.ui.fontSize}px</span>
                     </div>
                     <input type="range" min="12" max="24"
                       value={config.ui.fontSize}
                       onChange={e => upd('ui', { fontSize: parseInt(e.target.value) })}
-                      className="w-full accent-gold"
+                      className="w-full accent-[#D97757]"
                     />
                   </div>
                   <div className="space-y-2">
                     <div className="flex justify-between text-xs font-semibold text-black/40">
                       <span>Line Height</span>
-                      <span className="text-gold font-bold">{config.ui.lineHeight}</span>
+                      <span className="text-[#D97757] font-bold">{config.ui.lineHeight}</span>
                     </div>
                     <input type="range" min="1" max="2.5" step="0.1"
                       value={config.ui.lineHeight}
                       onChange={e => upd('ui', { lineHeight: parseFloat(e.target.value) })}
-                      className="w-full accent-gold"
+                      className="w-full accent-[#D97757]"
                     />
                   </div>
                 </div>
 
                 {userProfile?.activeThemeId && (
-                  <div className="bg-gold/5 border border-gold/20 rounded-2xl p-6 space-y-4">
+                  <div className="bg-[#D97757]/5 border border-[#D97757]/20 rounded-2xl p-6 space-y-4">
                     <div className="flex items-center gap-3">
-                      <Palette size={18} className="text-gold" />
+                      <Palette size={18} className="text-[#D97757]" />
                       <p className="text-sm font-bold">Active Custom Theme</p>
                     </div>
                     <p className="text-xs text-black/40 leading-relaxed">You're using a custom marketplace theme. It may override some settings above.</p>
@@ -339,20 +339,20 @@ export default function Settings({ onRedeem }: SettingsProps) {
             {/* ── Subscription ── */}
             {tab === 'subscription' && (
               <div className="space-y-6">
-                <div className="relative overflow-hidden bg-night rounded-2xl p-8 shadow-2xl">
+                <div className="relative overflow-hidden bg-[#141414] rounded-2xl p-8 shadow-2xl">
                   <div className="absolute inset-0 pointer-events-none">
-                    <div className="absolute -top-10 -right-10 w-48 h-48 rounded-full" style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.15) 0%, transparent 70%)' }} />
-                    <div className="absolute -bottom-8 -left-8 w-36 h-36 rounded-full" style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.08) 0%, transparent 70%)' }} />
+                    <div className="absolute -top-10 -right-10 w-48 h-48 rounded-full" style={{ background: 'radial-gradient(circle, rgba(217,119,87,0.15) 0%, transparent 70%)' }} />
+                    <div className="absolute -bottom-8 -left-8 w-36 h-36 rounded-full" style={{ background: 'radial-gradient(circle, rgba(217,119,87,0.08) 0%, transparent 70%)' }} />
                   </div>
                   <div className="relative">
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-gold/60 mb-3">Redeem</p>
-                    <h3 className="text-2xl font-serif font-bold text-white mb-2">Access Code</h3>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-[#D97757]/60 mb-3">Redeem</p>
+                    <h3 className="text-2xl font-semibold text-white mb-2">Access Code</h3>
                     <p className="text-sm text-white/40 mb-6 leading-relaxed">
                       Have a 12-character code? Enter it to unlock a subscription tier instantly.
                     </p>
                     <button
                       onClick={() => { if (onRedeem) onRedeem(); else toast.info("Use the REDEEM button in your profile."); }}
-                      className="flex items-center gap-2.5 px-6 py-3.5 bg-gold text-night rounded-xl font-bold text-sm hover:bg-white transition-all shadow-lg shadow-gold/20"
+                      className="flex items-center gap-2.5 px-6 py-3.5 bg-[#D97757] text-[#1a1a1a] rounded-xl font-bold text-sm hover:bg-white transition-all shadow-lg shadow-[#D97757]/20"
                     >
                       <Zap size={16} className="fill-night" />
                       Redeem Code
@@ -365,7 +365,7 @@ export default function Settings({ onRedeem }: SettingsProps) {
                   {[
                     { tier: 'Free',     tokens: '0',   price: 'Free',  color: 'text-black/40' },
                     { tier: 'Standard', tokens: '20',  price: '$5/mo', color: 'text-blue-500' },
-                    { tier: 'Premium',  tokens: '100', price: '$10/mo',color: 'text-gold' },
+                    { tier: 'Premium',  tokens: '100', price: '$10/mo',color: 'text-[#D97757]' },
                     { tier: 'Ultimate', tokens: '500', price: '$20/mo',color: 'text-purple-500' },
                   ].map(({ tier, tokens, price, color }) => (
                     <div key={tier} className="flex items-center justify-between py-3 border-b border-black/[0.05] last:border-0">

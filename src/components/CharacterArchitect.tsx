@@ -18,7 +18,7 @@ interface CharacterArchitectProps {
 }
 
 const ROLE_CONFIG: Record<CharacterRole, { label: string; icon: React.ReactNode; color: string }> = {
-  protagonist: { label: 'Protagonist', icon: <Star size={14} />, color: 'text-gold bg-gold/10 border-gold/20' },
+  protagonist: { label: 'Protagonist', icon: <Star size={14} />, color: 'text-[#D97757] bg-[#D97757]/10 border-[#D97757]/20' },
   antagonist:  { label: 'Antagonist', icon: <Sword size={14} />, color: 'text-red-400 bg-red-500/10 border-red-500/20' },
   supporting:  { label: 'Supporting', icon: <Heart size={14} />, color: 'text-blue-400 bg-blue-500/10 border-blue-500/20' },
   npc:         { label: 'NPC',         icon: <Users size={14} />, color: 'text-purple-400 bg-purple-500/10 border-purple-500/20' },
@@ -189,7 +189,7 @@ export default function CharacterArchitect({ storyId, userSubscriptionTier }: Ch
           </div>
           <button
             onClick={startNew}
-            className="w-full mt-3 flex items-center justify-center gap-2 py-2.5 bg-gold/10 border border-gold/20 rounded-xl text-gold text-xs font-bold hover:bg-gold/15 hover:border-gold/30 transition-all"
+            className="w-full mt-3 flex items-center justify-center gap-2 py-2.5 bg-[#D97757]/10 border border-[#D97757]/20 rounded-xl text-[#D97757] text-xs font-bold hover:bg-[#D97757]/15 hover:border-[#D97757]/30 transition-all"
           >
             <Plus size={14} /> New Character
           </button>
@@ -212,7 +212,7 @@ export default function CharacterArchitect({ storyId, userSubscriptionTier }: Ch
                 className={cn(
                   'w-full text-left p-3 rounded-xl border transition-all group flex items-center gap-3',
                   selected?.id === c.id
-                    ? 'bg-gold/10 border-gold/20'
+                    ? 'bg-[#D97757]/10 border-[#D97757]/20'
                     : 'bg-white/[0.03] border-white/[0.06] hover:border-white/15 hover:bg-white/[0.05]'
                 )}
               >
@@ -226,7 +226,7 @@ export default function CharacterArchitect({ storyId, userSubscriptionTier }: Ch
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1.5 mb-0.5">
                     <p className="text-sm font-semibold text-white/80 truncate">{c.name}</p>
-                    {c.portraitUrl && <Lock size={9} className="text-gold/60 flex-shrink-0" />}
+                    {c.portraitUrl && <Lock size={9} className="text-[#D97757]/60 flex-shrink-0" />}
                   </div>
                   <span className={cn('inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[9px] font-bold border', roleConf.color)}>
                     {roleConf.icon} {roleConf.label}
@@ -248,16 +248,16 @@ export default function CharacterArchitect({ storyId, userSubscriptionTier }: Ch
       <div className="flex-1 overflow-y-auto">
         {!isEditing ? (
           <div className="flex flex-col items-center justify-center h-full text-center p-12">
-            <div className="w-20 h-20 rounded-3xl bg-gold/5 border border-gold/10 flex items-center justify-center mb-6">
-              <Users size={36} className="text-gold/30" />
+            <div className="w-20 h-20 rounded-3xl bg-[#D97757]/5 border border-[#D97757]/10 flex items-center justify-center mb-6">
+              <Users size={36} className="text-[#D97757]/30" />
             </div>
-            <h2 className="text-2xl font-serif font-bold text-white/60 mb-2">Character Architect</h2>
+            <h2 className="text-2xl font-semibold text-white/60 mb-2">Character Architect</h2>
             <p className="text-white/25 text-sm max-w-sm leading-relaxed">
               Build your cast with deep AI-generated profiles — backstories, motivations, flaws, and portrait images that stay visually consistent across every scene.
             </p>
             <button
               onClick={startNew}
-              className="mt-8 flex items-center gap-2 px-6 py-3 bg-gold text-[#080808] rounded-xl font-bold text-sm hover:bg-white transition-all shadow-lg shadow-gold/20"
+              className="mt-8 flex items-center gap-2 px-6 py-3 bg-[#D97757] text-[#080808] rounded-xl font-bold text-sm hover:bg-white transition-all shadow-lg shadow-[#D97757]/20"
             >
               <Plus size={16} /> Create First Character
             </button>
@@ -267,10 +267,10 @@ export default function CharacterArchitect({ storyId, userSubscriptionTier }: Ch
             {/* Header */}
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-gold/60 mb-1">
+                <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#D97757]/60 mb-1">
                   {isCreating ? 'New Character' : 'Edit Character'}
                 </p>
-                <h2 className="text-2xl font-serif font-bold text-white">
+                <h2 className="text-2xl font-semibold text-white">
                   {draft.name || 'Unnamed Character'}
                 </h2>
               </div>
@@ -283,8 +283,8 @@ export default function CharacterArchitect({ storyId, userSubscriptionTier }: Ch
             </div>
 
             {/* Genre context for AI */}
-            <div className="p-4 bg-gold/[0.04] border border-gold/10 rounded-2xl">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-gold/50 mb-2">AI Context</p>
+            <div className="p-4 bg-[#D97757]/[0.04] border border-[#D97757]/10 rounded-2xl">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-[#D97757]/50 mb-2">AI Context</p>
               <input
                 value={genreContext}
                 onChange={e => setGenreContext(e.target.value)}
@@ -301,7 +301,7 @@ export default function CharacterArchitect({ storyId, userSubscriptionTier }: Ch
                   value={draft.name}
                   onChange={e => setDraft(d => ({ ...d, name: e.target.value }))}
                   placeholder="Character name"
-                  className="w-full bg-white/[0.05] border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-gold/40 text-white/80 text-sm font-serif placeholder:text-white/20 transition-colors"
+                  className="w-full bg-white/[0.05] border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-[#D97757]/40 text-white/80 text-sm font-sans placeholder:text-white/20 transition-colors"
                 />
               </div>
               <div className="space-y-2">
@@ -310,7 +310,7 @@ export default function CharacterArchitect({ storyId, userSubscriptionTier }: Ch
                   value={draft.age || ''}
                   onChange={e => setDraft(d => ({ ...d, age: e.target.value }))}
                   placeholder="e.g. 34"
-                  className="w-full bg-white/[0.05] border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-gold/40 text-white/80 text-sm placeholder:text-white/20 transition-colors"
+                  className="w-full bg-white/[0.05] border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-[#D97757]/40 text-white/80 text-sm placeholder:text-white/20 transition-colors"
                 />
               </div>
             </div>
@@ -339,7 +339,7 @@ export default function CharacterArchitect({ storyId, userSubscriptionTier }: Ch
               <div className="flex items-center justify-between">
                 <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30">Portrait</label>
                 {draft.portraitUrl && (
-                  <span className="flex items-center gap-1 text-[10px] text-gold/60 font-bold">
+                  <span className="flex items-center gap-1 text-[10px] text-[#D97757]/60 font-bold">
                     <Lock size={10} /> Face-Locked — visual consistency enabled
                   </span>
                 )}
@@ -365,12 +365,12 @@ export default function CharacterArchitect({ storyId, userSubscriptionTier }: Ch
                     value={draft.portraitStyle || ''}
                     onChange={e => setDraft(d => ({ ...d, portraitStyle: e.target.value }))}
                     placeholder="Visual style (e.g. 'oil painting, dramatic lighting, fantasy art')…"
-                    className="w-full bg-white/[0.05] border border-white/10 rounded-xl px-4 py-2.5 outline-none focus:border-gold/40 text-white/70 text-xs placeholder:text-white/20 transition-colors"
+                    className="w-full bg-white/[0.05] border border-white/10 rounded-xl px-4 py-2.5 outline-none focus:border-[#D97757]/40 text-white/70 text-xs placeholder:text-white/20 transition-colors"
                   />
                   <button
                     onClick={handleGeneratePortrait}
                     disabled={portraitLoading}
-                    className="flex items-center gap-2 px-4 py-2.5 bg-white/[0.06] border border-white/10 rounded-xl text-xs font-bold text-white/50 hover:bg-gold/10 hover:border-gold/20 hover:text-gold transition-all disabled:opacity-40"
+                    className="flex items-center gap-2 px-4 py-2.5 bg-white/[0.06] border border-white/10 rounded-xl text-xs font-bold text-white/50 hover:bg-[#D97757]/10 hover:border-[#D97757]/20 hover:text-[#D97757] transition-all disabled:opacity-40"
                   >
                     {portraitLoading ? <Loader2 size={13} className="animate-spin" /> : <ImageIcon size={13} />}
                     {portraitLoading ? 'Generating…' : 'Generate Portrait'}
@@ -383,7 +383,7 @@ export default function CharacterArchitect({ storyId, userSubscriptionTier }: Ch
             <button
               onClick={handleAIFillAll}
               disabled={aiLoading === 'all' || !draft.name}
-              className="w-full flex items-center justify-center gap-2 py-3.5 bg-gold/10 border border-gold/20 rounded-2xl text-gold text-sm font-bold hover:bg-gold/15 hover:border-gold/30 transition-all disabled:opacity-40"
+              className="w-full flex items-center justify-center gap-2 py-3.5 bg-[#D97757]/10 border border-[#D97757]/20 rounded-2xl text-[#D97757] text-sm font-bold hover:bg-[#D97757]/15 hover:border-[#D97757]/30 transition-all disabled:opacity-40"
             >
               {aiLoading === 'all' ? <Loader2 size={15} className="animate-spin" /> : <Wand2 size={15} />}
               {aiLoading === 'all' ? 'Generating Full Profile…' : 'AI: Generate Full Profile'}
@@ -396,7 +396,7 @@ export default function CharacterArchitect({ storyId, userSubscriptionTier }: Ch
                   <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30">
                     {label}
                     {key === 'appearance' && (
-                      <span className="ml-2 text-gold/50 normal-case tracking-normal font-normal">
+                      <span className="ml-2 text-[#D97757]/50 normal-case tracking-normal font-normal">
                         — used in every image prompt for face-lock
                       </span>
                     )}
@@ -404,7 +404,7 @@ export default function CharacterArchitect({ storyId, userSubscriptionTier }: Ch
                   <button
                     onClick={() => handleAIFillField(key as string)}
                     disabled={!!aiLoading || !draft.name}
-                    className="flex items-center gap-1 text-[10px] text-white/25 hover:text-gold transition-colors disabled:opacity-30"
+                    className="flex items-center gap-1 text-[10px] text-white/25 hover:text-[#D97757] transition-colors disabled:opacity-30"
                   >
                     {aiLoading === key ? <Loader2 size={10} className="animate-spin" /> : <Sparkles size={10} />}
                     AI fill
@@ -418,12 +418,12 @@ export default function CharacterArchitect({ storyId, userSubscriptionTier }: Ch
                   className={cn(
                     'w-full bg-white/[0.05] border rounded-xl px-4 py-3 outline-none text-white/80 text-sm leading-relaxed placeholder:text-white/20 resize-none transition-colors',
                     key === 'appearance' && appearanceLocked
-                      ? 'border-gold/30 bg-gold/[0.04]'
-                      : 'border-white/10 focus:border-gold/40'
+                      ? 'border-[#D97757]/30 bg-[#D97757]/[0.04]'
+                      : 'border-white/10 focus:border-[#D97757]/40'
                   )}
                 />
                 {key === 'appearance' && appearanceLocked && (
-                  <p className="text-[10px] text-gold/50 flex items-center gap-1">
+                  <p className="text-[10px] text-[#D97757]/50 flex items-center gap-1">
                     <Lock size={9} /> Locked — this description is injected into every image generation for visual consistency.
                   </p>
                 )}
@@ -441,7 +441,7 @@ export default function CharacterArchitect({ storyId, userSubscriptionTier }: Ch
               <button
                 onClick={handleSave}
                 disabled={saving || !draft.name.trim()}
-                className="flex-1 flex items-center justify-center gap-2 py-3 bg-gold text-[#080808] rounded-xl font-bold text-sm hover:bg-white transition-all shadow-lg shadow-gold/20 disabled:opacity-50"
+                className="flex-1 flex items-center justify-center gap-2 py-3 bg-[#D97757] text-[#080808] rounded-xl font-bold text-sm hover:bg-white transition-all shadow-lg shadow-[#D97757]/20 disabled:opacity-50"
               >
                 {saving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
                 {saving ? 'Saving…' : isCreating ? 'Add to Cast' : 'Save Changes'}

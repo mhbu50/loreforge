@@ -87,7 +87,7 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-night/70 backdrop-blur-sm"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm"
             onClick={onClose}
           />
 
@@ -101,7 +101,7 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
           >
             {/* Search input row */}
             <div className="flex items-center gap-3 px-5 py-4 border-b border-white/8">
-              <Search className="text-gold flex-shrink-0" size={18} />
+              <Search className="text-[#D97757] flex-shrink-0" size={18} />
               <input
                 autoFocus
                 className="flex-1 bg-transparent border-none outline-none text-white placeholder:text-white/25 text-base"
@@ -134,7 +134,7 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
                               className={cn(
                                 "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all text-left",
                                 isSelected
-                                  ? "bg-gold/10 border border-gold/20 text-gold"
+                                  ? "bg-[#D97757]/10 border border-[#D97757]/20 text-[#D97757]"
                                   : "text-white/70 hover:bg-white/8 hover:text-white border border-transparent"
                               )}
                               onClick={() => {
@@ -145,7 +145,7 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
                             >
                               <div className={cn(
                                 "w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors",
-                                isSelected ? "bg-gold/20 text-gold" : "bg-white/8 text-white/50"
+                                isSelected ? "bg-[#D97757]/20 text-[#D97757]" : "bg-white/8 text-white/50"
                               )}>
                                 {cmd.icon}
                               </div>

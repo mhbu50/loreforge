@@ -109,10 +109,10 @@ export default function ThemeMarketplace() {
       <div className="min-h-screen flex items-center justify-center luxury-bg">
         <div className="atmosphere" />
         <div className="flex flex-col items-center gap-6">
-          <div className="w-16 h-16 bg-gold rounded-full flex items-center justify-center text-night animate-float">
+          <div className="w-16 h-16 bg-[#D97757] rounded-full flex items-center justify-center text-[#1a1a1a] animate-float">
             <Palette className="animate-pulse" size={32} />
           </div>
-          <p className="small-caps text-gold animate-pulse">Loading Styles...</p>
+          <p className="small-caps text-[#D97757] animate-pulse">Loading Styles...</p>
         </div>
       </div>
     );
@@ -122,7 +122,7 @@ export default function ThemeMarketplace() {
     <div className="max-w-7xl mx-auto p-8 pb-32">
       <header className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-8">
         <div>
-          <h1 className="text-6xl font-serif font-light mb-4">Theme <span className="italic text-gold">Marketplace</span></h1>
+          <h1 className="text-6xl font-sans font-light mb-4">Theme <span className="italic text-[#D97757]">Marketplace</span></h1>
           <p className="text-black/40 small-caps tracking-[0.3em] text-xs">Customize your forge with community-crafted styles</p>
         </div>
         
@@ -139,7 +139,7 @@ export default function ThemeMarketplace() {
           </div>
           <button 
             onClick={() => setIsUploading(true)}
-            className="px-6 py-3 bg-black text-white rounded-2xl font-bold hover:bg-gold hover:text-night transition-all flex items-center gap-2 shadow-xl"
+            className="px-6 py-3 bg-black text-white rounded-2xl font-bold hover:bg-[#D97757] hover:text-[#1a1a1a] transition-all flex items-center gap-2 shadow-xl"
           >
             <Plus size={18} />
             <span>Share Theme</span>
@@ -156,13 +156,13 @@ export default function ThemeMarketplace() {
           >
             <div className="aspect-video bg-black/5 relative overflow-hidden flex items-center justify-center">
               <div className="absolute inset-0 opacity-10 pattern-dots" />
-              <Palette size={48} className="text-gold/20" />
+              <Palette size={48} className="text-[#D97757]/20" />
               <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent" />
               
               <div className="absolute top-6 right-6 flex gap-2 opacity-0 group-hover:opacity-100 transition-all">
                 <button 
                   onClick={(e) => handleLike(theme.id, e)}
-                  className="p-3 bg-white/80 backdrop-blur-md rounded-xl hover:bg-gold hover:text-night transition-all shadow-lg"
+                  className="p-3 bg-white/80 backdrop-blur-md rounded-xl hover:bg-[#D97757] hover:text-[#1a1a1a] transition-all shadow-lg"
                 >
                   <Heart size={16} className={theme.likes ? "fill-current" : ""} />
                 </button>
@@ -171,7 +171,7 @@ export default function ThemeMarketplace() {
 
             <div className="p-8">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-2xl font-serif font-bold">{theme.name}</h3>
+                <h3 className="text-2xl font-semibold">{theme.name}</h3>
                 <span className="text-[10px] font-bold uppercase tracking-widest text-black/20">By {theme.authorName}</span>
               </div>
               <p className="text-sm text-black/40 mb-8 line-clamp-2 leading-relaxed">{theme.description || 'A beautiful custom theme for StoryCraft.'}</p>
@@ -183,7 +183,7 @@ export default function ThemeMarketplace() {
                 </div>
                 <button 
                   onClick={() => handleApply(theme)}
-                  className="px-6 py-3 bg-black/5 hover:bg-gold hover:text-night rounded-xl text-xs font-bold uppercase tracking-widest transition-all"
+                  className="px-6 py-3 bg-black/5 hover:bg-[#D97757] hover:text-[#1a1a1a] rounded-xl text-xs font-bold uppercase tracking-widest transition-all"
                 >
                   Apply Theme
                 </button>
@@ -219,7 +219,7 @@ export default function ThemeMarketplace() {
               <div className="flex-1 bg-gray-50 relative overflow-hidden flex flex-col">
                 <div className="p-6 border-b border-black/5 flex items-center justify-between bg-white">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-gold/10 text-gold rounded-lg flex items-center justify-center">
+                    <div className="w-8 h-8 bg-[#D97757]/10 text-[#D97757] rounded-lg flex items-center justify-center">
                       <Eye size={18} />
                     </div>
                     <span className="text-sm font-bold uppercase tracking-widest">Live Preview</span>
@@ -256,20 +256,20 @@ export default function ThemeMarketplace() {
                         <body class="luxury-bg">
                           <div class="atmosphere"></div>
                           <div class="sample-card">
-                            <h1 class="text-3xl font-serif font-bold mb-4" style="color: var(--color-gold, #d4af37)">The Eternal Forge</h1>
+                            <h1 class="text-3xl font-semibold mb-4" style="color: var(--color-gold, #D97757)">The Eternal Forge</h1>
                             <p class="text-sm opacity-60 mb-8 leading-relaxed">This is a preview of how your forge will look with the <strong>${previewTheme.name}</strong> theme applied.</p>
                             
                             <div class="space-y-4">
                               <div class="h-2 w-full bg-black/5 rounded-full overflow-hidden">
-                                <div class="h-full bg-gold w-2/3" style="background-color: var(--color-gold, #d4af37)"></div>
+                                <div class="h-full bg-[#D97757] w-2/3" style="background-color: var(--color-gold, #D97757)"></div>
                               </div>
                               <div class="flex justify-between items-center">
                                 <span class="text-[10px] font-bold uppercase tracking-widest opacity-40">Forge Progress</span>
-                                <span class="text-[10px] font-bold text-gold" style="color: var(--color-gold, #d4af37)">67%</span>
+                                <span class="text-[10px] font-bold text-[#D97757]" style="color: var(--color-gold, #D97757)">67%</span>
                               </div>
                             </div>
                             
-                            <button class="w-full mt-8 py-4 bg-black text-white rounded-xl font-bold text-sm hover:opacity-80 transition-all" style="background-color: var(--color-night, #0a0a0a); color: var(--color-gold, #d4af37)">
+                            <button class="w-full mt-8 py-4 bg-black text-white rounded-xl font-bold text-sm hover:opacity-80 transition-all" style="background-color: var(--color-night, #0a0a0a); color: var(--color-gold, #D97757)">
                               Continue Creation
                             </button>
                           </div>
@@ -290,7 +290,7 @@ export default function ThemeMarketplace() {
                     <X size={24} />
                   </button>
                   
-                  <h3 className="text-3xl font-serif font-bold mb-2">{previewTheme.name}</h3>
+                  <h3 className="text-3xl font-semibold mb-2">{previewTheme.name}</h3>
                   <p className="text-xs text-black/40 uppercase tracking-widest font-bold mb-6">By {previewTheme.authorName}</p>
                   
                   <div className="space-y-6 mb-8">
@@ -315,7 +315,7 @@ export default function ThemeMarketplace() {
                       handleApply(previewTheme);
                       setPreviewTheme(null);
                     }}
-                    className="w-full py-5 bg-black text-white rounded-2xl font-bold hover:bg-gold hover:text-night transition-all shadow-xl flex items-center justify-center gap-2"
+                    className="w-full py-5 bg-black text-white rounded-2xl font-bold hover:bg-[#D97757] hover:text-[#1a1a1a] transition-all shadow-xl flex items-center justify-center gap-2"
                   >
                     <Sparkles size={18} />
                     <span>Apply Theme</span>
@@ -350,11 +350,11 @@ export default function ThemeMarketplace() {
             >
               <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-gold/10 text-gold rounded-2xl flex items-center justify-center">
+                  <div className="w-12 h-12 bg-[#D97757]/10 text-[#D97757] rounded-2xl flex items-center justify-center">
                     <Code size={24} />
                   </div>
                   <div>
-                    <h3 className="text-2xl font-serif font-bold">Share Custom Theme</h3>
+                    <h3 className="text-2xl font-semibold">Share Custom Theme</h3>
                     <p className="text-xs text-black/40 uppercase tracking-widest font-bold">Inject your own CSS into the forge</p>
                   </div>
                 </div>
@@ -388,7 +388,7 @@ export default function ThemeMarketplace() {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <label className="text-[10px] font-bold uppercase tracking-widest text-black/40">Custom CSS</label>
-                    <span className="text-[10px] text-gold font-bold">Supports Tailwind & Standard CSS</span>
+                    <span className="text-[10px] text-[#D97757] font-bold">Supports Tailwind & Standard CSS</span>
                   </div>
                   <textarea 
                     value={newTheme.css}
@@ -404,7 +404,7 @@ export default function ThemeMarketplace() {
                     type="checkbox"
                     checked={newTheme.isPublic}
                     onChange={(e) => setNewTheme({ ...newTheme, isPublic: e.target.checked })}
-                    className="w-4 h-4 rounded border-black/10 text-gold focus:ring-gold/20"
+                    className="w-4 h-4 rounded border-black/10 text-[#D97757] focus:ring-gold/20"
                   />
                   <span className="text-xs font-bold uppercase tracking-widest">Make Public in Marketplace</span>
                 </label>
@@ -412,7 +412,7 @@ export default function ThemeMarketplace() {
 
               <button 
                 onClick={handleUpload}
-                className="w-full mt-8 py-5 bg-black text-white rounded-2xl font-bold hover:bg-gold hover:text-night transition-all flex items-center justify-center gap-2"
+                className="w-full mt-8 py-5 bg-black text-white rounded-2xl font-bold hover:bg-[#D97757] hover:text-[#1a1a1a] transition-all flex items-center justify-center gap-2"
               >
                 <Sparkles size={18} />
                 <span>Publish Theme</span>

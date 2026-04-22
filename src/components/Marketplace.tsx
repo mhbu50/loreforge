@@ -79,26 +79,26 @@ export default function Marketplace() {
       <div className="min-h-screen bg-[#050505] flex items-center justify-center">
         <div className="atmosphere" />
         <div className="flex flex-col items-center gap-6">
-          <div className="w-16 h-16 bg-gold rounded-full flex items-center justify-center text-night animate-float">
+          <div className="w-16 h-16 bg-[#D97757] rounded-full flex items-center justify-center text-[#1a1a1a] animate-float">
             <Loader2 className="animate-spin" size={32} />
           </div>
-          <p className="small-caps text-gold animate-pulse">Entering the Archives...</p>
+          <p className="small-caps text-[#D97757] animate-pulse">Entering the Archives...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white selection:bg-gold selection:text-night">
+    <div className="min-h-screen bg-[#050505] text-white selection:bg-[#D97757] selection:text-[#1a1a1a]">
       <div className="atmosphere" />
       
       {/* Navigation */}
       <nav className="px-8 py-6 border-b border-white/5 flex items-center justify-between sticky top-0 z-50 bg-black/50 backdrop-blur-xl">
         <Link to="/" className="flex items-center gap-4 group">
-          <div className="w-10 h-10 bg-gold rounded-xl flex items-center justify-center text-night group-hover:scale-110 transition-transform">
+          <div className="w-10 h-10 bg-[#D97757] rounded-xl flex items-center justify-center text-[#1a1a1a] group-hover:scale-110 transition-transform">
             <Sparkles size={20} />
           </div>
-          <span className="font-serif text-2xl tracking-tight">StoryCraft <span className="text-gold italic">Market</span></span>
+          <span className="font-sans text-2xl tracking-tight">StoryCraft <span className="text-[#D97757] italic">Market</span></span>
         </Link>
         
         <div className="flex-1 max-w-xl mx-12 relative">
@@ -108,13 +108,13 @@ export default function Marketplace() {
             placeholder="Search masterpieces..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-white/5 border border-white/10 rounded-2xl py-3 pl-12 pr-6 outline-none focus:border-gold/50 transition-all"
+            className="w-full bg-white/5 border border-white/10 rounded-2xl py-3 pl-12 pr-6 outline-none focus:border-[#D97757]/50 transition-all"
           />
         </div>
 
         <div className="flex items-center gap-6">
           <Link to="/" className="text-sm font-bold uppercase tracking-widest text-white/40 hover:text-white transition-colors">Studio</Link>
-          <div className="w-10 h-10 rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center text-gold font-bold">
+          <div className="w-10 h-10 rounded-full bg-[#D97757]/10 border border-[#D97757]/20 flex items-center justify-center text-[#D97757] font-bold">
             {userProfile?.displayName?.[0] || 'U'}
           </div>
         </div>
@@ -123,7 +123,7 @@ export default function Marketplace() {
       <main className="container mx-auto px-6 py-16 max-w-7xl relative z-10">
         <header className="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-8">
           <div>
-            <h2 className="text-7xl font-serif font-light mb-4 tracking-tight">The <span className="italic text-gold">Collection</span></h2>
+            <h2 className="text-7xl font-sans font-light mb-4 tracking-tight">The <span className="italic text-[#D97757]">Collection</span></h2>
             <p className="text-white/40 small-caps tracking-[0.4em] text-xs">Curated crafted ebooks from around the world</p>
           </div>
           
@@ -149,8 +149,8 @@ export default function Marketplace() {
         {featuredStories.length > 0 && searchTerm === '' && selectedStyle === 'all' && (
           <section className="mb-24">
             <div className="flex items-center gap-4 mb-12">
-              <span className="w-12 h-[1px] bg-gold/20" />
-              <h3 className="text-xs font-bold uppercase tracking-[0.5em] text-gold">Featured Masterpieces</h3>
+              <span className="w-12 h-[1px] bg-[#D97757]/20" />
+              <h3 className="text-xs font-bold uppercase tracking-[0.5em] text-[#D97757]">Featured Masterpieces</h3>
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
               {featuredStories.map((story) => (
@@ -169,17 +169,17 @@ export default function Marketplace() {
                         onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                       />
                     ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-gold/20 to-black/40 flex items-center justify-center">
+                      <div className="w-full h-full bg-gradient-to-br from-[#D97757]/20 to-black/40 flex items-center justify-center">
                         <BookOpen className="text-white/20" size={48} />
                       </div>
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
                     <div className="absolute bottom-8 left-8 right-8">
                       <div className="flex items-center gap-3 mb-3">
-                        <span className="text-[9px] font-bold uppercase tracking-widest bg-gold text-night px-3 py-1 rounded-full">Featured</span>
+                        <span className="text-[9px] font-bold uppercase tracking-widest bg-[#D97757] text-[#1a1a1a] px-3 py-1 rounded-full">Featured</span>
                         <span className="text-[9px] font-bold uppercase tracking-widest bg-white/10 backdrop-blur-md px-3 py-1 rounded-full">{story.style}</span>
                       </div>
-                      <h4 className="text-3xl font-serif font-bold group-hover:text-gold transition-colors">{story.title}</h4>
+                      <h4 className="text-3xl font-semibold group-hover:text-[#D97757] transition-colors">{story.title}</h4>
                     </div>
                   </div>
                 </motion.div>
@@ -222,7 +222,7 @@ export default function Marketplace() {
                 <div className="absolute top-6 right-6 flex flex-col gap-3 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
                   <button 
                     onClick={(e) => handleLike(story.id, e)}
-                    className="p-4 bg-black/50 backdrop-blur-md rounded-2xl border border-white/10 hover:bg-gold hover:text-night transition-all"
+                    className="p-4 bg-black/50 backdrop-blur-md rounded-2xl border border-white/10 hover:bg-[#D97757] hover:text-[#1a1a1a] transition-all"
                   >
                     <Heart size={18} className={story.likes ? "fill-current" : ""} />
                   </button>
@@ -230,20 +230,20 @@ export default function Marketplace() {
 
                 <div className="absolute bottom-8 left-8 right-8">
                   <div className="flex items-center gap-2 mb-3">
-                    <span className="text-[10px] font-bold uppercase tracking-widest bg-gold text-night px-3 py-1 rounded-full">
+                    <span className="text-[10px] font-bold uppercase tracking-widest bg-[#D97757] text-[#1a1a1a] px-3 py-1 rounded-full">
                       {story.style}
                     </span>
                     <span className="text-[10px] font-bold uppercase tracking-widest bg-white/10 backdrop-blur-md px-3 py-1 rounded-full">
                       {story.pages.length} Pages
                     </span>
                   </div>
-                  <h3 className="text-3xl font-serif font-bold mb-2 group-hover:text-gold transition-colors">{story.title}</h3>
+                  <h3 className="text-3xl font-semibold mb-2 group-hover:text-[#D97757] transition-colors">{story.title}</h3>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2 text-white/40 text-xs">
                       <User size={12} />
                       <span>{story.authorName}</span>
                     </div>
-                    <div className="text-gold font-bold text-xl">
+                    <div className="text-[#D97757] font-bold text-xl">
                       {userProfile?.subscriptionTier === 'ultimate' ? (
                         <span className="flex items-center gap-1">
                           <span className="line-through text-white/20 text-sm">${story.price?.toFixed(2)}</span>
@@ -264,37 +264,37 @@ export default function Marketplace() {
         <section className="mt-32 py-24 border-t border-white/5">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
             <div className="space-y-2">
-              <span className="text-5xl font-serif font-bold text-gold">1.2k+</span>
+              <span className="text-5xl font-semibold text-[#D97757]">1.2k+</span>
               <p className="text-[10px] font-bold uppercase tracking-widest text-white/20">Masterpieces Crafted</p>
             </div>
             <div className="space-y-2">
-              <span className="text-5xl font-serif font-bold text-gold">850</span>
+              <span className="text-5xl font-semibold text-[#D97757]">850</span>
               <p className="text-[10px] font-bold uppercase tracking-widest text-white/20">Active Dreamers</p>
             </div>
             <div className="space-y-2">
-              <span className="text-5xl font-serif font-bold text-gold">$12k</span>
+              <span className="text-5xl font-semibold text-[#D97757]">$12k</span>
               <p className="text-[10px] font-bold uppercase tracking-widest text-white/20">Creator Earnings</p>
             </div>
             <div className="space-y-2">
-              <span className="text-5xl font-serif font-bold text-gold">4.9</span>
+              <span className="text-5xl font-semibold text-[#D97757]">4.9</span>
               <p className="text-[10px] font-bold uppercase tracking-widest text-white/20">Average Rating</p>
             </div>
           </div>
         </section>
 
         {/* Newsletter */}
-        <section className="mt-24 bg-gold rounded-[4rem] p-20 text-night relative overflow-hidden">
+        <section className="mt-24 bg-[#D97757] rounded-[4rem] p-20 text-[#1a1a1a] relative overflow-hidden">
           <div className="absolute top-0 right-0 w-96 h-96 bg-white/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
           <div className="relative z-10 max-w-2xl">
-            <h3 className="text-6xl font-serif font-bold mb-6 leading-tight">Join the <br /> <span className="italic">Inner Circle</span></h3>
-            <p className="text-night/60 mb-10 text-lg">Get early access to new artistic styles and featured collections every week.</p>
+            <h3 className="text-6xl font-semibold mb-6 leading-tight">Join the <br /> <span className="italic">Inner Circle</span></h3>
+            <p className="text-[#1a1a1a]/60 mb-10 text-lg">Get early access to new artistic styles and featured collections every week.</p>
             <div className="flex gap-4">
               <input 
                 type="email" 
                 placeholder="Enter your email..." 
-                className="flex-1 bg-white/20 border border-night/10 rounded-2xl px-8 py-5 outline-none placeholder:text-night/40 font-medium"
+                className="flex-1 bg-white/20 border border-night/10 rounded-2xl px-8 py-5 outline-none placeholder:text-[#1a1a1a]/40 font-medium"
               />
-              <button className="px-10 py-5 bg-night text-white rounded-2xl font-bold hover:scale-105 transition-all shadow-2xl shadow-night/20">
+              <button className="px-10 py-5 bg-[#141414] text-white rounded-2xl font-bold hover:scale-105 transition-all shadow-2xl shadow-night/20">
                 Subscribe
               </button>
             </div>
@@ -346,7 +346,7 @@ export default function Marketplace() {
                           onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                         />
                       ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-gold/20 to-black/40 flex items-center justify-center">
+                        <div className="w-full h-full bg-gradient-to-br from-[#D97757]/20 to-black/40 flex items-center justify-center">
                           <BookOpen className="text-white/20" size={64} />
                         </div>
                       );
@@ -379,8 +379,8 @@ export default function Marketplace() {
               <div className="w-full md:w-1/2 p-12 flex flex-col">
                 <div className="flex justify-between items-start mb-8">
                   <div>
-                    <h2 className="text-5xl font-serif font-bold mb-2 leading-tight">{selectedStory.title}</h2>
-                    <p className="text-gold small-caps tracking-widest text-sm">By {selectedStory.authorName}</p>
+                    <h2 className="text-5xl font-semibold mb-2 leading-tight">{selectedStory.title}</h2>
+                    <p className="text-[#D97757] small-caps tracking-widest text-sm">By {selectedStory.authorName}</p>
                   </div>
                   <button 
                     onClick={() => { setSelectedStory(null); setIsPreviewing(false); setPreviewPage(0); }}
@@ -397,7 +397,7 @@ export default function Marketplace() {
                       <span>{selectedStory.pages.length} Pages</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Star size={16} className="text-gold fill-current" />
+                      <Star size={16} className="text-[#D97757] fill-current" />
                       <span>4.9 (128 reviews)</span>
                     </div>
                     <div className="flex items-center gap-2">
@@ -411,7 +411,7 @@ export default function Marketplace() {
                   </p>
 
                   <div className="p-8 bg-white/5 rounded-[2rem] border border-white/10">
-                    <h4 className="text-[10px] font-bold uppercase tracking-[0.3em] text-gold mb-6">Masterpiece Details</h4>
+                    <h4 className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#D97757] mb-6">Masterpiece Details</h4>
                     <div className="grid grid-cols-2 gap-8 text-sm">
                       <div>
                         <span className="text-white/20 block mb-1">Art Style</span>
@@ -435,7 +435,7 @@ export default function Marketplace() {
                   </button>
                   <button 
                     onClick={() => handleBuy(selectedStory)}
-                    className="flex-[2] py-5 bg-gold text-night rounded-2xl font-bold text-xl hover:bg-gold/90 transition-all flex items-center justify-center gap-2 shadow-xl shadow-gold/20"
+                    className="flex-[2] py-5 bg-[#D97757] text-[#1a1a1a] rounded-2xl font-bold text-xl hover:bg-[#D97757]/90 transition-all flex items-center justify-center gap-2 shadow-xl shadow-[#D97757]/20"
                   >
                     {userProfile?.subscriptionTier === 'ultimate' ? (
                       <>

@@ -141,11 +141,11 @@ export default function PhotoPicker({ onSelect, onClose, initialQuery = '' }: Ph
       >
         {/* ── Header ───────────────────────────────────────────────────────── */}
         <div className="px-8 pt-8 pb-6 border-b border-black/5 flex items-center gap-4 flex-shrink-0">
-          <div className="w-12 h-12 rounded-2xl bg-gold/10 flex items-center justify-center text-gold flex-shrink-0">
+          <div className="w-12 h-12 rounded-2xl bg-[#D97757]/10 flex items-center justify-center text-[#D97757] flex-shrink-0">
             <ImageIcon size={24} />
           </div>
           <div className="flex-1">
-            <h2 className="text-xl font-serif font-bold text-night">Browse Stock Photos</h2>
+            <h2 className="text-xl font-semibold text-[#1a1a1a]">Browse Stock Photos</h2>
             <p className="text-[11px] text-black/35 mt-0.5">Search millions of free photos — choose one for your story</p>
           </div>
 
@@ -159,13 +159,13 @@ export default function PhotoPicker({ onSelect, onClose, initialQuery = '' }: Ph
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Search photos…"
-              className="w-full pl-10 pr-4 py-3 bg-black/5 rounded-2xl text-sm outline-none focus:ring-2 focus:ring-gold/40 transition-all placeholder:text-black/25"
+              className="w-full pl-10 pr-4 py-3 bg-black/5 rounded-2xl text-sm outline-none focus:ring-2 focus:ring-[#D97757]/40 transition-all placeholder:text-black/25"
             />
           </div>
           <button
             onClick={() => doSearch(query)}
             disabled={loading || isExternalTab}
-            className="px-6 py-3 bg-gold text-night rounded-2xl text-sm font-bold hover:bg-night hover:text-gold transition-all shadow-lg shadow-gold/20 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
+            className="px-6 py-3 bg-[#D97757] text-[#1a1a1a] rounded-2xl text-sm font-bold hover:bg-[#141414] hover:text-[#D97757] transition-all shadow-lg shadow-[#D97757]/20 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
           >
             {loading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />}
             Search
@@ -222,7 +222,7 @@ export default function PhotoPicker({ onSelect, onClose, initialQuery = '' }: Ph
                   {currentTabMeta.logo}
                 </div>
                 <div className="space-y-2">
-                  <h3 className="text-2xl font-serif font-bold text-night">{currentTabMeta.label}</h3>
+                  <h3 className="text-2xl font-semibold text-[#1a1a1a]">{currentTabMeta.label}</h3>
                   <p className="text-black/40 text-sm max-w-sm leading-relaxed">
                     {activeTab === 'vecteezy'
                       ? 'Explore millions of free stock photos, vectors, and illustrations on Vecteezy.'
@@ -241,7 +241,7 @@ export default function PhotoPicker({ onSelect, onClose, initialQuery = '' }: Ph
                       value={query}
                       onChange={(e) => setQuery(e.target.value)}
                       placeholder="e.g. forest, dragon, castle..."
-                      className="w-full pl-10 pr-4 py-3 bg-black/5 rounded-2xl text-sm outline-none focus:ring-2 focus:ring-gold/40 transition-all placeholder:text-black/25"
+                      className="w-full pl-10 pr-4 py-3 bg-black/5 rounded-2xl text-sm outline-none focus:ring-2 focus:ring-[#D97757]/40 transition-all placeholder:text-black/25"
                     />
                   </div>
                   <a
@@ -271,7 +271,7 @@ export default function PhotoPicker({ onSelect, onClose, initialQuery = '' }: Ph
                 className="flex flex-col items-center justify-center min-h-[40vh] gap-4"
               >
                 <div className="relative">
-                  <div className="w-16 h-16 rounded-full border-2 border-gold/20 border-t-gold animate-spin" />
+                  <div className="w-16 h-16 rounded-full border-2 border-[#D97757]/20 border-t-gold animate-spin" />
                 </div>
                 <p className="text-sm text-black/40 font-bold uppercase tracking-widest">Searching {currentTabMeta.label}…</p>
               </motion.div>
@@ -293,9 +293,9 @@ export default function PhotoPicker({ onSelect, onClose, initialQuery = '' }: Ph
                   <>
                     <div className="w-16 h-16 rounded-2xl bg-black/5 flex items-center justify-center text-2xl">🔑</div>
                     <div className="space-y-1">
-                      <p className="font-bold text-night">{currentTabMeta.label} not configured</p>
+                      <p className="font-bold text-[#1a1a1a]">{currentTabMeta.label} not configured</p>
                       <p className="text-sm text-black/40">
-                        Add an API key in <span className="font-bold text-gold">Admin Panel → Photos</span> to enable this service.
+                        Add an API key in <span className="font-bold text-[#D97757]">Admin Panel → Photos</span> to enable this service.
                       </p>
                     </div>
                   </>
@@ -303,7 +303,7 @@ export default function PhotoPicker({ onSelect, onClose, initialQuery = '' }: Ph
                   <>
                     <div className="w-16 h-16 rounded-2xl bg-black/5 flex items-center justify-center text-2xl">🔍</div>
                     <div className="space-y-1">
-                      <p className="font-bold text-night">Search for photos</p>
+                      <p className="font-bold text-[#1a1a1a]">Search for photos</p>
                       <p className="text-sm text-black/40">Type a keyword above and press Search or Enter</p>
                     </div>
                   </>
@@ -320,8 +320,8 @@ export default function PhotoPicker({ onSelect, onClose, initialQuery = '' }: Ph
                 exit={{ opacity: 0 }}
               >
                 {/* Attribution notice */}
-                <div className="mb-4 px-4 py-2.5 bg-gold/5 border border-gold/15 rounded-2xl flex items-center gap-2">
-                  <span className="text-[10px] font-bold text-gold uppercase tracking-widest">Attribution</span>
+                <div className="mb-4 px-4 py-2.5 bg-[#D97757]/5 border border-[#D97757]/15 rounded-2xl flex items-center gap-2">
+                  <span className="text-[10px] font-bold text-[#D97757] uppercase tracking-widest">Attribution</span>
                   <span className="text-[11px] text-black/40">
                     Photos courtesy of {currentTabMeta.label}. Please credit the photographer when publishing.
                   </span>
@@ -361,7 +361,7 @@ export default function PhotoPicker({ onSelect, onClose, initialQuery = '' }: Ph
                             </p>
                             <button
                               onClick={(e) => { e.stopPropagation(); handleSelect(photo); }}
-                              className="mt-2 w-full py-2 bg-gold text-night rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-white transition-all"
+                              className="mt-2 w-full py-2 bg-[#D97757] text-[#1a1a1a] rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-white transition-all"
                             >
                               Use Photo
                             </button>

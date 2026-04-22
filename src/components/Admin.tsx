@@ -140,7 +140,7 @@ export default function Admin() {
             <ShieldAlert size={32} />
           </div>
           <div>
-            <h1 className="text-4xl font-serif">Admin Command Center</h1>
+            <h1 className="text-4xl font-sans">Admin Command Center</h1>
             <p className="text-ink/40 small-caps text-[10px]">Restricted Access Only</p>
           </div>
         </div>
@@ -151,21 +151,21 @@ export default function Admin() {
               <Users className="text-olive" />
               <span className="text-xs font-bold text-ink/20 uppercase tracking-widest">Total Users</span>
             </div>
-            <div className="text-4xl font-serif">{users.length}</div>
+            <div className="text-4xl font-sans">{users.length}</div>
           </div>
           <div className="bg-white p-6 rounded-3xl book-shadow border border-ink/5">
             <div className="flex items-center justify-between mb-4">
               <BookOpen className="text-olive" />
               <span className="text-xs font-bold text-ink/20 uppercase tracking-widest">Stories Forged</span>
             </div>
-            <div className="text-4xl font-serif">{stories.length}</div>
+            <div className="text-4xl font-sans">{stories.length}</div>
           </div>
           <div className="bg-white p-6 rounded-3xl book-shadow border border-ink/5">
             <div className="flex items-center justify-between mb-4">
               <ShieldAlert className="text-red-500" />
               <span className="text-xs font-bold text-ink/20 uppercase tracking-widest">Admin Role</span>
             </div>
-            <div className="text-4xl font-serif">Active</div>
+            <div className="text-4xl font-sans">Active</div>
           </div>
         </div>
 
@@ -231,7 +231,7 @@ export default function Admin() {
               <div className="p-8 space-y-8">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-2xl font-serif">System Health Monitor</h3>
+                    <h3 className="text-2xl font-sans">System Health Monitor</h3>
                     <p className="text-ink/40 text-xs uppercase tracking-widest">Real-time status of critical components</p>
                   </div>
                   <button 
@@ -256,7 +256,7 @@ export default function Admin() {
                     <div className="w-16 h-16 bg-green-500 text-white rounded-full flex items-center justify-center mx-auto mb-6">
                       <ShieldAlert size={32} />
                     </div>
-                    <h4 className="text-2xl font-serif text-green-800 mb-2">All Systems Operational</h4>
+                    <h4 className="text-2xl font-sans text-green-800 mb-2">All Systems Operational</h4>
                     <p className="text-green-600/60">No critical problems detected in the current scan.</p>
                   </div>
                 ) : (
@@ -304,7 +304,7 @@ export default function Admin() {
                     </button>
                     <button 
                       onClick={() => setThemeView('marketplace')}
-                      className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${themeView === 'marketplace' ? 'bg-gold text-night shadow-lg' : 'text-ink/40 hover:text-ink/60'}`}
+                      className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${themeView === 'marketplace' ? 'bg-[#D97757] text-[#1a1a1a] shadow-lg' : 'text-ink/40 hover:text-ink/60'}`}
                     >
                       Marketplace View
                     </button>
@@ -332,7 +332,7 @@ export default function Admin() {
                       {filteredThemes.map(theme => (
                         <tr key={theme.id} className="hover:bg-paper/20 transition-colors">
                           <td className="px-8 py-6">
-                            <div className="font-bold font-serif text-lg">{theme.name}</div>
+                            <div className="font-bold font-sans text-lg">{theme.name}</div>
                             <div className="text-xs text-ink/40 italic">{theme.description}</div>
                           </td>
                           <td className="px-8 py-6 text-sm">
@@ -361,7 +361,7 @@ export default function Admin() {
               <div className="p-8 space-y-8">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-2xl font-serif">Global Configuration</h3>
+                    <h3 className="text-2xl font-sans">Global Configuration</h3>
                     <p className="text-ink/40 text-xs uppercase tracking-widest">Manage application-wide settings and terms</p>
                   </div>
                   <button 
@@ -505,7 +505,7 @@ export default function Admin() {
                     filteredStories.map(story => (
                       <tr key={story.id} className="hover:bg-paper/20 transition-colors">
                         <td className="px-8 py-6">
-                          <div className="font-bold font-serif text-lg">{story.title}</div>
+                          <div className="font-bold font-sans text-lg">{story.title}</div>
                           <div className="text-xs text-ink/40 italic">{story.style}</div>
                         </td>
                         <td className="px-8 py-6 text-xs font-mono text-ink/40">

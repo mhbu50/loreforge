@@ -79,7 +79,7 @@ export default function HeadAdminPanel() {
       showParticles: true,
       showGrain: true,
       showVignette: true,
-      primaryColor: '#d4af37',
+      primaryColor: '#D97757',
       secondaryColor: '#0a0a0a',
       fontFamily: 'serif',
       animationsEnabled: true
@@ -98,7 +98,7 @@ export default function HeadAdminPanel() {
     showParticles: true,
     showGrain: true,
     showVignette: true,
-    primaryColor: '#d4af37',
+    primaryColor: '#D97757',
     secondaryColor: '#0a0a0a',
     fontFamily: 'serif',
     animationsEnabled: true
@@ -397,17 +397,17 @@ export default function HeadAdminPanel() {
   return (
     <div className="space-y-8">
       {/* Admin Header */}
-      <div className="relative bg-night rounded-[2rem] p-8 overflow-hidden mb-2">
+      <div className="relative bg-[#141414] rounded-[2rem] p-8 overflow-hidden mb-2">
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 right-0 w-96 h-96 translate-x-1/2 -translate-y-1/2 rounded-full" style={{background: 'radial-gradient(circle, rgba(212,175,55,0.08) 0%, transparent 70%)'}} />
+          <div className="absolute top-0 right-0 w-96 h-96 translate-x-1/2 -translate-y-1/2 rounded-full" style={{background: 'radial-gradient(circle, rgba(217,119,87,0.08) 0%, transparent 70%)'}} />
         </div>
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="flex items-center gap-5">
-            <div className="w-14 h-14 bg-gold/10 border border-gold/20 rounded-2xl flex items-center justify-center text-gold">
+            <div className="w-14 h-14 bg-[#D97757]/10 border border-[#D97757]/20 rounded-2xl flex items-center justify-center text-[#D97757]">
               <ShieldCheck size={28} />
             </div>
             <div>
-              <h2 className="text-3xl font-serif font-bold text-white">Control Center</h2>
+              <h2 className="text-3xl font-semibold text-white">Control Center</h2>
               <p className="text-white/40 text-sm mt-0.5">Full platform management & configuration</p>
             </div>
           </div>
@@ -416,7 +416,7 @@ export default function HeadAdminPanel() {
               <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
               System Online
             </div>
-            <div className="px-4 py-2 bg-gold/10 text-gold border border-gold/20 rounded-xl">
+            <div className="px-4 py-2 bg-[#D97757]/10 text-[#D97757] border border-[#D97757]/20 rounded-xl">
               {users.length} Users
             </div>
           </div>
@@ -442,7 +442,7 @@ export default function HeadAdminPanel() {
             className={cn(
               "flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all",
               activeTab === id
-                ? "bg-night text-gold shadow-lg shadow-black/20"
+                ? "bg-[#141414] text-[#D97757] shadow-lg shadow-black/20"
                 : "text-white/40 hover:text-white/70 hover:bg-white/[0.04]"
             )}
           >
@@ -462,13 +462,13 @@ export default function HeadAdminPanel() {
                 placeholder="Search users..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:ring-2 focus:ring-gold/30 text-white/90 placeholder:text-white/25 outline-none transition-all w-full"
+                className="pl-10 pr-4 py-2 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:ring-2 focus:ring-[#D97757]/30 text-white/90 placeholder:text-white/25 outline-none transition-all w-full"
               />
             </div>
             <select
               value={filter}
               onChange={(e) => setFilter(e.target.value as any)}
-              className="px-4 py-2 bg-white/[0.05] border border-white/[0.09] rounded-xl text-white/90 focus:ring-2 focus:ring-gold/30 outline-none transition-all"
+              className="px-4 py-2 bg-white/[0.05] border border-white/[0.09] rounded-xl text-white/90 focus:ring-2 focus:ring-[#D97757]/30 outline-none transition-all"
             >
               <option value="all">All Roles</option>
               <option value="admin">Admins</option>
@@ -493,7 +493,7 @@ export default function HeadAdminPanel() {
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div
-                          className="w-10 h-10 rounded-full bg-gold/10 text-gold flex items-center justify-center font-bold text-sm flex-shrink-0"
+                          className="w-10 h-10 rounded-full bg-[#D97757]/10 text-[#D97757] flex items-center justify-center font-bold text-sm flex-shrink-0"
                           style={(user as any).avatarColor ? { backgroundColor: (user as any).avatarColor } : {}}
                         >
                           {(user as any).avatarEmoji || user.displayName?.[0] || 'U'}
@@ -519,14 +519,14 @@ export default function HeadAdminPanel() {
                     <td className="px-6 py-4">
                       <div className="flex flex-col gap-1">
                         <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest w-fit ${
-                          user.role === 'headadmin' ? 'bg-gold/10 text-gold' :
+                          user.role === 'headadmin' ? 'bg-[#D97757]/10 text-[#D97757]' :
                           user.role === 'admin' ? 'bg-red-500/10 text-red-400 border border-red-500/20' :
                           'bg-white/[0.06] text-white/50'
                         }`}>
                           {user.role}
                         </span>
                         <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest w-fit flex items-center gap-1 ${
-                          user.subscriptionTier === 'premium' ? 'bg-gold/10 text-gold border border-gold/20' : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
+                          user.subscriptionTier === 'premium' ? 'bg-[#D97757]/10 text-[#D97757] border border-[#D97757]/20' : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
                         }`}>
                           {user.subscriptionTier}
                           {user.subscriptionTier === 'premium' && <Crown size={10} />}
@@ -549,13 +549,13 @@ export default function HeadAdminPanel() {
                     <td className="px-6 py-4">
                       <div className="flex flex-wrap gap-1">
                         {user.badges?.map(badge => (
-                          <span key={badge} className="bg-gold/10 text-gold text-[10px] px-2 py-0.5 rounded-full border border-gold/20">
+                          <span key={badge} className="bg-[#D97757]/10 text-[#D97757] text-[10px] px-2 py-0.5 rounded-full border border-[#D97757]/20">
                             {badge}
                           </span>
                         ))}
                         <button 
                           onClick={() => awardBadge(user, 'Elite Author')}
-                          className="text-[10px] text-gold/60 hover:text-gold font-bold"
+                          className="text-[10px] text-[#D97757]/60 hover:text-[#D97757] font-bold"
                         >
                           + Award
                         </button>
@@ -573,14 +573,14 @@ export default function HeadAdminPanel() {
                           </button>
                           <button
                             onClick={() => toggleSubscription(user, 'standard')}
-                            className={cn("p-2 rounded-md transition-all", user.subscriptionTier === 'standard' ? "bg-white/[0.1] shadow-sm text-gold" : "text-white/30 hover:text-gold")}
+                            className={cn("p-2 rounded-md transition-all", user.subscriptionTier === 'standard' ? "bg-white/[0.1] shadow-sm text-[#D97757]" : "text-white/30 hover:text-[#D97757]")}
                             title="Set to Standard"
                           >
                             <span className="text-[10px] font-bold">S</span>
                           </button>
                           <button
                             onClick={() => toggleSubscription(user, 'premium')}
-                            className={cn("p-2 rounded-md transition-all", user.subscriptionTier === 'premium' ? "bg-white/[0.1] shadow-sm text-gold" : "text-white/30 hover:text-gold")}
+                            className={cn("p-2 rounded-md transition-all", user.subscriptionTier === 'premium' ? "bg-white/[0.1] shadow-sm text-[#D97757]" : "text-white/30 hover:text-[#D97757]")}
                             title="Set to Premium"
                           >
                             <Crown className="w-4 h-4" />
@@ -597,7 +597,7 @@ export default function HeadAdminPanel() {
                           <button
                             onClick={() => toggleAdmin(user)}
                             className={`p-2 rounded-lg transition-all ${
-                              user.role === 'admin' ? 'bg-red-500/10 text-red-400 hover:bg-red-500/20' : 'bg-gold/10 text-gold hover:bg-gold/20'
+                              user.role === 'admin' ? 'bg-red-500/10 text-red-400 hover:bg-red-500/20' : 'bg-[#D97757]/10 text-[#D97757] hover:bg-[#D97757]/20'
                             }`}
                             title={user.role === 'admin' ? 'Revoke Admin' : 'Make Admin'}
                           >
@@ -719,7 +719,7 @@ export default function HeadAdminPanel() {
             {feedback.length === 0 && (
               <div className="text-center py-20 bg-[#111] rounded-2xl border border-dashed border-white/[0.08]">
                 <MessageSquare className="mx-auto mb-4 text-white/15" size={48} />
-                <p className="text-white/30 font-serif italic text-xl">No feedback received yet.</p>
+                <p className="text-white/30 font-sans italic text-xl">No feedback received yet.</p>
               </div>
             )}
           </div>
@@ -746,7 +746,7 @@ export default function HeadAdminPanel() {
                       ...subscriptionSettings,
                       free: { ...subscriptionSettings.free, maxStoriesTotal: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                     })}
-                    className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
+                    className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-[#D97757]/40 focus:ring-0 text-white/90 outline-none transition-all"
                   />
                 </div>
                 <div className="space-y-2">
@@ -758,7 +758,7 @@ export default function HeadAdminPanel() {
                       ...subscriptionSettings,
                       free: { ...subscriptionSettings.free, maxPagesPerStory: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                     })}
-                    className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
+                    className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-[#D97757]/40 focus:ring-0 text-white/90 outline-none transition-all"
                   />
                 </div>
                 <div className="grid grid-cols-3 gap-4">
@@ -771,7 +771,7 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         free: { ...subscriptionSettings.free, tokensPerMonth: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                       })}
-                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-[#D97757]/40 focus:ring-0 text-white/90 outline-none transition-all"
                     />
                   </div>
                   <div className="space-y-2">
@@ -783,7 +783,7 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         free: { ...subscriptionSettings.free, bookTokenCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                       })}
-                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-[#D97757]/40 focus:ring-0 text-white/90 outline-none transition-all"
                     />
                   </div>
                   <div className="space-y-2">
@@ -795,7 +795,7 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         free: { ...subscriptionSettings.free, editTokenCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                       })}
-                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-[#D97757]/40 focus:ring-0 text-white/90 outline-none transition-all"
                     />
                   </div>
                 </div>
@@ -811,7 +811,7 @@ export default function HeadAdminPanel() {
                           ...subscriptionSettings,
                           free: { ...subscriptionSettings.free, aiScriptCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                         })}
-                        className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
+                        className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-[#D97757]/40 focus:ring-0 text-white/90 outline-none transition-all"
                       />
                     </div>
                     <div className="space-y-2">
@@ -823,7 +823,7 @@ export default function HeadAdminPanel() {
                           ...subscriptionSettings,
                           free: { ...subscriptionSettings.free, aiImageCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                         })}
-                        className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
+                        className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-[#D97757]/40 focus:ring-0 text-white/90 outline-none transition-all"
                       />
                     </div>
                     <div className="space-y-2">
@@ -835,7 +835,7 @@ export default function HeadAdminPanel() {
                           ...subscriptionSettings,
                           free: { ...subscriptionSettings.free, aiEnhanceCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                         })}
-                        className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
+                        className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-[#D97757]/40 focus:ring-0 text-white/90 outline-none transition-all"
                       />
                     </div>
                   </div>
@@ -846,7 +846,7 @@ export default function HeadAdminPanel() {
             {/* Standard Tier */}
             <div className="bg-[#111] p-6 rounded-2xl border border-white/[0.07] space-y-8">
               <div className="flex items-center gap-3">
-                <Star className="text-gold" />
+                <Star className="text-[#D97757]" />
                 <h3 className="text-xl font-bold text-white/90">Standard Tier Settings</h3>
               </div>
               
@@ -861,7 +861,7 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         standard: { ...subscriptionSettings.standard, monthlyPrice: (v => isNaN(v) ? 0 : v)(parseFloat(e.target.value)) }
                       })}
-                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-[#D97757]/40 focus:ring-0 text-white/90 outline-none transition-all"
                     />
                   </div>
                   <div className="space-y-2">
@@ -873,7 +873,7 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         standard: { ...subscriptionSettings.standard, yearlyPrice: (v => isNaN(v) ? 0 : v)(parseFloat(e.target.value)) }
                       })}
-                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-[#D97757]/40 focus:ring-0 text-white/90 outline-none transition-all"
                     />
                   </div>
                 </div>
@@ -886,7 +886,7 @@ export default function HeadAdminPanel() {
                       ...subscriptionSettings,
                       standard: { ...subscriptionSettings.standard, maxStoriesPerMonth: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                     })}
-                    className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
+                    className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-[#D97757]/40 focus:ring-0 text-white/90 outline-none transition-all"
                   />
                 </div>
                 <div className="space-y-2">
@@ -898,7 +898,7 @@ export default function HeadAdminPanel() {
                       ...subscriptionSettings,
                       standard: { ...subscriptionSettings.standard, maxPagesPerStory: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                     })}
-                    className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
+                    className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-[#D97757]/40 focus:ring-0 text-white/90 outline-none transition-all"
                   />
                 </div>
                 <div className="grid grid-cols-3 gap-4">
@@ -911,7 +911,7 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         standard: { ...subscriptionSettings.standard, tokensPerMonth: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                       })}
-                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-[#D97757]/40 focus:ring-0 text-white/90 outline-none transition-all"
                     />
                   </div>
                   <div className="space-y-2">
@@ -923,7 +923,7 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         standard: { ...subscriptionSettings.standard, bookTokenCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                       })}
-                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-[#D97757]/40 focus:ring-0 text-white/90 outline-none transition-all"
                     />
                   </div>
                   <div className="space-y-2">
@@ -935,7 +935,7 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         standard: { ...subscriptionSettings.standard, editTokenCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                       })}
-                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-[#D97757]/40 focus:ring-0 text-white/90 outline-none transition-all"
                     />
                   </div>
                 </div>
@@ -951,7 +951,7 @@ export default function HeadAdminPanel() {
                           ...subscriptionSettings,
                           standard: { ...subscriptionSettings.standard, aiScriptCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                         })}
-                        className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
+                        className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-[#D97757]/40 focus:ring-0 text-white/90 outline-none transition-all"
                       />
                     </div>
                     <div className="space-y-2">
@@ -963,7 +963,7 @@ export default function HeadAdminPanel() {
                           ...subscriptionSettings,
                           standard: { ...subscriptionSettings.standard, aiImageCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                         })}
-                        className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
+                        className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-[#D97757]/40 focus:ring-0 text-white/90 outline-none transition-all"
                       />
                     </div>
                     <div className="space-y-2">
@@ -975,7 +975,7 @@ export default function HeadAdminPanel() {
                           ...subscriptionSettings,
                           standard: { ...subscriptionSettings.standard, aiEnhanceCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                         })}
-                        className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
+                        className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-[#D97757]/40 focus:ring-0 text-white/90 outline-none transition-all"
                       />
                     </div>
                   </div>
@@ -986,7 +986,7 @@ export default function HeadAdminPanel() {
             {/* Premium Tier */}
             <div className="bg-[#111] p-6 rounded-2xl border border-white/[0.07] space-y-8">
               <div className="flex items-center gap-3">
-                <Crown className="text-gold" />
+                <Crown className="text-[#D97757]" />
                 <h3 className="text-xl font-bold text-white/90">Premium Tier Settings</h3>
               </div>
               
@@ -1001,7 +1001,7 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         premium: { ...subscriptionSettings.premium, monthlyPrice: (v => isNaN(v) ? 0 : v)(parseFloat(e.target.value)) }
                       })}
-                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-[#D97757]/40 focus:ring-0 text-white/90 outline-none transition-all"
                     />
                   </div>
                   <div className="space-y-2">
@@ -1013,7 +1013,7 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         premium: { ...subscriptionSettings.premium, yearlyPrice: (v => isNaN(v) ? 0 : v)(parseFloat(e.target.value)) }
                       })}
-                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-[#D97757]/40 focus:ring-0 text-white/90 outline-none transition-all"
                     />
                   </div>
                 </div>
@@ -1026,7 +1026,7 @@ export default function HeadAdminPanel() {
                       ...subscriptionSettings,
                       premium: { ...subscriptionSettings.premium, maxPagesPerStory: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                     })}
-                    className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
+                    className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-[#D97757]/40 focus:ring-0 text-white/90 outline-none transition-all"
                   />
                 </div>
                 <div className="grid grid-cols-3 gap-4">
@@ -1039,7 +1039,7 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         premium: { ...subscriptionSettings.premium, tokensPerMonth: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                       })}
-                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-[#D97757]/40 focus:ring-0 text-white/90 outline-none transition-all"
                     />
                   </div>
                   <div className="space-y-2">
@@ -1051,7 +1051,7 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         premium: { ...subscriptionSettings.premium, bookTokenCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                       })}
-                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-[#D97757]/40 focus:ring-0 text-white/90 outline-none transition-all"
                     />
                   </div>
                   <div className="space-y-2">
@@ -1063,7 +1063,7 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         premium: { ...subscriptionSettings.premium, editTokenCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                       })}
-                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-[#D97757]/40 focus:ring-0 text-white/90 outline-none transition-all"
                     />
                   </div>
                 </div>
@@ -1079,7 +1079,7 @@ export default function HeadAdminPanel() {
                           ...subscriptionSettings,
                           premium: { ...subscriptionSettings.premium, aiScriptCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                         })}
-                        className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
+                        className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-[#D97757]/40 focus:ring-0 text-white/90 outline-none transition-all"
                       />
                     </div>
                     <div className="space-y-2">
@@ -1091,7 +1091,7 @@ export default function HeadAdminPanel() {
                           ...subscriptionSettings,
                           premium: { ...subscriptionSettings.premium, aiImageCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                         })}
-                        className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
+                        className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-[#D97757]/40 focus:ring-0 text-white/90 outline-none transition-all"
                       />
                     </div>
                     <div className="space-y-2">
@@ -1103,7 +1103,7 @@ export default function HeadAdminPanel() {
                           ...subscriptionSettings,
                           premium: { ...subscriptionSettings.premium, aiEnhanceCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                         })}
-                        className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
+                        className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-[#D97757]/40 focus:ring-0 text-white/90 outline-none transition-all"
                       />
                     </div>
                   </div>
@@ -1129,7 +1129,7 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         ultimate: { ...subscriptionSettings.ultimate, monthlyPrice: (v => isNaN(v) ? 0 : v)(parseFloat(e.target.value)) }
                       })}
-                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-[#D97757]/40 focus:ring-0 text-white/90 outline-none transition-all"
                     />
                   </div>
                   <div className="space-y-2">
@@ -1141,7 +1141,7 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         ultimate: { ...subscriptionSettings.ultimate, yearlyPrice: (v => isNaN(v) ? 0 : v)(parseFloat(e.target.value)) }
                       })}
-                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-[#D97757]/40 focus:ring-0 text-white/90 outline-none transition-all"
                     />
                   </div>
                 </div>
@@ -1154,7 +1154,7 @@ export default function HeadAdminPanel() {
                       ...subscriptionSettings,
                       ultimate: { ...subscriptionSettings.ultimate, maxPagesPerStory: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                     })}
-                    className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
+                    className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-[#D97757]/40 focus:ring-0 text-white/90 outline-none transition-all"
                   />
                 </div>
                 <div className="grid grid-cols-3 gap-4">
@@ -1167,7 +1167,7 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         ultimate: { ...subscriptionSettings.ultimate, tokensPerMonth: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                       })}
-                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-[#D97757]/40 focus:ring-0 text-white/90 outline-none transition-all"
                     />
                   </div>
                   <div className="space-y-2">
@@ -1179,7 +1179,7 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         ultimate: { ...subscriptionSettings.ultimate, bookTokenCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                       })}
-                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-[#D97757]/40 focus:ring-0 text-white/90 outline-none transition-all"
                     />
                   </div>
                   <div className="space-y-2">
@@ -1191,7 +1191,7 @@ export default function HeadAdminPanel() {
                         ...subscriptionSettings,
                         ultimate: { ...subscriptionSettings.ultimate, editTokenCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                       })}
-                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-[#D97757]/40 focus:ring-0 text-white/90 outline-none transition-all"
                     />
                   </div>
                 </div>
@@ -1207,7 +1207,7 @@ export default function HeadAdminPanel() {
                           ...subscriptionSettings,
                           ultimate: { ...subscriptionSettings.ultimate, aiScriptCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                         })}
-                        className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
+                        className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-[#D97757]/40 focus:ring-0 text-white/90 outline-none transition-all"
                       />
                     </div>
                     <div className="space-y-2">
@@ -1219,7 +1219,7 @@ export default function HeadAdminPanel() {
                           ...subscriptionSettings,
                           ultimate: { ...subscriptionSettings.ultimate, aiImageCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                         })}
-                        className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
+                        className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-[#D97757]/40 focus:ring-0 text-white/90 outline-none transition-all"
                       />
                     </div>
                     <div className="space-y-2">
@@ -1231,7 +1231,7 @@ export default function HeadAdminPanel() {
                           ...subscriptionSettings,
                           ultimate: { ...subscriptionSettings.ultimate, aiEnhanceCost: (v => isNaN(v) ? 0 : v)(parseInt(e.target.value)) }
                         })}
-                        className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 outline-none transition-all"
+                        className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-[#D97757]/40 focus:ring-0 text-white/90 outline-none transition-all"
                       />
                     </div>
                   </div>
@@ -1246,7 +1246,7 @@ export default function HeadAdminPanel() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="bg-[#111] p-6 rounded-2xl border border-white/[0.07] space-y-6">
             <div className="flex items-center gap-3 mb-2">
-              <Settings className="text-gold" />
+              <Settings className="text-[#D97757]" />
               <h3 className="text-xl font-bold text-white/90">Global Configuration</h3>
             </div>
 
@@ -1271,7 +1271,7 @@ export default function HeadAdminPanel() {
               <textarea
                 value={globalSettings.termsOfConditions}
                 onChange={(e) => updateGlobalSettings({ termsOfConditions: e.target.value })}
-                className="w-full h-64 px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 placeholder:text-white/25 outline-none transition-all font-serif text-sm resize-none"
+                className="w-full h-64 px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-[#D97757]/40 focus:ring-0 text-white/90 placeholder:text-white/25 outline-none transition-all font-sans text-sm resize-none"
                 placeholder="Enter the long terms and conditions here..."
               />
               <p className="text-[10px] text-white/35 italic">This text will be displayed on the login page.</p>
@@ -1281,13 +1281,13 @@ export default function HeadAdminPanel() {
           {/* Branding Card */}
           <div className="bg-[#111] p-6 rounded-2xl border border-white/[0.07] space-y-6 md:col-span-2">
             <div className="flex items-center gap-3 mb-2">
-              <Sparkles className="text-gold" />
+              <Sparkles className="text-[#D97757]" />
               <h3 className="text-xl font-bold text-white/90">App Branding</h3>
             </div>
 
             {/* Live preview */}
-            <div className="flex items-center gap-5 p-6 bg-night rounded-2xl border border-white/5">
-              <div className="w-14 h-14 bg-gold rounded-2xl flex items-center justify-center text-night overflow-hidden flex-shrink-0 shadow-lg shadow-gold/30">
+            <div className="flex items-center gap-5 p-6 bg-[#141414] rounded-2xl border border-white/5">
+              <div className="w-14 h-14 bg-[#D97757] rounded-2xl flex items-center justify-center text-[#1a1a1a] overflow-hidden flex-shrink-0 shadow-lg shadow-[#D97757]/30">
                 {globalSettings.appIcon?.startsWith('http') ? (
                   <img src={globalSettings.appIcon} className="w-full h-full object-cover" alt="app icon" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
                 ) : globalSettings.appIcon ? (
@@ -1297,8 +1297,8 @@ export default function HeadAdminPanel() {
                 )}
               </div>
               <div>
-                <div className="font-serif text-2xl font-bold text-white">{globalSettings.appName || 'StoryCraft'}</div>
-                <div className="text-[10px] text-gold/50 uppercase tracking-widest font-bold mt-1">Live Preview</div>
+                <div className="font-sans text-2xl font-bold text-white">{globalSettings.appName || 'StoryCraft'}</div>
+                <div className="text-[10px] text-[#D97757]/50 uppercase tracking-widest font-bold mt-1">Live Preview</div>
               </div>
             </div>
 
@@ -1308,7 +1308,7 @@ export default function HeadAdminPanel() {
                 <input
                   value={globalSettings.appName || 'StoryCraft'}
                   onChange={(e) => setGlobalSettings(prev => ({ ...prev, appName: e.target.value }))}
-                  className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 placeholder:text-white/25 outline-none transition-all font-serif text-lg"
+                  className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-[#D97757]/40 focus:ring-0 text-white/90 placeholder:text-white/25 outline-none transition-all font-sans text-lg"
                   placeholder="StoryCraft"
                 />
               </div>
@@ -1317,7 +1317,7 @@ export default function HeadAdminPanel() {
                 <input
                   value={globalSettings.appIcon || ''}
                   onChange={(e) => setGlobalSettings(prev => ({ ...prev, appIcon: e.target.value }))}
-                  className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-gold/40 focus:ring-0 text-white/90 placeholder:text-white/25 outline-none transition-all"
+                  className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl focus:border-[#D97757]/40 focus:ring-0 text-white/90 placeholder:text-white/25 outline-none transition-all"
                   placeholder="✨  or  https://example.com/icon.png"
                 />
                 <p className="text-[10px] text-white/35 italic">Enter an emoji like ✨ or a direct image URL</p>
@@ -1326,7 +1326,7 @@ export default function HeadAdminPanel() {
 
             <button
               onClick={() => updateGlobalSettings({ appName: globalSettings.appName, appIcon: globalSettings.appIcon })}
-              className="px-8 py-3 bg-gold text-night font-bold rounded-xl hover:bg-gold/90 transition-all text-sm flex items-center gap-2"
+              className="px-8 py-3 bg-[#D97757] text-[#1a1a1a] font-bold rounded-xl hover:bg-[#D97757]/90 transition-all text-sm flex items-center gap-2"
             >
               <Save size={16} />
               Save Branding
@@ -1335,7 +1335,7 @@ export default function HeadAdminPanel() {
 
           <div className="bg-[#111] p-6 rounded-2xl border border-white/[0.07] space-y-6">
             <div className="flex items-center gap-3 mb-2">
-              <Zap className="text-gold" />
+              <Zap className="text-[#D97757]" />
               <h3 className="text-xl font-bold text-white/90">UI & Visuals</h3>
             </div>
 
@@ -1349,7 +1349,7 @@ export default function HeadAdminPanel() {
                   onClick={() => updateGlobalSettings({ 
                     uiSettings: { ...(globalSettings.uiSettings || defaultUISettings), showParticles: !(globalSettings.uiSettings?.showParticles ?? true) } 
                   })}
-                  className={cn("w-10 h-5 rounded-full transition-all relative", (globalSettings.uiSettings?.showParticles ?? true) ? "bg-gold" : "bg-white/[0.12]")}
+                  className={cn("w-10 h-5 rounded-full transition-all relative", (globalSettings.uiSettings?.showParticles ?? true) ? "bg-[#D97757]" : "bg-white/[0.12]")}
                 >
                   <div className={cn("absolute top-0.5 w-4 h-4 bg-white rounded-full transition-all", (globalSettings.uiSettings?.showParticles ?? true) ? "right-0.5" : "left-0.5")} />
                 </button>
@@ -1364,7 +1364,7 @@ export default function HeadAdminPanel() {
                   onClick={() => updateGlobalSettings({ 
                     uiSettings: { ...(globalSettings.uiSettings || defaultUISettings), showGrain: !(globalSettings.uiSettings?.showGrain ?? true) } 
                   })}
-                  className={cn("w-10 h-5 rounded-full transition-all relative", (globalSettings.uiSettings?.showGrain ?? true) ? "bg-gold" : "bg-white/[0.12]")}
+                  className={cn("w-10 h-5 rounded-full transition-all relative", (globalSettings.uiSettings?.showGrain ?? true) ? "bg-[#D97757]" : "bg-white/[0.12]")}
                 >
                   <div className={cn("absolute top-0.5 w-4 h-4 bg-white rounded-full transition-all", (globalSettings.uiSettings?.showGrain ?? true) ? "right-0.5" : "left-0.5")} />
                 </button>
@@ -1379,7 +1379,7 @@ export default function HeadAdminPanel() {
                   onClick={() => updateGlobalSettings({ 
                     uiSettings: { ...(globalSettings.uiSettings || defaultUISettings), showVignette: !(globalSettings.uiSettings?.showVignette ?? true) } 
                   })}
-                  className={cn("w-10 h-5 rounded-full transition-all relative", (globalSettings.uiSettings?.showVignette ?? true) ? "bg-gold" : "bg-white/[0.12]")}
+                  className={cn("w-10 h-5 rounded-full transition-all relative", (globalSettings.uiSettings?.showVignette ?? true) ? "bg-[#D97757]" : "bg-white/[0.12]")}
                 >
                   <div className={cn("absolute top-0.5 w-4 h-4 bg-white rounded-full transition-all", (globalSettings.uiSettings?.showVignette ?? true) ? "right-0.5" : "left-0.5")} />
                 </button>
@@ -1394,7 +1394,7 @@ export default function HeadAdminPanel() {
                   onClick={() => updateGlobalSettings({ 
                     uiSettings: { ...(globalSettings.uiSettings || defaultUISettings), animationsEnabled: !(globalSettings.uiSettings?.animationsEnabled ?? true) } 
                   })}
-                  className={cn("w-10 h-5 rounded-full transition-all relative", (globalSettings.uiSettings?.animationsEnabled ?? true) ? "bg-gold" : "bg-white/[0.12]")}
+                  className={cn("w-10 h-5 rounded-full transition-all relative", (globalSettings.uiSettings?.animationsEnabled ?? true) ? "bg-[#D97757]" : "bg-white/[0.12]")}
                 >
                   <div className={cn("absolute top-0.5 w-4 h-4 bg-white rounded-full transition-all", (globalSettings.uiSettings?.animationsEnabled ?? true) ? "right-0.5" : "left-0.5")} />
                 </button>
@@ -1407,7 +1407,7 @@ export default function HeadAdminPanel() {
                 <div className="flex gap-2">
                   <input
                     type="color"
-                    value={globalSettings.uiSettings?.primaryColor || '#d4af37'}
+                    value={globalSettings.uiSettings?.primaryColor || '#D97757'}
                     onChange={(e) => updateGlobalSettings({
                       uiSettings: { ...(globalSettings.uiSettings || defaultUISettings), primaryColor: e.target.value }
                     })}
@@ -1415,7 +1415,7 @@ export default function HeadAdminPanel() {
                   />
                   <input
                     type="text"
-                    value={globalSettings.uiSettings?.primaryColor || '#d4af37'}
+                    value={globalSettings.uiSettings?.primaryColor || '#D97757'}
                     onChange={(e) => updateGlobalSettings({
                       uiSettings: { ...(globalSettings.uiSettings || defaultUISettings), primaryColor: e.target.value }
                     })}
@@ -1444,17 +1444,17 @@ export default function HeadAdminPanel() {
 
           <div className="bg-[#111] p-6 rounded-2xl border border-white/[0.07] space-y-6">
             <div className="flex items-center gap-3 mb-2">
-              <Zap className="text-gold" />
+              <Zap className="text-[#D97757]" />
               <h3 className="text-xl font-bold text-white/90">Platform Stats</h3>
             </div>
             <div className="grid grid-cols-2 gap-4">
-              <div className="p-6 bg-gold/10 rounded-2xl border border-gold/20">
-                <div className="text-xs font-bold text-gold/60 uppercase tracking-widest mb-1">Total Users</div>
-                <div className="text-3xl font-serif font-bold text-gold">{users.length}</div>
+              <div className="p-6 bg-[#D97757]/10 rounded-2xl border border-[#D97757]/20">
+                <div className="text-xs font-bold text-[#D97757]/60 uppercase tracking-widest mb-1">Total Users</div>
+                <div className="text-3xl font-semibold text-[#D97757]">{users.length}</div>
               </div>
               <div className="p-6 bg-blue-500/10 rounded-2xl border border-blue-500/20">
                 <div className="text-xs font-bold text-blue-400 uppercase tracking-widest mb-1">Stories Forged</div>
-                <div className="text-3xl font-serif font-bold text-blue-400">{stories.length}</div>
+                <div className="text-3xl font-semibold text-blue-400">{stories.length}</div>
               </div>
             </div>
           </div>
@@ -1466,7 +1466,7 @@ export default function HeadAdminPanel() {
           <div className="bg-[#111] p-6 rounded-2xl border border-white/[0.07]">
             <div className="flex items-center justify-between mb-8">
               <div>
-                <h3 className="text-2xl font-serif font-bold text-white/90">Subscription Codes</h3>
+                <h3 className="text-2xl font-semibold text-white/90">Subscription Codes</h3>
                 <p className="text-sm text-white/40">Generate 12-digit codes for manual subscription redemption</p>
               </div>
               <div className="flex gap-3">
@@ -1478,13 +1478,13 @@ export default function HeadAdminPanel() {
                 </button>
                 <button 
                   onClick={() => generateSubscriptionCode('premium')}
-                  className="px-6 py-2 bg-gold/10 text-gold rounded-xl font-bold text-xs hover:bg-gold/20 transition-all"
+                  className="px-6 py-2 bg-[#D97757]/10 text-[#D97757] rounded-xl font-bold text-xs hover:bg-[#D97757]/20 transition-all"
                 >
                   + Premium Code
                 </button>
                 <button 
                   onClick={() => generateSubscriptionCode('ultimate')}
-                  className="px-6 py-2 bg-gold/20 text-gold rounded-xl font-bold text-xs hover:bg-gold/30 transition-all"
+                  className="px-6 py-2 bg-[#D97757]/20 text-[#D97757] rounded-xl font-bold text-xs hover:bg-[#D97757]/30 transition-all"
                 >
                   + Ultimate Code
                 </button>
@@ -1512,8 +1512,8 @@ export default function HeadAdminPanel() {
                       <td className="py-4 px-4">
                         <span className={cn(
                           "px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest",
-                          code.tier === 'ultimate' ? "bg-gold/20 text-gold" :
-                          code.tier === 'premium' ? "bg-gold/10 text-gold" :
+                          code.tier === 'ultimate' ? "bg-[#D97757]/20 text-[#D97757]" :
+                          code.tier === 'premium' ? "bg-[#D97757]/10 text-[#D97757]" :
                           "bg-blue-500/10 text-blue-400 border border-blue-500/20"
                         )}>
                           {code.tier}
@@ -1563,12 +1563,12 @@ export default function HeadAdminPanel() {
         <div className="space-y-8">
 
           {/* Header */}
-          <div className="bg-night text-white rounded-[2.5rem] p-8 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-gold/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
+          <div className="bg-[#141414] text-white rounded-[2.5rem] p-8 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-[#D97757]/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
             <div className="relative z-10 flex items-center gap-4">
-              <div className="w-14 h-14 bg-gold/20 rounded-2xl flex items-center justify-center text-gold text-2xl">🤖</div>
+              <div className="w-14 h-14 bg-[#D97757]/20 rounded-2xl flex items-center justify-center text-[#D97757] text-2xl">🤖</div>
               <div>
-                <h3 className="text-2xl font-serif font-bold">AI Providers</h3>
+                <h3 className="text-2xl font-semibold">AI Providers</h3>
                 <p className="text-white/40 text-sm">Enable any provider, add its API key, choose a model — then assign it per subscription tier.</p>
               </div>
             </div>
@@ -1585,7 +1585,7 @@ export default function HeadAdminPanel() {
                   key={key}
                   className={cn(
                     "bg-[#111] rounded-2xl border-2 p-6 space-y-4 transition-all",
-                    provider.enabled ? "border-gold/30 shadow-lg shadow-gold/5" : "border-white/[0.07]"
+                    provider.enabled ? "border-[#D97757]/30 shadow-lg shadow-[#D97757]/5" : "border-white/[0.07]"
                   )}
                 >
                   {/* Card header */}
@@ -1593,7 +1593,7 @@ export default function HeadAdminPanel() {
                     <div className="flex items-center gap-3">
                       <div className={cn(
                         "w-11 h-11 rounded-xl flex items-center justify-center text-xl font-bold",
-                        provider.enabled ? "bg-gold/10" : "bg-white/[0.06]"
+                        provider.enabled ? "bg-[#D97757]/10" : "bg-white/[0.06]"
                       )}>
                         {info?.icon ?? '🤖'}
                       </div>
@@ -1613,7 +1613,7 @@ export default function HeadAdminPanel() {
                       className={cn(
                         "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all border",
                         provider.enabled
-                          ? "bg-gold/10 text-gold border-gold/20 hover:bg-gold/20"
+                          ? "bg-[#D97757]/10 text-[#D97757] border-[#D97757]/20 hover:bg-[#D97757]/20"
                           : "bg-white/[0.05] text-white/40 border-white/[0.08] hover:bg-white/[0.10]"
                       )}
                     >
@@ -1625,7 +1625,7 @@ export default function HeadAdminPanel() {
                   {/* API Key */}
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-bold uppercase tracking-widest text-white/30">
-                      API Key {info?.keyUrl && <a href={info.keyUrl} target="_blank" rel="noreferrer" className="text-gold/60 hover:text-gold normal-case ml-1">Get key →</a>}
+                      API Key {info?.keyUrl && <a href={info.keyUrl} target="_blank" rel="noreferrer" className="text-[#D97757]/60 hover:text-[#D97757] normal-case ml-1">Get key →</a>}
                     </label>
                     <div className="relative">
                       <input
@@ -1636,7 +1636,7 @@ export default function HeadAdminPanel() {
                           providers: { ...prev.providers, [key]: { ...prev.providers[key], apiKey: e.target.value } }
                         }))}
                         placeholder={info?.keyHint ?? 'Enter API key...'}
-                        className="w-full bg-white/[0.05] border border-white/[0.09] rounded-xl px-3 py-2 pr-10 text-xs text-white/80 outline-none focus:border-gold/40 font-mono"
+                        className="w-full bg-white/[0.05] border border-white/[0.09] rounded-xl px-3 py-2 pr-10 text-xs text-white/80 outline-none focus:border-[#D97757]/40 font-mono"
                       />
                       <button
                         onClick={() => setShowApiKey(prev => prev === key ? null : key)}
@@ -1661,7 +1661,7 @@ export default function HeadAdminPanel() {
                         ...prev,
                         providers: { ...prev.providers, [key]: { ...prev.providers[key], model: e.target.value } }
                       }))}
-                      className="w-full bg-white/[0.05] border border-white/[0.09] rounded-xl px-3 py-2 text-xs text-white/80 outline-none focus:border-gold/40"
+                      className="w-full bg-white/[0.05] border border-white/[0.09] rounded-xl px-3 py-2 text-xs text-white/80 outline-none focus:border-[#D97757]/40"
                     >
                       {models.map(m => (
                         <option key={m.id} value={m.id} className="bg-[#111] text-white">
@@ -1686,7 +1686,7 @@ export default function HeadAdminPanel() {
                 <span className="text-xs text-white/40">Ultimate can choose</span>
                 <button
                   onClick={() => setAiSettings(prev => ({ ...prev, allowUltimateChoice: !prev.allowUltimateChoice }))}
-                  className={cn('relative w-10 h-5 rounded-full transition-colors', aiSettings.allowUltimateChoice ? 'bg-gold' : 'bg-white/[0.12]')}
+                  className={cn('relative w-10 h-5 rounded-full transition-colors', aiSettings.allowUltimateChoice ? 'bg-[#D97757]' : 'bg-white/[0.12]')}
                 >
                   <div
                     className="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow-sm transition-transform"
@@ -1699,7 +1699,7 @@ export default function HeadAdminPanel() {
             {(['free', 'standard', 'premium', 'ultimate'] as const).map(tier => {
               const tierColors: Record<string, string> = {
                 free: 'text-white/50 bg-white/[0.06]', standard: 'text-blue-400 bg-blue-500/10',
-                premium: 'text-gold bg-gold/10', ultimate: 'text-purple-400 bg-purple-500/10',
+                premium: 'text-[#D97757] bg-[#D97757]/10', ultimate: 'text-purple-400 bg-purple-500/10',
               };
               const enabledProviders = Object.entries(aiSettings.providers).filter(([, p]) => p.enabled);
               return (
@@ -1713,7 +1713,7 @@ export default function HeadAdminPanel() {
                       ...prev,
                       tierAssignments: { ...prev.tierAssignments, [tier]: e.target.value }
                     }))}
-                    className="flex-1 bg-white/[0.05] border border-white/[0.09] rounded-xl px-3 py-2 text-xs text-white/80 outline-none focus:border-gold/40"
+                    className="flex-1 bg-white/[0.05] border border-white/[0.09] rounded-xl px-3 py-2 text-xs text-white/80 outline-none focus:border-[#D97757]/40"
                   >
                     {enabledProviders.length === 0 && (
                       <option value="openrouter" className="bg-[#111] text-white">No providers enabled — enable one above</option>
@@ -1741,7 +1741,7 @@ export default function HeadAdminPanel() {
               <h4 className="text-sm font-bold text-white/90">🖼️ Image Generation — Stability AI (Optional)</h4>
               <p className="text-xs text-white/35 mt-0.5">
                 Without a key, story scripts still work — illustrations are skipped.
-                Get a key at <a href="https://platform.stability.ai" target="_blank" rel="noreferrer" className="text-gold hover:underline">platform.stability.ai</a>.
+                Get a key at <a href="https://platform.stability.ai" target="_blank" rel="noreferrer" className="text-[#D97757] hover:underline">platform.stability.ai</a>.
               </p>
             </div>
             <div className="relative">
@@ -1750,7 +1750,7 @@ export default function HeadAdminPanel() {
                 value={aiSettings.imageApiKey}
                 onChange={e => setAiSettings(prev => ({ ...prev, imageApiKey: e.target.value }))}
                 placeholder="sk-..."
-                className="w-full bg-white/[0.05] border border-white/[0.09] rounded-xl px-4 py-3 pr-12 text-sm text-white/80 outline-none focus:border-gold/40 font-mono"
+                className="w-full bg-white/[0.05] border border-white/[0.09] rounded-xl px-4 py-3 pr-12 text-sm text-white/80 outline-none focus:border-[#D97757]/40 font-mono"
               />
               <button
                 onClick={() => setShowApiKey(prev => prev === 'image' ? null : 'image')}
@@ -1765,7 +1765,7 @@ export default function HeadAdminPanel() {
               <select
                 value={aiSettings.imageModel}
                 onChange={e => setAiSettings(prev => ({ ...prev, imageModel: e.target.value }))}
-                className="w-full bg-white/[0.05] border border-white/[0.09] rounded-xl px-3 py-2 text-xs text-white/80 outline-none focus:border-gold/40"
+                className="w-full bg-white/[0.05] border border-white/[0.09] rounded-xl px-3 py-2 text-xs text-white/80 outline-none focus:border-[#D97757]/40"
               >
                 <option value="stable-image-core" className="bg-[#111] text-white">Stable Image Core (Fast, High Quality)</option>
                 <option value="stable-image-ultra" className="bg-[#111] text-white">Stable Image Ultra (Best Quality)</option>
@@ -1780,7 +1780,7 @@ export default function HeadAdminPanel() {
             <button
               onClick={saveAiSettings}
               disabled={aiSaving}
-              className="flex items-center gap-3 px-10 py-5 bg-gold text-night rounded-2xl font-bold hover:scale-105 transition-all shadow-xl shadow-gold/20 disabled:opacity-50"
+              className="flex items-center gap-3 px-10 py-5 bg-[#D97757] text-[#1a1a1a] rounded-2xl font-bold hover:scale-105 transition-all shadow-xl shadow-[#D97757]/20 disabled:opacity-50"
             >
               {aiSaving ? <RefreshCw size={20} className="animate-spin" /> : <Save size={20} />}
               {aiSaving ? 'Saving...' : 'Save AI Settings'}
@@ -1794,28 +1794,28 @@ export default function HeadAdminPanel() {
       {activeTab === 'photos' && (
         <div className="space-y-8">
           {/* Header */}
-          <div className="bg-night text-white rounded-[2.5rem] p-8 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-gold/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
+          <div className="bg-[#141414] text-white rounded-[2.5rem] p-8 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-[#D97757]/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
             <div className="relative z-10 flex items-center gap-4">
-              <div className="w-14 h-14 bg-gold/20 rounded-2xl flex items-center justify-center text-gold">
+              <div className="w-14 h-14 bg-[#D97757]/20 rounded-2xl flex items-center justify-center text-[#D97757]">
                 <ImageIconLucide size={28} />
               </div>
               <div>
-                <h3 className="text-2xl font-serif font-bold">Stock Photo Services</h3>
+                <h3 className="text-2xl font-semibold">Stock Photo Services</h3>
                 <p className="text-white/40 text-sm">Configure API keys so users can browse free photos inside the Story Creator.</p>
               </div>
             </div>
           </div>
 
           {/* How it works */}
-          <div className="bg-gold/5 border border-gold/15 rounded-[2rem] p-6 flex gap-4">
-            <div className="w-10 h-10 bg-gold/20 rounded-xl flex items-center justify-center text-gold flex-shrink-0 mt-0.5">
+          <div className="bg-[#D97757]/5 border border-[#D97757]/15 rounded-[2rem] p-6 flex gap-4">
+            <div className="w-10 h-10 bg-[#D97757]/20 rounded-xl flex items-center justify-center text-[#D97757] flex-shrink-0 mt-0.5">
               <Sparkles size={20} />
             </div>
             <div className="space-y-1">
               <p className="text-sm font-bold text-white/90">How this works</p>
               <p className="text-[13px] text-white/50 leading-relaxed">
-                When users add images to their story pages they can pick from <strong className="text-gold">Unsplash</strong>, <strong className="text-gold">Pexels</strong>, or <strong className="text-gold">Pixabay</strong> using the API keys you add below.
+                When users add images to their story pages they can pick from <strong className="text-[#D97757]">Unsplash</strong>, <strong className="text-[#D97757]">Pexels</strong>, or <strong className="text-[#D97757]">Pixabay</strong> using the API keys you add below.
                 <strong className="text-white/80"> Vecteezy</strong> and <strong className="text-white/80">Pinterest</strong> open in a new tab (no key needed).
                 Free API keys are available on each service's website.
               </p>
@@ -1857,7 +1857,7 @@ export default function HeadAdminPanel() {
                   key={key}
                   className={cn(
                     "bg-[#111] rounded-2xl border-2 p-6 space-y-6 transition-all",
-                    service.enabled ? "border-gold/30 shadow-lg shadow-gold/5" : "border-white/[0.07]"
+                    service.enabled ? "border-[#D97757]/30 shadow-lg shadow-[#D97757]/5" : "border-white/[0.07]"
                   )}
                 >
                   {/* Card Header */}
@@ -1875,7 +1875,7 @@ export default function HeadAdminPanel() {
                           href={docsUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-[10px] text-gold hover:underline flex items-center gap-1"
+                          className="text-[10px] text-[#D97757] hover:underline flex items-center gap-1"
                         >
                           Get free API key
                           <ChevronDown size={10} className="-rotate-90" />
@@ -1888,7 +1888,7 @@ export default function HeadAdminPanel() {
                       className={cn(
                         "flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all",
                         service.enabled
-                          ? "bg-gold/10 text-gold hover:bg-gold/20"
+                          ? "bg-[#D97757]/10 text-[#D97757] hover:bg-[#D97757]/20"
                           : "bg-white/[0.06] text-white/40 hover:bg-white/[0.1]"
                       )}
                     >
@@ -1911,7 +1911,7 @@ export default function HeadAdminPanel() {
                         value={service.apiKey}
                         onChange={(e) => updatePhotoService(key, 'apiKey', e.target.value)}
                         placeholder={`Paste your ${name} API key…`}
-                        className="w-full pr-12 pl-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl font-mono text-sm text-white/90 placeholder:text-white/25 outline-none focus:border-gold/40 transition-all"
+                        className="w-full pr-12 pl-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl font-mono text-sm text-white/90 placeholder:text-white/25 outline-none focus:border-[#D97757]/40 transition-all"
                       />
                       <button
                         type="button"
@@ -1964,7 +1964,7 @@ export default function HeadAdminPanel() {
             <button
               onClick={savePhotoSettings}
               disabled={photoSaving}
-              className="flex items-center gap-3 px-10 py-5 bg-gold text-night rounded-2xl font-bold hover:scale-105 transition-all shadow-xl shadow-gold/20 disabled:opacity-50"
+              className="flex items-center gap-3 px-10 py-5 bg-[#D97757] text-[#1a1a1a] rounded-2xl font-bold hover:scale-105 transition-all shadow-xl shadow-[#D97757]/20 disabled:opacity-50"
             >
               {photoSaving ? (
                 <RefreshCw size={20} className="animate-spin" />
@@ -1983,18 +1983,18 @@ export default function HeadAdminPanel() {
             {/* Terms of Conditions */}
             <div className="bg-[#111] p-6 rounded-2xl border border-white/[0.07]">
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-12 rounded-2xl bg-gold/10 text-gold flex items-center justify-center">
+                <div className="w-12 h-12 rounded-2xl bg-[#D97757]/10 text-[#D97757] flex items-center justify-center">
                   <FileText size={24} />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-serif font-bold text-white/90">Terms of Conditions</h3>
+                  <h3 className="text-2xl font-semibold text-white/90">Terms of Conditions</h3>
                   <p className="text-sm text-white/40">Manage legal terms of use</p>
                 </div>
               </div>
               <textarea
                 value={globalSettings.termsOfConditions}
                 onChange={(e) => setGlobalSettings({ ...globalSettings, termsOfConditions: e.target.value })}
-                className="w-full h-[500px] bg-white/[0.05] border border-white/[0.09] rounded-2xl p-6 text-sm text-white/80 font-light leading-relaxed outline-none focus:border-gold/40 focus:ring-0 resize-none custom-scrollbar placeholder:text-white/25"
+                className="w-full h-[500px] bg-white/[0.05] border border-white/[0.09] rounded-2xl p-6 text-sm text-white/80 font-light leading-relaxed outline-none focus:border-[#D97757]/40 focus:ring-0 resize-none custom-scrollbar placeholder:text-white/25"
                 placeholder="Enter terms of conditions..."
               />
             </div>
@@ -2006,14 +2006,14 @@ export default function HeadAdminPanel() {
                   <Shield size={24} />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-serif font-bold text-white/90">Privacy Policy</h3>
+                  <h3 className="text-2xl font-semibold text-white/90">Privacy Policy</h3>
                   <p className="text-sm text-white/40">Manage data privacy policy</p>
                 </div>
               </div>
               <textarea
                 value={globalSettings.privacyPolicy}
                 onChange={(e) => setGlobalSettings({ ...globalSettings, privacyPolicy: e.target.value })}
-                className="w-full h-[500px] bg-white/[0.05] border border-white/[0.09] rounded-2xl p-6 text-sm text-white/80 font-light leading-relaxed outline-none focus:border-gold/40 focus:ring-0 resize-none custom-scrollbar placeholder:text-white/25"
+                className="w-full h-[500px] bg-white/[0.05] border border-white/[0.09] rounded-2xl p-6 text-sm text-white/80 font-light leading-relaxed outline-none focus:border-[#D97757]/40 focus:ring-0 resize-none custom-scrollbar placeholder:text-white/25"
                 placeholder="Enter privacy policy..."
               />
             </div>
@@ -2022,7 +2022,7 @@ export default function HeadAdminPanel() {
           <div className="flex justify-end">
             <button 
               onClick={() => updateGlobalSettings(globalSettings)}
-              className="px-10 py-5 bg-gold text-night rounded-2xl font-bold hover:scale-105 transition-all shadow-xl shadow-gold/20 flex items-center gap-3"
+              className="px-10 py-5 bg-[#D97757] text-[#1a1a1a] rounded-2xl font-bold hover:scale-105 transition-all shadow-xl shadow-[#D97757]/20 flex items-center gap-3"
             >
               <RefreshCw size={20} />
               Save Legal Documents

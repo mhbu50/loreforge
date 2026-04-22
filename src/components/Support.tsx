@@ -44,8 +44,8 @@ export default function Support() {
     <div className="max-w-5xl mx-auto p-8 pb-32">
       {/* Page header */}
       <header className="mb-14">
-        <h1 className="text-6xl font-serif font-light mb-3 leading-none">
-          Forge <span className="italic text-gold">Support</span>
+        <h1 className="text-6xl font-sans font-light mb-3 leading-none">
+          Forge <span className="italic text-[#D97757]">Support</span>
         </h1>
         <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-black/40">
           We're here to help you forge your best stories
@@ -57,12 +57,12 @@ export default function Support() {
         {/* Bug report */}
         <button
           onClick={() => setFeedbackModal({ show: true, type: 'bug' })}
-          className="group p-8 bg-white border border-black/5 rounded-[2rem] text-left hover:shadow-xl hover:shadow-gold/10 hover:-translate-y-1 transition-all"
+          className="group p-8 bg-white border border-black/5 rounded-[2rem] text-left hover:shadow-xl hover:shadow-[#D97757]/10 hover:-translate-y-1 transition-all"
         >
           <div className="w-14 h-14 rounded-2xl flex items-center justify-center bg-red-50 text-red-500 mb-6 group-hover:scale-110 transition-transform">
             <Bug size={28} />
           </div>
-          <h3 className="text-2xl font-serif font-bold mb-2">Report a Bug</h3>
+          <h3 className="text-2xl font-semibold mb-2">Report a Bug</h3>
           <p className="text-sm text-black/40 leading-relaxed">
             Found a glitch in the forge? Let us know so we can fix it immediately.
           </p>
@@ -71,12 +71,12 @@ export default function Support() {
         {/* Suggestion */}
         <button
           onClick={() => setFeedbackModal({ show: true, type: 'suggestion' })}
-          className="group p-8 bg-white border border-black/5 rounded-[2rem] text-left hover:shadow-xl hover:shadow-gold/10 hover:-translate-y-1 transition-all"
+          className="group p-8 bg-white border border-black/5 rounded-[2rem] text-left hover:shadow-xl hover:shadow-[#D97757]/10 hover:-translate-y-1 transition-all"
         >
           <div className="w-14 h-14 rounded-2xl flex items-center justify-center bg-blue-50 text-blue-500 mb-6 group-hover:scale-110 transition-transform">
             <MessageSquare size={28} />
           </div>
-          <h3 className="text-2xl font-serif font-bold mb-2">Share a Suggestion</h3>
+          <h3 className="text-2xl font-semibold mb-2">Share a Suggestion</h3>
           <p className="text-sm text-black/40 leading-relaxed">
             Have an idea for a new feature or improvement? We'd love to hear it!
           </p>
@@ -86,7 +86,7 @@ export default function Support() {
       {/* Resource cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
         {[
-          { title: 'Documentation', icon: <BookOpen size={20} />, desc: 'Learn how to use all the forge tools.', bg: 'bg-gold/10', color: 'text-gold' },
+          { title: 'Documentation', icon: <BookOpen size={20} />, desc: 'Learn how to use all the forge tools.', bg: 'bg-[#D97757]/10', color: 'text-[#D97757]' },
           { title: 'Community FAQ', icon: <HelpCircle size={20} />, desc: 'Common questions from other storytellers.', bg: 'bg-blue-50', color: 'text-blue-500' },
           { title: 'Live Status', icon: <LifeBuoy size={20} />, desc: 'Check if the forge engines are running smoothly.', bg: 'bg-green-50', color: 'text-green-500' },
         ].map((item, i) => (
@@ -101,13 +101,13 @@ export default function Support() {
       </div>
 
       {/* Legal banner */}
-      <div className="p-8 bg-gold/5 border border-gold/20 rounded-[2rem] flex flex-col md:flex-row items-center justify-between gap-8">
+      <div className="p-8 bg-[#D97757]/5 border border-[#D97757]/20 rounded-[2rem] flex flex-col md:flex-row items-center justify-between gap-8">
         <div className="flex items-center gap-6">
-          <div className="w-14 h-14 bg-gold/10 text-gold rounded-2xl flex items-center justify-center flex-shrink-0">
+          <div className="w-14 h-14 bg-[#D97757]/10 text-[#D97757] rounded-2xl flex items-center justify-center flex-shrink-0">
             <FileText size={28} />
           </div>
           <div>
-            <h3 className="text-2xl font-serif font-bold">Legal &amp; Privacy</h3>
+            <h3 className="text-2xl font-semibold">Legal &amp; Privacy</h3>
             <p className="text-sm text-black/40 mt-0.5">Review our terms of service and privacy policy.</p>
           </div>
         </div>
@@ -125,7 +125,7 @@ export default function Support() {
               },
             });
           }}
-          className="flex items-center gap-2 px-8 py-4 bg-black text-white rounded-2xl font-bold hover:bg-gold hover:text-night transition-all shadow-lg shadow-gold/20 flex-shrink-0"
+          className="flex items-center gap-2 px-8 py-4 bg-black text-white rounded-2xl font-bold hover:bg-[#D97757] hover:text-[#1a1a1a] transition-all shadow-lg shadow-[#D97757]/20 flex-shrink-0"
         >
           <span>View Terms</span>
           <ExternalLink size={16} />
@@ -160,7 +160,7 @@ export default function Support() {
                     {feedbackModal.type === 'bug' ? <Bug size={22} /> : <MessageSquare size={22} />}
                   </div>
                   <div>
-                    <h3 className="text-2xl font-serif font-bold leading-tight">
+                    <h3 className="text-2xl font-semibold leading-tight">
                       {feedbackModal.type === 'bug' ? 'Report a Bug' : 'Share a Suggestion'}
                     </h3>
                     <p className="text-[10px] text-black/40 uppercase tracking-widest font-bold mt-0.5">
@@ -203,14 +203,14 @@ export default function Support() {
                     ? "Describe the bug you encountered..."
                     : "What features would you like to see?"
                 }
-                className="w-full h-44 bg-black/5 border border-black/5 rounded-2xl p-4 resize-none outline-none focus:border-gold/30 transition-colors font-medium text-sm mb-6"
+                className="w-full h-44 bg-black/5 border border-black/5 rounded-2xl p-4 resize-none outline-none focus:border-[#D97757]/30 transition-colors font-medium text-sm mb-6"
               />
 
               {/* Submit */}
               <button
                 onClick={handleSubmitFeedback}
                 disabled={isSubmittingFeedback || !feedbackContent.trim()}
-                className="w-full py-4 bg-gold text-night rounded-2xl font-bold hover:bg-night hover:text-white transition-all flex items-center justify-center gap-2 shadow-lg shadow-gold/20 disabled:opacity-50"
+                className="w-full py-4 bg-[#D97757] text-[#1a1a1a] rounded-2xl font-bold hover:bg-[#141414] hover:text-white transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#D97757]/20 disabled:opacity-50"
               >
                 {isSubmittingFeedback ? (
                   <div className="w-5 h-5 border-2 border-night/30 border-t-night rounded-full animate-spin" />

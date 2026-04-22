@@ -28,7 +28,7 @@ interface AccountPanelProps {
 type Tab = 'profile' | 'billing' | 'preferences' | 'security';
 
 const AVATAR_EMOJIS = ['✍️','📖','🪄','🌟','🎭','🦋','🏰','🌙','🔮','🎨','🦅','🌸','⚔️','🎪','🌊','🔥','💎','🦁','🌿','🎯','🧿','🦊','🌺','🎬','🛸','🧙','🦄','🌈','🏔️','🎭'];
-const AVATAR_COLORS = ['#d4af37','#1a1a2e','#16213e','#0f3460','#533483','#e94560','#05c46b','#f19066','#3c40c4','#0fbcf9','#0be881','#f53b57','#485460','#808e9b','#d2dae2'];
+const AVATAR_COLORS = ['#D97757','#1a1a2e','#16213e','#0f3460','#533483','#e94560','#05c46b','#f19066','#3c40c4','#0fbcf9','#0be881','#f53b57','#485460','#808e9b','#d2dae2'];
 
 export default function AccountPanel({ userProfile, stories, theme, onToggleTheme, onClose, onUpgrade, onRedeem }: AccountPanelProps) {
   const [activeTab, setActiveTab] = useState<Tab>('profile');
@@ -39,7 +39,7 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
   const [bio, setBio] = useState(userProfile.bio || '');
   const [editingBio, setEditingBio] = useState(false);
   const [avatarEmoji, setAvatarEmoji] = useState(userProfile.avatarEmoji || '');
-  const [avatarColor, setAvatarColor] = useState(userProfile.avatarColor || '#d4af37');
+  const [avatarColor, setAvatarColor] = useState(userProfile.avatarColor || '#D97757');
   const [savingProfile, setSavingProfile] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
@@ -170,7 +170,7 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
   const tierColors: Record<SubscriptionTier, string> = {
     free: 'text-white/40 bg-white/[0.05] border-white/[0.08]',
     standard: 'text-blue-400 bg-blue-500/10 border-blue-500/20',
-    premium: 'text-gold bg-gold/10 border-gold/20',
+    premium: 'text-[#D97757] bg-[#D97757]/10 border-[#D97757]/20',
     ultimate: 'text-purple-400 bg-purple-500/10 border-purple-500/20',
   };
 
@@ -202,7 +202,7 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
         onClick={(e) => e.stopPropagation()}
       >
         {/* Gold top bar */}
-        <div className="h-1 w-full bg-gradient-to-r from-transparent via-gold to-transparent" />
+        <div className="h-1 w-full bg-gradient-to-r from-transparent via-[#D97757] to-transparent" />
 
         {/* Header */}
         <div className="flex items-center justify-between px-8 pt-7 pb-5 border-b border-white/[0.06] flex-shrink-0">
@@ -219,7 +219,7 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
               </div>
             </div>
             <div>
-              <div className="font-serif font-bold text-lg leading-tight text-white/90">{userProfile.displayName}</div>
+              <div className="font-semibold text-lg leading-tight text-white/90">{userProfile.displayName}</div>
               <div className="flex items-center gap-2 mt-0.5">
                 <span className={cn('inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest border', tierColors[userProfile.subscriptionTier])}>
                   {tierIcons[userProfile.subscriptionTier]}
@@ -243,7 +243,7 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
               className={cn(
                 'flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all mb-[-1px]',
                 activeTab === tab.id
-                  ? 'bg-gold/15 text-gold border border-gold/25'
+                  ? 'bg-[#D97757]/15 text-[#D97757] border border-[#D97757]/25'
                   : 'text-white/35 hover:bg-white/[0.05] hover:text-white/60'
               )}
             >
@@ -299,7 +299,7 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                             <button
                               key={e}
                               onClick={() => setAvatarEmoji(e)}
-                              className={cn('w-8 h-8 rounded-lg text-lg hover:bg-white/[0.06] transition-all flex items-center justify-center', avatarEmoji === e && 'bg-gold/20 ring-1 ring-gold/40')}
+                              className={cn('w-8 h-8 rounded-lg text-lg hover:bg-white/[0.06] transition-all flex items-center justify-center', avatarEmoji === e && 'bg-[#D97757]/20 ring-1 ring-[#D97757]/40')}
                             >
                               {e}
                             </button>
@@ -326,7 +326,7 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                         value={displayName}
                         onChange={e => setDisplayName(e.target.value)}
                         onKeyDown={e => e.key === 'Enter' && saveProfile()}
-                        className="flex-1 px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl outline-none focus:border-gold/40 text-white/90 text-sm font-medium placeholder:text-white/25"
+                        className="flex-1 px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl outline-none focus:border-[#D97757]/40 text-white/90 text-sm font-medium placeholder:text-white/25"
                         maxLength={40}
                       />
                     ) : (
@@ -336,7 +336,7 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                     )}
                     <button
                       onClick={() => editingName ? saveProfile() : setEditingName(true)}
-                      className={cn('p-3 rounded-xl transition-all', editingName ? 'bg-gold text-night shadow-md shadow-gold/20' : 'bg-white/[0.06] text-white/40 hover:bg-white/[0.1]')}
+                      className={cn('p-3 rounded-xl transition-all', editingName ? 'bg-[#D97757] text-[#1a1a1a] shadow-md shadow-[#D97757]/20' : 'bg-white/[0.06] text-white/40 hover:bg-white/[0.1]')}
                     >
                       {savingProfile ? <RefreshCw size={16} className="animate-spin" /> : editingName ? <Save size={16} /> : <Edit3 size={16} />}
                     </button>
@@ -352,7 +352,7 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                         autoFocus
                         value={bio}
                         onChange={e => setBio(e.target.value)}
-                        className="flex-1 px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl outline-none focus:border-gold/40 text-white/90 text-sm resize-none placeholder:text-white/25"
+                        className="flex-1 px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl outline-none focus:border-[#D97757]/40 text-white/90 text-sm resize-none placeholder:text-white/25"
                         placeholder="Write a short bio..."
                         rows={3}
                         maxLength={160}
@@ -364,7 +364,7 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                     )}
                     <button
                       onClick={() => editingBio ? saveProfile() : setEditingBio(true)}
-                      className={cn('p-3 rounded-xl transition-all self-start', editingBio ? 'bg-gold text-night shadow-md shadow-gold/20' : 'bg-white/[0.06] text-white/40 hover:bg-white/[0.1]')}
+                      className={cn('p-3 rounded-xl transition-all self-start', editingBio ? 'bg-[#D97757] text-[#1a1a1a] shadow-md shadow-[#D97757]/20' : 'bg-white/[0.06] text-white/40 hover:bg-white/[0.1]')}
                     >
                       {savingProfile ? <RefreshCw size={16} className="animate-spin" /> : editingBio ? <Save size={16} /> : <Edit3 size={16} />}
                     </button>
@@ -378,13 +378,13 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                     {[
                       { icon: <BookOpen size={16} />, val: stories.length, label: 'Stories Forged', color: 'text-white/80' },
                       { icon: <Flame size={16} />, val: userProfile.streak || 0, label: 'Day Streak', color: 'text-orange-500' },
-                      { icon: <Zap size={16} />, val: (() => { const lim = (getSubscriptionLimits(userProfile.subscriptionTier) as any).tokensPerMonth ?? 0; const used = userProfile.usageThisMonth ?? 0; return lim === 0 ? '∞' : `${Math.min(100, Math.round((used/lim)*100))}%`; })(), label: 'Tokens Used', color: 'text-gold' },
+                      { icon: <Zap size={16} />, val: (() => { const lim = (getSubscriptionLimits(userProfile.subscriptionTier) as any).tokensPerMonth ?? 0; const used = userProfile.usageThisMonth ?? 0; return lim === 0 ? '∞' : `${Math.min(100, Math.round((used/lim)*100))}%`; })(), label: 'Tokens Used', color: 'text-[#D97757]' },
                       { icon: <TrendingUp size={16} />, val: stories.filter(s => s.isPublished).length, label: 'Published', color: 'text-green-400' },
                     ].map(stat => (
                       <div key={stat.label} className="flex items-center gap-3 p-4 bg-white/[0.03] rounded-2xl border border-white/[0.06]">
                         <div className={cn('flex-shrink-0', stat.color)}>{stat.icon}</div>
                         <div>
-                          <div className={cn('text-2xl font-serif font-bold leading-none', stat.color)}>{stat.val}</div>
+                          <div className={cn('text-2xl font-semibold leading-none', stat.color)}>{stat.val}</div>
                           <div className="text-[10px] font-bold uppercase tracking-wider text-white/30 mt-0.5">{stat.label}</div>
                         </div>
                       </div>
@@ -398,8 +398,8 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                   {userProfile.badges && userProfile.badges.length > 0 ? (
                     <div className="flex flex-wrap gap-2">
                       {userProfile.badges.map(badge => (
-                        <div key={badge} className="flex items-center gap-2 bg-gold/[0.08] border border-gold/20 px-3 py-2 rounded-xl">
-                          <Award size={13} className="text-gold" />
+                        <div key={badge} className="flex items-center gap-2 bg-[#D97757]/[0.08] border border-[#D97757]/20 px-3 py-2 rounded-xl">
+                          <Award size={13} className="text-[#D97757]" />
                           <span className="text-xs font-bold text-white/70">{badge}</span>
                         </div>
                       ))}
@@ -428,7 +428,7 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                 <div className={cn(
                   'rounded-2xl p-6 border relative overflow-hidden',
                   userProfile.subscriptionTier === 'ultimate' ? 'bg-[#1a1020] border-purple-500/20' :
-                  userProfile.subscriptionTier === 'premium' ? 'bg-[#1a1600] border-gold/20' :
+                  userProfile.subscriptionTier === 'premium' ? 'bg-[#1e1510] border-[#D97757]/20' :
                   userProfile.subscriptionTier === 'standard' ? 'bg-[#0d1520] border-blue-500/20' :
                   'bg-white/[0.02] border-white/[0.06]'
                 )}>
@@ -438,7 +438,7 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                         {tierIcons[userProfile.subscriptionTier]}
                         <span className="text-[10px] font-bold uppercase tracking-widest text-white/40">Current Plan</span>
                       </div>
-                      <div className="text-3xl font-serif font-bold capitalize text-white/90">{userProfile.subscriptionTier}</div>
+                      <div className="text-3xl font-semibold capitalize text-white/90">{userProfile.subscriptionTier}</div>
                       {userProfile.subscriptionExpiresAt && userProfile.subscriptionTier !== 'free' && (
                         <div className="flex items-center gap-1.5 mt-2 text-xs text-white/40">
                           <Calendar size={12} />
@@ -466,7 +466,7 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                   <div className="mt-5 pt-5 border-t border-white/[0.08]">
                     <div className="flex justify-between items-center mb-1.5">
                       <span className="text-xs font-bold text-white/40 uppercase tracking-wider">Monthly Token Usage</span>
-                      <span className={cn('text-sm font-bold', usagePct > 85 ? 'text-red-400' : 'text-gold')}>
+                      <span className={cn('text-sm font-bold', usagePct > 85 ? 'text-red-400' : 'text-[#D97757]')}>
                         {monthlyLimit === 0 ? '∞' : `${usagePct}%`}
                       </span>
                     </div>
@@ -475,7 +475,7 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                         initial={{ width: 0 }}
                         animate={{ width: monthlyLimit === 0 ? '100%' : `${usagePct}%` }}
                         transition={{ duration: 0.8 }}
-                        className={cn('h-full rounded-full', usagePct > 85 ? 'bg-gradient-to-r from-red-500/60 to-red-500' : usagePct > 70 ? 'bg-gradient-to-r from-amber-500/60 to-amber-400' : 'bg-gradient-to-r from-gold/60 to-gold')}
+                        className={cn('h-full rounded-full', usagePct > 85 ? 'bg-gradient-to-r from-red-500/60 to-red-500' : usagePct > 70 ? 'bg-gradient-to-r from-amber-500/60 to-amber-400' : 'bg-gradient-to-r from-[#D97757]/60 to-[#D97757]')}
                       />
                     </div>
                     <div className="flex justify-between items-center">
@@ -506,7 +506,7 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                     ].map(item => (
                       <div key={item.label} className="flex items-center justify-between py-1.5 border-b border-white/[0.06] last:border-0">
                         <span className="text-sm text-white/50">{item.label}</span>
-                        <span className={cn('text-sm font-bold', item.val === 0 ? 'text-green-400' : 'text-gold')}>
+                        <span className={cn('text-sm font-bold', item.val === 0 ? 'text-green-400' : 'text-[#D97757]')}>
                           {item.val === 0 ? 'Free' : `${item.val.toLocaleString()} tokens`}
                         </span>
                       </div>
@@ -551,13 +551,13 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                           };
                           return (
                             <div key={tier} className={cn(
-                              'flex items-center justify-between p-5 rounded-2xl border transition-all cursor-pointer group hover:border-gold/30 hover:bg-gold/[0.02]',
-                              tier === 'premium' ? 'border-gold/25 bg-gold/[0.03]' : 'border-white/[0.07] bg-white/[0.02]'
+                              'flex items-center justify-between p-5 rounded-2xl border transition-all cursor-pointer group hover:border-[#D97757]/30 hover:bg-[#D97757]/[0.02]',
+                              tier === 'premium' ? 'border-[#D97757]/25 bg-[#D97757]/[0.03]' : 'border-white/[0.07] bg-white/[0.02]'
                             )}>
                               <div>
                                 <div className="flex items-center gap-2 mb-1">
-                                  {tier === 'premium' && <div className="px-2 py-0.5 bg-gold text-night text-[9px] font-bold uppercase tracking-widest rounded-full">Popular</div>}
-                                  <span className="font-serif font-bold capitalize text-base text-white/90">{tier}</span>
+                                  {tier === 'premium' && <div className="px-2 py-0.5 bg-[#D97757] text-[#1a1a1a] text-[9px] font-bold uppercase tracking-widest rounded-full">Popular</div>}
+                                  <span className="font-semibold capitalize text-base text-white/90">{tier}</span>
                                 </div>
                                 <p className="text-xs text-white/35">{highlights[tier]}</p>
                               </div>
@@ -571,8 +571,8 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                                   className={cn(
                                     'px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all',
                                     tier === 'premium'
-                                      ? 'bg-gold text-night shadow-md shadow-gold/20 hover:bg-gold/90'
-                                      : 'bg-white/[0.1] text-white/90 hover:bg-gold hover:text-night'
+                                      ? 'bg-[#D97757] text-[#1a1a1a] shadow-md shadow-[#D97757]/20 hover:bg-[#D97757]/90'
+                                      : 'bg-white/[0.1] text-white/90 hover:bg-[#D97757] hover:text-[#1a1a1a]'
                                   )}
                                 >
                                   Upgrade
@@ -589,10 +589,10 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                 {/* Redeem code */}
                 <button
                   onClick={onRedeem}
-                  className="w-full flex items-center justify-between p-5 bg-white/[0.02] border border-white/[0.07] rounded-2xl hover:border-gold/25 hover:bg-gold/[0.02] transition-all group"
+                  className="w-full flex items-center justify-between p-5 bg-white/[0.02] border border-white/[0.07] rounded-2xl hover:border-[#D97757]/25 hover:bg-[#D97757]/[0.02] transition-all group"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-gold/10 text-gold flex items-center justify-center group-hover:bg-gold group-hover:text-night transition-all">
+                    <div className="w-10 h-10 rounded-xl bg-[#D97757]/10 text-[#D97757] flex items-center justify-center group-hover:bg-[#D97757] group-hover:text-[#1a1a1a] transition-all">
                       <Ticket size={18} />
                     </div>
                     <div className="text-left">
@@ -600,7 +600,7 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                       <div className="text-xs text-white/35">Enter a subscription or bonus token code</div>
                     </div>
                   </div>
-                  <ChevronRight size={18} className="text-white/20 group-hover:text-gold transition-colors" />
+                  <ChevronRight size={18} className="text-white/20 group-hover:text-[#D97757] transition-colors" />
                 </button>
               </motion.div>
             )}
@@ -621,7 +621,7 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
 
                   <div className="flex items-center justify-between py-3 border-b border-white/[0.06]">
                     <div className="flex items-center gap-3">
-                      {theme === 'dark' ? <Moon size={18} className="text-gold" /> : <Sun size={18} className="text-white/50" />}
+                      {theme === 'dark' ? <Moon size={18} className="text-[#D97757]" /> : <Sun size={18} className="text-white/50" />}
                       <div>
                         <div className="text-sm font-bold text-white/90">Theme</div>
                         <div className="text-xs text-white/35">{theme === 'dark' ? 'Dark mode active' : 'Light mode active'}</div>
@@ -631,7 +631,7 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                       onClick={onToggleTheme}
                       className={cn(
                         'w-12 h-6 rounded-full transition-all relative',
-                        theme === 'dark' ? 'bg-gold' : 'bg-black/15'
+                        theme === 'dark' ? 'bg-[#D97757]' : 'bg-black/15'
                       )}
                     >
                       <motion.div
@@ -660,7 +660,7 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                       </div>
                       <button
                         onClick={() => item.set(!item.val)}
-                        className={cn('w-12 h-6 rounded-full transition-all relative', item.val ? 'bg-gold' : 'bg-black/15')}
+                        className={cn('w-12 h-6 rounded-full transition-all relative', item.val ? 'bg-[#D97757]' : 'bg-black/15')}
                       >
                         <motion.div
                           animate={{ x: item.val ? 24 : 4 }}
@@ -687,7 +687,7 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                     {aiProviders === DEFAULT_AI_SETTINGS && !loadingAiProviders && (
                       <button
                         onClick={loadAiProviders}
-                        className="text-xs text-gold/60 hover:text-gold transition-colors"
+                        className="text-xs text-[#D97757]/60 hover:text-[#D97757] transition-colors"
                       >
                         Load AI settings →
                       </button>
@@ -701,7 +701,7 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                       <select
                         value={aiPrefs.text ?? (aiProviders !== DEFAULT_AI_SETTINGS ? getEffectiveProvider(aiProviders, 'ultimate').providerKey : '')}
                         onChange={e => setAiPrefs(p => ({ ...p, text: e.target.value }))}
-                        className="bg-white/[0.05] border border-white/[0.09] rounded-lg px-2.5 py-1.5 text-xs text-white/80 outline-none focus:border-gold/40 max-w-[180px]"
+                        className="bg-white/[0.05] border border-white/[0.09] rounded-lg px-2.5 py-1.5 text-xs text-white/80 outline-none focus:border-[#D97757]/40 max-w-[180px]"
                       >
                         {Object.entries(aiProviders.providers)
                           .filter(([, p]) => p.enabled)
@@ -718,7 +718,7 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
 
                 <button
                   onClick={savePreferences}
-                  className="w-full py-3.5 bg-black text-white rounded-xl font-bold hover:bg-gold hover:text-night transition-all text-sm flex items-center justify-center gap-2"
+                  className="w-full py-3.5 bg-black text-white rounded-xl font-bold hover:bg-[#D97757] hover:text-[#1a1a1a] transition-all text-sm flex items-center justify-center gap-2"
                 >
                   <Save size={16} />
                   Save Preferences
@@ -788,7 +788,7 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                             type={showNewPw ? 'text' : 'password'}
                             value={currentPassword}
                             onChange={e => setCurrentPassword(e.target.value)}
-                            className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl outline-none focus:border-gold/40 text-white/90 text-sm pr-10 placeholder:text-white/25"
+                            className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl outline-none focus:border-[#D97757]/40 text-white/90 text-sm pr-10 placeholder:text-white/25"
                             placeholder="••••••••"
                           />
                         </div>
@@ -800,7 +800,7 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                             type={showNewPw ? 'text' : 'password'}
                             value={newPassword}
                             onChange={e => setNewPassword(e.target.value)}
-                            className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl outline-none focus:border-gold/40 text-white/90 text-sm pr-10 placeholder:text-white/25"
+                            className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.09] rounded-xl outline-none focus:border-[#D97757]/40 text-white/90 text-sm pr-10 placeholder:text-white/25"
                             placeholder="Min. 6 characters"
                           />
                           <button
@@ -815,7 +815,7 @@ export default function AccountPanel({ userProfile, stories, theme, onToggleThem
                       <button
                         onClick={handleChangePassword}
                         disabled={savingPassword || !currentPassword || !newPassword}
-                        className="w-full py-3 bg-black text-white rounded-xl font-bold text-sm hover:bg-gold hover:text-night transition-all disabled:opacity-40 flex items-center justify-center gap-2"
+                        className="w-full py-3 bg-black text-white rounded-xl font-bold text-sm hover:bg-[#D97757] hover:text-[#1a1a1a] transition-all disabled:opacity-40 flex items-center justify-center gap-2"
                       >
                         {savingPassword ? <RefreshCw size={15} className="animate-spin" /> : <Lock size={15} />}
                         Update Password

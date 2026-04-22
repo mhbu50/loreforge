@@ -24,8 +24,8 @@ interface Tab {
 
 export default function TabbedWorkspace() {
   const [tabs, setTabs] = useState<Tab[]>([
-    { id: '1', title: 'Chapter 1: The Awakening', type: 'chapter', content: <div className="p-12 max-w-2xl mx-auto font-serif text-xl leading-relaxed text-gray-800"><p>The dawn broke over the jagged peaks of Aethelgard, casting long, crimson shadows across the valley. Kaelen stood at the precipice, his breath hitching in the cold morning air...</p></div> },
-    { id: '2', title: 'Kaelen Shadowstep', type: 'character', content: <div className="p-12 grid grid-cols-2 gap-12"><div className="aspect-[3/4] bg-black/5 rounded-3xl overflow-hidden"><img src="https://picsum.photos/seed/kaelen/600/800" className="w-full h-full object-cover" referrerPolicy="no-referrer" /></div><div className="space-y-6"><h2 className="text-4xl font-serif font-bold">Kaelen Shadowstep</h2><p className="text-gray-500 italic">"The shadows are not my enemy; they are my sanctuary."</p><div className="space-y-4 pt-6"><div className="flex justify-between border-b border-black/5 pb-2"><span className="text-xs small-caps font-bold text-black/40">Age</span><span className="text-sm font-bold">24</span></div><div className="flex justify-between border-b border-black/5 pb-2"><span className="text-xs small-caps font-bold text-black/40">Origin</span><span className="text-sm font-bold">The Void Lands</span></div></div></div></div> },
+    { id: '1', title: 'Chapter 1: The Awakening', type: 'chapter', content: <div className="p-12 max-w-2xl mx-auto font-sans text-xl leading-relaxed text-gray-800"><p>The dawn broke over the jagged peaks of Aethelgard, casting long, crimson shadows across the valley. Kaelen stood at the precipice, his breath hitching in the cold morning air...</p></div> },
+    { id: '2', title: 'Kaelen Shadowstep', type: 'character', content: <div className="p-12 grid grid-cols-2 gap-12"><div className="aspect-[3/4] bg-black/5 rounded-3xl overflow-hidden"><img src="https://picsum.photos/seed/kaelen/600/800" className="w-full h-full object-cover" referrerPolicy="no-referrer" /></div><div className="space-y-6"><h2 className="text-4xl font-semibold">Kaelen Shadowstep</h2><p className="text-gray-500 italic">"The shadows are not my enemy; they are my sanctuary."</p><div className="space-y-4 pt-6"><div className="flex justify-between border-b border-black/5 pb-2"><span className="text-xs small-caps font-bold text-black/40">Age</span><span className="text-sm font-bold">24</span></div><div className="flex justify-between border-b border-black/5 pb-2"><span className="text-xs small-caps font-bold text-black/40">Origin</span><span className="text-sm font-bold">The Void Lands</span></div></div></div></div> },
   ]);
   const [activeTabId, setActiveTabId] = useState<string>('1');
   const [isEditable, setIsEditable] = useState(true);
@@ -103,7 +103,7 @@ export default function TabbedWorkspace() {
             >
               <span className={cn(
                 "p-1.5 rounded-md transition-colors",
-                activeTabId === tab.id ? "bg-gold/20 text-gold" : "bg-black/5"
+                activeTabId === tab.id ? "bg-[#D97757]/20 text-[#D97757]" : "bg-black/5"
               )}>
                 {getIcon(tab.type)}
               </span>
@@ -117,11 +117,11 @@ export default function TabbedWorkspace() {
                 </button>
               )}
               {activeTabId === tab.id && (
-                <motion.div layoutId="activeTab" className="absolute bottom-0 left-0 right-0 h-0.5 bg-gold" />
+                <motion.div layoutId="activeTab" className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#D97757]" />
               )}
             </div>
           ))}
-          <button className="p-4 text-black/20 hover:text-gold transition-colors">
+          <button className="p-4 text-black/20 hover:text-[#D97757] transition-colors">
             <Plus size={18} />
           </button>
         </div>
@@ -146,7 +146,7 @@ export default function TabbedWorkspace() {
           })}
           <button 
             onClick={() => setIsCustomizingToolbar(!isCustomizingToolbar)}
-            className="p-1.5 text-black/20 hover:text-gold transition-colors"
+            className="p-1.5 text-black/20 hover:text-[#D97757] transition-colors"
           >
             <Plus size={14} />
           </button>
@@ -180,8 +180,8 @@ export default function TabbedWorkspace() {
                   className={cn(
                     "flex items-center gap-2 px-4 py-2 rounded-xl border transition-all",
                     toolbarButtons.includes(btn.id)
-                      ? "bg-gold border-gold text-night"
-                      : "bg-white border-black/5 text-black/40 hover:border-gold/40"
+                      ? "bg-[#D97757] border-[#D97757] text-[#1a1a1a]"
+                      : "bg-white border-black/5 text-black/40 hover:border-[#D97757]/40"
                   )}
                 >
                   {btn.icon}
@@ -225,7 +225,7 @@ export default function TabbedWorkspace() {
           ) : (
             <div className="h-full flex flex-col items-center justify-center text-center p-12 opacity-20">
               <BookOpen size={64} className="mb-6" />
-              <h3 className="text-2xl font-serif font-bold">No Active Tabs</h3>
+              <h3 className="text-2xl font-semibold">No Active Tabs</h3>
               <p className="text-sm">Select a chapter or character to begin crafting.</p>
             </div>
           )}
@@ -239,17 +239,17 @@ export default function TabbedWorkspace() {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
             style={{ left: contextMenu.x, top: contextMenu.y }}
-            className="fixed z-[500] bg-night text-gold rounded-2xl shadow-2xl border border-gold/20 overflow-hidden min-w-[200px]"
+            className="fixed z-[500] bg-[#141414] text-[#D97757] rounded-2xl shadow-2xl border border-[#D97757]/20 overflow-hidden min-w-[200px]"
           >
-            <div className="p-3 border-b border-gold/10 bg-gold/5">
+            <div className="p-3 border-b border-[#D97757]/10 bg-[#D97757]/5">
               <div className="text-[8px] small-caps tracking-widest font-bold opacity-40">Editor Tools</div>
             </div>
             <div className="p-2 space-y-1">
-              <button className="w-full flex items-center gap-3 px-4 py-2 hover:bg-gold/10 rounded-xl transition-all text-sm">
+              <button className="w-full flex items-center gap-3 px-4 py-2 hover:bg-[#D97757]/10 rounded-xl transition-all text-sm">
                 <FileText size={14} />
                 <span>Copy to Clipboard</span>
               </button>
-              <div className="h-px bg-gold/10 my-1" />
+              <div className="h-px bg-[#D97757]/10 my-1" />
               <button className="w-full flex items-center gap-3 px-4 py-2 hover:bg-red-500/20 text-red-400 rounded-xl transition-all text-sm">
                 <X size={14} />
                 <span>Clear Selection</span>

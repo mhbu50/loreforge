@@ -145,7 +145,7 @@ export default function DesignInspiration() {
   return (
     <div className="p-8 space-y-12">
       <header className="max-w-3xl">
-        <h2 className="text-3xl font-serif mb-4">The Combinatorial Engine</h2>
+        <h2 className="text-3xl font-sans mb-4">The Combinatorial Engine</h2>
         <p className="text-ink/60 leading-relaxed">
           Every animation/design idea can be described by three attributes:
           <span className="block mt-4 font-bold text-olive">Target + Trigger + Effect</span>
@@ -179,7 +179,7 @@ export default function DesignInspiration() {
               <div className="p-2 bg-white rounded-xl shadow-sm">
                 {cat.icon}
               </div>
-              <h3 className="text-xl font-serif">{cat.title}</h3>
+              <h3 className="text-xl font-sans">{cat.title}</h3>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {cat.items.map((item, i) => (
@@ -194,7 +194,7 @@ export default function DesignInspiration() {
       </div>
 
       <footer className="bg-olive text-white p-12 rounded-[3rem] text-center space-y-6">
-        <h3 className="text-3xl font-serif">How to Reach 60,000 Ideas</h3>
+        <h3 className="text-3xl font-sans">How to Reach 60,000 Ideas</h3>
         <p className="max-w-2xl mx-auto opacity-80">
           Take any of the 600 examples above. Multiply by timing, easing, direction, and triggers.
           The combinations are virtually endless.
@@ -220,7 +220,7 @@ export default function DesignInspiration() {
             <span className="opacity-60 small-caps text-[10px]">Triggers</span>
           </div>
           <div className="text-2xl opacity-20">=</div>
-          <div className="text-3xl font-serif">216,000+</div>
+          <div className="text-3xl font-sans">216,000+</div>
         </div>
       </footer>
     </div>

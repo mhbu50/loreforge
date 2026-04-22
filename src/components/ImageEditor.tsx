@@ -46,7 +46,7 @@ export default function ImageEditor({ imageUrl, adjustments, onSave, onClose }: 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[200] bg-night/95 backdrop-blur-xl flex items-center justify-center p-8"
+      className="fixed inset-0 z-[200] bg-[#141414]/95 backdrop-blur-xl flex items-center justify-center p-8"
     >
       <div className="w-full max-w-6xl flex flex-col lg:flex-row gap-12 h-full max-h-[90vh]">
         {/* Preview Area */}
@@ -69,7 +69,7 @@ export default function ImageEditor({ imageUrl, adjustments, onSave, onClose }: 
           
           <div className="absolute top-8 left-8 flex items-center gap-4">
             <div className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 flex items-center gap-2">
-              <Grid size={14} className="text-gold" />
+              <Grid size={14} className="text-[#D97757]" />
               <span className="text-[10px] font-bold uppercase tracking-widest text-white">Image Lab</span>
             </div>
           </div>
@@ -85,11 +85,11 @@ export default function ImageEditor({ imageUrl, adjustments, onSave, onClose }: 
         {/* Controls Area */}
         <div className="flex-1 bg-white rounded-[3rem] p-10 flex flex-col overflow-hidden shadow-2xl">
           <div className="flex items-center gap-4 mb-8">
-            <div className="w-12 h-12 bg-night rounded-2xl flex items-center justify-center text-gold">
+            <div className="w-12 h-12 bg-[#141414] rounded-2xl flex items-center justify-center text-[#D97757]">
               <Sliders size={24} />
             </div>
             <div>
-              <h2 className="text-2xl font-serif font-bold">Adjustments</h2>
+              <h2 className="text-2xl font-semibold">Adjustments</h2>
               <p className="text-[10px] small-caps tracking-widest text-black/40">Fine-tune your masterpiece</p>
             </div>
           </div>
@@ -182,7 +182,7 @@ export default function ImageEditor({ imageUrl, adjustments, onSave, onClose }: 
             </button>
             <button 
               onClick={() => onSave(localAdjustments)}
-              className="flex-[2] py-4 bg-night text-white rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-gold hover:text-night transition-all shadow-xl flex items-center justify-center gap-2"
+              className="flex-[2] py-4 bg-[#141414] text-white rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-[#D97757] hover:text-[#1a1a1a] transition-all shadow-xl flex items-center justify-center gap-2"
             >
               <Check size={18} />
               Apply Changes
@@ -209,7 +209,7 @@ function AdjustmentSlider({ label, icon, value, min, max, onChange }: {
           {icon}
           <span className="text-xs font-bold uppercase tracking-widest">{label}</span>
         </div>
-        <span className="text-xs font-mono font-bold text-gold">{value}</span>
+        <span className="text-xs font-mono font-bold text-[#D97757]">{value}</span>
       </div>
       <input 
         type="range" 
@@ -217,7 +217,7 @@ function AdjustmentSlider({ label, icon, value, min, max, onChange }: {
         max={max} 
         value={value} 
         onChange={(e) => onChange(parseInt(e.target.value))}
-        className="w-full h-1.5 bg-black/5 rounded-full appearance-none cursor-pointer accent-gold"
+        className="w-full h-1.5 bg-black/5 rounded-full appearance-none cursor-pointer accent-[#D97757]"
       />
     </div>
   );
@@ -234,7 +234,7 @@ function TransformButton({ icon, label, onClick, active }: {
       onClick={onClick}
       className={cn(
         "flex flex-col items-center justify-center gap-2 p-4 rounded-2xl border transition-all",
-        active ? "bg-night text-gold border-night shadow-lg" : "bg-white border-black/5 text-black/40 hover:border-gold hover:text-gold"
+        active ? "bg-[#141414] text-[#D97757] border-night shadow-lg" : "bg-white border-black/5 text-black/40 hover:border-[#D97757] hover:text-[#D97757]"
       )}
     >
       {icon}

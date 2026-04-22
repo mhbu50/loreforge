@@ -683,270 +683,257 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
                     delay: Math.random() * 5,
                     ease: "linear"
                   }}
-                  className="absolute w-1 h-1 bg-gold/40 rounded-full blur-[1px]"
+                  className="absolute w-1 h-1 bg-[#D97757]/30 rounded-full blur-[1px]"
                 />
               ))}
             </div>
 
             <div className="relative">
-              <motion.div 
-                animate={{ 
-                  scale: [1, 1.1, 1],
-                  rotate: [0, 180, 360],
-                }}
-                transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-                className="w-40 h-40 border-[1px] border-gold/20 rounded-full flex items-center justify-center relative"
-              >
-                <div className="absolute inset-0 border-t-2 border-gold rounded-full animate-spin" style={{ animationDuration: '2s' }} />
-                <div className="absolute inset-4 border-b-2 border-gold/40 rounded-full animate-spin" style={{ animationDuration: '3s', animationDirection: 'reverse' }} />
-                
-                <motion.div 
-                  animate={{ 
-                    scale: [0.9, 1.1, 0.9],
-                    opacity: [0.5, 1, 0.5]
-                  }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                  className="text-gold"
+              <div className="w-16 h-16 rounded-2xl bg-[#D97757]/10 border border-[#D97757]/20 flex items-center justify-center">
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1.2, repeat: Infinity, ease: "linear" }}
                 >
-                  <Sparkles size={48} className="drop-shadow-[0_0_15px_rgba(212,175,55,0.5)]" />
+                  <Sparkles size={28} className="text-[#D97757]" />
                 </motion.div>
-              </motion.div>
+              </div>
             </div>
-            
+
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="mt-12 space-y-6 relative z-10"
+              className="mt-10 space-y-4 relative z-10"
             >
-              <div className="space-y-2">
-                <h2 className="text-5xl font-serif font-bold text-white tracking-tight">Forging Masterpiece</h2>
-                <div className="flex items-center justify-center gap-3">
-                  <div className="h-[1px] w-8 bg-gold/20" />
-                  <p className="text-gold font-bold tracking-[0.3em] uppercase text-[10px]">Transmuting Ideas</p>
-                  <div className="h-[1px] w-8 bg-gold/20" />
-                </div>
+              <div className="space-y-1.5">
+                <h2 className="text-[26px] font-semibold text-white tracking-tight">Crafting your story</h2>
+                <p className="text-white/35 text-sm">This usually takes a few moments…</p>
               </div>
-              
-              <div className="w-80 h-1 bg-white/5 rounded-full overflow-hidden mx-auto relative">
-                <motion.div 
+
+              <div className="w-64 h-0.5 bg-white/[0.06] rounded-full overflow-hidden mx-auto relative">
+                <motion.div
                   animate={{ x: ["-100%", "100%"] }}
                   transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                  className="w-1/2 h-full bg-gradient-to-r from-transparent via-gold to-transparent"
+                  className="w-1/2 h-full bg-gradient-to-r from-transparent via-[#D97757] to-transparent"
                 />
               </div>
-              
-              <p className="text-white/30 text-[10px] font-medium uppercase tracking-widest animate-pulse">
-                Aligning creative frequencies...
-              </p>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Sidebar */}
+      {/* ── Sidebar ── */}
       <aside
         style={{ width: sidebarWidth }}
         className={cn(
-          "fixed left-0 top-0 bottom-0 bg-[#141414] border-r border-white/[0.06] z-[60] flex flex-col transition-transform duration-500",
+          "fixed left-0 top-0 bottom-0 bg-[#141414] border-r border-white/[0.06] z-[60] flex flex-col transition-transform duration-500 select-none",
           isZenMode && "-translate-x-full"
         )}
       >
-        {/* Logo */}
-        <div className="h-16 px-5 flex items-center gap-3 border-b border-white/[0.06]">
-          <div className="w-8 h-8 bg-gold rounded-lg flex items-center justify-center text-white flex-shrink-0">
-            {appIcon?.startsWith('http') ? (
-              <img src={appIcon} className="w-full h-full object-cover rounded-lg" alt="icon" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
-            ) : appIcon ? (
-              <span className="text-sm">{appIcon}</span>
-            ) : (
-              <Sparkles size={16} />
-            )}
+        {/* Logo area */}
+        <div className="px-4 pt-5 pb-4">
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 bg-[#D97757] rounded-lg flex items-center justify-center text-white flex-shrink-0 shadow-md shadow-[#D97757]/20 overflow-hidden">
+              {appIcon?.startsWith('http') ? (
+                <img src={appIcon} className="w-full h-full object-cover" alt="icon" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+              ) : appIcon ? (
+                <span className="text-xs">{appIcon}</span>
+              ) : (
+                <Sparkles size={13} />
+              )}
+            </div>
+            <span className="font-semibold text-[14px] text-white/85 tracking-tight truncate">{appName}</span>
           </div>
-          <span className="font-bold text-white/90 text-sm tracking-tight">{appName}</span>
+        </div>
+
+        {/* New story shortcut */}
+        <div className="px-3 pb-3">
+          <button
+            onClick={() => canCreateStory ? setShowTypeSelector(true) : setShowPricingModal(true)}
+            className="w-full flex items-center gap-2 px-3 py-2.5 bg-[#D97757] hover:bg-[#C86A48] text-white rounded-xl text-[12px] font-semibold transition-colors shadow-md shadow-[#D97757]/15"
+          >
+            <Plus size={14} />
+            New story
+          </button>
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
-          <p className="text-[9px] font-bold uppercase tracking-[0.25em] text-white/20 px-3 pt-3 pb-2">Menu</p>
-          {([
-            { view: 'library', icon: <Layout size={15} />, label: 'Library' },
-            { view: 'workspace', icon: <Edit3 size={15} />, label: 'Workspace' },
-            { view: 'characters', icon: <Users size={15} />, label: 'Characters' },
-            { view: 'bible', icon: <Scroll size={15} />, label: 'Story Bible' },
-            { view: 'themes', icon: <Palette size={15} />, label: 'Themes' },
-            { view: 'forge-settings', icon: <SettingsIcon size={15} />, label: 'Settings' },
-            { view: 'support', icon: <LifeBuoy size={15} />, label: 'Support' },
-            { view: 'publish', icon: <Share2 size={15} />, label: 'Publish' },
-          ] as const).map(({ view, icon, label }) => (
-            <button
-              key={view}
-              onClick={() => { setCurrentStory(null); setIsCreating(false); setShowAdmin(false); setActiveView(view); }}
-              className={cn(
-                "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all text-left group relative",
-                activeView === view
-                  ? "bg-gold/10 text-gold"
-                  : "text-white/35 hover:bg-white/[0.05] hover:text-white/70"
-              )}
-            >
-              {activeView === view && (
-                <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-gold rounded-r-full" />
-              )}
-              <span className="flex-shrink-0">{icon}</span>
-              <span className="text-[11px] font-semibold">{label}</span>
-              {activeView === view && <span className="ml-auto w-1 h-1 bg-gold rounded-full" />}
-            </button>
-          ))}
+        <nav className="flex-1 px-2 overflow-y-auto space-y-0.5">
+          {/* Primary views */}
+          <div className="mb-1">
+            {([
+              { view: 'library',        icon: <Layout   size={14} />, label: 'Library' },
+              { view: 'workspace',      icon: <Edit3    size={14} />, label: 'Workspace' },
+              { view: 'characters',     icon: <Users    size={14} />, label: 'Characters' },
+              { view: 'bible',          icon: <Scroll   size={14} />, label: 'Story Bible' },
+              { view: 'themes',         icon: <Palette  size={14} />, label: 'Themes' },
+              { view: 'publish',        icon: <Share2   size={14} />, label: 'Publish' },
+            ] as const).map(({ view, icon, label }) => (
+              <button
+                key={view}
+                onClick={() => { setCurrentStory(null); setIsCreating(false); setShowAdmin(false); setActiveView(view); }}
+                className={cn(
+                  "w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all text-left",
+                  activeView === view
+                    ? "bg-white/[0.08] text-white"
+                    : "text-white/40 hover:bg-white/[0.04] hover:text-white/70"
+                )}
+              >
+                <span className={cn("flex-shrink-0 transition-colors", activeView === view ? "text-[#D97757]" : "text-white/30")}>
+                  {icon}
+                </span>
+                {label}
+              </button>
+            ))}
+          </div>
+
+          {/* Divider */}
+          <div className="h-px bg-white/[0.05] mx-2 my-2" />
+
+          {/* Secondary views */}
+          <div>
+            {([
+              { view: 'forge-settings', icon: <SettingsIcon size={14} />, label: 'Settings' },
+              { view: 'support',        icon: <LifeBuoy    size={14} />, label: 'Help & Support' },
+            ] as const).map(({ view, icon, label }) => (
+              <button
+                key={view}
+                onClick={() => { setCurrentStory(null); setIsCreating(false); setShowAdmin(false); setActiveView(view); }}
+                className={cn(
+                  "w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all text-left",
+                  activeView === view
+                    ? "bg-white/[0.08] text-white"
+                    : "text-white/40 hover:bg-white/[0.04] hover:text-white/70"
+                )}
+              >
+                <span className={cn("flex-shrink-0 transition-colors", activeView === view ? "text-[#D97757]" : "text-white/30")}>
+                  {icon}
+                </span>
+                {label}
+              </button>
+            ))}
+          </div>
         </nav>
 
-        {/* Bottom */}
-        <div className="p-3 border-t border-white/[0.06] space-y-1">
+        {/* Bottom user area */}
+        <div className="px-2 pb-3 pt-2 border-t border-white/[0.05] space-y-0.5">
+          {/* Theme toggle */}
           <button
             onClick={onToggleTheme}
-            className={cn(
-              "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[11px] font-semibold transition-all",
-              theme === 'dark'
-                ? "bg-gold/10 text-gold"
-                : "text-white/30 hover:bg-white/[0.05] hover:text-white/60"
-            )}
+            className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] font-medium text-white/35 hover:bg-white/[0.04] hover:text-white/65 transition-all"
           >
-            {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
-            {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+            <span className="text-white/25">{theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}</span>
+            {theme === 'dark' ? 'Light mode' : 'Dark mode'}
           </button>
+
+          {/* User profile */}
           <button
             onClick={() => setShowProfile(true)}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/[0.05] transition-all group"
+            className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-white/[0.04] transition-all group"
           >
             <div
-              className="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold flex-shrink-0 shadow-md"
+              className="w-7 h-7 rounded-lg flex items-center justify-center text-[11px] font-bold flex-shrink-0"
               style={{ backgroundColor: userProfile?.avatarColor || '#D97757', color: '#ffffff' }}
             >
               {userProfile?.avatarEmoji || userProfile?.displayName?.[0]?.toUpperCase() || 'U'}
             </div>
             <div className="flex-1 min-w-0 text-left">
-              <p className="text-[12px] font-semibold text-white/80 truncate leading-tight">{userProfile?.displayName}</p>
-              <p className="text-[10px] text-white/25 capitalize">{userProfile?.subscriptionTier || 'free'}</p>
+              <p className="text-[13px] font-medium text-white/75 truncate leading-tight">{userProfile?.displayName}</p>
+              <p className="text-[11px] text-white/30 capitalize">{userProfile?.subscriptionTier || 'free'}</p>
             </div>
-            <ChevronRight size={12} className="text-white/15 group-hover:text-white/40" />
+            <ChevronRight size={11} className="text-white/15 group-hover:text-white/40 flex-shrink-0" />
           </button>
         </div>
 
-        {/* Resize Handle */}
+        {/* Resize handle */}
         <div
           onMouseDown={startResizing}
-          className="absolute right-0 top-0 bottom-0 w-1 cursor-col-resize hover:bg-gold/40 transition-colors z-[70]"
+          className="absolute right-0 top-0 bottom-0 w-1 cursor-col-resize hover:bg-[#D97757]/30 transition-colors z-[70]"
         />
       </aside>
 
       <div className="flex-1 flex flex-col min-w-0 transition-all duration-500 bg-[#1a1a1a]" style={{ marginLeft: isZenMode ? 0 : sidebarWidth }}>
-        {/* Header */}
+        {/* ── Header ── */}
         <header className={cn(
-          "h-14 border-b border-white/[0.06] bg-[#1a1a1a]/90 backdrop-blur-xl flex items-center justify-between px-8 sticky top-0 z-40 transition-all duration-500",
+          "h-12 border-b border-white/[0.06] bg-[#1a1a1a]/95 backdrop-blur-xl flex items-center justify-between px-5 sticky top-0 z-40 transition-all duration-500",
           isZenMode && "-translate-y-full"
         )}>
-          {/* Left: breadcrumb */}
-          <div className="flex items-center gap-2 text-white/35 text-sm">
-            <span className="font-medium">{appName}</span>
-            <span>/</span>
-            <span className="text-white/70 font-semibold capitalize">{activeView.replace('-', ' ')}</span>
+          {/* Left: current view label */}
+          <div className="flex items-center gap-2">
+            <span className="text-[13px] font-medium text-white/40">{appName}</span>
+            <span className="text-white/20 text-[13px]">/</span>
+            <span className="text-[13px] font-semibold text-white/75 capitalize">{activeView.replace('-', ' ')}</span>
           </div>
 
           {/* Right: actions */}
-          <div className="flex items-center gap-2">
-            {/* Usage pill */}
+          <div className="flex items-center gap-1.5">
+            {/* Token usage */}
             <div className="group relative">
-              <div className={`flex items-center gap-2.5 px-3 py-1.5 border rounded-lg cursor-help transition-colors ${_usagePct >= 90 ? 'bg-red-500/[0.08] border-red-500/20 hover:border-red-500/40' : 'bg-gold/[0.08] border-gold/15 hover:border-gold/30'}`}>
-                <Zap size={13} className={_usagePct >= 90 ? 'text-red-400' : 'text-gold'} />
-                {_isUnlimited ? (
-                  <span className="text-sm font-bold text-gold">∞</span>
-                ) : (
-                  <div className="flex items-center gap-2">
-                    {/* Mini progress bar */}
-                    <div className="w-16 h-1.5 bg-white/[0.08] rounded-full overflow-hidden hidden sm:block">
-                      <div
-                        className={`h-full rounded-full transition-all ${_usagePct >= 90 ? 'bg-red-400' : _usagePct >= 70 ? 'bg-amber-400' : 'bg-gold'}`}
-                        style={{ width: `${_usagePct}%` }}
-                      />
-                    </div>
-                    <span className={`text-sm font-bold ${_usagePct >= 90 ? 'text-red-400' : 'text-gold'}`}>{_usagePct}%</span>
-                  </div>
-                )}
-                <span className={`text-[9px] font-bold uppercase tracking-widest hidden sm:block ${_usagePct >= 90 ? 'text-red-400/50' : 'text-gold/40'}`}>used</span>
-              </div>
+              <button className={cn(
+                "flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-[12px] font-medium transition-all cursor-help",
+                _usagePct >= 90
+                  ? "bg-red-500/[0.06] border-red-500/15 text-red-400"
+                  : "bg-white/[0.04] border-white/[0.07] text-white/45 hover:border-white/[0.12]"
+              )}>
+                <Zap size={12} className={_usagePct >= 90 ? 'text-red-400' : 'text-[#D97757]'} />
+                {_isUnlimited ? '∞' : `${_usagePct}%`}
+              </button>
               {/* Tooltip */}
-              <div className="absolute top-full right-0 mt-2 w-80 bg-[#212121] text-white p-5 rounded-2xl shadow-2xl opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all pointer-events-none z-50 border border-white/[0.08]">
-                <div className="flex items-center gap-2 mb-4 text-gold">
-                  <Sparkles size={14} />
-                  <span className="text-[10px] font-bold uppercase tracking-widest">Monthly Token Usage</span>
+              <div className="absolute top-full right-0 mt-2 w-72 bg-[#1e1e1e] border border-white/[0.09] rounded-2xl p-4 shadow-2xl opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all pointer-events-none z-50">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-[11px] font-semibold text-white/50 uppercase tracking-widest">Monthly usage</span>
+                  <span className={cn("text-[12px] font-bold", _usagePct >= 90 ? 'text-red-400' : 'text-[#D97757]')}>{_usagePct}%</span>
                 </div>
-                {/* Usage bar in tooltip */}
                 {!_isUnlimited && (
-                  <div className="mb-4">
-                    <div className="flex justify-between items-center mb-1.5">
-                      <span className="text-xs text-white/40">{_currentUsage.toLocaleString()} / {_monthlyLimit.toLocaleString()} tokens</span>
-                      <span className={`text-xs font-bold ${_usagePct >= 90 ? 'text-red-400' : 'text-gold'}`}>{_usagePct}%</span>
-                    </div>
-                    <div className="h-2 bg-white/[0.08] rounded-full overflow-hidden">
+                  <>
+                    <div className="h-1.5 bg-white/[0.06] rounded-full overflow-hidden mb-1.5">
                       <div
-                        className={`h-full rounded-full transition-all ${_usagePct >= 90 ? 'bg-gradient-to-r from-red-500/60 to-red-400' : _usagePct >= 70 ? 'bg-gradient-to-r from-amber-500/60 to-amber-400' : 'bg-gradient-to-r from-gold/60 to-gold'}`}
+                        className={cn("h-full rounded-full transition-all", _usagePct >= 90 ? 'bg-red-400' : _usagePct >= 70 ? 'bg-amber-400' : 'bg-[#D97757]')}
                         style={{ width: `${_usagePct}%` }}
                       />
                     </div>
-                    <div className="text-[10px] text-white/25 mt-1">{_usageLeft.toLocaleString()} tokens remaining</div>
-                  </div>
+                    <div className="flex justify-between text-[11px] text-white/25 mb-3">
+                      <span>{_currentUsage.toLocaleString()} used</span>
+                      <span>{_usageLeft.toLocaleString()} left</span>
+                    </div>
+                  </>
                 )}
-                <div className="space-y-1.5 border-t border-white/[0.06] pt-3">
-                  <p className="text-[9px] font-bold uppercase tracking-widest text-white/25 mb-2">Token Cost Per Operation</p>
+                <div className="space-y-1 border-t border-white/[0.06] pt-3">
                   {[
-                    { label: 'Create Story', cost: currentLimits.bookTokenCost || 100 },
-                    { label: 'Edit Story', cost: currentLimits.editTokenCost ?? 0 },
-                    { label: 'AI Script', cost: (currentLimits as any).aiScriptCost ?? 50 },
-                    { label: 'AI Image', cost: (currentLimits as any).aiImageCost ?? 100 },
-                    { label: 'AI Enhance', cost: (currentLimits as any).aiEnhanceCost ?? 25 },
+                    { label: 'Create story', cost: currentLimits.bookTokenCost || 100 },
+                    { label: 'Edit story',   cost: currentLimits.editTokenCost ?? 0 },
+                    { label: 'AI Script',    cost: (currentLimits as any).aiScriptCost ?? 50 },
+                    { label: 'AI Image',     cost: (currentLimits as any).aiImageCost ?? 100 },
+                    { label: 'AI Enhance',   cost: (currentLimits as any).aiEnhanceCost ?? 25 },
                   ].map(({ label, cost }) => (
-                    <div key={label} className="flex justify-between items-center py-1 border-b border-white/[0.04] last:border-0">
-                      <span className="text-xs text-white/45">{label}</span>
-                      <span className={`text-xs font-bold ${cost === 0 ? 'text-green-400' : 'text-gold'}`}>
-                        {cost === 0 ? 'Free' : `${cost.toLocaleString()} tokens`}
+                    <div key={label} className="flex justify-between items-center py-0.5">
+                      <span className="text-[12px] text-white/35">{label}</span>
+                      <span className={cn("text-[12px] font-semibold", cost === 0 ? 'text-green-400' : 'text-white/55')}>
+                        {cost === 0 ? 'Free' : `${cost.toLocaleString()}`}
                       </span>
                     </div>
                   ))}
                 </div>
-                <p className="text-[10px] text-white/20 leading-relaxed italic mt-3">Resets monthly. Limits set by admin.</p>
               </div>
             </div>
 
             {isHeadAdmin && (
               <button
                 onClick={() => setShowAdmin(!showAdmin)}
-                className={cn("flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all",
-                  showAdmin ? "bg-[#D97757] text-white" : "bg-white/[0.06] text-white/50 hover:bg-white/[0.10] hover:text-white/80 border border-white/[0.08]"
+                className={cn(
+                  "flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[12px] font-semibold transition-all",
+                  showAdmin
+                    ? "bg-[#D97757] text-white"
+                    : "bg-white/[0.04] border border-white/[0.07] text-white/40 hover:text-white/70 hover:border-white/[0.12]"
                 )}
               >
-                <Shield size={13} /><span className="hidden md:inline">Admin</span>
+                <Shield size={12} />
+                <span className="hidden md:inline">Admin</span>
               </button>
             )}
 
-            <button
-              onClick={() => {
-                if (canCreateStory) {
-                  setShowTypeSelector(true);
-                } else {
-                  setShowPricingModal(true);
-                  toast.error(
-                    userProfile?.subscriptionTier === 'free'
-                      ? "Free tier limit reached (1 story total). Upgrade to create more!"
-                      : "Monthly limit reached (3 stories). Upgrade to Premium for unlimited stories!"
-                  );
-                }
-              }}
-              className="flex items-center gap-1.5 px-4 py-2 bg-[#D97757] hover:bg-[#C86A48] text-white rounded-lg font-semibold text-xs transition-all shadow-lg shadow-[#D97757]/20"
-            >
-              <Plus size={14} /> New
-            </button>
-
-            <button onClick={() => auth.signOut()} className="p-2 text-white/20 hover:text-white/60 hover:bg-white/[0.06] rounded-lg transition-all">
-              <LogOut size={15} />
+            <button onClick={() => auth.signOut()} className="p-2 text-white/25 hover:text-white/60 hover:bg-white/[0.05] rounded-lg transition-all" title="Sign out">
+              <LogOut size={14} />
             </button>
           </div>
         </header>
@@ -984,47 +971,48 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
       <AnimatePresence>
       </AnimatePresence>
 
-      {/* Floating Support Button */}
-      <div className="fixed bottom-8 right-8 z-50 flex flex-col items-end gap-4">
+      {/* Floating support button */}
+      <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2">
         <AnimatePresence>
           {showSupportMenu && (
             <motion.div
-              initial={{ opacity: 0, scale: 0.8, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.8, y: 20 }}
-              className="flex flex-col gap-2 mb-2"
+              initial={{ opacity: 0, y: 8, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 8, scale: 0.95 }}
+              className="flex flex-col gap-1.5 mb-1"
             >
-              <button
-                onClick={() => { setShowSupportMenu(false); setActiveView('support'); }}
-                className="flex items-center gap-3 px-6 py-3 bg-[#212121] text-white/70 rounded-2xl shadow-2xl border border-white/[0.08] hover:bg-[#D97757]/10 hover:text-[#D97757] transition-all group"
-              >
-                <Bug size={18} className="group-hover:animate-bounce" />
-                <span className="text-xs font-bold uppercase tracking-widest">Report Bug</span>
-              </button>
-              <button
-                onClick={() => { setShowSupportMenu(false); setActiveView('support'); }}
-                className="flex items-center gap-3 px-6 py-3 bg-[#212121] text-white/70 rounded-2xl shadow-2xl border border-white/[0.08] hover:bg-[#D97757]/10 hover:text-[#D97757] transition-all group"
-              >
-                <MessageSquare size={18} className="group-hover:animate-bounce" />
-                <span className="text-xs font-bold uppercase tracking-widest">Suggestion</span>
-              </button>
+              {[
+                { icon: <Bug size={14} />, label: 'Report a bug' },
+                { icon: <MessageSquare size={14} />, label: 'Send feedback' },
+              ].map(item => (
+                <button
+                  key={item.label}
+                  onClick={() => { setShowSupportMenu(false); setActiveView('support'); }}
+                  className="flex items-center gap-2.5 px-4 py-2.5 bg-[#1e1e1e] border border-white/[0.09] text-white/60 hover:text-white/90 hover:bg-[#252525] rounded-xl shadow-xl text-[13px] font-medium transition-all"
+                >
+                  {item.icon}
+                  {item.label}
+                </button>
+              ))}
             </motion.div>
           )}
         </AnimatePresence>
         <button
           onClick={() => setShowSupportMenu(!showSupportMenu)}
           className={cn(
-            "w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-all hover:scale-110 active:scale-95",
-            showSupportMenu ? "bg-white/[0.08] text-white border border-white/10" : "bg-[#D97757] text-white"
+            "w-11 h-11 rounded-xl flex items-center justify-center shadow-xl transition-all hover:scale-105 active:scale-95 border",
+            showSupportMenu
+              ? "bg-[#1e1e1e] text-white/60 border-white/[0.09]"
+              : "bg-[#D97757] text-white border-[#D97757] shadow-[#D97757]/20"
           )}
         >
-          {showSupportMenu ? <X size={20} /> : <LifeBuoy size={20} />}
+          {showSupportMenu ? <X size={16} /> : <LifeBuoy size={16} />}
         </button>
       </div>
 
       <main className={cn(
-        "flex-1 container mx-auto px-6 py-12 max-w-7xl relative z-10 transition-all duration-500",
-        isZenMode && "opacity-0 pointer-events-none scale-95"
+        "flex-1 px-6 py-7 max-w-7xl w-full mx-auto relative z-10 transition-all duration-300",
+        isZenMode && "opacity-0 pointer-events-none"
       )}>
         <AnimatePresence mode="wait">
           {isCreating || isEditing ? (
@@ -1083,64 +1071,33 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
-              {/* ── Hero Banner ── */}
-              <div className="relative overflow-hidden rounded-2xl mb-8 bg-[#111] border border-white/[0.07]">
-                <div className="absolute inset-0 pointer-events-none overflow-hidden">
-                  <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full opacity-20" style={{background:'radial-gradient(circle, #d4af37 0%, transparent 65%)'}} />
-                  <div className="absolute top-0 right-0 w-px h-full bg-gradient-to-b from-transparent via-gold/20 to-transparent" />
-                </div>
-
-                <div className="relative px-8 py-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
-                  <div>
-                    <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-gold/50 mb-2">Creative Studio</p>
-                    <h1 className="text-4xl font-serif font-bold text-white mb-2">
-                      {userProfile?.displayName?.split(' ')[0] || 'Creator'}
-                      <span className="text-gold">.</span>
-                    </h1>
-                    <p className="text-white/35 text-sm">
-                      {stories.length === 0
-                        ? 'Start your first project.'
-                        : `${stories.length} project${stories.length !== 1 ? 's' : ''} · ${stories.filter(s => s.isPublished).length} published`}
-                    </p>
+              {/* ── Page header ── */}
+              <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+                <div>
+                  <p className="text-[11px] font-medium text-white/30 mb-1">
+                    {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
+                  </p>
+                  <h1 className="text-[24px] font-semibold text-white tracking-tight">
+                    Good {new Date().getHours() < 12 ? 'morning' : new Date().getHours() < 18 ? 'afternoon' : 'evening'},{' '}
+                    <span className="text-[#D97757]">{userProfile?.displayName?.split(' ')[0] || 'Creator'}</span>
+                  </h1>
+                  <p className="text-[13px] text-white/35 mt-1">
+                    {stories.length === 0
+                      ? 'Start writing your first story.'
+                      : `${stories.length} stor${stories.length !== 1 ? 'ies' : 'y'} · ${stories.filter(s => s.isPublished).length} published`}
                     {(userProfile?.streak ?? 0) > 0 && (
-                      <span className="inline-flex items-center gap-1 mt-3 text-xs font-bold text-orange-400 bg-orange-500/10 border border-orange-500/15 px-2.5 py-1 rounded-full">
-                        🔥 {userProfile!.streak}-day streak
-                      </span>
+                      <span className="ml-3 text-orange-400">🔥 {userProfile!.streak}-day streak</span>
                     )}
-                  </div>
-
-                  <div className="flex items-stretch gap-3">
-                    {[
-                      {l:'Stories', v:stories.length, c:'text-white/80'},
-                      {l:'Streak', v:userProfile?.streak||0, c:'text-orange-400'},
-                      {l:'Tokens Used', v:_isUnlimited ? '∞' : `${_usagePct}%`, c: _usagePct >= 90 ? 'text-red-400' : 'text-gold'},
-                    ].map((s, i) => (
-                      <motion.div key={s.l} initial={{opacity:0,y:8}} animate={{opacity:1,y:0}} transition={{delay:i*0.06}}
-                        className="bg-white/[0.05] border border-white/[0.08] rounded-xl px-5 py-4 text-center min-w-[80px]">
-                        <div className={`text-2xl font-serif font-bold ${s.c}`}>{s.v}</div>
-                        <div className="text-[9px] text-white/25 font-medium uppercase tracking-widest mt-0.5">{s.l}</div>
-                      </motion.div>
-                    ))}
-                  </div>
+                  </p>
                 </div>
 
-                <div className="border-t border-white/[0.06] px-8 py-3 flex items-center gap-2">
-                  <button
-                    onClick={() => canCreateStory ? setShowTypeSelector(true) : setShowPricingModal(true)}
-                    className="flex items-center gap-2 px-5 py-2 bg-[#D97757] hover:bg-[#C86A48] text-white rounded-lg font-semibold text-xs transition-all shadow-lg shadow-[#D97757]/20"
-                  >
-                    <Plus size={14} /> New Project
-                  </button>
+                <div className="flex items-center gap-2">
                   <button
                     onClick={() => setIsZenMode(!isZenMode)}
-                    className={cn(
-                      "flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all border",
-                      isZenMode ? "bg-gold/10 border-gold/20 text-gold" : "bg-white/[0.04] border-white/[0.08] text-white/40 hover:text-white/70"
-                    )}
+                    className="flex items-center gap-1.5 px-3 py-2 bg-white/[0.04] hover:bg-white/[0.07] border border-white/[0.07] text-white/45 hover:text-white/70 rounded-lg text-[12px] font-medium transition-all"
                   >
-                    <Eye size={13} /> Zen
+                    <Eye size={13} /> Zen mode
                   </button>
-                  <span className="ml-auto text-[9px] text-white/15 font-medium">{new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}</span>
                 </div>
               </div>
 
@@ -1173,21 +1130,21 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
               exit={{ opacity: 0, scale: 0.98 }}
               className="h-[calc(100vh-200px)] flex flex-col"
             >
-              <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center justify-between mb-7">
                 <div>
-                  <h1 className="text-4xl font-serif font-bold text-white mb-2">Creative <span className="italic text-gold">Workspace</span></h1>
-                  <p className="text-white/35">Multi-tab editing for your forge projects.</p>
+                  <h1 className="text-[22px] font-semibold text-white tracking-tight">Workspace</h1>
+                  <p className="text-[13px] text-white/35 mt-0.5">Multi-tab editor for your projects.</p>
                 </div>
-                <div className="flex items-center gap-4">
-                  <div className="px-4 py-2 bg-white/[0.05] border border-white/[0.08] rounded-xl flex items-center gap-2 text-[10px] tracking-widest font-bold text-white/30">
-                    <Command size={12} />
-                    <span>+ P for Commands</span>
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/[0.04] border border-white/[0.07] rounded-lg text-[11px] text-white/30">
+                    <Command size={11} />
+                    <span>+P</span>
                   </div>
                   <button
                     onClick={() => setIsZenMode(true)}
-                    className="p-3 bg-white/[0.05] border border-white/[0.08] rounded-2xl text-white/35 hover:text-white/70 transition-all"
+                    className="p-2 bg-white/[0.04] border border-white/[0.07] hover:bg-white/[0.07] rounded-lg text-white/35 hover:text-white/65 transition-all"
                   >
-                    <Eye size={20} />
+                    <Eye size={15} />
                   </button>
                 </div>
               </div>
@@ -1251,50 +1208,48 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
               exit={{ opacity: 0, y: -20 }}
               className="h-full overflow-y-auto"
             >
-              <header className="mb-10">
-                <p className="text-[9px] font-bold uppercase tracking-[0.25em] text-white/20 mb-2">Distribution</p>
-                <h1 className="text-4xl font-serif font-bold text-white mb-2">Publish <span className="italic text-gold">Your Work</span></h1>
-                <p className="text-white/35 text-sm">Share your creations with the world</p>
+              <header className="mb-8">
+                <h1 className="text-[22px] font-semibold text-white tracking-tight">Publish</h1>
+                <p className="text-[13px] text-white/35 mt-0.5">Share your stories with the world.</p>
               </header>
 
               {isHeadAdmin && (
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="bg-[#111] border border-white/[0.07] rounded-2xl p-8 shadow-2xl relative overflow-hidden group cursor-pointer mb-8"
+                  className="bg-[#1e1e1e] border border-white/[0.07] rounded-2xl p-6 shadow-xl relative overflow-hidden group cursor-pointer mb-6"
                   onClick={() => setShowAdmin(true)}
                 >
-                  <div className="absolute top-0 right-0 w-64 h-64 bg-gold/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl group-hover:bg-gold/10 transition-all" />
                   <div className="relative z-10">
-                    <div className="flex items-center gap-4 mb-6">
-                      <div className="w-12 h-12 bg-gold/10 rounded-2xl flex items-center justify-center text-gold border border-gold/20">
-                        <Bot size={24} />
-                      </div>
-                      <div>
-                        <h3 className="text-xl font-serif font-bold text-white">App Architect</h3>
-                        <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                          <span className="text-[10px] uppercase tracking-widest text-white/35">Active & Monitoring</span>
+                    <div className="flex items-center justify-between mb-5">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-[#D97757]/10 rounded-xl flex items-center justify-center text-[#D97757] border border-[#D97757]/15">
+                          <Bot size={20} />
+                        </div>
+                        <div>
+                          <h3 className="text-[15px] font-semibold text-white">App Architect</h3>
+                          <div className="flex items-center gap-1.5">
+                            <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+                            <span className="text-[11px] text-white/35">Active & Monitoring</span>
+                          </div>
                         </div>
                       </div>
+                      <span className="text-[11px] text-[#D97757] font-medium">Open console →</span>
                     </div>
-                    <div className="grid grid-cols-3 gap-4">
-                      <div className="p-4 bg-white/[0.04] rounded-xl border border-white/[0.07]">
-                        <div className="text-[8px] uppercase tracking-widest text-white/30 mb-1">System Health</div>
-                        <div className="text-lg font-bold text-gold">98%</div>
+                    <div className="grid grid-cols-3 gap-3">
+                      <div className="p-3 bg-white/[0.04] rounded-xl border border-white/[0.06]">
+                        <div className="text-[10px] text-white/30 mb-1">System Health</div>
+                        <div className="text-base font-semibold text-[#D97757]">98%</div>
                       </div>
-                      <div className="p-4 bg-white/[0.04] rounded-xl border border-white/[0.07]">
-                        <div className="text-[8px] uppercase tracking-widest text-white/30 mb-1">System Latency</div>
-                        <div className="text-lg font-bold text-gold">1.2s</div>
+                      <div className="p-3 bg-white/[0.04] rounded-xl border border-white/[0.06]">
+                        <div className="text-[10px] text-white/30 mb-1">Latency</div>
+                        <div className="text-base font-semibold text-[#D97757]">1.2s</div>
                       </div>
-                      <div className="p-4 bg-white/[0.04] rounded-xl border border-white/[0.07]">
-                        <div className="text-[8px] uppercase tracking-widest text-white/30 mb-1">Active Tools</div>
-                        <div className="text-lg font-bold text-gold">8</div>
+                      <div className="p-3 bg-white/[0.04] rounded-xl border border-white/[0.06]">
+                        <div className="text-[10px] text-white/30 mb-1">Active Tools</div>
+                        <div className="text-base font-semibold text-[#D97757]">8</div>
                       </div>
                     </div>
-                    <button className="mt-6 w-full py-3 bg-[#D97757] hover:bg-[#C86A48] text-white rounded-xl font-bold text-xs uppercase tracking-widest transition-all">
-                      Open Architect Console
-                    </button>
                   </div>
                 </motion.div>
               )}
@@ -1309,12 +1264,12 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
                 ].map(option => (
                   <button
                     key={option.id}
-                    className="group p-7 bg-[#111] border border-white/[0.07] rounded-2xl text-left hover:border-gold/20 transition-all hover:shadow-2xl hover:shadow-gold/5"
+                    className="group p-6 bg-[#1e1e1e] border border-white/[0.07] rounded-2xl text-left hover:border-[#D97757]/20 hover:bg-[#232323] transition-all"
                   >
-                    <div className="w-14 h-14 bg-gold/10 border border-gold/15 rounded-2xl flex items-center justify-center text-gold mb-6 group-hover:scale-110 transition-transform">
+                    <div className="w-11 h-11 bg-[#D97757]/10 border border-[#D97757]/15 rounded-xl flex items-center justify-center text-[#D97757] mb-5 group-hover:scale-105 transition-transform">
                       {option.icon}
                     </div>
-                    <h3 className="text-lg font-serif font-bold text-white/90 mb-2">{option.title}</h3>
+                    <h3 className="text-[15px] font-semibold text-white/90 mb-1.5">{option.title}</h3>
                     <p className="text-xs text-white/35 leading-relaxed">{option.desc}</p>
                   </button>
                 ))}
@@ -1334,43 +1289,44 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-[200] bg-[#111] flex flex-col items-center justify-center p-12 text-center"
           >
-            <div className="atmosphere opacity-20" />
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
+              initial={{ scale: 0.96, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.2 }}
-              className="relative z-10 space-y-8"
+              transition={{ delay: 0.15 }}
+              className="relative z-10 flex flex-col items-center gap-5 text-center"
             >
-              <div className="w-24 h-24 bg-gold/10 rounded-full flex items-center justify-center text-gold mx-auto animate-pulse">
-                <Eye size={48} />
+              <div className="w-12 h-12 bg-[#D97757]/10 border border-[#D97757]/20 rounded-2xl flex items-center justify-center text-[#D97757]">
+                <Eye size={22} />
               </div>
               <div>
-                <h2 className="text-5xl font-serif font-bold text-gold mb-4">Zen Mode Active</h2>
-                <p className="text-gold/40 max-w-md mx-auto leading-relaxed">The world has faded away. There is only you and your creation. Focus on the forge.</p>
+                <h2 className="text-[22px] font-semibold text-white mb-1.5">Zen mode</h2>
+                <p className="text-[13px] text-white/35 max-w-xs leading-relaxed">Distractions hidden. Focus on what matters — your story.</p>
               </div>
-              <button 
+              <button
                 onClick={() => setIsZenMode(false)}
-                className="px-12 py-4 bg-[#D97757] hover:bg-[#C86A48] text-white rounded-full font-bold uppercase tracking-widest hover:scale-105 transition-all shadow-2xl shadow-[#D97757]/20"
+                className="px-7 py-3 bg-[#D97757] hover:bg-[#C86A48] text-white rounded-xl font-semibold text-[14px] transition-colors shadow-lg shadow-[#D97757]/20"
               >
-                Return to Reality
+                Exit zen mode
               </button>
-              <div className="pt-12 flex items-center justify-center gap-8 text-[10px] small-caps tracking-widest text-gold/20 font-bold">
-                <span className="flex items-center gap-2"><Command size={12} /> + P for Commands</span>
-                <span className="flex items-center gap-2"><Zap size={12} /> Auto-Save Enabled</span>
+              <div className="flex items-center gap-5 text-[11px] text-white/20 mt-1">
+                <span className="flex items-center gap-1.5"><Command size={10} /> +P</span>
+                <span className="flex items-center gap-1.5"><Zap size={10} /> Auto-save</span>
               </div>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      <footer className="py-10 border-t border-white/[0.05] text-center">
-        <div className="flex items-center justify-center gap-3 mb-4">
-          <div className="w-7 h-7 bg-gold rounded-lg flex items-center justify-center text-white">
-            <Sparkles size={14} />
+      <footer className="py-6 border-t border-white/[0.05]">
+        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-5 h-5 bg-[#D97757] rounded-md flex items-center justify-center">
+              <Sparkles size={11} className="text-white" />
+            </div>
+            <span className="text-[12px] font-medium text-white/30">{appName}</span>
           </div>
-          <span className="font-serif font-bold text-white/40">{appName}</span>
+          <p className="text-[11px] text-white/15">&copy; 2026 {appName}</p>
         </div>
-        <p className="text-[10px] tracking-[0.5em] text-white/15 uppercase">&copy; 2026 Immersive Story Studio</p>
       </footer>
 
       {/* Add Partner Modal */}
@@ -1383,49 +1339,40 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
               className="absolute inset-0 bg-black/80 backdrop-blur-sm"
             />
             <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              initial={{ opacity: 0, scale: 0.96, y: 12 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="relative w-full max-w-md bg-[#111] border border-white/[0.08] rounded-2xl p-8 shadow-2xl overflow-hidden"
+              exit={{ opacity: 0, scale: 0.96, y: 12 }}
+              className="relative w-full max-w-sm bg-[#1e1e1e] border border-white/[0.09] rounded-2xl p-6 shadow-2xl"
             >
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-gold/10 border border-gold/20 text-gold flex items-center justify-center">
-                    <UserPlus size={20} />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-serif font-bold text-white">Add Partner</h3>
-                    <p className="text-xs text-white/30 uppercase tracking-widest font-bold">Collaborate on your story</p>
-                  </div>
+              <div className="flex items-center justify-between mb-5">
+                <div>
+                  <h3 className="text-[17px] font-semibold text-white">Add collaborator</h3>
+                  <p className="text-[12px] text-white/35 mt-0.5">Invite someone to edit this story</p>
                 </div>
-                <button onClick={() => setPartnerModal({ show: false, story: null })} className="p-2 hover:bg-white/[0.06] rounded-lg transition-all text-white/40 hover:text-white/70">
-                  <X size={18} />
+                <button onClick={() => setPartnerModal({ show: false, story: null })} className="p-1.5 hover:bg-white/[0.06] rounded-lg transition-all text-white/35 hover:text-white/65">
+                  <X size={16} />
                 </button>
               </div>
 
-              <div className="space-y-4 mb-6">
-                <p className="text-sm text-white/45">Enter your partner's email address to grant them access to edit this story.</p>
+              <div className="space-y-3 mb-5">
                 <input
                   type="email"
                   value={partnerEmail}
                   onChange={(e) => setPartnerEmail(e.target.value)}
                   placeholder="partner@example.com"
-                  className="w-full bg-white/[0.05] border border-white/[0.09] rounded-xl px-4 py-3 text-white/80 placeholder:text-white/20 outline-none focus:border-gold/40 transition-colors"
+                  className="w-full bg-[#252525] border border-white/[0.08] focus:border-[#D97757]/40 rounded-xl px-4 py-3 text-[14px] text-white/80 placeholder:text-white/20 outline-none transition-all"
                 />
               </div>
 
               <button
                 onClick={handleAddPartner}
                 disabled={isAddingPartner || !partnerEmail.trim()}
-                className="w-full py-3 bg-[#D97757] hover:bg-[#C86A48] text-white rounded-xl font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 shadow-lg shadow-[#D97757]/20"
+                className="w-full py-2.5 bg-[#D97757] hover:bg-[#C86A48] text-white rounded-xl font-semibold text-[14px] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 {isAddingPartner ? (
-                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                 ) : (
-                  <>
-                    <UserPlus size={16} />
-                    <span>Add Partner</span>
-                  </>
+                  <><UserPlus size={15} /><span>Send invite</span></>
                 )}
               </button>
             </motion.div>
@@ -1446,18 +1393,18 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="relative w-full max-w-5xl bg-[#0d0d0d] border border-white/[0.08] rounded-2xl shadow-2xl overflow-hidden flex flex-col lg:flex-row max-h-[90vh] overflow-y-auto"
+              className="relative w-full max-w-5xl bg-[#1a1a1a] border border-white/[0.08] rounded-2xl shadow-2xl overflow-hidden flex flex-col lg:flex-row max-h-[90vh] overflow-y-auto"
             >
               {/* Left Side: Benefits */}
-              <div className="lg:w-1/3 bg-[#111] border-r border-white/[0.06] p-10 flex flex-col justify-between">
+              <div className="lg:w-1/3 bg-[#141414] border-r border-white/[0.06] p-8 flex flex-col justify-between">
                 <div>
                   <div className="flex items-center gap-3 mb-6">
-                    <div className="w-9 h-9 bg-gold rounded-xl flex items-center justify-center text-white">
+                    <div className="w-9 h-9 bg-[#D97757] rounded-xl flex items-center justify-center text-white">
                       <Sparkles size={18} />
                     </div>
-                    <span className="text-xs font-bold tracking-widest text-gold uppercase">{appName} Premium</span>
+                    <span className="text-xs font-semibold text-[#D97757] uppercase tracking-wider">{appName} Premium</span>
                   </div>
-                  <h3 className="text-3xl font-serif font-bold text-white mb-6 leading-tight">Unlock the Full Power.</h3>
+                  <h3 className="text-[22px] font-semibold text-white mb-6 leading-tight tracking-tight">Unlock the full studio.</h3>
                   <div className="space-y-4">
                     {[
                       "Unlimited Stories Per Month",
@@ -1470,24 +1417,24 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
                       "Priority Generation"
                     ].map((benefit, i) => (
                       <div key={i} className="flex items-center gap-3">
-                        <div className="w-4 h-4 rounded-full bg-gold/15 border border-gold/25 flex items-center justify-center text-gold flex-shrink-0">
+                        <div className="w-4 h-4 rounded-full bg-[#D97757]/15 border border-[#D97757]/25 flex items-center justify-center text-[#D97757] flex-shrink-0">
                           <Check size={10} />
                         </div>
-                        <span className="text-sm text-white/55 font-medium">{benefit}</span>
+                        <span className="text-sm text-white/55">{benefit}</span>
                       </div>
                     ))}
                   </div>
                 </div>
                 <div className="mt-8 p-4 bg-white/[0.04] rounded-xl border border-white/[0.06]">
-                  <p className="text-[10px] text-white/30 uppercase tracking-widest font-bold mb-1">Current Plan</p>
-                  <p className="text-sm font-bold text-gold capitalize">{userProfile?.subscriptionTier} Tier</p>
+                  <p className="text-[10px] text-white/30 uppercase tracking-widest mb-1">Current Plan</p>
+                  <p className="text-sm font-semibold text-[#D97757] capitalize">{userProfile?.subscriptionTier} Tier</p>
                 </div>
               </div>
 
               {/* Right Side: Pricing Options */}
               <div className="flex-1 p-10 flex flex-col">
                 <div className="flex justify-between items-center mb-8">
-                  <h4 className="text-2xl font-serif font-bold text-white">Choose Your Plan</h4>
+                  <h4 className="text-[20px] font-semibold text-white tracking-tight">Choose your plan</h4>
                   <button onClick={() => setShowPricingModal(false)} className="p-2 hover:bg-white/[0.06] rounded-lg transition-all text-white/40 hover:text-white/70">
                     <X size={18} />
                   </button>
@@ -1512,20 +1459,20 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5 flex-1">
                   {/* Standard Plan */}
-                  <div className="p-6 rounded-xl border border-white/[0.08] flex flex-col justify-between hover:border-gold/20 transition-all group bg-white/[0.02]">
+                  <div className="p-6 rounded-xl border border-white/[0.08] flex flex-col justify-between hover:border-[#D97757]/20 transition-all group bg-white/[0.02]">
                     <div>
                       <div className="flex items-center justify-between mb-3">
-                        <span className="text-xs font-bold uppercase tracking-widest text-white/35">Standard</span>
-                        <Star className="w-4 h-4 text-gold opacity-0 group-hover:opacity-100 transition-all" />
+                        <span className="text-xs font-medium uppercase tracking-widest text-white/35">Standard</span>
+                        <Star className="w-4 h-4 text-[#D97757] opacity-0 group-hover:opacity-100 transition-all" />
                       </div>
                       <div className="flex items-baseline gap-1 mb-5">
-                        <span className="text-3xl font-serif font-bold text-white">${billingCycle === 'monthly' ? SUBSCRIPTION_PRICING.standard.monthly : (SUBSCRIPTION_PRICING.standard.yearly / 12).toFixed(2)}</span>
-                        <span className="text-white/30 text-xs font-bold uppercase">/mo</span>
+                        <span className="text-3xl font-semibold text-white">${billingCycle === 'monthly' ? SUBSCRIPTION_PRICING.standard.monthly : (SUBSCRIPTION_PRICING.standard.yearly / 12).toFixed(2)}</span>
+                        <span className="text-white/30 text-xs uppercase">/mo</span>
                       </div>
                       <ul className="space-y-2.5 mb-6">
-                        <li className="text-xs text-white/45 flex items-center gap-2"><div className="w-1 h-1 rounded-full bg-gold" />3 Stories Per Month</li>
-                        <li className="text-xs text-white/45 flex items-center gap-2"><div className="w-1 h-1 rounded-full bg-gold" />15 Pages Per Story</li>
-                        <li className="text-xs text-white/45 flex items-center gap-2"><div className="w-1 h-1 rounded-full bg-gold" />Collaboration Access</li>
+                        <li className="text-xs text-white/45 flex items-center gap-2"><div className="w-1 h-1 rounded-full bg-[#D97757]" />3 Stories Per Month</li>
+                        <li className="text-xs text-white/45 flex items-center gap-2"><div className="w-1 h-1 rounded-full bg-[#D97757]" />15 Pages Per Story</li>
+                        <li className="text-xs text-white/45 flex items-center gap-2"><div className="w-1 h-1 rounded-full bg-[#D97757]" />Collaboration Access</li>
                       </ul>
                     </div>
                     <button
@@ -1538,23 +1485,23 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
                   </div>
 
                   {/* Premium Plan */}
-                  <div className="p-6 rounded-xl border border-gold/30 bg-gold/[0.04] flex flex-col justify-between relative overflow-hidden">
-                    <div className="absolute top-0 right-0 p-4 opacity-10">
-                      <Crown className="w-12 h-12 text-gold -rotate-12" />
+                  <div className="p-6 rounded-xl border border-[#D97757]/30 bg-[#D97757]/[0.04] flex flex-col justify-between relative overflow-hidden">
+                    <div className="absolute top-0 right-0 p-4 opacity-[0.07]">
+                      <Crown className="w-12 h-12 text-[#D97757] -rotate-12" />
                     </div>
                     <div>
                       <div className="flex items-center justify-between mb-3">
-                        <span className="text-xs font-bold uppercase tracking-widest text-gold">Premium</span>
-                        <Crown className="w-4 h-4 text-gold" />
+                        <span className="text-xs font-medium uppercase tracking-widest text-[#D97757]">Premium</span>
+                        <Crown className="w-4 h-4 text-[#D97757]" />
                       </div>
                       <div className="flex items-baseline gap-1 mb-5">
-                        <span className="text-3xl font-serif font-bold text-white">${billingCycle === 'monthly' ? SUBSCRIPTION_PRICING.premium.monthly : (SUBSCRIPTION_PRICING.premium.yearly / 12).toFixed(2)}</span>
-                        <span className="text-white/30 text-xs font-bold uppercase">/mo</span>
+                        <span className="text-3xl font-semibold text-white">${billingCycle === 'monthly' ? SUBSCRIPTION_PRICING.premium.monthly : (SUBSCRIPTION_PRICING.premium.yearly / 12).toFixed(2)}</span>
+                        <span className="text-white/30 text-xs uppercase">/mo</span>
                       </div>
                       <ul className="space-y-2.5 mb-6">
-                        <li className="text-xs text-gold flex items-center gap-2 font-bold"><Sparkles className="w-3 h-3" />Unlimited Stories</li>
-                        <li className="text-xs text-white/45 flex items-center gap-2"><div className="w-1 h-1 rounded-full bg-gold" />50 Pages Per Story</li>
-                        <li className="text-xs text-white/45 flex items-center gap-2"><div className="w-1 h-1 rounded-full bg-gold" />All Artistic Styles</li>
+                        <li className="text-xs text-[#D97757] flex items-center gap-2 font-medium"><Sparkles className="w-3 h-3" />Unlimited Stories</li>
+                        <li className="text-xs text-white/45 flex items-center gap-2"><div className="w-1 h-1 rounded-full bg-[#D97757]" />50 Pages Per Story</li>
+                        <li className="text-xs text-white/45 flex items-center gap-2"><div className="w-1 h-1 rounded-full bg-[#D97757]" />All Artistic Styles</li>
                       </ul>
                     </div>
                     <button
@@ -1567,20 +1514,20 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
                   </div>
 
                   {/* Ultimate Plan */}
-                  <div className="p-6 rounded-xl border border-gold/30 bg-gold/[0.04] flex flex-col justify-between relative overflow-hidden md:col-span-2">
-                    <div className="absolute top-0 right-0 p-4 opacity-10">
-                      <Zap className="w-16 h-16 text-gold -rotate-12" />
+                  <div className="p-6 rounded-xl border border-[#D97757]/30 bg-[#D97757]/[0.04] flex flex-col justify-between relative overflow-hidden md:col-span-2">
+                    <div className="absolute top-0 right-0 p-4 opacity-[0.07]">
+                      <Zap className="w-16 h-16 text-[#D97757] -rotate-12" />
                     </div>
                     <div className="flex flex-col md:flex-row gap-6">
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-3">
-                          <span className="text-xs font-bold uppercase tracking-widest text-gold">Ultimate</span>
-                          <span className="bg-gold text-white text-[8px] px-2 py-0.5 rounded-full font-bold">BEST VALUE</span>
-                          <Zap className="w-4 h-4 text-gold ml-auto" />
+                          <span className="text-xs font-medium uppercase tracking-widest text-[#D97757]">Ultimate</span>
+                          <span className="bg-[#D97757] text-white text-[8px] px-2 py-0.5 rounded-full font-medium">BEST VALUE</span>
+                          <Zap className="w-4 h-4 text-[#D97757] ml-auto" />
                         </div>
                         <div className="flex items-baseline gap-1 mb-4">
-                          <span className="text-4xl font-serif font-bold text-white">${billingCycle === 'monthly' ? SUBSCRIPTION_PRICING.ultimate.monthly : (SUBSCRIPTION_PRICING.ultimate.yearly / 12).toFixed(2)}</span>
-                          <span className="text-white/30 text-xs font-bold uppercase">/mo</span>
+                          <span className="text-4xl font-semibold text-white">${billingCycle === 'monthly' ? SUBSCRIPTION_PRICING.ultimate.monthly : (SUBSCRIPTION_PRICING.ultimate.yearly / 12).toFixed(2)}</span>
+                          <span className="text-white/30 text-xs uppercase">/mo</span>
                         </div>
                         <p className="text-sm text-white/40 font-medium">The definitive experience. No limits, no boundaries.</p>
                       </div>
@@ -1588,7 +1535,7 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
                         <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 mb-6">
                           {["Unlimited Stories","100 Pages Per Story","FREE Marketplace Books","Priority Generation","All 50+ Artistic Styles","Early Access Features","Dedicated Support","All Premium Features"].map((feat, i) => (
                             <li key={i} className="text-xs text-white/45 flex items-center gap-2">
-                              <Check size={11} className="text-gold flex-shrink-0" />{feat}
+                              <Check size={11} className="text-[#D97757] flex-shrink-0" />{feat}
                             </li>
                           ))}
                         </ul>
@@ -1608,7 +1555,7 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
                 <div className="mt-8 p-6 bg-white/[0.03] rounded-xl border border-white/[0.06]">
                   <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                     <div className="flex-1">
-                      <h5 className="text-base font-serif font-bold text-white mb-1">Support the Forge</h5>
+                      <h5 className="text-base font-semibold text-white mb-1">Support the project</h5>
                       <p className="text-sm text-white/35 font-medium">Your contributions help us keep the magic alive.</p>
                     </div>
                     <div className="flex flex-wrap gap-2 justify-center">
@@ -1626,7 +1573,7 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
                         <input
                           type="number"
                           placeholder="Custom"
-                          className="w-28 pl-7 pr-3 py-2.5 bg-white/[0.06] border border-white/[0.09] rounded-lg font-bold text-sm text-white/60 outline-none focus:border-gold/40 transition-all placeholder:text-white/20"
+                          className="w-28 pl-7 pr-3 py-2.5 bg-white/[0.06] border border-white/[0.09] rounded-lg font-bold text-sm text-white/60 outline-none focus:border-[#D97757]/40 transition-all placeholder:text-white/20"
                           onKeyDown={(e) => {
                             if (e.key === 'Enter') {
                               const val = (e.target as HTMLInputElement).value;
@@ -1645,9 +1592,9 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
                   <p className="text-sm text-white/30 font-medium">Have a subscription code?</p>
                   <button
                     onClick={() => { setShowPricingModal(false); setShowRedeemModal(true); }}
-                    className="flex items-center gap-2 px-6 py-2.5 bg-white/[0.05] border border-white/[0.09] rounded-xl font-bold text-sm text-white/50 hover:border-gold/30 hover:text-gold transition-all"
+                    className="flex items-center gap-2 px-6 py-2.5 bg-white/[0.05] border border-white/[0.09] rounded-xl font-bold text-sm text-white/50 hover:border-[#D97757]/30 hover:text-[#D97757] transition-all"
                   >
-                    <Zap size={14} className="text-gold" />
+                    <Zap size={14} className="text-[#D97757]" />
                     Redeem 12-Character Code
                   </button>
                 </div>
@@ -1670,25 +1617,19 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="relative w-full max-w-md bg-[#111] border border-white/[0.08] rounded-2xl p-8 shadow-2xl overflow-hidden"
+              className="relative w-full max-w-sm bg-[#1e1e1e] border border-white/[0.09] rounded-2xl p-6 shadow-2xl"
             >
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-gold/10 border border-gold/20 text-gold flex items-center justify-center">
-                    <Zap size={20} />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-serif font-bold text-white">Redeem Code</h3>
-                    <p className="text-xs text-white/30 uppercase tracking-widest font-bold">Unlock your potential</p>
-                  </div>
+              <div className="flex items-center justify-between mb-5">
+                <div>
+                  <h3 className="text-[17px] font-semibold text-white">Redeem code</h3>
+                  <p className="text-[12px] text-white/35 mt-0.5">Enter your 12-character code</p>
                 </div>
-                <button onClick={() => setShowRedeemModal(false)} className="p-2 hover:bg-white/[0.06] rounded-lg transition-all text-white/40 hover:text-white/70">
-                  <X size={18} />
+                <button onClick={() => setShowRedeemModal(false)} className="p-1.5 hover:bg-white/[0.06] rounded-lg transition-all text-white/35">
+                  <X size={16} />
                 </button>
               </div>
 
-              <div className="space-y-4 mb-6">
-                <p className="text-sm text-white/45">Enter your 12-character subscription code to upgrade your account instantly.</p>
+              <div className="space-y-3 mb-5">
                 <div className="relative">
                   <input
                     type="text"
@@ -1699,7 +1640,7 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
                       setRedeemCode(val);
                     }}
                     placeholder="ABC123XYZ789"
-                    className="w-full bg-white/[0.05] border border-white/[0.09] rounded-xl px-4 py-5 outline-none font-mono text-2xl text-center tracking-[0.2em] text-white/80 placeholder:text-white/15 focus:border-gold/40 transition-colors"
+                    className="w-full bg-white/[0.05] border border-white/[0.09] rounded-xl px-4 py-5 outline-none font-mono text-2xl text-center tracking-[0.2em] text-white/80 placeholder:text-white/15 focus:border-[#D97757]/40 transition-colors"
                   />
                   {redeemCode.length === 12 && (
                     <motion.div

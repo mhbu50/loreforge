@@ -41,7 +41,7 @@ export default class ErrorBoundary extends Component<Props, State> {
       }
 
       return (
-        <div className="min-h-screen bg-night flex items-center justify-center p-6">
+        <div className="min-h-screen bg-[#141414] flex items-center justify-center p-6">
           <div className="atmosphere opacity-20" />
           <div className="max-w-xl w-full glass-surface p-12 rounded-[2.5rem] border-white/10 text-center space-y-8 relative z-10">
             <div className="w-20 h-20 bg-red-500/20 rounded-3xl flex items-center justify-center text-red-500 mx-auto animate-pulse">
@@ -49,7 +49,7 @@ export default class ErrorBoundary extends Component<Props, State> {
             </div>
             
             <div className="space-y-4">
-              <h1 className="text-3xl font-serif font-bold text-white">System Anomaly Detected</h1>
+              <h1 className="text-3xl font-semibold text-white">System Anomaly Detected</h1>
               <p className="text-white/60 leading-relaxed">
                 The App Architect encountered an unexpected disruption in the creative flow. 
                 {errorDetails?.error ? ` Details: ${errorDetails.error}` : ' Our team has been notified.'}
@@ -70,7 +70,7 @@ export default class ErrorBoundary extends Component<Props, State> {
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
               <button 
                 onClick={this.handleReset}
-                className="flex-1 py-4 bg-gold text-night font-bold rounded-xl hover:bg-gold/90 transition-all flex items-center justify-center gap-2"
+                className="flex-1 py-4 bg-[#D97757] text-[#1a1a1a] font-bold rounded-xl hover:bg-[#D97757]/90 transition-all flex items-center justify-center gap-2"
               >
                 <RefreshCcw size={18} />
                 <span>Retry Forge</span>

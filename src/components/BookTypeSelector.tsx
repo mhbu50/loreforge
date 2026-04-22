@@ -83,7 +83,7 @@ export default function BookTypeSelector({ onSelect, onCancel }: BookTypeSelecto
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={onCancel}
-        className="absolute inset-0 bg-night/80 backdrop-blur-md"
+        className="absolute inset-0 bg-[#141414]/80 backdrop-blur-md"
       />
 
       {/* Panel */}
@@ -95,12 +95,12 @@ export default function BookTypeSelector({ onSelect, onCancel }: BookTypeSelecto
         className="relative w-full max-w-5xl bg-[#0d0d0d] border border-white/[0.08] rounded-[2rem] p-10 shadow-2xl overflow-hidden"
       >
         {/* Gold top accent line */}
-        <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-gold/0 via-gold to-gold/0" />
+        <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-[#D97757]/0 via-[#D97757] to-[#D97757]/0" />
 
         {/* Header */}
         <div className="flex items-start justify-between mb-12">
           <div>
-            <h2 className="text-5xl font-serif font-bold text-gold leading-none mb-3">
+            <h2 className="text-5xl font-semibold text-[#D97757] leading-none mb-3">
               Choose Your <span className="italic">Medium</span>
             </h2>
             <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-white/30">
@@ -123,7 +123,7 @@ export default function BookTypeSelector({ onSelect, onCancel }: BookTypeSelecto
               whileHover={{ y: -6, scale: 1.02 }}
               whileTap={{ scale: 0.97 }}
               onClick={() => onSelect(type.id)}
-              className="group relative flex flex-col items-start text-left p-6 rounded-2xl border border-white/[0.08] bg-[#161616] hover:border-gold/30 hover:bg-gold/[0.05] transition-all cursor-pointer overflow-hidden"
+              className="group relative flex flex-col items-start text-left p-6 rounded-2xl border border-white/[0.08] bg-[#161616] hover:border-[#D97757]/30 hover:bg-[#D97757]/[0.05] transition-all cursor-pointer overflow-hidden"
             >
               {/* Radial glow on hover */}
               <div
@@ -134,7 +134,7 @@ export default function BookTypeSelector({ onSelect, onCancel }: BookTypeSelecto
               />
 
               {/* Gold top accent on hover */}
-              <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-gold/0 via-gold/60 to-gold/0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+              <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-[#D97757]/0 via-[#D97757]/60 to-[#D97757]/0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
 
               {/* Icon area */}
               <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-6 text-white shadow-lg bg-gradient-to-br ${type.gradient}`}>
@@ -142,13 +142,13 @@ export default function BookTypeSelector({ onSelect, onCancel }: BookTypeSelecto
               </div>
 
               {/* Type name */}
-              <h3 className="text-2xl font-serif font-bold text-gold mb-2 leading-none">{type.title}</h3>
+              <h3 className="text-2xl font-semibold text-[#D97757] mb-2 leading-none">{type.title}</h3>
 
               {/* Description */}
               <p className="text-sm text-white/40 leading-relaxed flex-1">{type.description}</p>
 
               {/* CTA hint */}
-              <div className="mt-6 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-white/20 group-hover:text-gold transition-colors duration-300">
+              <div className="mt-6 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-white/20 group-hover:text-[#D97757] transition-colors duration-300">
                 <span>Start Creating</span>
                 <Sparkles size={12} className="group-hover:animate-pulse" />
               </div>

@@ -157,7 +157,7 @@ export default function App() {
       if (primaryColor) document.documentElement.style.setProperty('--color-gold', primaryColor);
       if (fontFamily) {
         document.documentElement.style.setProperty('--font-sans', `var(--font-${fontFamily})`);
-        document.documentElement.style.setProperty('--font-serif', `var(--font-${fontFamily})`);
+        document.documentElement.style.setProperty('--font-sans', `var(--font-${fontFamily})`);
       }
     }
   }, [globalSettings]);
@@ -201,21 +201,21 @@ export default function App() {
         <div className="flex flex-col items-center gap-8 relative z-10">
           {/* Animated logo */}
           <div className="relative">
-            <div className="w-20 h-20 bg-gold/10 border border-gold/20 rounded-3xl flex items-center justify-center">
-              <Sparkles className="text-gold animate-pulse" size={36} />
+            <div className="w-20 h-20 bg-[#D97757]/10 border border-[#D97757]/20 rounded-3xl flex items-center justify-center">
+              <Sparkles className="text-[#D97757] animate-pulse" size={36} />
             </div>
-            <div className="absolute inset-0 rounded-3xl border border-gold/10 animate-ping opacity-20" />
+            <div className="absolute inset-0 rounded-3xl border border-[#D97757]/10 animate-ping opacity-20" />
           </div>
           <div className="space-y-3 text-center">
             <div className="flex items-center gap-3">
-              <div className="h-px w-8 bg-gold/30" />
-              <p className="small-caps text-gold text-xs tracking-[0.4em]">Crafting Reality</p>
-              <div className="h-px w-8 bg-gold/30" />
+              <div className="h-px w-8 bg-[#D97757]/30" />
+              <p className="small-caps text-[#D97757] text-xs tracking-[0.4em]">Crafting Reality</p>
+              <div className="h-px w-8 bg-[#D97757]/30" />
             </div>
             {/* Progress dots */}
             <div className="flex items-center justify-center gap-2">
               {[0, 1, 2].map(i => (
-                <div key={i} className="w-1.5 h-1.5 bg-gold/40 rounded-full animate-pulse"
+                <div key={i} className="w-1.5 h-1.5 bg-[#D97757]/40 rounded-full animate-pulse"
                   style={{ animationDelay: `${i * 0.3}s` }} />
               ))}
             </div>
@@ -228,24 +228,24 @@ export default function App() {
   // Profile setup failed — Firestore unreachable
   if (profileSetupFailed) {
     return (
-      <div className="min-h-screen bg-night flex items-center justify-center p-8">
+      <div className="min-h-screen bg-[#141414] flex items-center justify-center p-8">
         <div className="max-w-md w-full text-center space-y-8">
           <div className="w-20 h-20 bg-red-500/10 rounded-3xl flex items-center justify-center text-red-400 mx-auto">
             <Hammer size={40} />
           </div>
           <div className="space-y-4">
-            <h1 className="text-3xl font-serif font-bold text-white">Setup Failed</h1>
+            <h1 className="text-3xl font-semibold text-white">Setup Failed</h1>
             <p className="text-white/50 leading-relaxed text-sm">
               Your account was created but we couldn't set up your profile.
               This usually means Firestore security rules haven't been deployed yet.
             </p>
             <p className="text-white/30 text-xs font-mono">
-              Run: <span className="text-gold">firebase deploy --only firestore:rules</span>
+              Run: <span className="text-[#D97757]">firebase deploy --only firestore:rules</span>
             </p>
           </div>
           <button
             onClick={() => { signOut(auth); setProfileSetupFailed(false); }}
-            className="px-8 py-3 bg-gold text-night font-bold rounded-xl hover:bg-gold/90 transition-all"
+            className="px-8 py-3 bg-[#D97757] text-[#1a1a1a] font-bold rounded-xl hover:bg-[#D97757]/90 transition-all"
           >
             Back to Login
           </button>
@@ -257,20 +257,20 @@ export default function App() {
   // Maintenance Mode Check
   if (globalSettings?.maintenanceMode && userProfile?.role !== 'headadmin') {
     return (
-      <div className="min-h-screen bg-night flex items-center justify-center p-8">
+      <div className="min-h-screen bg-[#141414] flex items-center justify-center p-8">
         <div className="max-w-md w-full text-center space-y-8">
-          <div className="w-24 h-24 bg-gold/20 rounded-3xl flex items-center justify-center text-gold mx-auto animate-bounce">
+          <div className="w-24 h-24 bg-[#D97757]/20 rounded-3xl flex items-center justify-center text-[#D97757] mx-auto animate-bounce">
             <Hammer size={48} />
           </div>
           <div className="space-y-4">
-            <h1 className="text-4xl font-serif font-bold text-white">Under Construction</h1>
+            <h1 className="text-4xl font-semibold text-white">Under Construction</h1>
             <p className="text-white/60 leading-relaxed">
               The App Architect is currently performing deep-level optimizations.
               We'll be back shortly with a more powerful experience.
             </p>
           </div>
           <div className="pt-8 border-t border-white/10">
-            <div className="text-[10px] uppercase tracking-[0.3em] text-gold font-bold">System Status: Maintenance</div>
+            <div className="text-[10px] uppercase tracking-[0.3em] text-[#D97757] font-bold">System Status: Maintenance</div>
           </div>
         </div>
       </div>
@@ -304,11 +304,11 @@ export default function App() {
                     <div className="min-h-screen flex items-center justify-center luxury-bg">
                       <div className="atmosphere" />
                       <div className="flex flex-col items-center gap-8">
-                        <div className="w-16 h-16 bg-gold/10 border border-gold/20 rounded-2xl flex items-center justify-center">
-                          <Loader2 className="text-gold animate-spin" size={28} />
+                        <div className="w-16 h-16 bg-[#D97757]/10 border border-[#D97757]/20 rounded-2xl flex items-center justify-center">
+                          <Loader2 className="text-[#D97757] animate-spin" size={28} />
                         </div>
                         <div className="text-center space-y-2">
-                          <p className="small-caps text-gold text-xs tracking-[0.4em]">Setting up your studio</p>
+                          <p className="small-caps text-[#D97757] text-xs tracking-[0.4em]">Setting up your studio</p>
                           <p className="text-white/20 text-[10px]">This only takes a moment...</p>
                         </div>
                       </div>
