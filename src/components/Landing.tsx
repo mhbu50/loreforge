@@ -15,12 +15,14 @@ export default function Landing({ globalSettings }: LandingProps) {
   const heroY = useTransform(scrollYProgress, [0, 0.2], [0, -40]);
 
   return (
-    <div className="min-h-screen bg-[#1a1a1a] text-[#ececec] overflow-x-hidden selection:bg-[#D97757]/30">
+    <div className="min-h-screen overflow-x-hidden" style={{ background: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
 
       {/* ── Navigation ── */}
-      <nav className="px-6 md:px-10 py-4 flex items-center justify-between sticky top-0 z-50 bg-[#1a1a1a]/90 backdrop-blur-xl border-b border-white/[0.06]">
+      <nav className="px-6 md:px-10 py-4 flex items-center justify-between sticky top-0 z-50"
+        style={{ background: 'var(--bg-primary)', backdropFilter: 'blur(16px) saturate(1.4)', borderBottom: '1px solid var(--border-light)', opacity: 0.97 }}>
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 bg-[#D97757] rounded-lg flex items-center justify-center text-white overflow-hidden flex-shrink-0">
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center overflow-hidden flex-shrink-0"
+            style={{ background: 'var(--accent)', color: 'var(--text-on-accent)' }}>
             {appIcon?.startsWith('http') ? (
               <img src={appIcon} className="w-full h-full object-cover" alt="icon" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
             ) : appIcon ? (
@@ -29,7 +31,7 @@ export default function Landing({ globalSettings }: LandingProps) {
               <Sparkles size={15} />
             )}
           </div>
-          <span className="font-semibold text-[15px] text-white tracking-tight">{appName}</span>
+          <span className="font-semibold text-[15px] tracking-tight" style={{ fontFamily: 'var(--font-serif)', color: 'var(--text-primary)' }}>{appName}</span>
         </div>
 
         <div className="hidden md:flex items-center gap-8">
@@ -37,7 +39,10 @@ export default function Landing({ globalSettings }: LandingProps) {
             <a
               key={label}
               href={`#${label.toLowerCase().replace(' ', '-')}`}
-              className="text-[13px] text-white/45 hover:text-white/80 transition-colors font-medium"
+              className="text-[13px] font-medium transition-colors"
+              style={{ color: 'var(--text-tertiary)' }}
+              onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-primary)')}
+              onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-tertiary)')}
             >
               {label}
             </a>
@@ -47,13 +52,14 @@ export default function Landing({ globalSettings }: LandingProps) {
         <div className="flex items-center gap-2">
           <Link
             to="/login"
-            className="hidden md:block px-4 py-2 text-[13px] font-medium text-white/60 hover:text-white/90 hover:bg-white/[0.06] rounded-lg transition-all"
+            className="hidden md:block px-4 py-2 text-[13px] font-medium rounded-lg transition-all"
+            style={{ color: 'var(--text-secondary)' }}
           >
             Sign in
           </Link>
           <Link
             to="/login"
-            className="px-4 py-2 bg-[#D97757] hover:bg-[#C86A48] text-white text-[13px] font-semibold rounded-lg transition-colors shadow-lg shadow-[#D97757]/20"
+            className="px-4 py-2 text-[13px] font-semibold rounded-lg transition-all btn-gradient-gold"
           >
             Get started
           </Link>
@@ -62,63 +68,77 @@ export default function Landing({ globalSettings }: LandingProps) {
 
       {/* ── Hero ── */}
       <section className="relative pt-20 md:pt-32 pb-24 px-6 overflow-hidden min-h-[88vh] flex items-center">
+        {/* Subtle background glow */}
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 left-0 w-[600px] h-[600px] -translate-x-1/3 -translate-y-1/3 rounded-full"
-            style={{ background: 'radial-gradient(circle, rgba(217,119,87,0.08) 0%, transparent 65%)' }} />
+          <div className="absolute top-0 left-0 w-[700px] h-[700px] -translate-x-1/3 -translate-y-1/3 rounded-full"
+            style={{ background: 'radial-gradient(circle, var(--accent-bg) 0%, transparent 65%)' }} />
           <div className="absolute bottom-0 right-0 w-[500px] h-[500px] translate-x-1/3 translate-y-1/3 rounded-full"
-            style={{ background: 'radial-gradient(circle, rgba(217,119,87,0.04) 0%, transparent 65%)' }} />
+            style={{ background: 'radial-gradient(circle, rgba(77,124,86,0.04) 0%, transparent 65%)' }} />
         </div>
 
         <div className="container mx-auto max-w-6xl relative z-10 w-full">
-          <div className="grid lg:grid-cols-2 gap-14 items-center">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
 
             {/* Left: Copy */}
             <motion.div style={{ y: heroY, opacity: heroOpacity }}>
+              {/* Eyebrow */}
               <motion.div
-                initial={{ opacity: 0, y: 16 }}
+                initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
-                className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#D97757]/10 border border-[#D97757]/20 rounded-full mb-7"
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-8"
+                style={{ background: 'var(--accent-bg)', border: '1px solid var(--accent-ring)' }}
               >
-                <span className="w-1.5 h-1.5 bg-[#D97757] rounded-full" />
-                <span className="text-[11px] font-semibold text-[#D97757] tracking-wide">AI-Powered Creative Studio</span>
+                <span className="w-1.5 h-1.5 rounded-full" style={{ background: 'var(--accent)' }} />
+                <span className="text-[11px] font-semibold tracking-wide" style={{ color: 'var(--accent)' }}>AI-Powered Creative Studio</span>
               </motion.div>
 
+              {/* Headline */}
               <motion.h1
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 28 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.1 }}
-                className="text-[52px] sm:text-[60px] lg:text-[68px] font-bold leading-[1.02] tracking-[-0.03em] mb-6 text-white"
+                transition={{ duration: 0.65, delay: 0.1 }}
+                className="mb-6"
+                style={{
+                  fontFamily: 'var(--font-serif)',
+                  fontSize: 'clamp(44px, 6vw, 68px)',
+                  fontWeight: 300,
+                  lineHeight: 1.0,
+                  letterSpacing: '-0.025em',
+                  color: 'var(--text-primary)',
+                }}
               >
                 Write stories<br />
-                <span className="text-[#D97757]">powered by AI.</span>
+                <em style={{ color: 'var(--accent)', fontStyle: 'italic' }}>powered by AI.</em>
               </motion.h1>
 
               <motion.p
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
-                className="text-[16px] text-white/50 leading-relaxed max-w-[440px] mb-9 font-normal"
+                className="text-[16px] leading-relaxed max-w-[440px] mb-9 font-normal"
+                style={{ color: 'var(--text-secondary)' }}
               >
                 The creative studio for authors and storytellers. Write, illustrate, and publish books with AI or your own imagination.
               </motion.p>
 
               <motion.div
-                initial={{ opacity: 0, y: 16 }}
+                initial={{ opacity: 0, y: 14 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.3 }}
                 className="flex flex-col sm:flex-row gap-3"
               >
                 <Link
                   to="/login"
-                  className="px-6 py-3.5 bg-[#D97757] hover:bg-[#C86A48] text-white font-semibold rounded-xl text-[14px] flex items-center justify-center gap-2 shadow-xl shadow-[#D97757]/25 transition-colors group"
+                  className="px-6 py-3.5 font-semibold rounded-xl text-[14px] flex items-center justify-center gap-2 transition-all group btn-gradient-gold"
                 >
                   <span>Start for free</span>
                   <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
                 </Link>
                 <Link
                   to="/marketplace"
-                  className="px-6 py-3.5 bg-white/[0.05] hover:bg-white/[0.09] border border-white/[0.08] text-white/80 font-semibold rounded-xl text-[14px] flex items-center justify-center gap-2 transition-all"
+                  className="px-6 py-3.5 font-semibold rounded-xl text-[14px] flex items-center justify-center gap-2 transition-all"
+                  style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-default)', color: 'var(--text-secondary)' }}
                 >
                   <BookOpen size={16} />
                   <span>Browse stories</span>
@@ -129,7 +149,8 @@ export default function Landing({ globalSettings }: LandingProps) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.5 }}
-                className="flex items-center gap-6 mt-10 pt-7 border-t border-white/[0.06]"
+                className="flex items-center gap-8 mt-10 pt-7"
+                style={{ borderTop: '1px solid var(--border-light)' }}
               >
                 {[
                   { val: '10k+', label: 'Books created' },
@@ -137,69 +158,68 @@ export default function Landing({ globalSettings }: LandingProps) {
                   { val: '4.9★', label: 'User rating' },
                 ].map(s => (
                   <div key={s.label}>
-                    <div className="text-[18px] font-bold text-white">{s.val}</div>
-                    <div className="text-[11px] text-white/30 mt-0.5 font-medium">{s.label}</div>
+                    <div className="text-[20px] font-bold" style={{ fontFamily: 'var(--font-serif)', color: 'var(--text-primary)' }}>{s.val}</div>
+                    <div className="text-[11px] mt-0.5 font-medium" style={{ color: 'var(--text-tertiary)' }}>{s.label}</div>
                   </div>
                 ))}
               </motion.div>
             </motion.div>
 
-            {/* Right: App preview */}
+            {/* Right: App preview mockup */}
             <motion.div
               initial={{ opacity: 0, x: 40 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.7, delay: 0.15, ease: 'easeOut' }}
               className="hidden lg:block relative"
             >
-              <div className="bg-[#212121] border border-white/[0.08] rounded-2xl overflow-hidden shadow-2xl">
+              <div className="rounded-2xl overflow-hidden"
+                style={{ background: 'var(--bg-card)', border: '1px solid var(--border-default)', boxShadow: 'var(--shadow-xl)' }}>
                 {/* Window chrome */}
-                <div className="px-4 py-3 border-b border-white/[0.06] flex items-center gap-2.5 bg-[#1e1e1e]">
+                <div className="px-4 py-3 flex items-center gap-2.5" style={{ borderBottom: '1px solid var(--border-light)', background: 'var(--bg-secondary)' }}>
                   <div className="flex gap-1.5">
-                    <div className="w-2.5 h-2.5 rounded-full bg-red-500/40" />
-                    <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/40" />
-                    <div className="w-2.5 h-2.5 rounded-full bg-green-500/40" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-red-400/50" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-yellow-400/50" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-green-400/50" />
                   </div>
-                  <div className="flex-1 bg-white/[0.04] rounded-md px-3 py-1 text-[10px] text-white/25 font-mono">
+                  <div className="flex-1 rounded-md px-3 py-1 text-[10px] font-mono" style={{ background: 'var(--bg-tertiary)', color: 'var(--text-tertiary)' }}>
                     app.storycraft.ai/studio
                   </div>
                 </div>
 
                 <div className="p-5 space-y-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-7 h-7 rounded-lg bg-[#D97757] flex items-center justify-center">
-                      <Feather size={13} className="text-white" />
+                    <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'var(--accent)', color: 'var(--text-on-accent)' }}>
+                      <Feather size={13} />
                     </div>
                     <div>
-                      <div className="text-[12px] font-semibold text-white">The Obsidian Citadel</div>
-                      <div className="text-[10px] text-white/30">Chapter 1 · 5 pages</div>
+                      <div className="text-[12px] font-semibold" style={{ color: 'var(--text-primary)' }}>The Obsidian Citadel</div>
+                      <div className="text-[10px]" style={{ color: 'var(--text-tertiary)' }}>Chapter 1 · 5 pages</div>
                     </div>
-                    <div className="ml-auto px-2.5 py-0.5 bg-[#D97757]/15 text-[#D97757] text-[9px] font-semibold rounded-full border border-[#D97757]/20">
+                    <div className="ml-auto px-2.5 py-0.5 rounded-full text-[9px] font-semibold" style={{ background: 'var(--accent-bg)', color: 'var(--accent)', border: '1px solid var(--accent-ring)' }}>
                       Draft
                     </div>
                   </div>
 
-                  <div className="aspect-[4/3] bg-[#1a1a1a] rounded-xl flex items-center justify-center relative overflow-hidden border border-white/[0.06]">
+                  <div className="aspect-[4/3] rounded-xl flex items-center justify-center relative overflow-hidden"
+                    style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-light)' }}>
                     <div className="text-center px-8">
-                      <p className="text-[15px] text-white/60 leading-relaxed italic font-light">
+                      <p className="text-[15px] leading-relaxed italic font-light" style={{ fontFamily: 'var(--font-serif)', color: 'var(--text-secondary)' }}>
                         "Beyond the iron gates lay a world of forgotten magic..."
                       </p>
-                      <div className="w-10 h-[1px] bg-white/15 mx-auto mt-4" />
+                      <div className="w-10 h-[1px] mx-auto mt-4" style={{ background: 'var(--border-strong)' }} />
                     </div>
-                    <div className="absolute top-3 right-3 w-7 h-7 rounded-lg bg-white/[0.05] border border-white/[0.08] flex items-center justify-center">
-                      <ImageIcon size={12} className="text-white/30" />
+                    <div className="absolute top-3 right-3 w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'var(--bg-tertiary)', border: '1px solid var(--border-default)' }}>
+                      <ImageIcon size={12} style={{ color: 'var(--text-tertiary)' }} />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-3 gap-2">
                     {[
-                      { icon: <Wand2 size={11} />, label: 'AI Script', color: 'text-purple-400 bg-purple-400/8 border-purple-400/15' },
-                      { icon: <ImageIcon size={11} />, label: 'AI Image', color: 'text-blue-400 bg-blue-400/8 border-blue-400/15' },
-                      { icon: <Zap size={11} />, label: 'Enhance', color: 'text-[#D97757] bg-[#D97757]/8 border-[#D97757]/15' },
+                      { icon: <Wand2 size={11} />, label: 'AI Script', style: { color: '#7c3aed', background: 'rgba(124,58,237,0.08)', border: '1px solid rgba(124,58,237,0.15)' } },
+                      { icon: <ImageIcon size={11} />, label: 'AI Image', style: { color: '#2563eb', background: 'rgba(37,99,235,0.08)', border: '1px solid rgba(37,99,235,0.15)' } },
+                      { icon: <Zap size={11} />, label: 'Enhance', style: { color: 'var(--accent)', background: 'var(--accent-bg)', border: '1px solid var(--accent-ring)' } },
                     ].map(btn => (
-                      <button
-                        key={btn.label}
-                        className={`flex items-center justify-center gap-1.5 py-2 rounded-lg text-[9px] font-semibold uppercase tracking-wide border transition-all ${btn.color}`}
-                      >
+                      <button key={btn.label} className="flex items-center justify-center gap-1.5 py-2 rounded-lg text-[9px] font-semibold uppercase tracking-wide transition-all" style={btn.style}>
                         {btn.icon} {btn.label}
                       </button>
                     ))}
@@ -211,7 +231,8 @@ export default function Landing({ globalSettings }: LandingProps) {
               <motion.div
                 animate={{ y: [-3, 3, -3] }}
                 transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-                className="absolute -top-4 -right-4 bg-[#D97757] text-white px-3.5 py-1.5 rounded-xl shadow-xl shadow-[#D97757]/25 flex items-center gap-1.5"
+                className="absolute -top-4 -right-4 px-3.5 py-1.5 rounded-xl flex items-center gap-1.5"
+                style={{ background: 'var(--accent)', color: 'var(--text-on-accent)', boxShadow: 'var(--shadow-lg)' }}
               >
                 <Sparkles size={13} />
                 <span className="text-[11px] font-semibold">AI-Powered</span>
@@ -220,11 +241,13 @@ export default function Landing({ globalSettings }: LandingProps) {
               <motion.div
                 animate={{ y: [3, -3, 3] }}
                 transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-                className="absolute -bottom-4 -left-4 bg-[#212121] border border-white/[0.10] text-white/80 px-3.5 py-1.5 rounded-xl shadow-xl flex items-center gap-2"
+                className="absolute -bottom-4 -left-4 px-3.5 py-1.5 rounded-xl flex items-center gap-2"
+                style={{ background: 'var(--bg-card)', border: '1px solid var(--border-default)', boxShadow: 'var(--shadow-md)', color: 'var(--text-secondary)' }}
               >
                 <div className="flex -space-x-1">
                   {['A', 'B', 'C'].map(l => (
-                    <div key={l} className="w-5 h-5 rounded-full bg-[#D97757]/30 border border-[#1a1a1a] text-[8px] font-bold flex items-center justify-center text-white">{l}</div>
+                    <div key={l} className="w-5 h-5 rounded-full text-[8px] font-bold flex items-center justify-center"
+                      style={{ background: 'var(--accent-bg)', border: '2px solid var(--bg-card)', color: 'var(--accent)' }}>{l}</div>
                   ))}
                 </div>
                 <span className="text-[11px] font-medium">+2,400 creators</span>
@@ -235,13 +258,13 @@ export default function Landing({ globalSettings }: LandingProps) {
       </section>
 
       {/* ── Ticker ── */}
-      <div className="border-y border-white/[0.05] bg-white/[0.01] py-3.5 overflow-hidden">
+      <div className="py-3.5 overflow-hidden" style={{ borderTop: '1px solid var(--border-light)', borderBottom: '1px solid var(--border-light)', background: 'var(--bg-secondary)' }}>
         <div className="flex animate-[ticker_22s_linear_infinite] whitespace-nowrap gap-14">
           {[...Array(3)].map((_, rep) => (
             <div key={rep} className="flex items-center gap-14 flex-shrink-0">
               {['Manual Editing', 'AI Script Generation', 'AI Illustrations', 'Photo Library', '50+ Art Styles', 'Collaboration', 'Marketplace', 'Series Support'].map(item => (
-                <span key={item} className="text-[11px] font-medium uppercase tracking-[0.3em] text-white/15 flex items-center gap-3.5">
-                  <span className="w-1 h-1 rounded-full bg-[#D97757]/40" />
+                <span key={item} className="text-[11px] font-semibold uppercase tracking-[0.3em] flex items-center gap-3.5" style={{ color: 'var(--text-tertiary)' }}>
+                  <span className="w-1 h-1 rounded-full" style={{ background: 'var(--accent-muted)' }} />
                   {item}
                 </span>
               ))}
@@ -259,11 +282,14 @@ export default function Landing({ globalSettings }: LandingProps) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
             >
-              <span className="text-[11px] font-semibold text-[#D97757] tracking-widest uppercase mb-3 block">Features</span>
-              <h2 className="text-[40px] font-bold leading-tight tracking-tight text-white mb-3">
+              <div className="inline-flex items-center gap-3 mb-4">
+                <span className="w-8 h-[1.5px]" style={{ background: 'var(--accent)' }} />
+                <span className="text-[11px] font-semibold tracking-[0.2em] uppercase" style={{ color: 'var(--accent)' }}>Features</span>
+              </div>
+              <h2 className="mb-4" style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(32px, 4vw, 44px)', fontWeight: 300, lineHeight: 1.1, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
                 Everything a storyteller needs
               </h2>
-              <p className="text-white/40 text-[15px] leading-relaxed">
+              <p className="text-[15px] leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>
                 From first idea to published masterpiece — all the tools in one place.
               </p>
             </motion.div>
@@ -284,18 +310,30 @@ export default function Landing({ globalSettings }: LandingProps) {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.06 }}
-                className="p-6 bg-[#212121] border border-white/[0.06] hover:border-white/[0.12] rounded-2xl transition-all group cursor-default card-hover-lift"
+                className="p-6 rounded-2xl transition-all group cursor-default card-hover-lift"
+                style={{ background: 'var(--bg-card)', boxShadow: 'var(--shadow-card)', border: '1px solid var(--border-light)' }}
               >
                 <div className="flex items-start justify-between mb-5">
-                  <div className="w-10 h-10 bg-white/[0.05] border border-white/[0.08] rounded-xl flex items-center justify-center text-[#D97757] group-hover:bg-[#D97757] group-hover:text-white group-hover:border-[#D97757] transition-all duration-200">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200"
+                    style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-default)', color: 'var(--accent)' }}
+                    onMouseEnter={e => {
+                      (e.currentTarget as HTMLElement).style.background = 'var(--accent)';
+                      (e.currentTarget as HTMLElement).style.color = 'var(--text-on-accent)';
+                    }}
+                    onMouseLeave={e => {
+                      (e.currentTarget as HTMLElement).style.background = 'var(--bg-secondary)';
+                      (e.currentTarget as HTMLElement).style.color = 'var(--accent)';
+                    }}
+                  >
                     {feature.icon}
                   </div>
-                  <span className="text-[28px] font-bold text-white/[0.04] group-hover:text-[#D97757]/[0.08] transition-colors select-none leading-none">
+                  <span className="text-[28px] font-bold leading-none select-none transition-colors"
+                    style={{ fontFamily: 'var(--font-serif)', color: 'var(--border-strong)' }}>
                     {feature.num}
                   </span>
                 </div>
-                <h3 className="text-[15px] font-semibold text-white mb-2">{feature.title}</h3>
-                <p className="text-white/40 text-[13px] leading-relaxed">{feature.desc}</p>
+                <h3 className="text-[15px] font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>{feature.title}</h3>
+                <p className="text-[13px] leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>{feature.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -303,7 +341,7 @@ export default function Landing({ globalSettings }: LandingProps) {
       </section>
 
       {/* ── How It Works ── */}
-      <section id="how-it-works" className="py-32 px-6 bg-[#212121]">
+      <section id="how-it-works" className="py-32 px-6" style={{ background: 'var(--bg-secondary)' }}>
         <div className="container mx-auto max-w-5xl">
           <div className="mb-16 text-center">
             <motion.div
@@ -311,13 +349,20 @@ export default function Landing({ globalSettings }: LandingProps) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
             >
-              <span className="text-[11px] font-semibold text-[#D97757] tracking-widest uppercase mb-3 block">The Process</span>
-              <h2 className="text-[40px] font-bold leading-tight tracking-tight text-white">Three simple steps</h2>
+              <div className="inline-flex items-center gap-3 mb-4 justify-center">
+                <span className="w-8 h-[1.5px]" style={{ background: 'var(--accent)' }} />
+                <span className="text-[11px] font-semibold tracking-[0.2em] uppercase" style={{ color: 'var(--accent)' }}>The Process</span>
+                <span className="w-8 h-[1.5px]" style={{ background: 'var(--accent)' }} />
+              </div>
+              <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(32px, 4vw, 44px)', fontWeight: 300, lineHeight: 1.1, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
+                Three simple steps
+              </h2>
             </motion.div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
-            <div className="hidden md:block absolute top-10 left-[calc(16.5%+2rem)] right-[calc(16.5%+2rem)] h-[1px] bg-gradient-to-r from-[#D97757]/20 via-[#D97757]/40 to-[#D97757]/20" />
+            <div className="hidden md:block absolute top-10 left-[calc(16.5%+2rem)] right-[calc(16.5%+2rem)] h-[1px]"
+              style={{ background: `linear-gradient(to right, transparent, var(--accent-ring), transparent)` }} />
 
             {[
               { step: '1', icon: <Feather size={22} />, title: 'Choose your format', desc: 'Pick Stories, Comics, Novels, or Manga. Select your art style and language.' },
@@ -332,14 +377,16 @@ export default function Landing({ globalSettings }: LandingProps) {
                 transition={{ delay: i * 0.12 }}
                 className="text-center relative group"
               >
-                <div className="w-20 h-20 bg-[#1a1a1a] border border-white/[0.08] group-hover:border-[#D97757]/30 rounded-2xl flex items-center justify-center mx-auto mb-5 text-white/40 group-hover:text-[#D97757] transition-all relative">
+                <div className="w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-5 relative transition-all"
+                  style={{ background: 'var(--bg-card)', border: '1px solid var(--border-default)', color: 'var(--text-tertiary)', boxShadow: 'var(--shadow-sm)' }}>
                   {step.icon}
-                  <div className="absolute -top-2.5 -right-2.5 w-6 h-6 bg-[#D97757] rounded-full flex items-center justify-center text-[10px] font-bold text-white shadow-md">
+                  <div className="absolute -top-2.5 -right-2.5 w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold shadow-md"
+                    style={{ background: 'var(--accent)', color: 'var(--text-on-accent)' }}>
                     {step.step}
                   </div>
                 </div>
-                <h3 className="text-[15px] font-semibold text-white mb-2">{step.title}</h3>
-                <p className="text-white/35 text-[13px] leading-relaxed max-w-[220px] mx-auto">{step.desc}</p>
+                <h3 className="text-[15px] font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>{step.title}</h3>
+                <p className="text-[13px] leading-relaxed max-w-[220px] mx-auto" style={{ color: 'var(--text-tertiary)' }}>{step.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -362,13 +409,14 @@ export default function Landing({ globalSettings }: LandingProps) {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.08 }}
-                className="text-center p-6 bg-[#212121] border border-white/[0.06] hover:border-white/[0.10] rounded-2xl transition-all group"
+                className="text-center p-6 rounded-2xl transition-all group card-hover-lift"
+                style={{ background: 'var(--bg-card)', boxShadow: 'var(--shadow-card)', border: '1px solid var(--border-light)' }}
               >
-                <div className="flex items-center justify-center gap-1.5 mb-3 text-white/25 group-hover:text-[#D97757] transition-colors">
+                <div className="flex items-center justify-center gap-1.5 mb-3 transition-colors" style={{ color: 'var(--text-tertiary)' }}>
                   {stat.icon}
                 </div>
-                <span className="text-[36px] font-bold text-white block mb-1">{stat.val}</span>
-                <p className="text-[11px] font-medium text-white/30 uppercase tracking-wider">{stat.label}</p>
+                <span className="text-[36px] font-bold block mb-1" style={{ fontFamily: 'var(--font-serif)', color: 'var(--text-primary)' }}>{stat.val}</span>
+                <p className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--text-tertiary)' }}>{stat.label}</p>
               </motion.div>
             ))}
           </div>
@@ -376,19 +424,25 @@ export default function Landing({ globalSettings }: LandingProps) {
       </section>
 
       {/* ── Pricing ── */}
-      <section id="pricing" className="py-32 px-6 bg-[#212121]">
+      <section id="pricing" className="py-32 px-6" style={{ background: 'var(--bg-secondary)' }}>
         <div className="container mx-auto max-w-4xl">
           <div className="text-center mb-14">
-            <span className="text-[11px] font-semibold text-[#D97757] tracking-widest uppercase mb-3 block">Pricing</span>
-            <h2 className="text-[40px] font-bold leading-tight tracking-tight text-white mb-3">Simple, transparent pricing</h2>
-            <p className="text-white/40 text-[15px] max-w-sm mx-auto">Start free, upgrade when you need more.</p>
+            <div className="inline-flex items-center gap-3 mb-4 justify-center">
+              <span className="w-8 h-[1.5px]" style={{ background: 'var(--accent)' }} />
+              <span className="text-[11px] font-semibold tracking-[0.2em] uppercase" style={{ color: 'var(--accent)' }}>Pricing</span>
+              <span className="w-8 h-[1.5px]" style={{ background: 'var(--accent)' }} />
+            </div>
+            <h2 className="mb-3" style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(32px, 4vw, 44px)', fontWeight: 300, lineHeight: 1.1, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
+              Simple, transparent pricing
+            </h2>
+            <p className="text-[15px] max-w-sm mx-auto" style={{ color: 'var(--text-tertiary)' }}>Start free, upgrade when you need more.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[
-              { name: 'Free',     price: '$0',  sub: '/month', tokens: '5 tokens/mo',   features: ['1 story total', '5 pages per story', '3 art styles', 'Manual editing'], cta: 'Get started',    highlight: false },
-              { name: 'Standard', price: '$7',  sub: '/month', tokens: '20 tokens/mo',  features: ['3 stories/month', '15 pages per story', 'AI generation', 'Collaboration'], cta: 'Start Standard', highlight: false },
-              { name: 'Premium',  price: '$20', sub: '/month', tokens: '100 tokens/mo', features: ['Unlimited stories', '50 pages/story', 'All art styles', 'Marketplace publishing'], cta: 'Go Premium', highlight: true },
+              { name: 'Hearth',   price: '$0',  sub: '/month', tokens: '5 tokens/mo',   features: ['1 story total', '5 pages per story', '3 art styles', 'Manual editing'], cta: 'Get started',    highlight: false },
+              { name: 'Atelier',  price: '$18', sub: '/month', tokens: '60 tokens/mo',  features: ['10 stories/month', '30 pages per story', 'AI generation', 'Collaboration'], cta: 'Start Atelier', highlight: true },
+              { name: 'Studio',   price: '$48', sub: '/month', tokens: '200 tokens/mo', features: ['Unlimited stories', '100 pages/story', 'All art styles', 'Marketplace publishing'], cta: 'Go Studio', highlight: false },
             ].map((plan, i) => (
               <motion.div
                 key={i}
@@ -396,40 +450,47 @@ export default function Landing({ globalSettings }: LandingProps) {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.08 }}
-                className={`p-6 rounded-2xl border relative flex flex-col ${
-                  plan.highlight
-                    ? 'bg-[#D97757]/[0.08] border-[#D97757]/25 shadow-xl shadow-[#D97757]/10'
-                    : 'bg-[#1a1a1a] border-white/[0.07]'
-                }`}
+                className="p-6 rounded-2xl relative flex flex-col"
+                style={plan.highlight ? {
+                  background: 'var(--bg-card)',
+                  border: '2px solid var(--accent)',
+                  boxShadow: `0 0 0 4px var(--accent-bg), var(--shadow-xl)`,
+                } : {
+                  background: 'var(--bg-card)',
+                  border: '1px solid var(--border-default)',
+                  boxShadow: 'var(--shadow-sm)',
+                }}
               >
                 {plan.highlight && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#D97757] text-white px-3 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wide shadow-lg">
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wide"
+                    style={{ background: 'var(--accent)', color: 'var(--text-on-accent)' }}>
                     Most popular
                   </div>
                 )}
                 <div className="mb-5">
-                  <span className="text-[11px] font-semibold text-white/40 uppercase tracking-widest block mb-2">{plan.name}</span>
+                  <span className="text-[11px] font-semibold uppercase tracking-widest block mb-2" style={{ color: 'var(--text-tertiary)' }}>{plan.name}</span>
                   <div className="flex items-baseline gap-1 mb-1">
-                    <span className={`text-[40px] font-bold ${plan.highlight ? 'text-[#D97757]' : 'text-white'}`}>{plan.price}</span>
-                    <span className="text-white/30 text-[13px]">{plan.sub}</span>
+                    <span className="text-[40px] font-bold" style={{ fontFamily: 'var(--font-serif)', color: plan.highlight ? 'var(--accent)' : 'var(--text-primary)' }}>{plan.price}</span>
+                    <span className="text-[13px]" style={{ color: 'var(--text-tertiary)' }}>{plan.sub}</span>
                   </div>
-                  <span className="text-[11px] text-[#D97757]/60 font-semibold">{plan.tokens}</span>
+                  <span className="text-[11px] font-semibold" style={{ color: 'var(--accent-muted)' }}>{plan.tokens}</span>
                 </div>
                 <ul className="space-y-2.5 mb-6 flex-1">
                   {plan.features.map(f => (
-                    <li key={f} className="flex items-center gap-2 text-[13px] text-white/50">
-                      <Check size={13} className="text-[#D97757] flex-shrink-0" />
+                    <li key={f} className="flex items-center gap-2 text-[13px]" style={{ color: 'var(--text-secondary)' }}>
+                      <Check size={13} className="flex-shrink-0" style={{ color: 'var(--accent)' }} />
                       {f}
                     </li>
                   ))}
                 </ul>
                 <Link
                   to="/login"
-                  className={`w-full py-3 rounded-xl font-semibold text-[13px] flex items-center justify-center gap-2 transition-all ${
-                    plan.highlight
-                      ? 'bg-[#D97757] hover:bg-[#C86A48] text-white shadow-lg shadow-[#D97757]/20'
-                      : 'bg-white/[0.05] hover:bg-white/[0.09] border border-white/[0.08] text-white/70 hover:text-white'
-                  }`}
+                  className={`w-full py-3 rounded-xl font-semibold text-[13px] flex items-center justify-center gap-2 transition-all ${plan.highlight ? 'btn-gradient-gold' : ''}`}
+                  style={!plan.highlight ? {
+                    background: 'var(--bg-secondary)',
+                    border: '1px solid var(--border-default)',
+                    color: 'var(--text-secondary)',
+                  } : {}}
                 >
                   {plan.cta}
                   <ArrowRight size={14} />
@@ -447,37 +508,39 @@ export default function Landing({ globalSettings }: LandingProps) {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-[#212121] border border-white/[0.08] rounded-3xl p-14 shadow-2xl"
+            className="rounded-3xl p-14"
+            style={{ background: 'var(--bg-card)', border: '1px solid var(--border-default)', boxShadow: 'var(--shadow-xl)' }}
           >
             <div className="flex justify-center mb-6">
               {[...Array(5)].map((_, i) => (
-                <Star key={i} size={16} className="text-[#D97757] fill-[#D97757] mx-0.5" />
+                <Star key={i} size={16} className="mx-0.5 fill-current" style={{ color: 'var(--accent)' }} />
               ))}
             </div>
-            <h2 className="text-[38px] font-bold text-white leading-tight tracking-tight mb-4">
+            <h2 className="mb-4" style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: 300, lineHeight: 1.1, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
               Ready to write your story?
             </h2>
-            <p className="text-white/40 text-[15px] leading-relaxed mb-8 max-w-md mx-auto">
+            <p className="text-[15px] leading-relaxed mb-8 max-w-md mx-auto" style={{ color: 'var(--text-secondary)' }}>
               Join thousands of creators who use {appName} to bring their stories to life.
             </p>
             <Link
               to="/login"
-              className="inline-flex items-center gap-2.5 px-8 py-4 bg-[#D97757] hover:bg-[#C86A48] text-white font-semibold text-[15px] rounded-xl transition-colors shadow-2xl shadow-[#D97757]/30 group"
+              className="inline-flex items-center gap-2.5 px-8 py-4 font-semibold text-[15px] rounded-xl transition-all btn-gradient-gold group"
             >
               <span>Start for free</span>
               <ChevronRight size={20} className="group-hover:translate-x-0.5 transition-transform" />
             </Link>
-            <p className="text-[11px] text-white/20 mt-4">No credit card required · 5 free tokens on signup</p>
+            <p className="text-[11px] mt-4" style={{ color: 'var(--text-tertiary)' }}>No credit card required · 5 free tokens on signup</p>
           </motion.div>
         </div>
       </section>
 
       {/* ── Footer ── */}
-      <footer className="py-12 border-t border-white/[0.06] px-6">
+      <footer className="py-12 px-6" style={{ borderTop: '1px solid var(--border-light)' }}>
         <div className="container mx-auto max-w-6xl">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 bg-[#D97757] rounded-lg flex items-center justify-center text-white overflow-hidden">
+              <div className="w-7 h-7 rounded-lg flex items-center justify-center overflow-hidden"
+                style={{ background: 'var(--accent)', color: 'var(--text-on-accent)' }}>
                 {appIcon?.startsWith('http') ? (
                   <img src={appIcon} className="w-full h-full object-cover" alt="icon" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
                 ) : appIcon ? (
@@ -486,16 +549,16 @@ export default function Landing({ globalSettings }: LandingProps) {
                   <Sparkles size={13} />
                 )}
               </div>
-              <span className="font-semibold text-[14px] text-white">{appName}</span>
+              <span className="font-semibold text-[14px]" style={{ fontFamily: 'var(--font-serif)', color: 'var(--text-primary)' }}>{appName}</span>
             </div>
 
             <div className="flex items-center gap-7">
               {['Twitter', 'Discord', 'GitHub'].map(social => (
-                <a key={social} href="#" className="text-[12px] font-medium text-white/25 hover:text-white/60 transition-colors">{social}</a>
+                <a key={social} href="#" className="text-[12px] font-medium transition-colors" style={{ color: 'var(--text-tertiary)' }}>{social}</a>
               ))}
             </div>
 
-            <p className="text-[12px] text-white/20">&copy; 2026 {appName}. All rights reserved.</p>
+            <p className="text-[12px]" style={{ color: 'var(--text-tertiary)' }}>&copy; 2026 {appName}. All rights reserved.</p>
           </div>
         </div>
       </footer>

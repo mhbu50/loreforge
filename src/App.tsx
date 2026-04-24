@@ -55,12 +55,19 @@ export default function App() {
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     return (localStorage.getItem('storycraft-theme') as 'light' | 'dark') || 'light';
   });
+  const [accent, setAccent] = useState<string>(() => {
+    return localStorage.getItem('storycraft-accent') || 'amber';
+  });
 
-  // Apply / remove dark theme on <html>
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('storycraft-theme', theme);
   }, [theme]);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-accent', accent);
+    localStorage.setItem('storycraft-accent', accent);
+  }, [accent]);
 
   const toggleTheme = () => setTheme(t => t === 'light' ? 'dark' : 'light');
 
@@ -191,32 +198,26 @@ export default function App() {
   // Loading screen
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center luxury-bg overflow-hidden">
-        <div className="atmosphere" />
-        {/* Background glow */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full"
-            style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.06) 0%, transparent 70%)' }} />
-        </div>
+      <div className="min-h-screen flex items-center justify-center overflow-hidden" style={{ background: 'var(--bg-primary)' }}>
         <div className="flex flex-col items-center gap-8 relative z-10">
-          {/* Animated logo */}
           <div className="relative">
-            <div className="w-20 h-20 bg-[#D97757]/10 border border-[#D97757]/20 rounded-3xl flex items-center justify-center">
-              <Sparkles className="text-[#D97757] animate-pulse" size={36} />
+            <div className="w-20 h-20 rounded-3xl flex items-center justify-center"
+              style={{ background: 'var(--accent-bg)', border: '1px solid var(--accent-ring)' }}>
+              <Sparkles style={{ color: 'var(--accent)' }} className="animate-pulse" size={36} />
             </div>
-            <div className="absolute inset-0 rounded-3xl border border-[#D97757]/10 animate-ping opacity-20" />
+            <div className="absolute inset-0 rounded-3xl animate-ping opacity-20"
+              style={{ border: '1px solid var(--accent)' }} />
           </div>
           <div className="space-y-3 text-center">
             <div className="flex items-center gap-3">
-              <div className="h-px w-8 bg-[#D97757]/30" />
-              <p className="small-caps text-[#D97757] text-xs tracking-[0.4em]">Crafting Reality</p>
-              <div className="h-px w-8 bg-[#D97757]/30" />
+              <div className="h-px w-8" style={{ background: 'var(--accent-ring)' }} />
+              <p className="small-caps text-xs tracking-[0.4em]" style={{ color: 'var(--accent)' }}>Crafting Reality</p>
+              <div className="h-px w-8" style={{ background: 'var(--accent-ring)' }} />
             </div>
-            {/* Progress dots */}
             <div className="flex items-center justify-center gap-2">
               {[0, 1, 2].map(i => (
-                <div key={i} className="w-1.5 h-1.5 bg-[#D97757]/40 rounded-full animate-pulse"
-                  style={{ animationDelay: `${i * 0.3}s` }} />
+                <div key={i} className="w-1.5 h-1.5 rounded-full animate-pulse"
+                  style={{ background: 'var(--accent-muted)', animationDelay: `${i * 0.3}s` }} />
               ))}
             </div>
           </div>
@@ -228,24 +229,24 @@ export default function App() {
   // Profile setup failed — Firestore unreachable
   if (profileSetupFailed) {
     return (
-      <div className="min-h-screen bg-[#141414] flex items-center justify-center p-8">
+      <div className="min-h-screen flex items-center justify-center p-8" style={{ background: 'var(--bg-primary)' }}>
         <div className="max-w-md w-full text-center space-y-8">
           <div className="w-20 h-20 bg-red-500/10 rounded-3xl flex items-center justify-center text-red-400 mx-auto">
             <Hammer size={40} />
           </div>
           <div className="space-y-4">
-            <h1 className="text-3xl font-semibold text-white">Setup Failed</h1>
-            <p className="text-white/50 leading-relaxed text-sm">
+            <h1 className="text-3xl font-semibold" style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-serif)' }}>Setup Failed</h1>
+            <p className="leading-relaxed text-sm" style={{ color: 'var(--text-secondary)' }}>
               Your account was created but we couldn't set up your profile.
               This usually means Firestore security rules haven't been deployed yet.
             </p>
-            <p className="text-white/30 text-xs font-mono">
-              Run: <span className="text-[#D97757]">firebase deploy --only firestore:rules</span>
+            <p className="text-xs font-mono" style={{ color: 'var(--text-tertiary)' }}>
+              Run: <span style={{ color: 'var(--accent)' }}>firebase deploy --only firestore:rules</span>
             </p>
           </div>
           <button
             onClick={() => { signOut(auth); setProfileSetupFailed(false); }}
-            className="px-8 py-3 bg-[#D97757] text-[#1a1a1a] font-bold rounded-xl hover:bg-[#D97757]/90 transition-all"
+            className="px-8 py-3 rounded-xl font-semibold transition-all btn-gradient-gold"
           >
             Back to Login
           </button>
@@ -257,20 +258,21 @@ export default function App() {
   // Maintenance Mode Check
   if (globalSettings?.maintenanceMode && userProfile?.role !== 'headadmin') {
     return (
-      <div className="min-h-screen bg-[#141414] flex items-center justify-center p-8">
+      <div className="min-h-screen flex items-center justify-center p-8" style={{ background: 'var(--bg-primary)' }}>
         <div className="max-w-md w-full text-center space-y-8">
-          <div className="w-24 h-24 bg-[#D97757]/20 rounded-3xl flex items-center justify-center text-[#D97757] mx-auto animate-bounce">
+          <div className="w-24 h-24 rounded-3xl flex items-center justify-center mx-auto animate-bounce"
+            style={{ background: 'var(--accent-bg)', color: 'var(--accent)' }}>
             <Hammer size={48} />
           </div>
           <div className="space-y-4">
-            <h1 className="text-4xl font-semibold text-white">Under Construction</h1>
-            <p className="text-white/60 leading-relaxed">
+            <h1 className="text-4xl font-semibold" style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-serif)' }}>Under Construction</h1>
+            <p className="leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
               The App Architect is currently performing deep-level optimizations.
               We'll be back shortly with a more powerful experience.
             </p>
           </div>
-          <div className="pt-8 border-t border-white/10">
-            <div className="text-[10px] uppercase tracking-[0.3em] text-[#D97757] font-bold">System Status: Maintenance</div>
+          <div className="pt-8" style={{ borderTop: '1px solid var(--border-light)' }}>
+            <div className="text-[10px] uppercase tracking-[0.3em] font-bold" style={{ color: 'var(--accent)' }}>System Status: Maintenance</div>
           </div>
         </div>
       </div>
@@ -298,18 +300,18 @@ export default function App() {
             element={
               user
                 ? userProfile
-                  ? <Dashboard userProfile={userProfile} globalSettings={globalSettings} theme={theme} onToggleTheme={toggleTheme} />
+                  ? <Dashboard userProfile={userProfile} globalSettings={globalSettings} theme={theme} onToggleTheme={toggleTheme} accent={accent} onSetAccent={setAccent} />
                   : (
                     // Authenticated but profile not ready yet — self-heal is in progress
-                    <div className="min-h-screen flex items-center justify-center luxury-bg">
-                      <div className="atmosphere" />
+                    <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--bg-primary)' }}>
                       <div className="flex flex-col items-center gap-8">
-                        <div className="w-16 h-16 bg-[#D97757]/10 border border-[#D97757]/20 rounded-2xl flex items-center justify-center">
-                          <Loader2 className="text-[#D97757] animate-spin" size={28} />
+                        <div className="w-16 h-16 rounded-2xl flex items-center justify-center"
+                          style={{ background: 'var(--accent-bg)', border: '1px solid var(--accent-ring)' }}>
+                          <Loader2 style={{ color: 'var(--accent)' }} className="animate-spin" size={28} />
                         </div>
                         <div className="text-center space-y-2">
-                          <p className="small-caps text-[#D97757] text-xs tracking-[0.4em]">Setting up your studio</p>
-                          <p className="text-white/20 text-[10px]">This only takes a moment...</p>
+                          <p className="small-caps text-xs tracking-[0.4em]" style={{ color: 'var(--accent)' }}>Setting up your studio</p>
+                          <p className="text-[10px]" style={{ color: 'var(--text-tertiary)' }}>This only takes a moment...</p>
                         </div>
                       </div>
                     </div>

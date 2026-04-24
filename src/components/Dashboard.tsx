@@ -35,9 +35,11 @@ interface DashboardProps {
   globalSettings?: any;
   theme?: 'light' | 'dark';
   onToggleTheme?: () => void;
+  accent?: string;
+  onSetAccent?: (accent: string) => void;
 }
 
-export default function Dashboard({ userProfile, globalSettings, theme = 'light', onToggleTheme }: DashboardProps) {
+export default function Dashboard({ userProfile, globalSettings, theme = 'light', onToggleTheme, accent = 'amber', onSetAccent }: DashboardProps) {
   const appName = globalSettings?.appName || 'StoryCraft';
   const appIcon = globalSettings?.appIcon || '';
   const [stories, setStories] = useState<Story[]>([]);
@@ -724,16 +726,17 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
 
       {/* ── Sidebar ── */}
       <aside
-        style={{ width: sidebarWidth }}
+        style={{ width: sidebarWidth, background: 'var(--bg-secondary)', borderRight: '1px solid var(--border-light)' }}
         className={cn(
-          "fixed left-0 top-0 bottom-0 bg-[#141414] border-r border-white/[0.06] z-[60] flex flex-col transition-transform duration-500 select-none",
+          "fixed left-0 top-0 bottom-0 z-[60] flex flex-col transition-transform duration-500 select-none",
           isZenMode && "-translate-x-full"
         )}
       >
         {/* Logo area */}
         <div className="px-4 pt-5 pb-4">
           <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 bg-[#D97757] rounded-lg flex items-center justify-center text-white flex-shrink-0 shadow-md shadow-[#D97757]/20 overflow-hidden">
+            <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden"
+              style={{ background: 'var(--accent)', color: 'var(--text-on-accent)' }}>
               {appIcon?.startsWith('http') ? (
                 <img src={appIcon} className="w-full h-full object-cover" alt="icon" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
               ) : appIcon ? (
@@ -742,7 +745,7 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
                 <Sparkles size={13} />
               )}
             </div>
-            <span className="font-semibold text-[14px] text-white/85 tracking-tight truncate">{appName}</span>
+            <span className="font-semibold text-[14px] tracking-tight truncate" style={{ fontFamily: 'var(--font-serif)', color: 'var(--text-primary)' }}>{appName}</span>
           </div>
         </div>
 
@@ -750,7 +753,7 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
         <div className="px-3 pb-3">
           <button
             onClick={() => canCreateStory ? setShowTypeSelector(true) : setShowPricingModal(true)}
-            className="w-full flex items-center gap-2 px-3 py-2.5 bg-[#D97757] hover:bg-[#C86A48] text-white rounded-xl text-[12px] font-semibold transition-colors shadow-md shadow-[#D97757]/15"
+            className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-[12px] font-semibold transition-all btn-gradient-gold"
           >
             <Plus size={14} />
             New story
@@ -772,14 +775,12 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
               <button
                 key={view}
                 onClick={() => { setCurrentStory(null); setIsCreating(false); setShowAdmin(false); setActiveView(view); }}
-                className={cn(
-                  "w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all text-left",
-                  activeView === view
-                    ? "bg-white/[0.08] text-white"
-                    : "text-white/40 hover:bg-white/[0.04] hover:text-white/70"
-                )}
+                className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all text-left"
+                style={activeView === view
+                  ? { background: 'var(--accent-bg)', color: 'var(--text-primary)', borderLeft: '2px solid var(--accent)' }
+                  : { color: 'var(--text-tertiary)' }}
               >
-                <span className={cn("flex-shrink-0 transition-colors", activeView === view ? "text-[#D97757]" : "text-white/30")}>
+                <span className="flex-shrink-0 transition-colors" style={{ color: activeView === view ? 'var(--accent)' : 'var(--text-tertiary)' }}>
                   {icon}
                 </span>
                 {label}
@@ -788,7 +789,7 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
           </div>
 
           {/* Divider */}
-          <div className="h-px bg-white/[0.05] mx-2 my-2" />
+          <div className="h-px mx-2 my-2" style={{ background: 'var(--border-light)' }} />
 
           {/* Secondary views */}
           <div>
@@ -799,14 +800,12 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
               <button
                 key={view}
                 onClick={() => { setCurrentStory(null); setIsCreating(false); setShowAdmin(false); setActiveView(view); }}
-                className={cn(
-                  "w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all text-left",
-                  activeView === view
-                    ? "bg-white/[0.08] text-white"
-                    : "text-white/40 hover:bg-white/[0.04] hover:text-white/70"
-                )}
+                className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all text-left"
+                style={activeView === view
+                  ? { background: 'var(--accent-bg)', color: 'var(--text-primary)', borderLeft: '2px solid var(--accent)' }
+                  : { color: 'var(--text-tertiary)' }}
               >
-                <span className={cn("flex-shrink-0 transition-colors", activeView === view ? "text-[#D97757]" : "text-white/30")}>
+                <span className="flex-shrink-0" style={{ color: activeView === view ? 'var(--accent)' : 'var(--text-tertiary)' }}>
                   {icon}
                 </span>
                 {label}
@@ -816,89 +815,94 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
         </nav>
 
         {/* Bottom user area */}
-        <div className="px-2 pb-3 pt-2 border-t border-white/[0.05] space-y-0.5">
+        <div className="px-2 pb-3 pt-2 space-y-0.5" style={{ borderTop: '1px solid var(--border-light)' }}>
           {/* Theme toggle */}
           <button
             onClick={onToggleTheme}
-            className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] font-medium text-white/35 hover:bg-white/[0.04] hover:text-white/65 transition-all"
+            className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all"
+            style={{ color: 'var(--text-tertiary)' }}
           >
-            <span className="text-white/25">{theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}</span>
+            <span style={{ color: 'var(--text-tertiary)' }}>{theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}</span>
             {theme === 'dark' ? 'Light mode' : 'Dark mode'}
           </button>
 
           {/* User profile */}
           <button
             onClick={() => setShowProfile(true)}
-            className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-white/[0.04] transition-all group"
+            className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl transition-all group"
           >
             <div
               className="w-7 h-7 rounded-lg flex items-center justify-center text-[11px] font-bold flex-shrink-0"
-              style={{ backgroundColor: userProfile?.avatarColor || '#D97757', color: '#ffffff' }}
+              style={{ backgroundColor: userProfile?.avatarColor || 'var(--accent)', color: 'var(--text-on-accent)' }}
             >
               {userProfile?.avatarEmoji || userProfile?.displayName?.[0]?.toUpperCase() || 'U'}
             </div>
             <div className="flex-1 min-w-0 text-left">
-              <p className="text-[13px] font-medium text-white/75 truncate leading-tight">{userProfile?.displayName}</p>
-              <p className="text-[11px] text-white/30 capitalize">{userProfile?.subscriptionTier || 'free'}</p>
+              <p className="text-[13px] font-medium truncate leading-tight" style={{ color: 'var(--text-primary)' }}>{userProfile?.displayName}</p>
+              <p className="text-[11px] capitalize" style={{ color: 'var(--text-tertiary)' }}>{userProfile?.subscriptionTier || 'free'}</p>
             </div>
-            <ChevronRight size={11} className="text-white/15 group-hover:text-white/40 flex-shrink-0" />
+            <ChevronRight size={11} className="flex-shrink-0" style={{ color: 'var(--text-tertiary)' }} />
           </button>
         </div>
 
         {/* Resize handle */}
         <div
           onMouseDown={startResizing}
-          className="absolute right-0 top-0 bottom-0 w-1 cursor-col-resize hover:bg-[#D97757]/30 transition-colors z-[70]"
+          className="absolute right-0 top-0 bottom-0 w-1 cursor-col-resize transition-colors z-[70]"
+          style={{ background: 'transparent' }}
+          onMouseEnter={e => (e.currentTarget.style.background = 'var(--accent-ring)')}
+          onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
         />
       </aside>
 
-      <div className="flex-1 flex flex-col min-w-0 transition-all duration-500 bg-[#1a1a1a]" style={{ marginLeft: isZenMode ? 0 : sidebarWidth }}>
+      <div className="flex-1 flex flex-col min-w-0 transition-all duration-500" style={{ marginLeft: isZenMode ? 0 : sidebarWidth, background: 'var(--bg-primary)' }}>
         {/* ── Header ── */}
-        <header className={cn(
-          "h-12 border-b border-white/[0.06] bg-[#1a1a1a]/95 backdrop-blur-xl flex items-center justify-between px-5 sticky top-0 z-40 transition-all duration-500",
-          isZenMode && "-translate-y-full"
-        )}>
+        <header
+          className={cn("h-12 flex items-center justify-between px-5 sticky top-0 z-40 transition-all duration-500", isZenMode && "-translate-y-full")}
+          style={{ borderBottom: '1px solid var(--border-light)', background: 'var(--bg-primary)', backdropFilter: 'blur(16px)', opacity: 0.97 }}
+        >
           {/* Left: current view label */}
           <div className="flex items-center gap-2">
-            <span className="text-[13px] font-medium text-white/40">{appName}</span>
-            <span className="text-white/20 text-[13px]">/</span>
-            <span className="text-[13px] font-semibold text-white/75 capitalize">{activeView.replace('-', ' ')}</span>
+            <span className="text-[13px] font-medium" style={{ color: 'var(--text-tertiary)' }}>{appName}</span>
+            <span className="text-[13px]" style={{ color: 'var(--border-strong)' }}>/</span>
+            <span className="text-[13px] font-semibold capitalize" style={{ color: 'var(--text-primary)' }}>{activeView.replace('-', ' ')}</span>
           </div>
 
           {/* Right: actions */}
           <div className="flex items-center gap-1.5">
             {/* Token usage */}
             <div className="group relative">
-              <button className={cn(
-                "flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-[12px] font-medium transition-all cursor-help",
-                _usagePct >= 90
-                  ? "bg-red-500/[0.06] border-red-500/15 text-red-400"
-                  : "bg-white/[0.04] border-white/[0.07] text-white/45 hover:border-white/[0.12]"
-              )}>
-                <Zap size={12} className={_usagePct >= 90 ? 'text-red-400' : 'text-[#D97757]'} />
+              <button
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-[12px] font-medium transition-all cursor-help"
+                style={_usagePct >= 90
+                  ? { background: 'rgba(239,68,68,0.06)', borderColor: 'rgba(239,68,68,0.20)', color: '#ef4444' }
+                  : { background: 'var(--bg-secondary)', borderColor: 'var(--border-default)', color: 'var(--text-tertiary)' }}
+              >
+                <Zap size={12} style={{ color: _usagePct >= 90 ? '#ef4444' : 'var(--accent)' }} />
                 {_isUnlimited ? '∞' : `${_usagePct}%`}
               </button>
               {/* Tooltip */}
-              <div className="absolute top-full right-0 mt-2 w-72 bg-[#1e1e1e] border border-white/[0.09] rounded-2xl p-4 shadow-2xl opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all pointer-events-none z-50">
+              <div className="absolute top-full right-0 mt-2 w-72 rounded-2xl p-4 shadow-2xl opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all pointer-events-none z-50"
+                style={{ background: 'var(--bg-card)', border: '1px solid var(--border-default)', boxShadow: 'var(--shadow-xl)' }}>
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-[11px] font-semibold text-white/50 uppercase tracking-widest">Monthly usage</span>
-                  <span className={cn("text-[12px] font-bold", _usagePct >= 90 ? 'text-red-400' : 'text-[#D97757]')}>{_usagePct}%</span>
+                  <span className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: 'var(--text-tertiary)' }}>Monthly usage</span>
+                  <span className="text-[12px] font-bold" style={{ color: _usagePct >= 90 ? '#ef4444' : 'var(--accent)' }}>{_usagePct}%</span>
                 </div>
                 {!_isUnlimited && (
                   <>
-                    <div className="h-1.5 bg-white/[0.06] rounded-full overflow-hidden mb-1.5">
+                    <div className="h-1.5 rounded-full overflow-hidden mb-1.5" style={{ background: 'var(--bg-tertiary)' }}>
                       <div
-                        className={cn("h-full rounded-full transition-all", _usagePct >= 90 ? 'bg-red-400' : _usagePct >= 70 ? 'bg-amber-400' : 'bg-[#D97757]')}
-                        style={{ width: `${_usagePct}%` }}
+                        className="h-full rounded-full transition-all"
+                        style={{ width: `${_usagePct}%`, background: _usagePct >= 90 ? '#ef4444' : _usagePct >= 70 ? '#f59e0b' : 'var(--accent)' }}
                       />
                     </div>
-                    <div className="flex justify-between text-[11px] text-white/25 mb-3">
+                    <div className="flex justify-between text-[11px] mb-3" style={{ color: 'var(--text-tertiary)' }}>
                       <span>{_currentUsage.toLocaleString()} used</span>
                       <span>{_usageLeft.toLocaleString()} left</span>
                     </div>
                   </>
                 )}
-                <div className="space-y-1 border-t border-white/[0.06] pt-3">
+                <div className="space-y-1 pt-3" style={{ borderTop: '1px solid var(--border-light)' }}>
                   {[
                     { label: 'Create story', cost: currentLimits.bookTokenCost || 100 },
                     { label: 'Edit story',   cost: currentLimits.editTokenCost ?? 0 },
@@ -907,8 +911,8 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
                     { label: 'AI Enhance',   cost: (currentLimits as any).aiEnhanceCost ?? 25 },
                   ].map(({ label, cost }) => (
                     <div key={label} className="flex justify-between items-center py-0.5">
-                      <span className="text-[12px] text-white/35">{label}</span>
-                      <span className={cn("text-[12px] font-semibold", cost === 0 ? 'text-green-400' : 'text-white/55')}>
+                      <span className="text-[12px]" style={{ color: 'var(--text-tertiary)' }}>{label}</span>
+                      <span className="text-[12px] font-semibold" style={{ color: cost === 0 ? '#16a34a' : 'var(--text-secondary)' }}>
                         {cost === 0 ? 'Free' : `${cost.toLocaleString()}`}
                       </span>
                     </div>
@@ -920,19 +924,17 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
             {isHeadAdmin && (
               <button
                 onClick={() => setShowAdmin(!showAdmin)}
-                className={cn(
-                  "flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[12px] font-semibold transition-all",
-                  showAdmin
-                    ? "bg-[#D97757] text-white"
-                    : "bg-white/[0.04] border border-white/[0.07] text-white/40 hover:text-white/70 hover:border-white/[0.12]"
-                )}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[12px] font-semibold transition-all"
+                style={showAdmin
+                  ? { background: 'var(--accent)', color: 'var(--text-on-accent)' }
+                  : { background: 'var(--bg-secondary)', border: '1px solid var(--border-default)', color: 'var(--text-tertiary)' }}
               >
                 <Shield size={12} />
                 <span className="hidden md:inline">Admin</span>
               </button>
             )}
 
-            <button onClick={() => auth.signOut()} className="p-2 text-white/25 hover:text-white/60 hover:bg-white/[0.05] rounded-lg transition-all" title="Sign out">
+            <button onClick={() => auth.signOut()} className="p-2 rounded-lg transition-all" style={{ color: 'var(--text-tertiary)' }} title="Sign out">
               <LogOut size={14} />
             </button>
           </div>
@@ -1168,7 +1170,7 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
             >
-              <Settings onRedeem={() => setShowRedeemModal(true)} />
+              <Settings onRedeem={() => setShowRedeemModal(true)} accent={accent} onSetAccent={onSetAccent} onToggleTheme={onToggleTheme} theme={theme} />
             </motion.div>
           ) : activeView === 'support' ? (
             <motion.div
