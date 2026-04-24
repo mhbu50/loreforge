@@ -32,9 +32,12 @@ export interface AISettings {
   };
   /** Allow ultimate users to pick their own provider in Account settings */
   allowUltimateChoice: boolean;
-  /** Stability AI key for image generation (optional) */
-  imageApiKey: string;
+  /** Image generation settings */
+  imageApiKey: string;   // Stability AI key (legacy + current)
   imageModel: string;
+  imageProvider: string; // which image provider to use
+  imageFalKey: string;   // Fal.ai key
+  imageIdeogramKey: string; // Ideogram key
 }
 
 /** What a resolved provider looks like — passed to all generate methods */
@@ -63,12 +66,19 @@ export const PROVIDER_MODELS: Record<string, { id: string; name: string; free?: 
     { id: 'mistralai/mistral-large',                       name: 'Mistral Large (Paid)' },
   ],
   gemini: [
-    { id: 'gemini-2.0-flash-lite',  name: 'Gemini 2.0 Flash Lite (Free)', free: true },
-    { id: 'gemini-2.0-flash',       name: 'Gemini 2.0 Flash',             free: true },
-    { id: 'gemini-1.5-flash',       name: 'Gemini 1.5 Flash (Free)',      free: true },
-    { id: 'gemini-1.5-flash-8b',    name: 'Gemini 1.5 Flash-8B (Free)',   free: true },
-    { id: 'gemini-1.5-pro',         name: 'Gemini 1.5 Pro' },
-    { id: 'gemini-2.0-pro-exp',     name: 'Gemini 2.0 Pro (Exp)' },
+    { id: 'gemini-2.5-pro-preview-05-06',  name: 'Gemini 2.5 Pro',                free: false },
+    { id: 'gemini-2.5-flash-preview-04-17',name: 'Gemini 2.5 Flash',              free: true },
+    { id: 'gemini-2.0-flash',              name: 'Gemini 2.0 Flash (Free)',        free: true },
+    { id: 'gemini-2.0-flash-lite',         name: 'Gemini 2.0 Flash Lite (Free)',   free: true },
+    { id: 'gemini-2.0-flash-thinking-exp', name: 'Gemini 2.0 Flash Thinking (Exp)',free: true },
+    { id: 'gemini-2.0-pro-exp',            name: 'Gemini 2.0 Pro (Exp)',           free: true },
+    { id: 'gemini-1.5-pro',                name: 'Gemini 1.5 Pro',                 free: false },
+    { id: 'gemini-1.5-flash',              name: 'Gemini 1.5 Flash (Free)',        free: true },
+    { id: 'gemini-1.5-flash-8b',           name: 'Gemini 1.5 Flash-8B (Free)',     free: true },
+    { id: 'gemma-3-27b-it',                name: 'Gemma 3 27B (Free)',             free: true },
+    { id: 'gemma-3-12b-it',                name: 'Gemma 3 12B (Free)',             free: true },
+    { id: 'gemma-3-4b-it',                 name: 'Gemma 3 4B (Free)',              free: true },
+    { id: 'gemma-3n-e4b-it',               name: 'Gemma 3n E4B — Nano (Free)',     free: true },
   ],
   groq: [
     { id: 'llama-3.3-70b-versatile',     name: 'Llama 3.3 70B (Free)',    free: true },
@@ -100,11 +110,98 @@ export const PROVIDER_MODELS: Record<string, { id: string; name: string; free?: 
 
 export const PROVIDER_INFO: Record<string, { label: string; icon: string; isFree?: boolean; keyHint: string; keyUrl: string }> = {
   openrouter: { label: 'OpenRouter',   icon: '🔀', isFree: true,  keyHint: 'sk-or-v1-...',   keyUrl: 'https://openrouter.ai/keys' },
-  gemini:     { label: 'Google Gemini',icon: '✦',  isFree: true,  keyHint: 'AIza...',         keyUrl: 'https://aistudio.google.com/app/apikey' },
+  gemini:     { label: 'Google AI',    icon: '✦',  isFree: true,  keyHint: 'AIza...',         keyUrl: 'https://aistudio.google.com/app/apikey' },
   groq:       { label: 'Groq',         icon: '⚡', isFree: true,  keyHint: 'gsk_...',         keyUrl: 'https://console.groq.com/keys' },
   together:   { label: 'Together AI',  icon: '∞',  isFree: true,  keyHint: 'Enter key...',    keyUrl: 'https://api.together.ai/settings/api-keys' },
   openai:     { label: 'OpenAI',       icon: '⊛',  isFree: false, keyHint: 'sk-...',          keyUrl: 'https://platform.openai.com/api-keys' },
   anthropic:  { label: 'Anthropic',    icon: '◎',  isFree: false, keyHint: 'sk-ant-...',      keyUrl: 'https://console.anthropic.com/settings/keys' },
+};
+
+// ─── Image Generation Providers ───────────────────────────────────────────────
+
+export const IMAGE_PROVIDERS: Record<string, {
+  label: string; icon: string; isFree?: boolean;
+  keyField: 'imageApiKey' | 'imageFalKey' | 'imageIdeogramKey' | 'gemini' | 'openai' | 'together';
+  keyHint: string; keyUrl: string;
+  models: { id: string; name: string; free?: boolean }[];
+}> = {
+  stability: {
+    label: 'Stability AI', icon: '🎨', isFree: false,
+    keyField: 'imageApiKey',
+    keyHint: 'sk-...',
+    keyUrl: 'https://platform.stability.ai/account/credits',
+    models: [
+      { id: 'stable-image-core',       name: 'Stable Image Core' },
+      { id: 'stable-image-ultra',      name: 'Stable Image Ultra' },
+      { id: 'sd3.5-large',             name: 'SD 3.5 Large' },
+      { id: 'sd3.5-large-turbo',       name: 'SD 3.5 Large Turbo' },
+      { id: 'sd3.5-medium',            name: 'SD 3.5 Medium' },
+      { id: 'sd3-large',               name: 'SD 3 Large' },
+      { id: 'sd3-medium',              name: 'SD 3 Medium' },
+    ],
+  },
+  openai: {
+    label: 'OpenAI DALL-E', icon: '⊛', isFree: false,
+    keyField: 'openai',
+    keyHint: 'Uses your OpenAI key above',
+    keyUrl: 'https://platform.openai.com/api-keys',
+    models: [
+      { id: 'gpt-image-1', name: 'GPT Image 1 (Latest)' },
+      { id: 'dall-e-3',    name: 'DALL-E 3' },
+      { id: 'dall-e-2',    name: 'DALL-E 2' },
+    ],
+  },
+  google: {
+    label: 'Google Imagen', icon: '✦', isFree: false,
+    keyField: 'gemini',
+    keyHint: 'Uses your Google AI key above',
+    keyUrl: 'https://aistudio.google.com/app/apikey',
+    models: [
+      { id: 'imagen-4.0-generate-preview-05-20', name: 'Imagen 4 (Preview)' },
+      { id: 'imagen-3.0-generate-001',           name: 'Imagen 3' },
+      { id: 'imagen-3.0-fast-generate-001',      name: 'Imagen 3 Fast' },
+    ],
+  },
+  together: {
+    label: 'Together AI (FLUX)', icon: '∞', isFree: true,
+    keyField: 'together',
+    keyHint: 'Uses your Together AI key above',
+    keyUrl: 'https://api.together.ai/settings/api-keys',
+    models: [
+      { id: 'black-forest-labs/FLUX.1-schnell-Free', name: 'FLUX.1 Schnell (Free)', free: true },
+      { id: 'black-forest-labs/FLUX.1-dev',          name: 'FLUX.1 Dev' },
+      { id: 'black-forest-labs/FLUX.1-pro',          name: 'FLUX.1 Pro' },
+      { id: 'black-forest-labs/FLUX.1.1-pro',        name: 'FLUX 1.1 Pro' },
+      { id: 'stabilityai/stable-diffusion-xl-base-1.0', name: 'SDXL Base', free: true },
+    ],
+  },
+  fal: {
+    label: 'Fal.ai', icon: '⚡', isFree: true,
+    keyField: 'imageFalKey',
+    keyHint: 'fal-key-...',
+    keyUrl: 'https://fal.ai/dashboard/keys',
+    models: [
+      { id: 'fal-ai/flux/schnell',      name: 'FLUX Schnell (Fast)', free: true },
+      { id: 'fal-ai/flux/dev',          name: 'FLUX Dev' },
+      { id: 'fal-ai/flux-pro',          name: 'FLUX Pro' },
+      { id: 'fal-ai/flux-pro/v1.1',     name: 'FLUX Pro 1.1' },
+      { id: 'fal-ai/recraft-v3',        name: 'Recraft V3' },
+      { id: 'fal-ai/ideogram/v2',       name: 'Ideogram V2' },
+      { id: 'fal-ai/imagen4/preview',   name: 'Imagen 4 (via Fal)' },
+      { id: 'fal-ai/hidream-i1-full',   name: 'HiDream I1 Full' },
+    ],
+  },
+  ideogram: {
+    label: 'Ideogram', icon: '🖼', isFree: false,
+    keyField: 'imageIdeogramKey',
+    keyHint: 'Enter key...',
+    keyUrl: 'https://ideogram.ai/manage-api',
+    models: [
+      { id: 'V_2_TURBO', name: 'Ideogram 2 Turbo' },
+      { id: 'V_2',       name: 'Ideogram 2' },
+      { id: 'V_1_TURBO', name: 'Ideogram 1 Turbo' },
+    ],
+  },
 };
 
 export const DEFAULT_AI_SETTINGS: AISettings = {
@@ -118,12 +215,12 @@ export const DEFAULT_AI_SETTINGS: AISettings = {
       description: 'Unified API — access hundreds of models including many free ones. Great default choice.',
     },
     gemini: {
-      name: 'Google Gemini',
+      name: 'Google AI',
       apiKey: '',
-      model: 'gemini-2.0-flash-lite',
+      model: 'gemini-2.5-flash-preview-04-17',
       enabled: false,
       isFree: true,
-      description: 'Google AI — free tier available with Gemini Flash. Excellent for creative writing.',
+      description: 'Google AI — Gemini 2.5, Gemma 3, Nano and more. Free tier available.',
     },
     groq: {
       name: 'Groq',
@@ -166,7 +263,10 @@ export const DEFAULT_AI_SETTINGS: AISettings = {
   },
   allowUltimateChoice: true,
   imageApiKey: '',
-  imageModel: 'stable-image-core',
+  imageModel: 'black-forest-labs/FLUX.1-schnell-Free',
+  imageProvider: 'together',
+  imageFalKey: '',
+  imageIdeogramKey: '',
 };
 
 // ─── Resolve which provider to use for a user ─────────────────────────────────
@@ -373,28 +473,115 @@ export class AIService {
   // ─── Image Generation ───────────────────────────────────────────────────────
 
   static async generateImage(prompt: string, settings: AISettings): Promise<string> {
-    if (!settings.imageApiKey?.trim()) {
-      throw new Error('Image generation requires a Stability AI key. Add it in Admin → AI → Image Generation.');
+    const provider = settings.imageProvider || 'stability';
+    const model = settings.imageModel || '';
+
+    // ── Stability AI ──────────────────────────────────────────────────────────
+    if (provider === 'stability') {
+      if (!settings.imageApiKey?.trim()) throw new Error('Add your Stability AI key in Admin → AI → Image Generation.');
+      const endpoint = model.startsWith('sd3') || model.startsWith('stable-image-ultra')
+        ? `https://api.stability.ai/v2beta/stable-image/generate/${model.startsWith('sd3') ? 'sd3' : 'ultra'}`
+        : 'https://api.stability.ai/v2beta/stable-image/generate/core';
+      const formData = new FormData();
+      formData.append('prompt', prompt.slice(0, 10000));
+      formData.append('output_format', 'jpeg');
+      if (model.startsWith('sd3')) formData.append('model', model);
+      const resp = await fetch(endpoint, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${settings.imageApiKey}`, Accept: 'image/*' },
+        body: formData,
+      });
+      if (!resp.ok) throw new Error(`Stability AI ${resp.status}: ${(await resp.text().catch(() => '')).slice(0, 200)}`);
+      const blob = await resp.blob();
+      return new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result as string); r.onerror = rej; r.readAsDataURL(blob); });
     }
-    const formData = new FormData();
-    formData.append('prompt', prompt.slice(0, 10000));
-    formData.append('output_format', 'jpeg');
-    const resp = await fetch('https://api.stability.ai/v2beta/stable-image/generate/core', {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${settings.imageApiKey}`, 'Accept': 'image/*' },
-      body: formData,
-    });
-    if (!resp.ok) {
-      const errText = await resp.text().catch(() => '');
-      throw new Error(`Stability AI error ${resp.status}: ${errText.slice(0, 200)}`);
+
+    // ── OpenAI DALL-E / GPT-Image ─────────────────────────────────────────────
+    if (provider === 'openai') {
+      const key = settings.providers.openai?.apiKey?.trim();
+      if (!key) throw new Error('Add your OpenAI key in Admin → AI → OpenAI.');
+      const body: Record<string, unknown> = { model: model || 'dall-e-3', prompt: prompt.slice(0, 4000), n: 1, response_format: 'b64_json' };
+      if (model !== 'dall-e-2') body.size = '1024x1024';
+      const resp = await fetch('https://api.openai.com/v1/images/generations', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      if (!resp.ok) throw new Error(`OpenAI image ${resp.status}: ${(await resp.text().catch(() => '')).slice(0, 200)}`);
+      const data = await resp.json();
+      return `data:image/png;base64,${data.data[0].b64_json}`;
     }
-    const blob = await resp.blob();
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = reject;
-      reader.readAsDataURL(blob);
-    });
+
+    // ── Google Imagen ─────────────────────────────────────────────────────────
+    if (provider === 'google') {
+      const key = settings.providers.gemini?.apiKey?.trim();
+      if (!key) throw new Error('Add your Google AI key in Admin → AI → Google AI.');
+      const imgModel = model || 'imagen-3.0-generate-001';
+      const resp = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${imgModel}:predict?key=${key}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ instances: [{ prompt: prompt.slice(0, 2000) }], parameters: { sampleCount: 1, outputMimeType: 'image/jpeg' } }),
+        }
+      );
+      if (!resp.ok) throw new Error(`Google Imagen ${resp.status}: ${(await resp.text().catch(() => '')).slice(0, 200)}`);
+      const data = await resp.json();
+      const b64 = data.predictions?.[0]?.bytesBase64Encoded;
+      if (!b64) throw new Error('Google Imagen returned no image.');
+      return `data:image/jpeg;base64,${b64}`;
+    }
+
+    // ── Together AI (FLUX) ────────────────────────────────────────────────────
+    if (provider === 'together') {
+      const key = settings.providers.together?.apiKey?.trim();
+      if (!key) throw new Error('Add your Together AI key in Admin → AI → Together AI.');
+      const resp = await fetch('https://api.together.xyz/v1/images/generations', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model: model || 'black-forest-labs/FLUX.1-schnell-Free', prompt: prompt.slice(0, 2000), n: 1, width: 1024, height: 1024, response_format: 'b64_json' }),
+      });
+      if (!resp.ok) throw new Error(`Together AI image ${resp.status}: ${(await resp.text().catch(() => '')).slice(0, 200)}`);
+      const data = await resp.json();
+      const b64 = data.data?.[0]?.b64_json;
+      if (!b64) throw new Error('Together AI returned no image.');
+      return `data:image/jpeg;base64,${b64}`;
+    }
+
+    // ── Fal.ai ────────────────────────────────────────────────────────────────
+    if (provider === 'fal') {
+      const key = settings.imageFalKey?.trim();
+      if (!key) throw new Error('Add your Fal.ai key in Admin → AI → Image Generation.');
+      const falModel = model || 'fal-ai/flux/schnell';
+      const resp = await fetch(`https://fal.run/${falModel}`, {
+        method: 'POST',
+        headers: { Authorization: `Key ${key}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: prompt.slice(0, 2000), image_size: 'landscape_4_3', num_images: 1 }),
+      });
+      if (!resp.ok) throw new Error(`Fal.ai ${resp.status}: ${(await resp.text().catch(() => '')).slice(0, 200)}`);
+      const data = await resp.json();
+      const url = data.images?.[0]?.url;
+      if (!url) throw new Error('Fal.ai returned no image.');
+      return url;
+    }
+
+    // ── Ideogram ──────────────────────────────────────────────────────────────
+    if (provider === 'ideogram') {
+      const key = settings.imageIdeogramKey?.trim();
+      if (!key) throw new Error('Add your Ideogram key in Admin → AI → Image Generation.');
+      const resp = await fetch('https://api.ideogram.ai/generate', {
+        method: 'POST',
+        headers: { 'Api-Key': key, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image_request: { prompt: prompt.slice(0, 2000), model: model || 'V_2_TURBO', aspect_ratio: 'ASPECT_4_3', magic_prompt_option: 'AUTO' } }),
+      });
+      if (!resp.ok) throw new Error(`Ideogram ${resp.status}: ${(await resp.text().catch(() => '')).slice(0, 200)}`);
+      const data = await resp.json();
+      const url = data.data?.[0]?.url;
+      if (!url) throw new Error('Ideogram returned no image.');
+      return url;
+    }
+
+    throw new Error(`Unknown image provider: ${provider}. Configure it in Admin → AI → Image Generation.`);
   }
 
   // ─── Image prompt helper ───────────────────────────────────────────────────

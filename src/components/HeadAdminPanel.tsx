@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Shield, User, Star, Trash2, Search, CheckCircle, XCircle, Settings, BookOpen, Zap, AlertTriangle, Bug, MessageSquare, Clock, Crown, Send, Sparkles, Code, Terminal, Bot, Activity, Database, Cpu, ShieldCheck, RefreshCw, Wand2, Plus, FileText, Brain, Key, Eye, EyeOff, ToggleLeft, ToggleRight, ChevronDown, Save, Image as ImageIconLucide } from 'lucide-react';
-import { AIService, AISettings, DEFAULT_AI_SETTINGS, PROVIDER_MODELS, PROVIDER_INFO } from '../services/AIService';
+import { AIService, AISettings, DEFAULT_AI_SETTINGS, PROVIDER_MODELS, PROVIDER_INFO, IMAGE_PROVIDERS } from '../services/AIService';
 import { PhotoPickerService, PhotoServiceSettings, DEFAULT_PHOTO_SETTINGS } from '../services/PhotoPickerService';
 import { db, auth } from '../firebase';
 import { sendPasswordResetEmail } from 'firebase/auth';
@@ -1736,43 +1736,102 @@ export default function HeadAdminPanel() {
           </div>
 
           {/* Image Generation */}
-          <div className="bg-[#111] border border-white/[0.07] rounded-2xl p-6 space-y-4">
+          <div className="bg-[#111] border border-white/[0.07] rounded-2xl p-6 space-y-5">
             <div>
-              <h4 className="text-sm font-bold text-white/90">🖼️ Image Generation — Stability AI (Optional)</h4>
-              <p className="text-xs text-white/35 mt-0.5">
-                Without a key, story scripts still work — illustrations are skipped.
-                Get a key at <a href="https://platform.stability.ai" target="_blank" rel="noreferrer" className="text-[#D97757] hover:underline">platform.stability.ai</a>.
-              </p>
+              <h4 className="text-sm font-semibold text-white/90">🖼️ Image Generation</h4>
+              <p className="text-xs text-white/35 mt-0.5">Choose a provider. Without a key illustrations are skipped — the text story still generates.</p>
             </div>
-            <div className="relative">
-              <input
-                type={showApiKey === 'image' ? 'text' : 'password'}
-                value={aiSettings.imageApiKey}
-                onChange={e => setAiSettings(prev => ({ ...prev, imageApiKey: e.target.value }))}
-                placeholder="sk-..."
-                className="w-full bg-white/[0.05] border border-white/[0.09] rounded-xl px-4 py-3 pr-12 text-sm text-white/80 outline-none focus:border-[#D97757]/40 font-mono"
-              />
-              <button
-                onClick={() => setShowApiKey(prev => prev === 'image' ? null : 'image')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors"
-              >
-                {showApiKey === 'image' ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
-            </div>
-            {aiSettings.imageApiKey && <p className="text-[10px] text-green-400 flex items-center gap-1"><CheckCircle size={10} /> Key stored ({aiSettings.imageApiKey.length} chars)</p>}
+
+            {/* Provider picker */}
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold uppercase tracking-widest text-white/30">Image Model</label>
-              <select
-                value={aiSettings.imageModel}
-                onChange={e => setAiSettings(prev => ({ ...prev, imageModel: e.target.value }))}
-                className="w-full bg-white/[0.05] border border-white/[0.09] rounded-xl px-3 py-2 text-xs text-white/80 outline-none focus:border-[#D97757]/40"
-              >
-                <option value="stable-image-core" className="bg-[#111] text-white">Stable Image Core (Fast, High Quality)</option>
-                <option value="stable-image-ultra" className="bg-[#111] text-white">Stable Image Ultra (Best Quality)</option>
-                <option value="sd3-medium" className="bg-[#111] text-white">SD3 Medium</option>
-                <option value="sd3-large" className="bg-[#111] text-white">SD3 Large</option>
-              </select>
+              <label className="text-[10px] font-bold uppercase tracking-widest text-white/30">Image Provider</label>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                {Object.entries(IMAGE_PROVIDERS).map(([key, info]) => (
+                  <button
+                    key={key}
+                    onClick={() => setAiSettings(prev => ({
+                      ...prev,
+                      imageProvider: key,
+                      imageModel: info.models[0]?.id ?? '',
+                    }))}
+                    className={cn(
+                      'flex items-center gap-2 px-3 py-2.5 rounded-xl border text-xs font-medium transition-all text-left',
+                      (aiSettings.imageProvider || 'stability') === key
+                        ? 'bg-[#D97757]/10 border-[#D97757]/40 text-[#D97757]'
+                        : 'bg-white/[0.03] border-white/[0.07] text-white/50 hover:border-white/20 hover:text-white/80'
+                    )}
+                  >
+                    <span className="text-base">{info.icon}</span>
+                    <span>{info.label}</span>
+                    {info.isFree && <span className="ml-auto text-[9px] text-green-400 font-bold">FREE</span>}
+                  </button>
+                ))}
+              </div>
             </div>
+
+            {/* Model picker for selected provider */}
+            {(() => {
+              const provKey = aiSettings.imageProvider || 'stability';
+              const prov = IMAGE_PROVIDERS[provKey];
+              if (!prov) return null;
+              return (
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-white/30">Model</label>
+                  <select
+                    value={aiSettings.imageModel}
+                    onChange={e => setAiSettings(prev => ({ ...prev, imageModel: e.target.value }))}
+                    className="w-full bg-white/[0.05] border border-white/[0.09] rounded-xl px-3 py-2.5 text-xs text-white/80 outline-none focus:border-[#D97757]/40"
+                  >
+                    {prov.models.map(m => (
+                      <option key={m.id} value={m.id} className="bg-[#111] text-white">
+                        {m.name}{m.free ? ' — Free' : ''}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              );
+            })()}
+
+            {/* API key input — only shown for providers that need a dedicated key */}
+            {(() => {
+              const provKey = aiSettings.imageProvider || 'stability';
+              const prov = IMAGE_PROVIDERS[provKey];
+              if (!prov || prov.keyField === 'gemini' || prov.keyField === 'openai' || prov.keyField === 'together') {
+                return (
+                  <p className="text-[11px] text-white/35 bg-white/[0.03] rounded-xl px-4 py-3 border border-white/[0.06]">
+                    Uses your <span className="text-white/60 font-medium">{prov?.label}</span> key set in the provider section above.
+                  </p>
+                );
+              }
+              const keyField = prov.keyField as 'imageApiKey' | 'imageFalKey' | 'imageIdeogramKey';
+              const currentKey = (aiSettings as any)[keyField] ?? '';
+              return (
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-white/30">
+                    {prov.label} API Key
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showApiKey === `img-${keyField}` ? 'text' : 'password'}
+                      value={currentKey}
+                      onChange={e => setAiSettings(prev => ({ ...prev, [keyField]: e.target.value }))}
+                      placeholder={prov.keyHint}
+                      className="w-full bg-white/[0.05] border border-white/[0.09] rounded-xl px-4 py-3 pr-12 text-sm text-white/80 outline-none focus:border-[#D97757]/40 font-mono"
+                    />
+                    <button
+                      onClick={() => setShowApiKey(prev => prev === `img-${keyField}` ? null : `img-${keyField}`)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors"
+                    >
+                      {showApiKey === `img-${keyField}` ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </button>
+                  </div>
+                  {currentKey && <p className="text-[10px] text-green-400 flex items-center gap-1"><CheckCircle size={10} /> Key stored</p>}
+                  <a href={prov.keyUrl} target="_blank" rel="noreferrer" className="text-[10px] text-[#D97757] hover:underline">
+                    Get a key at {prov.keyUrl.replace('https://', '')} →
+                  </a>
+                </div>
+              );
+            })()}
           </div>
 
           {/* Save */}
