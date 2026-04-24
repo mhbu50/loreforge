@@ -52,14 +52,13 @@ export default function Landing({ globalSettings }: LandingProps) {
         <div className="flex items-center gap-2">
           <Link
             to="/login"
-            className="hidden md:block px-4 py-2 text-[13px] font-medium rounded-lg transition-all"
-            style={{ color: 'var(--text-secondary)' }}
+            className="btn btn-ghost btn-sm"
           >
             Sign in
           </Link>
           <Link
             to="/login"
-            className="px-4 py-2 text-[13px] font-semibold rounded-lg transition-all btn-gradient-gold"
+            className="btn btn-primary btn-sm"
           >
             Get started
           </Link>
@@ -130,15 +129,14 @@ export default function Landing({ globalSettings }: LandingProps) {
               >
                 <Link
                   to="/login"
-                  className="px-6 py-3.5 font-semibold rounded-xl text-[14px] flex items-center justify-center gap-2 transition-all group btn-gradient-gold"
+                  className="btn btn-primary btn-lg"
                 >
                   <span>Start for free</span>
                   <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
                 </Link>
                 <Link
                   to="/marketplace"
-                  className="px-6 py-3.5 font-semibold rounded-xl text-[14px] flex items-center justify-center gap-2 transition-all"
-                  style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-default)', color: 'var(--text-secondary)' }}
+                  className="btn btn-secondary btn-lg"
                 >
                   <BookOpen size={16} />
                   <span>Browse stories</span>

@@ -753,9 +753,9 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
         <div className="px-3 pb-3">
           <button
             onClick={() => canCreateStory ? setShowTypeSelector(true) : setShowPricingModal(true)}
-            className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-[12px] font-semibold transition-all btn-gradient-gold"
+            className="w-full btn btn-primary btn-lg"
           >
-            <Plus size={14} />
+            <Plus size={16} />
             New story
           </button>
         </div>
@@ -819,7 +819,7 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
           {/* Theme toggle */}
           <button
             onClick={onToggleTheme}
-            className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all"
+            className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-all"
             style={{ color: 'var(--text-tertiary)' }}
           >
             <span style={{ color: 'var(--text-tertiary)' }}>{theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}</span>
@@ -829,19 +829,19 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
           {/* User profile */}
           <button
             onClick={() => setShowProfile(true)}
-            className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl transition-all group"
+            className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg transition-all hover:bg-app-raised"
           >
             <div
-              className="w-7 h-7 rounded-lg flex items-center justify-center text-[11px] font-bold flex-shrink-0"
+              className="w-7 h-7 rounded-md flex items-center justify-center text-[11px] font-bold flex-shrink-0"
               style={{ backgroundColor: userProfile?.avatarColor || 'var(--accent)', color: 'var(--text-on-accent)' }}
             >
               {userProfile?.avatarEmoji || userProfile?.displayName?.[0]?.toUpperCase() || 'U'}
             </div>
             <div className="flex-1 min-w-0 text-left">
-              <p className="text-[13px] font-medium truncate leading-tight" style={{ color: 'var(--text-primary)' }}>{userProfile?.displayName}</p>
-              <p className="text-[11px] capitalize" style={{ color: 'var(--text-tertiary)' }}>{userProfile?.subscriptionTier || 'free'}</p>
+              <p className="text-sm font-medium truncate leading-tight text-app">{userProfile?.displayName}</p>
+              <p className="text-xs capitalize text-app-subtle">{userProfile?.subscriptionTier || 'free'}</p>
             </div>
-            <ChevronRight size={11} className="flex-shrink-0" style={{ color: 'var(--text-tertiary)' }} />
+            <ChevronRight size={14} className="flex-shrink-0 text-app-subtle" />
           </button>
         </div>
 
@@ -862,10 +862,10 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
           style={{ borderBottom: '1px solid var(--border-light)', background: 'var(--bg-primary)', backdropFilter: 'blur(16px)', opacity: 0.97 }}
         >
           {/* Left: current view label */}
-          <div className="flex items-center gap-2">
-            <span className="text-[13px] font-medium" style={{ color: 'var(--text-tertiary)' }}>{appName}</span>
-            <span className="text-[13px]" style={{ color: 'var(--border-strong)' }}>/</span>
-            <span className="text-[13px] font-semibold capitalize" style={{ color: 'var(--text-primary)' }}>{activeView.replace('-', ' ')}</span>
+          <div className="flex items-center gap-3">
+            <span className="text-xs font-medium text-app-subtle">{appName}</span>
+            <span className="text-xs text-app-subtle">/</span>
+            <span className="text-xs font-semibold capitalize text-app">{activeView.replace('-', ' ')}</span>
           </div>
 
           {/* Right: actions */}
@@ -990,7 +990,7 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
                 <button
                   key={item.label}
                   onClick={() => { setShowSupportMenu(false); setActiveView('support'); }}
-                  className="flex items-center gap-2.5 px-4 py-2.5 bg-[#1e1e1e] border border-white/[0.09] text-white/60 hover:text-white/90 hover:bg-[#252525] rounded-xl shadow-xl text-[13px] font-medium transition-all"
+                  className="flex items-center gap-2.5 px-4 py-2.5 rounded-lg text-sm font-medium transition-all card"
                 >
                   {item.icon}
                   {item.label}
@@ -1002,10 +1002,10 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
         <button
           onClick={() => setShowSupportMenu(!showSupportMenu)}
           className={cn(
-            "w-11 h-11 rounded-xl flex items-center justify-center shadow-xl transition-all hover:scale-105 active:scale-95 border",
+            "w-11 h-11 rounded-lg flex items-center justify-center shadow-lg transition-all hover:scale-105 active:scale-95 border btn",
             showSupportMenu
-              ? "bg-[#1e1e1e] text-white/60 border-white/[0.09]"
-              : "bg-[#D97757] text-white border-[#D97757] shadow-[#D97757]/20"
+              ? "btn-secondary"
+              : "btn-primary"
           )}
         >
           {showSupportMenu ? <X size={16} /> : <LifeBuoy size={16} />}
@@ -1076,19 +1076,19 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
               {/* ── Page header ── */}
               <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
                 <div>
-                  <p className="text-[11px] font-medium text-white/30 mb-1">
+                  <p className="section-subtitle">
                     {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
                   </p>
-                  <h1 className="text-[24px] font-semibold text-white tracking-tight">
+                  <h1 className="text-3xl font-serif font-light tracking-tight text-app">
                     Good {new Date().getHours() < 12 ? 'morning' : new Date().getHours() < 18 ? 'afternoon' : 'evening'},{' '}
-                    <span className="text-[#D97757]">{userProfile?.displayName?.split(' ')[0] || 'Creator'}</span>
+                    <em className="font-serif font-light italic text-accent not-italic">{userProfile?.displayName?.split(' ')[0] || 'Creator'}</em>
                   </h1>
-                  <p className="text-[13px] text-white/35 mt-1">
+                  <p className="text-sm text-app-subtle mt-2">
                     {stories.length === 0
                       ? 'Start writing your first story.'
                       : `${stories.length} stor${stories.length !== 1 ? 'ies' : 'y'} · ${stories.filter(s => s.isPublished).length} published`}
                     {(userProfile?.streak ?? 0) > 0 && (
-                      <span className="ml-3 text-orange-400">🔥 {userProfile!.streak}-day streak</span>
+                      <span className="ml-3">🔥 {userProfile!.streak}-day streak</span>
                     )}
                   </p>
                 </div>
@@ -1096,7 +1096,7 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setIsZenMode(!isZenMode)}
-                    className="flex items-center gap-1.5 px-3 py-2 bg-white/[0.04] hover:bg-white/[0.07] border border-white/[0.07] text-white/45 hover:text-white/70 rounded-lg text-[12px] font-medium transition-all"
+                    className="btn btn-secondary btn-sm"
                   >
                     <Eye size={13} /> Zen mode
                   </button>
@@ -1134,17 +1134,17 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
             >
               <div className="flex items-center justify-between mb-7">
                 <div>
-                  <h1 className="text-[22px] font-semibold text-white tracking-tight">Workspace</h1>
-                  <p className="text-[13px] text-white/35 mt-0.5">Multi-tab editor for your projects.</p>
+                  <h1 className="text-2xl font-serif font-normal tracking-tight text-app">Workspace</h1>
+                  <p className="text-sm text-app-subtle mt-1">Multi-tab editor for your projects.</p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/[0.04] border border-white/[0.07] rounded-lg text-[11px] text-white/30">
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs badge-secondary">
                     <Command size={11} />
                     <span>+P</span>
                   </div>
                   <button
                     onClick={() => setIsZenMode(true)}
-                    className="p-2 bg-white/[0.04] border border-white/[0.07] hover:bg-white/[0.07] rounded-lg text-white/35 hover:text-white/65 transition-all"
+                    className="btn btn-ghost p-2"
                   >
                     <Eye size={15} />
                   </button>
@@ -1211,46 +1211,41 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
               className="h-full overflow-y-auto"
             >
               <header className="mb-8">
-                <h1 className="text-[22px] font-semibold text-white tracking-tight">Publish</h1>
-                <p className="text-[13px] text-white/35 mt-0.5">Share your stories with the world.</p>
+                <h1 className="text-[22px] font-semibold tracking-tight" style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-serif)', fontWeight: 600 }}>Publish</h1>
+                <p className="text-[13px] mt-0.5" style={{ color: 'var(--text-tertiary)' }}>Share your stories with the world.</p>
               </header>
 
               {isHeadAdmin && (
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="bg-[#1e1e1e] border border-white/[0.07] rounded-2xl p-6 shadow-xl relative overflow-hidden group cursor-pointer mb-6"
+                  className="rounded-2xl p-6 shadow-xl relative overflow-hidden group cursor-pointer mb-6"
+                  style={{ background: 'var(--bg-card)', border: '1px solid var(--border-light)', boxShadow: 'var(--shadow-card)' }}
                   onClick={() => setShowAdmin(true)}
                 >
                   <div className="relative z-10">
                     <div className="flex items-center justify-between mb-5">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-[#D97757]/10 rounded-xl flex items-center justify-center text-[#D97757] border border-[#D97757]/15">
+                        <div className="w-10 h-10 rounded-xl flex items-center justify-center border" style={{ background: 'var(--accent-bg)', color: 'var(--accent)', borderColor: 'var(--accent-ring)' }}>
                           <Bot size={20} />
                         </div>
                         <div>
-                          <h3 className="text-[15px] font-semibold text-white">App Architect</h3>
+                          <h3 className="text-[15px] font-semibold" style={{ color: 'var(--text-primary)' }}>App Architect</h3>
                           <div className="flex items-center gap-1.5">
                             <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-                            <span className="text-[11px] text-white/35">Active & Monitoring</span>
+                            <span className="text-[11px]" style={{ color: 'var(--text-tertiary)' }}>Active & Monitoring</span>
                           </div>
                         </div>
                       </div>
-                      <span className="text-[11px] text-[#D97757] font-medium">Open console →</span>
+                      <span className="text-[11px] font-medium" style={{ color: 'var(--accent)' }}>Open console →</span>
                     </div>
                     <div className="grid grid-cols-3 gap-3">
-                      <div className="p-3 bg-white/[0.04] rounded-xl border border-white/[0.06]">
-                        <div className="text-[10px] text-white/30 mb-1">System Health</div>
-                        <div className="text-base font-semibold text-[#D97757]">98%</div>
-                      </div>
-                      <div className="p-3 bg-white/[0.04] rounded-xl border border-white/[0.06]">
-                        <div className="text-[10px] text-white/30 mb-1">Latency</div>
-                        <div className="text-base font-semibold text-[#D97757]">1.2s</div>
-                      </div>
-                      <div className="p-3 bg-white/[0.04] rounded-xl border border-white/[0.06]">
-                        <div className="text-[10px] text-white/30 mb-1">Active Tools</div>
-                        <div className="text-base font-semibold text-[#D97757]">8</div>
-                      </div>
+                      {[{ label: 'System Health', val: '98%' }, { label: 'Latency', val: '1.2s' }, { label: 'Active Tools', val: '8' }].map(m => (
+                        <div key={m.label} className="p-3 rounded-xl" style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-light)' }}>
+                          <div className="text-[10px] mb-1" style={{ color: 'var(--text-tertiary)' }}>{m.label}</div>
+                          <div className="text-base font-semibold" style={{ color: 'var(--accent)' }}>{m.val}</div>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </motion.div>
@@ -1266,13 +1261,16 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
                 ].map(option => (
                   <button
                     key={option.id}
-                    className="group p-6 bg-[#1e1e1e] border border-white/[0.07] rounded-2xl text-left hover:border-[#D97757]/20 hover:bg-[#232323] transition-all"
+                    className="group p-6 rounded-2xl text-left transition-all"
+                    style={{ background: 'var(--bg-card)', border: '1px solid var(--border-light)', boxShadow: 'var(--shadow-xs)' }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-sm)'; (e.currentTarget as HTMLElement).style.borderColor = 'var(--accent-ring)'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-xs)'; (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-light)'; }}
                   >
-                    <div className="w-11 h-11 bg-[#D97757]/10 border border-[#D97757]/15 rounded-xl flex items-center justify-center text-[#D97757] mb-5 group-hover:scale-105 transition-transform">
+                    <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-5 group-hover:scale-105 transition-transform" style={{ background: 'var(--accent-bg)', border: '1px solid var(--accent-ring)', color: 'var(--accent)' }}>
                       {option.icon}
                     </div>
-                    <h3 className="text-[15px] font-semibold text-white/90 mb-1.5">{option.title}</h3>
-                    <p className="text-xs text-white/35 leading-relaxed">{option.desc}</p>
+                    <h3 className="text-[15px] font-semibold mb-1.5" style={{ color: 'var(--text-primary)' }}>{option.title}</h3>
+                    <p className="text-xs leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>{option.desc}</p>
                   </button>
                 ))}
               </div>
@@ -1289,7 +1287,8 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[200] bg-[#111] flex flex-col items-center justify-center p-12 text-center"
+            className="fixed inset-0 z-[200] flex flex-col items-center justify-center p-12 text-center"
+            style={{ background: 'var(--bg-primary)' }}
           >
             <motion.div
               initial={{ scale: 0.96, opacity: 0 }}
@@ -1297,20 +1296,20 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
               transition={{ delay: 0.15 }}
               className="relative z-10 flex flex-col items-center gap-5 text-center"
             >
-              <div className="w-12 h-12 bg-[#D97757]/10 border border-[#D97757]/20 rounded-2xl flex items-center justify-center text-[#D97757]">
+              <div className="w-12 h-12 rounded-2xl flex items-center justify-center" style={{ background: 'var(--accent-bg)', border: '1px solid var(--accent-ring)', color: 'var(--accent)' }}>
                 <Eye size={22} />
               </div>
               <div>
-                <h2 className="text-[22px] font-semibold text-white mb-1.5">Zen mode</h2>
-                <p className="text-[13px] text-white/35 max-w-xs leading-relaxed">Distractions hidden. Focus on what matters — your story.</p>
+                <h2 className="text-[22px] font-semibold mb-1.5" style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-serif)' }}>Zen mode</h2>
+                <p className="text-[13px] max-w-xs leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>Distractions hidden. Focus on what matters — your story.</p>
               </div>
               <button
                 onClick={() => setIsZenMode(false)}
-                className="px-7 py-3 bg-[#D97757] hover:bg-[#C86A48] text-white rounded-xl font-semibold text-[14px] transition-colors shadow-lg shadow-[#D97757]/20"
+                className="px-7 py-3 btn-gradient-gold rounded-xl font-semibold text-[14px] transition-all"
               >
                 Exit zen mode
               </button>
-              <div className="flex items-center gap-5 text-[11px] text-white/20 mt-1">
+              <div className="flex items-center gap-5 text-[11px] mt-1" style={{ color: 'var(--text-tertiary)' }}>
                 <span className="flex items-center gap-1.5"><Command size={10} /> +P</span>
                 <span className="flex items-center gap-1.5"><Zap size={10} /> Auto-save</span>
               </div>
@@ -1319,15 +1318,15 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
         )}
       </AnimatePresence>
 
-      <footer className="py-6 border-t border-white/[0.05]">
+      <footer className="py-6" style={{ borderTop: '1px solid var(--border-light)' }}>
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-5 h-5 bg-[#D97757] rounded-md flex items-center justify-center">
-              <Sparkles size={11} className="text-white" />
+            <div className="w-5 h-5 rounded-md flex items-center justify-center" style={{ background: 'var(--accent)' }}>
+              <Sparkles size={11} style={{ color: 'var(--text-on-accent)' }} />
             </div>
-            <span className="text-[12px] font-medium text-white/30">{appName}</span>
+            <span className="text-[12px] font-medium" style={{ color: 'var(--text-tertiary)' }}>{appName}</span>
           </div>
-          <p className="text-[11px] text-white/15">&copy; 2026 {appName}</p>
+          <p className="text-[11px]" style={{ color: 'var(--text-tertiary)', opacity: 0.6 }}>&copy; 2026 {appName}</p>
         </div>
       </footer>
 
@@ -1344,14 +1343,15 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
               initial={{ opacity: 0, scale: 0.96, y: 12 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.96, y: 12 }}
-              className="relative w-full max-w-sm bg-[#1e1e1e] border border-white/[0.09] rounded-2xl p-6 shadow-2xl"
+              className="relative w-full max-w-sm rounded-2xl p-6 shadow-2xl"
+              style={{ background: 'var(--bg-card)', border: '1px solid var(--border-default)', boxShadow: 'var(--shadow-xl)' }}
             >
               <div className="flex items-center justify-between mb-5">
                 <div>
-                  <h3 className="text-[17px] font-semibold text-white">Add collaborator</h3>
-                  <p className="text-[12px] text-white/35 mt-0.5">Invite someone to edit this story</p>
+                  <h3 className="text-[17px] font-semibold" style={{ color: 'var(--text-primary)' }}>Add collaborator</h3>
+                  <p className="text-[12px] mt-0.5" style={{ color: 'var(--text-tertiary)' }}>Invite someone to edit this story</p>
                 </div>
-                <button onClick={() => setPartnerModal({ show: false, story: null })} className="p-1.5 hover:bg-white/[0.06] rounded-lg transition-all text-white/35 hover:text-white/65">
+                <button onClick={() => setPartnerModal({ show: false, story: null })} className="p-1.5 rounded-lg transition-all" style={{ color: 'var(--text-tertiary)' }}>
                   <X size={16} />
                 </button>
               </div>
@@ -1362,14 +1362,17 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
                   value={partnerEmail}
                   onChange={(e) => setPartnerEmail(e.target.value)}
                   placeholder="partner@example.com"
-                  className="w-full bg-[#252525] border border-white/[0.08] focus:border-[#D97757]/40 rounded-xl px-4 py-3 text-[14px] text-white/80 placeholder:text-white/20 outline-none transition-all"
+                  className="w-full rounded-xl px-4 py-3 text-[14px] outline-none transition-all"
+                  style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-light)', color: 'var(--text-primary)' }}
+                  onFocus={e => (e.target.style.borderColor = 'var(--accent)')}
+                  onBlur={e => (e.target.style.borderColor = 'var(--border-light)')}
                 />
               </div>
 
               <button
                 onClick={handleAddPartner}
                 disabled={isAddingPartner || !partnerEmail.trim()}
-                className="w-full py-2.5 bg-[#D97757] hover:bg-[#C86A48] text-white rounded-xl font-semibold text-[14px] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                className="w-full py-2.5 btn-gradient-gold rounded-xl font-semibold text-[14px] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 {isAddingPartner ? (
                   <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -1395,18 +1398,19 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="relative w-full max-w-5xl bg-[#1a1a1a] border border-white/[0.08] rounded-2xl shadow-2xl overflow-hidden flex flex-col lg:flex-row max-h-[90vh] overflow-y-auto"
+              className="relative w-full max-w-5xl rounded-2xl shadow-2xl overflow-hidden flex flex-col lg:flex-row max-h-[90vh] overflow-y-auto"
+              style={{ background: 'var(--bg-card)', border: '1px solid var(--border-default)', boxShadow: 'var(--shadow-xl)' }}
             >
               {/* Left Side: Benefits */}
-              <div className="lg:w-1/3 bg-[#141414] border-r border-white/[0.06] p-8 flex flex-col justify-between">
+              <div className="lg:w-1/3 p-8 flex flex-col justify-between" style={{ background: 'var(--bg-secondary)', borderRight: '1px solid var(--border-light)' }}>
                 <div>
                   <div className="flex items-center gap-3 mb-6">
-                    <div className="w-9 h-9 bg-[#D97757] rounded-xl flex items-center justify-center text-white">
+                    <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'var(--accent)', color: 'var(--text-on-accent)' }}>
                       <Sparkles size={18} />
                     </div>
-                    <span className="text-xs font-semibold text-[#D97757] uppercase tracking-wider">{appName} Premium</span>
+                    <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--accent)' }}>{appName} Premium</span>
                   </div>
-                  <h3 className="text-[22px] font-semibold text-white mb-6 leading-tight tracking-tight">Unlock the full studio.</h3>
+                  <h3 className="text-[22px] font-semibold mb-6 leading-tight tracking-tight" style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-serif)' }}>Unlock the full studio.</h3>
                   <div className="space-y-4">
                     {[
                       "Unlimited Stories Per Month",
@@ -1419,17 +1423,17 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
                       "Priority Generation"
                     ].map((benefit, i) => (
                       <div key={i} className="flex items-center gap-3">
-                        <div className="w-4 h-4 rounded-full bg-[#D97757]/15 border border-[#D97757]/25 flex items-center justify-center text-[#D97757] flex-shrink-0">
+                        <div className="w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'var(--accent-bg)', border: '1px solid var(--accent-ring)', color: 'var(--accent)' }}>
                           <Check size={10} />
                         </div>
-                        <span className="text-sm text-white/55">{benefit}</span>
+                        <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>{benefit}</span>
                       </div>
                     ))}
                   </div>
                 </div>
-                <div className="mt-8 p-4 bg-white/[0.04] rounded-xl border border-white/[0.06]">
-                  <p className="text-[10px] text-white/30 uppercase tracking-widest mb-1">Current Plan</p>
-                  <p className="text-sm font-semibold text-[#D97757] capitalize">{userProfile?.subscriptionTier} Tier</p>
+                <div className="mt-8 p-4 rounded-xl" style={{ background: 'var(--bg-tertiary)', border: '1px solid var(--border-light)' }}>
+                  <p className="text-[10px] uppercase tracking-widest mb-1" style={{ color: 'var(--text-tertiary)' }}>Current Plan</p>
+                  <p className="text-sm font-semibold capitalize" style={{ color: 'var(--accent)' }}>{userProfile?.subscriptionTier} Tier</p>
                 </div>
               </div>
 

@@ -22,13 +22,13 @@ function Toggle({ on, onToggle }: { on: boolean; onToggle: () => void }) {
       onClick={onToggle}
       className={cn(
         "w-11 h-6 rounded-full transition-colors duration-200 relative flex-shrink-0",
-        on ? "bg-[#D97757]" : "bg-black/10"
+        on ? "bg-accent" : "bg-app-tertiary"
       )}
     >
       <motion.div
         animate={{ x: on ? 22 : 3 }}
         transition={{ type: "spring", stiffness: 600, damping: 35 }}
-        className="absolute top-[3px] w-[18px] h-[18px] bg-white rounded-full shadow-md"
+        className="absolute top-[3px] w-[18px] h-[18px] bg-app-card rounded-full shadow-md"
       />
     </button>
   );
@@ -89,10 +89,10 @@ export default function Settings({ onRedeem, accent = 'amber', onSetAccent, onTo
   const activeTab = TABS.find(t => t.id === tab)!;
 
   return (
-    <div className="flex h-full min-h-screen">
+    <div className="flex h-full min-h-screen bg-app">
       {/* ── Left Tab Rail ── */}
-      <aside className="w-56 flex-shrink-0 border-r border-black/[0.06] pt-10 pb-8 flex flex-col gap-1 px-3">
-        <p className="text-[9px] font-bold uppercase tracking-[0.25em] text-black/25 px-3 mb-3">Settings</p>
+      <aside className="w-56 flex-shrink-0 border-r border-app-light pt-10 pb-8 flex flex-col gap-1 px-3 bg-app-secondary">
+        <p className="text-xs font-bold uppercase tracking-wider text-app-subtle px-3 mb-3">Settings</p>
         {TABS.map(t => {
           const Icon = t.icon;
           const active = tab === t.id;
@@ -101,22 +101,22 @@ export default function Settings({ onRedeem, accent = 'amber', onSetAccent, onTo
               key={t.id}
               onClick={() => setTab(t.id)}
               className={cn(
-                "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all text-left group",
-                active ? "bg-[#141414] text-white shadow-md" : "text-black/40 hover:bg-black/[0.04] hover:text-black/70"
+                "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-left",
+                active ? "bg-app-card text-app shadow-sm" : "text-app-subtle hover:bg-app-tertiary hover:text-app-muted"
               )}
             >
-              <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors", active ? "bg-[#D97757]/20 text-[#D97757]" : cn(t.bg, t.color))}>
-                <Icon size={15} />
+              <div className={cn("w-8 h-8 rounded-md flex items-center justify-center flex-shrink-0 transition-colors", active ? "bg-accent-bg text-accent" : "bg-app-tertiary text-app-muted")}>
+                <Icon size={16} />
               </div>
-              <span className="text-[12px] font-semibold">{t.label}</span>
-              {active && <ChevronRight size={13} className="ml-auto text-white/30" />}
+              <span className="text-sm font-medium">{t.label}</span>
+              {active && <ChevronRight size={14} className="ml-auto text-app-subtle" />}
             </button>
           );
         })}
       </aside>
 
       {/* ── Right Content ── */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto bg-app">
         <AnimatePresence mode="wait">
           <motion.div
             key={tab}
@@ -128,12 +128,12 @@ export default function Settings({ onRedeem, accent = 'amber', onSetAccent, onTo
           >
             {/* Section header */}
             <div className="flex items-center gap-4 mb-10">
-              <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center", activeTab.bg, activeTab.color)}>
-                <activeTab.icon size={22} />
+              <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center", "bg-accent-bg text-accent")}>
+                <activeTab.icon size={20} />
               </div>
               <div>
-                <h2 className="text-3xl font-semibold">{activeTab.label}</h2>
-                <p className="text-xs text-black/35 mt-0.5 font-medium">
+                <h2 className="text-3xl font-serif font-normal text-app">{activeTab.label}</h2>
+                <p className="text-xs text-app-subtle mt-1 font-medium">
                   {tab === 'writing' && 'Focus mode, sound, and writing experience'}
                   {tab === 'security' && 'App lock and privacy controls'}
                   {tab === 'interface' && 'Theme, typography, and layout preferences'}

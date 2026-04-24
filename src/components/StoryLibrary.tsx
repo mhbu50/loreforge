@@ -28,8 +28,8 @@ export default function StoryLibrary({
       {/* ── Page Header ── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-[22px] font-semibold text-white tracking-tight">Library</h1>
-          <p className="text-[13px] text-white/35 mt-0.5">
+          <h1 className="text-2xl font-serif font-normal tracking-tight text-app">Library</h1>
+          <p className="text-sm text-app-subtle mt-1">
             {stories.length > 0
               ? `${stories.length} stor${stories.length !== 1 ? 'ies' : 'y'}`
               : 'No stories yet'}
@@ -38,14 +38,17 @@ export default function StoryLibrary({
 
         <div className="flex items-center gap-2">
           {/* Search */}
-          <div className="flex items-center gap-2 px-3 py-2 bg-white/[0.04] border border-white/[0.08] hover:border-white/[0.14] focus-within:border-[#D97757]/40 focus-within:bg-[#D97757]/[0.03] rounded-xl min-w-[200px] transition-all">
-            <Search size={13} className="text-white/25 flex-shrink-0" />
+          <div
+            className="flex items-center gap-2 px-4 py-2 rounded-lg min-w-[240px] border transition-all bg-app-card border-app-default hover:border-app-strong"
+          >
+            <Search size={14} className="flex-shrink-0 text-app-subtle" />
             <input
               type="text"
               placeholder="Search stories..."
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
-              className="flex-1 bg-transparent text-[13px] text-white/80 placeholder:text-white/20 outline-none"
+              className="flex-1 bg-transparent text-sm outline-none text-app"
+              style={{ color: 'var(--text-primary)' }}
             />
             <AnimatePresence>
               {searchTerm && (
@@ -54,36 +57,32 @@ export default function StoryLibrary({
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.8 }}
                   onClick={() => setSearchTerm('')}
-                  className="text-white/25 hover:text-white/60 transition-colors"
+                  className="text-app-subtle hover:text-app transition-colors"
                 >
-                  <X size={13} />
+                  <X size={14} />
                 </motion.button>
               )}
             </AnimatePresence>
           </div>
 
           {/* View toggle */}
-          <div className="flex items-center bg-white/[0.04] border border-white/[0.07] rounded-xl p-1 gap-0.5">
+          <div className="flex items-center p-1 rounded-lg gap-1 bg-app-secondary border border-app-light">
             <button
               onClick={() => setViewMode('grid')}
-              className={cn(
-                "p-2 rounded-lg transition-all",
-                viewMode === 'grid'
-                  ? "bg-white/[0.09] text-white"
-                  : "text-white/25 hover:text-white/55"
-              )}
+              className="p-2 rounded-md transition-all"
+              style={viewMode === 'grid'
+                ? { background: 'var(--bg-card)', color: 'var(--accent)', boxShadow: 'var(--shadow-xs)' }
+                : { color: 'var(--text-tertiary)' }}
               title="Grid view"
             >
               <LayoutGrid size={14} />
             </button>
             <button
               onClick={() => setViewMode('list')}
-              className={cn(
-                "p-2 rounded-lg transition-all",
-                viewMode === 'list'
-                  ? "bg-white/[0.09] text-white"
-                  : "text-white/25 hover:text-white/55"
-              )}
+              className="p-2 rounded-md transition-all"
+              style={viewMode === 'list'
+                ? { background: 'var(--bg-card)', color: 'var(--accent)', boxShadow: 'var(--shadow-xs)' }
+                : { color: 'var(--text-tertiary)' }}
               title="List view"
             >
               <List size={14} />
@@ -161,15 +160,20 @@ function StoryCard({ story, index, viewMode, onSelect, onEdit, onPublish, onDele
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         onClick={() => onSelect(story)}
-        className="group flex items-center gap-4 p-4 bg-[#1e1e1e] hover:bg-[#242424] border border-white/[0.06] hover:border-white/[0.12] rounded-2xl cursor-pointer transition-all"
+        className="group flex items-center gap-4 p-4 rounded-2xl cursor-pointer transition-all"
+        style={{
+          background: hovered ? 'var(--bg-secondary)' : 'var(--bg-card)',
+          border: '1px solid var(--border-light)',
+          boxShadow: hovered ? 'var(--shadow-sm)' : 'var(--shadow-card)',
+        }}
       >
         {/* Thumbnail */}
-        <div className="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 bg-[#2a2a2a]">
+        <div className="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0" style={{ background: 'var(--bg-tertiary)' }}>
           {hasCover ? (
             <img src={coverSrc} alt="" className="w-full h-full object-cover" style={imgStyle} onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} referrerPolicy="no-referrer" />
           ) : (
             <div className="w-full h-full flex items-center justify-center">
-              <Feather size={20} className="text-white/20" />
+              <Feather size={20} style={{ color: 'var(--text-tertiary)' }} />
             </div>
           )}
         </div>
@@ -177,12 +181,15 @@ function StoryCard({ story, index, viewMode, onSelect, onEdit, onPublish, onDele
         {/* Info */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <h3 className="text-[15px] font-semibold text-white/90 truncate">{story.title}</h3>
+            <h3 className="text-[15px] font-semibold truncate" style={{ color: 'var(--text-primary)' }}>{story.title}</h3>
             {story.isPublished && (
-              <span className="text-[10px] font-semibold px-2 py-0.5 bg-[#D97757]/10 text-[#D97757] border border-[#D97757]/20 rounded-full flex-shrink-0">Published</span>
+              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full flex-shrink-0"
+                style={{ background: 'var(--accent-bg)', color: 'var(--accent)', border: '1px solid var(--accent-ring)' }}>
+                Published
+              </span>
             )}
           </div>
-          <div className="flex items-center gap-3 text-[12px] text-white/30">
+          <div className="flex items-center gap-3 text-[12px]" style={{ color: 'var(--text-tertiary)' }}>
             <span className="truncate capitalize">{story.style?.replace(/-/g, ' ')}</span>
             <span>·</span>
             <span>{pageCount} page{pageCount !== 1 ? 's' : ''}</span>
@@ -201,7 +208,7 @@ function StoryCard({ story, index, viewMode, onSelect, onEdit, onPublish, onDele
           <ActionBtn icon={<Trash2 size={13} />} title="Delete" onClick={e => onDelete(story.id, e)} danger />
         </div>
 
-        <div className="text-white/20 group-hover:text-white/50 transition-colors flex-shrink-0">
+        <div className="flex-shrink-0 transition-colors" style={{ color: hovered ? 'var(--text-secondary)' : 'var(--text-tertiary)' }}>
           <BookOpen size={15} />
         </div>
       </motion.div>
@@ -218,10 +225,16 @@ function StoryCard({ story, index, viewMode, onSelect, onEdit, onPublish, onDele
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onClick={() => onSelect(story)}
-      className="group bg-[#1e1e1e] border border-white/[0.06] hover:border-white/[0.12] rounded-2xl overflow-hidden cursor-pointer transition-all hover:shadow-xl hover:shadow-black/40 flex flex-col"
+      className="group rounded-2xl overflow-hidden cursor-pointer transition-all flex flex-col"
+      style={{
+        background: 'var(--bg-card)',
+        border: '1px solid var(--border-light)',
+        boxShadow: hovered ? 'var(--shadow-card-hover)' : 'var(--shadow-card)',
+        transform: hovered ? 'translateY(-2px)' : 'translateY(0)',
+      }}
     >
       {/* Cover */}
-      <div className="relative aspect-[3/4] overflow-hidden bg-[#2a2a2a] flex-shrink-0">
+      <div className="relative aspect-[3/4] overflow-hidden flex-shrink-0" style={{ background: 'var(--bg-tertiary)' }}>
         {hasCover ? (
           <img
             src={coverSrc} alt=""
@@ -232,33 +245,33 @@ function StoryCard({ story, index, viewMode, onSelect, onEdit, onPublish, onDele
           />
         ) : (
           <div className="w-full h-full flex flex-col items-center justify-center gap-3">
-            <Feather size={32} className="text-white/[0.12]" />
-            <span className="text-[11px] text-white/20 font-medium uppercase tracking-wide">No cover</span>
+            <Feather size={32} style={{ color: 'var(--border-strong)' }} />
+            <span className="text-[11px] font-medium uppercase tracking-wide" style={{ color: 'var(--text-tertiary)' }}>No cover</span>
           </div>
         )}
 
-        {/* Overlay gradient */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#1e1e1e] via-transparent to-transparent opacity-70" />
+        {/* Soft gradient overlay */}
+        {hasCover && <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />}
 
         {/* Top badges */}
         <div className="absolute top-3 left-3 flex flex-col gap-1.5">
           {story.language && (
-            <div className="bg-black/50 backdrop-blur-sm px-2 py-1 rounded-lg flex items-center gap-1 border border-white/[0.08]">
-              <Globe size={9} className="text-white/60" />
-              <span className="text-[9px] font-semibold text-white/70 uppercase tracking-wide">{story.language}</span>
+            <div className="px-2 py-1 rounded-lg flex items-center gap-1" style={{ background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(6px)' }}>
+              <Globe size={9} className="text-white/70" />
+              <span className="text-[9px] font-semibold text-white/80 uppercase tracking-wide">{story.language}</span>
             </div>
           )}
           {story.seriesId && (
-            <div className="bg-black/50 backdrop-blur-sm px-2 py-1 rounded-lg flex items-center gap-1 border border-white/[0.08]">
-              <Layers size={9} className="text-white/60" />
-              <span className="text-[9px] font-semibold text-white/70 uppercase tracking-wide">Series</span>
+            <div className="px-2 py-1 rounded-lg flex items-center gap-1" style={{ background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(6px)' }}>
+              <Layers size={9} className="text-white/70" />
+              <span className="text-[9px] font-semibold text-white/80 uppercase tracking-wide">Series</span>
             </div>
           )}
         </div>
 
         {/* Published badge */}
         {story.isPublished && (
-          <div className="absolute top-3 right-3 bg-[#D97757] px-2 py-0.5 rounded-lg">
+          <div className="absolute top-3 right-3 px-2 py-0.5 rounded-lg" style={{ background: 'var(--accent)' }}>
             <span className="text-[9px] font-bold text-white uppercase tracking-wide">Live</span>
           </div>
         )}
@@ -269,7 +282,7 @@ function StoryCard({ story, index, viewMode, onSelect, onEdit, onPublish, onDele
           transition={{ duration: 0.18 }}
           className="absolute inset-0 flex items-center justify-center pointer-events-none"
         >
-          <div className="bg-white/10 backdrop-blur-sm border border-white/20 px-5 py-2 rounded-full flex items-center gap-2 text-[13px] font-semibold text-white shadow-xl">
+          <div className="bg-white/90 backdrop-blur-sm border border-black/10 px-5 py-2 rounded-full flex items-center gap-2 text-[13px] font-semibold shadow-xl" style={{ color: 'var(--text-primary)' }}>
             <BookOpen size={14} />
             Open
           </div>
@@ -278,20 +291,20 @@ function StoryCard({ story, index, viewMode, onSelect, onEdit, onPublish, onDele
 
       {/* Body */}
       <div className="p-4 flex flex-col gap-2 flex-1">
-        <h3 className="text-[14px] font-semibold text-white/90 line-clamp-2 leading-snug">{story.title}</h3>
+        <h3 className="text-[14px] font-semibold line-clamp-2 leading-snug" style={{ color: 'var(--text-primary)' }}>{story.title}</h3>
 
         <div className="flex items-center gap-1.5 flex-wrap mt-auto">
-          <span className="text-[10px] font-medium px-2 py-0.5 bg-white/[0.05] text-white/35 rounded-md capitalize">
+          <span className="text-[10px] font-medium px-2 py-0.5 rounded-md capitalize" style={{ background: 'var(--bg-secondary)', color: 'var(--text-tertiary)' }}>
             {story.style?.replace(/-/g, ' ') || 'story'}
           </span>
-          <span className="text-[10px] font-medium px-2 py-0.5 bg-white/[0.05] text-white/35 rounded-md">
+          <span className="text-[10px] font-medium px-2 py-0.5 rounded-md" style={{ background: 'var(--bg-secondary)', color: 'var(--text-tertiary)' }}>
             {pageCount}p
           </span>
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between pt-2.5 border-t border-white/[0.05] mt-1">
-          <div className="flex items-center gap-2 text-[11px] text-white/20">
+        <div className="flex items-center justify-between pt-2.5 mt-1" style={{ borderTop: '1px solid var(--border-light)' }}>
+          <div className="flex items-center gap-2 text-[11px]" style={{ color: 'var(--text-tertiary)' }}>
             <Heart size={11} />
             <span>{story.likes || 0}</span>
           </div>
@@ -320,17 +333,18 @@ function ActionBtn({ icon, title, onClick, danger, small }: {
   icon: React.ReactNode; title: string; onClick: (e: React.MouseEvent) => void;
   danger?: boolean; small?: boolean;
 }) {
+  const [hovered, setHovered] = useState(false);
   return (
     <button
       onClick={onClick}
       title={title}
-      className={cn(
-        "rounded-lg transition-all",
-        small ? "p-1.5" : "p-2",
-        danger
-          ? "text-white/25 hover:bg-red-500/10 hover:text-red-400"
-          : "text-white/35 hover:bg-white/[0.08] hover:text-white/80"
-      )}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      className={cn("rounded-lg transition-all", small ? "p-1.5" : "p-2")}
+      style={danger
+        ? { color: hovered ? '#ef4444' : 'var(--text-tertiary)', background: hovered ? 'rgba(239,68,68,0.08)' : 'transparent' }
+        : { color: hovered ? 'var(--text-primary)' : 'var(--text-tertiary)', background: hovered ? 'var(--bg-secondary)' : 'transparent' }
+      }
     >
       {icon}
     </button>
@@ -351,25 +365,23 @@ function SkeletonGrid({ viewMode }: { viewMode: 'grid' | 'list' }) {
       {[...Array(8)].map((_, i) => (
         <div
           key={i}
-          className={cn(
-            "bg-[#1e1e1e] border border-white/[0.05] rounded-2xl overflow-hidden",
-            viewMode === 'list' ? "h-[78px] flex items-center gap-4 p-4" : ""
-          )}
+          className={cn("rounded-2xl overflow-hidden", viewMode === 'list' ? "h-[78px] flex items-center gap-4 p-4" : "")}
+          style={{ background: 'var(--bg-card)', border: '1px solid var(--border-light)' }}
         >
           {viewMode === 'list' ? (
             <>
-              <div className="w-14 h-14 rounded-xl bg-white/[0.05] shimmer flex-shrink-0" />
+              <div className="w-14 h-14 rounded-xl shimmer flex-shrink-0" style={{ background: 'var(--bg-secondary)' }} />
               <div className="flex-1 space-y-2">
-                <div className="h-3.5 bg-white/[0.05] rounded-full shimmer w-2/3" />
-                <div className="h-2.5 bg-white/[0.04] rounded-full shimmer w-1/3" />
+                <div className="h-3.5 rounded-full shimmer w-2/3" style={{ background: 'var(--bg-secondary)' }} />
+                <div className="h-2.5 rounded-full shimmer w-1/3" style={{ background: 'var(--bg-tertiary)' }} />
               </div>
             </>
           ) : (
             <>
-              <div className="aspect-[3/4] bg-white/[0.05] shimmer" />
+              <div className="aspect-[3/4] shimmer" style={{ background: 'var(--bg-secondary)' }} />
               <div className="p-4 space-y-3">
-                <div className="h-3.5 bg-white/[0.05] rounded-full shimmer w-3/4" />
-                <div className="h-3 bg-white/[0.04] rounded-full shimmer w-1/2" />
+                <div className="h-3.5 rounded-full shimmer w-3/4" style={{ background: 'var(--bg-secondary)' }} />
+                <div className="h-3 rounded-full shimmer w-1/2" style={{ background: 'var(--bg-tertiary)' }} />
               </div>
             </>
           )}
@@ -389,21 +401,24 @@ function EmptyState({ onCreate, hasSearch }: { onCreate: () => void; hasSearch: 
       animate={{ opacity: 1, y: 0 }}
       className="flex-1 flex flex-col items-center justify-center py-24 px-6 text-center"
     >
-      <div className="w-14 h-14 rounded-2xl bg-[#2a2a2a] border border-white/[0.07] flex items-center justify-center mb-5">
-        {hasSearch ? <Search size={24} className="text-white/25" /> : <Feather size={24} className="text-white/25" />}
+      <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5"
+        style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-default)' }}>
+        {hasSearch
+          ? <Search size={24} style={{ color: 'var(--text-tertiary)' }} />
+          : <Feather size={24} style={{ color: 'var(--text-tertiary)' }} />}
       </div>
-      <h3 className="text-[18px] font-semibold text-white/80 mb-2">
+      <h3 className="text-[18px] font-semibold mb-2" style={{ fontFamily: 'var(--font-serif)', color: 'var(--text-primary)', fontWeight: 400 }}>
         {hasSearch ? 'No results found' : 'No stories yet'}
       </h3>
-      <p className="text-[13px] text-white/30 mb-7 max-w-[260px] leading-relaxed">
+      <p className="text-[13px] mb-7 max-w-[260px] leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>
         {hasSearch
           ? 'Try a different search term or clear the filter.'
-          : 'Start writing your first story. It only takes a moment.'}
+          : 'Start writing your first story. Every great author began with a single page.'}
       </p>
       {!hasSearch && (
         <button
           onClick={onCreate}
-          className="flex items-center gap-2 px-5 py-2.5 bg-[#D97757] hover:bg-[#C86A48] text-white font-semibold text-[14px] rounded-xl transition-colors shadow-lg shadow-[#D97757]/20"
+          className="flex items-center gap-2 px-5 py-2.5 font-semibold text-[14px] rounded-xl transition-all btn-gradient-gold"
         >
           <Plus size={16} />
           Create story

@@ -81,9 +81,9 @@ export default function TabbedWorkspace() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-white rounded-[2.5rem] border border-black/5 shadow-2xl overflow-hidden">
+    <div className="flex flex-col h-full rounded-lg border card-elevated overflow-hidden">
       {/* Tab Bar */}
-      <div className="flex items-center bg-gray-50/50 border-b border-black/5 px-4 overflow-x-auto no-scrollbar">
+      <div className="flex items-center bg-app-raised border-b border-app-light px-4 overflow-x-auto no-scrollbar">
         <div className="flex items-center">
           {tabs.map((tab) => (
             <div
@@ -97,38 +97,38 @@ export default function TabbedWorkspace() {
               role="button"
               tabIndex={0}
               className={cn(
-                "flex items-center gap-3 px-6 py-4 border-r border-black/5 transition-all relative group min-w-[180px] cursor-pointer outline-none",
-                activeTabId === tab.id ? "bg-white text-black" : "text-black/40 hover:bg-black/5 hover:text-black/60"
+                "flex items-center gap-3 px-6 py-4 border-r border-app-light transition-all relative group min-w-[180px] cursor-pointer outline-none",
+                activeTabId === tab.id ? "bg-app-card text-app border-accent-soft" : "text-app-subtle hover:bg-app-sunken hover:text-app-muted"
               )}
             >
               <span className={cn(
                 "p-1.5 rounded-md transition-colors",
-                activeTabId === tab.id ? "bg-[#D97757]/20 text-[#D97757]" : "bg-black/5"
+                activeTabId === tab.id ? "bg-accent-bg text-accent" : "bg-app-tertiary"
               )}>
                 {getIcon(tab.type)}
               </span>
-              <span className="text-xs font-bold truncate max-w-[100px]">{tab.title}</span>
+              <span className="text-sm font-semibold truncate max-w-[100px]">{tab.title}</span>
               {isEditable && (
                 <button
                   onClick={(e) => closeTab(tab.id, e)}
-                  className="ml-auto p-1 hover:bg-red-50 hover:text-red-500 rounded-md opacity-0 group-hover:opacity-100 transition-all cursor-pointer"
+                  className="ml-auto p-1 hover:bg-red-50/20 hover:text-red-400 rounded-md opacity-0 group-hover:opacity-100 transition-all cursor-pointer"
                 >
-                  <X size={12} />
+                  <X size={14} />
                 </button>
               )}
               {activeTabId === tab.id && (
-                <motion.div layoutId="activeTab" className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#D97757]" />
+                <motion.div layoutId="activeTab" className="absolute bottom-0 left-0 right-0 h-1 bg-accent rounded-t" />
               )}
             </div>
           ))}
-          <button className="p-4 text-black/20 hover:text-[#D97757] transition-colors">
+          <button className="p-4 text-app-subtle hover:text-accent transition-colors">
             <Plus size={18} />
           </button>
         </div>
       </div>
 
       {/* Toolbar */}
-      <div className="bg-white border-b border-black/5 px-6 py-2 flex items-center justify-between">
+      <div className="bg-app-card border-b border-app-light px-6 py-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
           {toolbarButtons.map(btnId => {
             const btn = allButtons.find(b => b.id === btnId);
@@ -137,21 +137,21 @@ export default function TabbedWorkspace() {
               <button
                 key={btn.id}
                 onClick={() => handleAction(btn.action)}
-                className="flex items-center gap-2 px-3 py-1.5 hover:bg-black/5 rounded-lg transition-all text-black/60 hover:text-black"
+                className="flex items-center gap-2 px-3 py-2 hover:bg-app-secondary rounded-md transition-all text-app-subtle hover:text-app"
               >
                 {btn.icon}
-                <span className="text-[10px] font-bold uppercase tracking-widest">{btn.label}</span>
+                <span className="text-xs font-semibold uppercase tracking-wide">{btn.label}</span>
               </button>
             );
           })}
           <button 
             onClick={() => setIsCustomizingToolbar(!isCustomizingToolbar)}
-            className="p-1.5 text-black/20 hover:text-[#D97757] transition-colors"
+            className="p-1.5 text-app-subtle hover:text-accent transition-colors"
           >
             <Plus size={14} />
           </button>
         </div>
-        <div className="flex items-center gap-4 text-[10px] small-caps font-bold text-black/30">
+        <div className="flex items-center gap-4 text-xs small-caps font-semibold text-app-subtle">
           <span>{activeTab?.type === 'chapter' ? '1,240 words' : ''}</span>
           <span>Auto-saved 2m ago</span>
         </div>
@@ -164,7 +164,7 @@ export default function TabbedWorkspace() {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="bg-gray-50 border-b border-black/5 overflow-hidden"
+            className="bg-app-secondary border-b border-app-light overflow-hidden"
           >
             <div className="p-6 flex flex-wrap gap-3">
               {allButtons.map(btn => (
@@ -178,14 +178,14 @@ export default function TabbedWorkspace() {
                     }
                   }}
                   className={cn(
-                    "flex items-center gap-2 px-4 py-2 rounded-xl border transition-all",
+                    "flex items-center gap-2 px-4 py-2 rounded-lg border transition-all",
                     toolbarButtons.includes(btn.id)
-                      ? "bg-[#D97757] border-[#D97757] text-[#1a1a1a]"
-                      : "bg-white border-black/5 text-black/40 hover:border-[#D97757]/40"
+                      ? "bg-accent border-accent text-app-inverse"
+                      : "bg-app-card border-app-default text-app-subtle hover:border-accent hover:text-accent"
                   )}
                 >
                   {btn.icon}
-                  <span className="text-xs font-bold">{btn.label}</span>
+                  <span className="text-xs font-semibold">{btn.label}</span>
                 </button>
               ))}
             </div>
@@ -197,9 +197,9 @@ export default function TabbedWorkspace() {
       <div 
         className={cn(
           "flex-1 overflow-y-auto custom-scrollbar relative",
-          paperTexture === 'none' ? "bg-white" : 
-          paperTexture === 'parchment' ? "bg-[#f4e4bc]" :
-          paperTexture === 'recycled' ? "bg-[#e0e0e0]" : "bg-gray-50"
+          paperTexture === 'none' ? "bg-app-card" : 
+          paperTexture === 'parchment' ? "bg-accent-soft" :
+          paperTexture === 'recycled' ? "bg-app-tertiary" : "bg-app-secondary"
         )}
         onContextMenu={handleContextMenu}
       >
@@ -218,14 +218,16 @@ export default function TabbedWorkspace() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="h-full"
+              className="h-full p-12"
             >
-              {activeTab.content}
+              <div className="max-w-4xl mx-auto font-sans text-base leading-relaxed text-app">
+                {activeTab.content}
+              </div>
             </motion.div>
           ) : (
-            <div className="h-full flex flex-col items-center justify-center text-center p-12 opacity-20">
-              <BookOpen size={64} className="mb-6" />
-              <h3 className="text-2xl font-semibold">No Active Tabs</h3>
+            <div className="h-full flex flex-col items-center justify-center text-center p-12 text-app-subtle">
+              <BookOpen size={48} className="mb-6 opacity-20" />
+              <h3 className="text-2xl font-semibold text-app mb-2">No Active Tabs</h3>
               <p className="text-sm">Select a chapter or character to begin crafting.</p>
             </div>
           )}
@@ -239,18 +241,18 @@ export default function TabbedWorkspace() {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
             style={{ left: contextMenu.x, top: contextMenu.y }}
-            className="fixed z-[500] bg-[#141414] text-[#D97757] rounded-2xl shadow-2xl border border-[#D97757]/20 overflow-hidden min-w-[200px]"
+            className="fixed z-[500] panel border-accent ring-accent shadow-lg min-w-[200px]"
           >
-            <div className="p-3 border-b border-[#D97757]/10 bg-[#D97757]/5">
-              <div className="text-[8px] small-caps tracking-widest font-bold opacity-40">Editor Tools</div>
+            <div className="p-3 border-b border-app-light">
+              <div className="text-xs small-caps tracking-wider font-semibold text-app-subtle">Editor Tools</div>
             </div>
             <div className="p-2 space-y-1">
-              <button className="w-full flex items-center gap-3 px-4 py-2 hover:bg-[#D97757]/10 rounded-xl transition-all text-sm">
+              <button className="w-full flex items-center gap-3 px-4 py-2 hover:bg-accent-bg rounded-lg transition-all text-sm text-app hover:text-accent">
                 <FileText size={14} />
                 <span>Copy to Clipboard</span>
               </button>
-              <div className="h-px bg-[#D97757]/10 my-1" />
-              <button className="w-full flex items-center gap-3 px-4 py-2 hover:bg-red-500/20 text-red-400 rounded-xl transition-all text-sm">
+              <div className="h-px bg-app-light my-1" />
+              <button className="w-full flex items-center gap-3 px-4 py-2 hover:bg-red-500/10 text-red-400 rounded-lg transition-all text-sm">
                 <X size={14} />
                 <span>Clear Selection</span>
               </button>
