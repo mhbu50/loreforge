@@ -35,11 +35,9 @@ interface DashboardProps {
   globalSettings?: any;
   theme?: 'light' | 'dark';
   onToggleTheme?: () => void;
-  accent?: string;
-  onSetAccent?: (accent: string) => void;
 }
 
-export default function Dashboard({ userProfile, globalSettings, theme = 'light', onToggleTheme, accent = 'amber', onSetAccent }: DashboardProps) {
+export default function Dashboard({ userProfile, globalSettings, theme = 'light', onToggleTheme }: DashboardProps) {
   const appName = globalSettings?.appName || 'StoryCraft';
   const appIcon = globalSettings?.appIcon || '';
   const [stories, setStories] = useState<Story[]>([]);
@@ -1170,7 +1168,7 @@ export default function Dashboard({ userProfile, globalSettings, theme = 'light'
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
             >
-              <Settings onRedeem={() => setShowRedeemModal(true)} accent={accent} onSetAccent={onSetAccent} onToggleTheme={onToggleTheme} theme={theme} />
+              <Settings onRedeem={() => setShowRedeemModal(true)} onToggleTheme={onToggleTheme} theme={theme} />
             </motion.div>
           ) : activeView === 'support' ? (
             <motion.div

@@ -55,19 +55,11 @@ export default function App() {
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     return (localStorage.getItem('storycraft-theme') as 'light' | 'dark') || 'light';
   });
-  const [accent, setAccent] = useState<string>(() => {
-    return localStorage.getItem('storycraft-accent') || 'amber';
-  });
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('storycraft-theme', theme);
   }, [theme]);
-
-  useEffect(() => {
-    document.documentElement.setAttribute('data-accent', accent);
-    localStorage.setItem('storycraft-accent', accent);
-  }, [accent]);
 
   const toggleTheme = () => setTheme(t => t === 'light' ? 'dark' : 'light');
 
@@ -198,26 +190,26 @@ export default function App() {
   // Loading screen
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center overflow-hidden" style={{ background: 'var(--bg-primary)' }}>
+      <div className="min-h-screen flex items-center justify-center overflow-hidden" style={{ background: 'var(--bg)' }}>
         <div className="flex flex-col items-center gap-8 relative z-10">
           <div className="relative">
             <div className="w-20 h-20 rounded-3xl flex items-center justify-center"
-              style={{ background: 'var(--accent-bg)', border: '1px solid var(--accent-ring)' }}>
-              <Sparkles style={{ color: 'var(--accent)' }} className="animate-pulse" size={36} />
+              style={{ background: 'var(--bg-elev)', border: '1px solid var(--border-strong)' }}>
+              <Sparkles style={{ color: 'var(--ink)' }} className="animate-pulse" size={36} />
             </div>
             <div className="absolute inset-0 rounded-3xl animate-ping opacity-20"
-              style={{ border: '1px solid var(--accent)' }} />
+              style={{ border: '1px solid var(--ink)' }} />
           </div>
           <div className="space-y-3 text-center">
             <div className="flex items-center gap-3">
-              <div className="h-px w-8" style={{ background: 'var(--accent-ring)' }} />
-              <p className="small-caps text-xs tracking-[0.4em]" style={{ color: 'var(--accent)' }}>Crafting Reality</p>
-              <div className="h-px w-8" style={{ background: 'var(--accent-ring)' }} />
+              <div className="h-px w-8" style={{ background: 'var(--border-strong)' }} />
+              <p className="small-caps text-xs tracking-[0.4em]" style={{ color: 'var(--ink)' }}>Crafting Reality</p>
+              <div className="h-px w-8" style={{ background: 'var(--border-strong)' }} />
             </div>
             <div className="flex items-center justify-center gap-2">
               {[0, 1, 2].map(i => (
                 <div key={i} className="w-1.5 h-1.5 rounded-full animate-pulse"
-                  style={{ background: 'var(--accent-muted)', animationDelay: `${i * 0.3}s` }} />
+                  style={{ background: 'var(--ash-500)', animationDelay: `${i * 0.3}s` }} />
               ))}
             </div>
           </div>
@@ -235,13 +227,13 @@ export default function App() {
             <Hammer size={40} />
           </div>
           <div className="space-y-4">
-            <h1 className="text-3xl font-semibold" style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-serif)' }}>Setup Failed</h1>
-            <p className="leading-relaxed text-sm" style={{ color: 'var(--text-secondary)' }}>
+            <h1 className="text-3xl font-semibold" style={{ color: 'var(--fg)', fontFamily: 'var(--font-serif)' }}>Setup Failed</h1>
+            <p className="leading-relaxed text-sm" style={{ color: 'var(--fg-muted)' }}>
               Your account was created but we couldn't set up your profile.
               This usually means Firestore security rules haven't been deployed yet.
             </p>
-            <p className="text-xs font-mono" style={{ color: 'var(--text-tertiary)' }}>
-              Run: <span style={{ color: 'var(--accent)' }}>firebase deploy --only firestore:rules</span>
+            <p className="text-xs font-mono" style={{ color: 'var(--fg-subtle)' }}>
+              Run: <span style={{ color: 'var(--ink)' }}>firebase deploy --only firestore:rules</span>
             </p>
           </div>
           <button
@@ -258,21 +250,21 @@ export default function App() {
   // Maintenance Mode Check
   if (globalSettings?.maintenanceMode && userProfile?.role !== 'headadmin') {
     return (
-      <div className="min-h-screen flex items-center justify-center p-8" style={{ background: 'var(--bg-primary)' }}>
+      <div className="min-h-screen flex items-center justify-center p-8" style={{ background: 'var(--bg)' }}>
         <div className="max-w-md w-full text-center space-y-8">
           <div className="w-24 h-24 rounded-3xl flex items-center justify-center mx-auto animate-bounce"
-            style={{ background: 'var(--accent-bg)', color: 'var(--accent)' }}>
+            style={{ background: 'var(--bg-elev)', color: 'var(--ink)' }}>
             <Hammer size={48} />
           </div>
           <div className="space-y-4">
-            <h1 className="text-4xl font-semibold" style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-serif)' }}>Under Construction</h1>
-            <p className="leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+            <h1 className="text-4xl font-semibold" style={{ color: 'var(--fg)', fontFamily: 'var(--font-serif)' }}>Under Construction</h1>
+            <p className="leading-relaxed" style={{ color: 'var(--fg-muted)' }}>
               The App Architect is currently performing deep-level optimizations.
               We'll be back shortly with a more powerful experience.
             </p>
           </div>
-          <div className="pt-8" style={{ borderTop: '1px solid var(--border-light)' }}>
-            <div className="text-[10px] uppercase tracking-[0.3em] font-bold" style={{ color: 'var(--accent)' }}>System Status: Maintenance</div>
+          <div className="pt-8" style={{ borderTop: '1px solid var(--border)' }}>
+            <div className="text-[10px] uppercase tracking-[0.3em] font-bold" style={{ color: 'var(--ink)' }}>System Status: Maintenance</div>
           </div>
         </div>
       </div>
@@ -300,18 +292,18 @@ export default function App() {
             element={
               user
                 ? userProfile
-                  ? <Dashboard userProfile={userProfile} globalSettings={globalSettings} theme={theme} onToggleTheme={toggleTheme} accent={accent} onSetAccent={setAccent} />
+                  ? <Dashboard userProfile={userProfile} globalSettings={globalSettings} theme={theme} onToggleTheme={toggleTheme} />
                   : (
                     // Authenticated but profile not ready yet — self-heal is in progress
-                    <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--bg-primary)' }}>
+                    <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--bg)' }}>
                       <div className="flex flex-col items-center gap-8">
                         <div className="w-16 h-16 rounded-2xl flex items-center justify-center"
-                          style={{ background: 'var(--accent-bg)', border: '1px solid var(--accent-ring)' }}>
-                          <Loader2 style={{ color: 'var(--accent)' }} className="animate-spin" size={28} />
+                          style={{ background: 'var(--bg-elev)', border: '1px solid var(--border-strong)' }}>
+                          <Loader2 style={{ color: 'var(--ink)' }} className="animate-spin" size={28} />
                         </div>
                         <div className="text-center space-y-2">
-                          <p className="small-caps text-xs tracking-[0.4em]" style={{ color: 'var(--accent)' }}>Setting up your studio</p>
-                          <p className="text-[10px]" style={{ color: 'var(--text-tertiary)' }}>This only takes a moment...</p>
+                          <p className="small-caps text-xs tracking-[0.4em]" style={{ color: 'var(--ink)' }}>Setting up your studio</p>
+                          <p className="text-[10px]" style={{ color: 'var(--fg-subtle)' }}>This only takes a moment...</p>
                         </div>
                       </div>
                     </div>

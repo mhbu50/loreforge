@@ -10,8 +10,6 @@ import { doc, updateDoc, getDoc } from 'firebase/firestore';
 
 interface SettingsProps {
   onRedeem?: () => void;
-  accent?: string;
-  onSetAccent?: (accent: string) => void;
   onToggleTheme?: () => void;
   theme?: 'light' | 'dark';
 }
@@ -56,7 +54,7 @@ const TABS = [
 
 type TabId = typeof TABS[number]['id'];
 
-export default function Settings({ onRedeem, accent = 'amber', onSetAccent, onToggleTheme, theme = 'light' }: SettingsProps) {
+export default function Settings({ onRedeem, onToggleTheme, theme = 'light' }: SettingsProps) {
   const [tab, setTab] = useState<TabId>('writing');
   const [config, setConfig] = useState<AppConfig>(ConfigService.getConfig());
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
@@ -276,33 +274,6 @@ export default function Settings({ onRedeem, accent = 'amber', onSetAccent, onTo
                     </button>
                   </div>
 
-                  {/* Accent color picker */}
-                  <div>
-                    <p className="text-xs font-semibold text-black/50 mb-3">Accent color</p>
-                    <div className="grid grid-cols-4 gap-2">
-                      {[
-                        { id: 'amber',      label: 'Amber',      color: '#B45309' },
-                        { id: 'sage',       label: 'Sage',       color: '#4D7C56' },
-                        { id: 'blue',       label: 'Slate Blue', color: '#4F6D92' },
-                        { id: 'terracotta', label: 'Terracotta', color: '#B85C3A' },
-                      ].map(a => (
-                        <button
-                          key={a.id}
-                          onClick={() => onSetAccent?.(a.id)}
-                          className="flex flex-col items-center gap-1.5 p-2.5 rounded-xl border transition-all"
-                          style={{
-                            borderColor: accent === a.id ? a.color : 'var(--border-light)',
-                            background: accent === a.id ? `${a.color}10` : 'transparent',
-                            outline: accent === a.id ? `2px solid ${a.color}` : 'none',
-                            outlineOffset: '2px',
-                          }}
-                        >
-                          <div className="w-7 h-7 rounded-full" style={{ background: a.color }} />
-                          <span className="text-[10px] font-semibold text-black/50">{a.label}</span>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
                 </div>
 
                 <div className="bg-white rounded-2xl border border-black/[0.06] shadow-sm p-6 space-y-5">
