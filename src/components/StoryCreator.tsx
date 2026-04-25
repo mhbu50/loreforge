@@ -241,14 +241,16 @@ export default function StoryCreator({ onComplete, onCancel, userDisplayName, us
       } else if (mode === 'images') {
         result = await AIService.generateImagesOnly(
           finalIdea, pageCount, style, ageGroup, resolved, aiSettings,
-          (p) => setAiProgress(p)
+          (p) => setAiProgress(p),
+          bookType === 'manga' ? 'manga' : style === 'custom' ? 'customStyle' : undefined
         );
 
       } else {
         // 'both' or 'surprise'
         result = await AIService.generateFullStory(
           finalIdea, pageCount, style, ageGroup, language, resolved, aiSettings,
-          (p) => setAiProgress(p)
+          (p) => setAiProgress(p),
+          bookType === 'manga' ? 'manga' : style === 'custom' ? 'customStyle' : undefined
         );
       }
 

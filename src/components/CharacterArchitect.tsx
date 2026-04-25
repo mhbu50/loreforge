@@ -165,7 +165,7 @@ export default function CharacterArchitect({ storyId, userSubscriptionTier }: Ch
     setPortraitLoading(true);
     try {
       const imagePrompt = `Character portrait of ${draft.name}. ${draft.appearance}. ${draft.role} archetype. ${draft.portraitStyle || 'cinematic lighting, professional illustration'}. High detail, face-focused.`;
-      const url = await AIService.generateImage(imagePrompt, aiSettings);
+      const url = await AIService.generateImage(imagePrompt, aiSettings, 'character');
       setDraft(d => ({ ...d, portraitUrl: url }));
       setAppearanceLocked(true);
       toast.success('Portrait generated! Appearance is now face-locked for consistency.');

@@ -33,11 +33,19 @@ export interface AISettings {
   /** Allow ultimate users to pick their own provider in Account settings */
   allowUltimateChoice: boolean;
   /** Image generation settings */
-  imageApiKey: string;   // Stability AI key (legacy + current)
+  imageApiKey: string;         // Stability AI key
   imageModel: string;
-  imageProvider: string; // which image provider to use
-  imageFalKey: string;   // Fal.ai key
-  imageIdeogramKey: string; // Ideogram key
+  imageProvider: string;       // default image provider
+  imageFalKey: string;         // Fal.ai key
+  imageIdeogramKey: string;    // Ideogram key
+  imageLlamagenKey: string;    // LlamaGen.ai key (manga panels)
+  imageLeonardoKey: string;    // Leonardo.ai key (character consistency)
+  /** Route specific use-cases to dedicated providers */
+  imageSpecializedProviders: {
+    manga: string;       // provider for manga panels & layouts
+    character: string;   // provider for consistent story characters
+    customStyle: string; // provider for custom styles
+  };
 }
 
 /** What a resolved provider looks like — passed to all generate methods */
@@ -121,7 +129,7 @@ export const PROVIDER_INFO: Record<string, { label: string; icon: string; isFree
 
 export const IMAGE_PROVIDERS: Record<string, {
   label: string; icon: string; isFree?: boolean;
-  keyField: 'imageApiKey' | 'imageFalKey' | 'imageIdeogramKey' | 'gemini' | 'openai' | 'together';
+  keyField: 'imageApiKey' | 'imageFalKey' | 'imageIdeogramKey' | 'imageLlamagenKey' | 'imageLeonardoKey' | 'gemini' | 'openai' | 'together';
   keyHint: string; keyUrl: string;
   models: { id: string; name: string; free?: boolean }[];
 }> = {
@@ -202,6 +210,31 @@ export const IMAGE_PROVIDERS: Record<string, {
       { id: 'V_1_TURBO', name: 'Ideogram 1 Turbo' },
     ],
   },
+  llamagen: {
+    label: 'LlamaGen.ai (Manga)', icon: '🎌', isFree: false,
+    keyField: 'imageLlamagenKey',
+    keyHint: 'llama-key-...',
+    keyUrl: 'https://llamagen.ai/dashboard',
+    models: [
+      { id: 'manga-panels',    name: 'Manga Panels (Default)' },
+      { id: 'manga-layout',    name: 'Manga Layout' },
+      { id: 'manga-portrait',  name: 'Manga Portrait' },
+      { id: 'comic-panels',    name: 'Comic Panels' },
+    ],
+  },
+  leonardo: {
+    label: 'Leonardo.ai (Characters)', icon: '🎭', isFree: false,
+    keyField: 'imageLeonardoKey',
+    keyHint: 'Enter Leonardo API key...',
+    keyUrl: 'https://app.leonardo.ai/api-access',
+    models: [
+      { id: '1e60896f-3c26-4296-8ecc-53e2afecc132', name: 'Leonardo Anime XL' },
+      { id: 'b24e16ff-06e3-43eb-8d33-4416c2d75876', name: 'Leonardo Phoenix' },
+      { id: 'aa77f04e-3eec-4034-9c07-d0f619684628', name: 'Leonardo Kino XL' },
+      { id: '6bef9f1b-29cb-40c7-b9df-32b51c1f67d3', name: 'Leonardo Diffusion XL' },
+      { id: 'e71a1c2f-4f80-4800-934f-2c68979d1cc6', name: 'Leonardo Vision XL' },
+    ],
+  },
 };
 
 export const DEFAULT_AI_SETTINGS: AISettings = {
@@ -267,6 +300,13 @@ export const DEFAULT_AI_SETTINGS: AISettings = {
   imageProvider: 'together',
   imageFalKey: '',
   imageIdeogramKey: '',
+  imageLlamagenKey: '',
+  imageLeonardoKey: '',
+  imageSpecializedProviders: {
+    manga: 'llamagen',
+    character: 'leonardo',
+    customStyle: 'fal',
+  },
 };
 
 // ─── Resolve which provider to use for a user ─────────────────────────────────
@@ -318,6 +358,10 @@ export class AIService {
           tierAssignments: {
             ...DEFAULT_AI_SETTINGS.tierAssignments,
             ...(data.tierAssignments ?? {}),
+          },
+          imageSpecializedProviders: {
+            ...DEFAULT_AI_SETTINGS.imageSpecializedProviders,
+            ...(data.imageSpecializedProviders ?? {}),
           },
         } as AISettings;
       }
@@ -472,9 +516,23 @@ export class AIService {
 
   // ─── Image Generation ───────────────────────────────────────────────────────
 
-  static async generateImage(prompt: string, settings: AISettings): Promise<string> {
-    const provider = settings.imageProvider || 'stability';
-    const model = settings.imageModel || '';
+  static async generateImage(
+    prompt: string,
+    settings: AISettings,
+    useCase?: 'manga' | 'character' | 'customStyle'
+  ): Promise<string> {
+    // Route to specialized provider if configured for this use case
+    let provider = settings.imageProvider || 'stability';
+    let model = settings.imageModel || '';
+
+    if (useCase) {
+      const specialized = settings.imageSpecializedProviders?.[useCase];
+      if (specialized) {
+        provider = specialized;
+        const providerModels = IMAGE_PROVIDERS[specialized]?.models;
+        model = providerModels?.[0]?.id || '';
+      }
+    }
 
     // ── Stability AI ──────────────────────────────────────────────────────────
     if (provider === 'stability') {
@@ -579,6 +637,74 @@ export class AIService {
       const url = data.data?.[0]?.url;
       if (!url) throw new Error('Ideogram returned no image.');
       return url;
+    }
+
+    // ── LlamaGen.ai (Manga Panels) ────────────────────────────────────────────
+    if (provider === 'llamagen') {
+      const key = settings.imageLlamagenKey?.trim();
+      if (!key) throw new Error('Add your LlamaGen.ai key in Admin → AI → Image Generation.');
+      const llamaModel = model || 'manga-panels';
+      const resp = await fetch('https://api.llamagen.ai/v1/images/generations', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: llamaModel,
+          prompt: `manga panel, ${prompt.slice(0, 2000)}`,
+          n: 1,
+          size: '1024x1024',
+          response_format: 'b64_json',
+        }),
+      });
+      if (!resp.ok) throw new Error(`LlamaGen.ai ${resp.status}: ${(await resp.text().catch(() => '')).slice(0, 200)}`);
+      const data = await resp.json();
+      const b64 = data.data?.[0]?.b64_json;
+      if (b64) return `data:image/png;base64,${b64}`;
+      const url = data.data?.[0]?.url;
+      if (url) return url;
+      throw new Error('LlamaGen.ai returned no image.');
+    }
+
+    // ── Leonardo.ai (Character Consistency) ──────────────────────────────────
+    if (provider === 'leonardo') {
+      const key = settings.imageLeonardoKey?.trim();
+      if (!key) throw new Error('Add your Leonardo.ai key in Admin → AI → Image Generation.');
+      const leonardoModel = model || '1e60896f-3c26-4296-8ecc-53e2afecc132';
+      // Submit generation
+      const submitResp = await fetch('https://cloud.leonardo.ai/api/rest/v1/generations', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json', accept: 'application/json' },
+        body: JSON.stringify({
+          prompt: prompt.slice(0, 1000),
+          modelId: leonardoModel,
+          width: 1024,
+          height: 1024,
+          num_images: 1,
+          alchemy: true,
+          photoReal: false,
+          public: false,
+        }),
+      });
+      if (!submitResp.ok) throw new Error(`Leonardo.ai ${submitResp.status}: ${(await submitResp.text().catch(() => '')).slice(0, 200)}`);
+      const submitData = await submitResp.json();
+      const generationId = submitData.sdGenerationJob?.generationId;
+      if (!generationId) throw new Error('Leonardo.ai did not return a generation ID.');
+      // Poll until complete (max 60s)
+      for (let attempt = 0; attempt < 20; attempt++) {
+        await new Promise(r => setTimeout(r, 3000));
+        const pollResp = await fetch(`https://cloud.leonardo.ai/api/rest/v1/generations/${generationId}`, {
+          headers: { Authorization: `Bearer ${key}`, accept: 'application/json' },
+        });
+        if (!pollResp.ok) continue;
+        const pollData = await pollResp.json();
+        const gen = pollData.generations_by_pk;
+        if (gen?.status === 'COMPLETE') {
+          const url = gen.generated_images?.[0]?.url;
+          if (url) return url;
+          throw new Error('Leonardo.ai generation complete but no image URL.');
+        }
+        if (gen?.status === 'FAILED') throw new Error('Leonardo.ai generation failed.');
+      }
+      throw new Error('Leonardo.ai generation timed out after 60 seconds.');
     }
 
     throw new Error(`Unknown image provider: ${provider}. Configure it in Admin → AI → Image Generation.`);
@@ -721,7 +847,8 @@ Return ONLY valid JSON: {"title":"...","hook":"...","backstory":"...","objective
 
   static async generateImagesOnly(
     idea: string, pageCount: number, style: string, ageGroup: string,
-    resolved: ResolvedProvider, settings: AISettings, onProgress?: (p: AIProgress) => void
+    resolved: ResolvedProvider, settings: AISettings, onProgress?: (p: AIProgress) => void,
+    useCase?: 'manga' | 'character' | 'customStyle'
   ): Promise<{ title: string; pages: { text: string; imageUrl?: string }[] }> {
     onProgress?.({ step: 'Planning scenes...', current: 0, total: pageCount + 1 });
     const scenesPrompt = `Break a children's story into ${pageCount} illustrated scenes.
@@ -737,7 +864,7 @@ Return ONLY JSON: {"title":"...","scenes":[{"caption":"...","imagePrompt":"..."}
       const scene = parsed.scenes[i];
       onProgress?.({ step: `Illustrating scene ${i + 1}/${parsed.scenes.length}...`, current: i + 1, total: pageCount + 1 });
       try {
-        const imageUrl = await AIService.generateImage(`${scene.imagePrompt}, ${style} art style, children's book illustration`, settings);
+        const imageUrl = await AIService.generateImage(`${scene.imagePrompt}, ${style} art style, children's book illustration`, settings, useCase);
         pages.push({ text: scene.caption || '', imageUrl });
       } catch { pages.push({ text: scene.caption || '' }); }
     }
@@ -748,7 +875,8 @@ Return ONLY JSON: {"title":"...","scenes":[{"caption":"...","imagePrompt":"..."}
 
   static async generateFullStory(
     idea: string, pageCount: number, style: string, ageGroup: string, language: string,
-    resolved: ResolvedProvider, settings: AISettings, onProgress?: (p: AIProgress) => void
+    resolved: ResolvedProvider, settings: AISettings, onProgress?: (p: AIProgress) => void,
+    useCase?: 'manga' | 'character' | 'customStyle'
   ): Promise<{ title: string; pages: { text: string; imageUrl?: string }[] }> {
     onProgress?.({ step: 'Writing story script...', current: 0, total: pageCount + 1 });
     const storyResult = await AIService.generateStoryPages(idea, pageCount, style, ageGroup, language, resolved);
@@ -758,7 +886,7 @@ Return ONLY JSON: {"title":"...","scenes":[{"caption":"...","imagePrompt":"..."}
       onProgress?.({ step: `Illustrating page ${i + 1}/${storyResult.pages.length}...`, current: i + 1, total: pageCount + 1 });
       try {
         const imgPrompt = await AIService.generateImagePrompt(page.text, style, ageGroup, resolved);
-        const imageUrl = await AIService.generateImage(`${imgPrompt}, ${style} art style, children's book illustration`, settings);
+        const imageUrl = await AIService.generateImage(`${imgPrompt}, ${style} art style, children's book illustration`, settings, useCase);
         pagesWithImages.push({ text: page.text, imageUrl });
       } catch { pagesWithImages.push({ text: page.text }); }
     }

@@ -1803,7 +1803,7 @@ export default function HeadAdminPanel() {
                   </p>
                 );
               }
-              const keyField = prov.keyField as 'imageApiKey' | 'imageFalKey' | 'imageIdeogramKey';
+              const keyField = prov.keyField as 'imageApiKey' | 'imageFalKey' | 'imageIdeogramKey' | 'imageLlamagenKey' | 'imageLeonardoKey';
               const currentKey = (aiSettings as any)[keyField] ?? '';
               return (
                 <div className="space-y-2">
@@ -1832,6 +1832,38 @@ export default function HeadAdminPanel() {
                 </div>
               );
             })()}
+          </div>
+
+          {/* Specialized Image Routing */}
+          <div className="space-y-4 pt-4 border-t border-white/[0.06]">
+            <div>
+              <h4 className="text-[13px] font-semibold text-white mb-0.5">Specialized Image Routing</h4>
+              <p className="text-[11px] text-white/35">Route specific generation tasks to dedicated providers automatically.</p>
+            </div>
+            {([
+              { key: 'manga',       label: 'Manga Panels & Layouts',       default: 'llamagen' },
+              { key: 'character',   label: 'Consistent Story Characters',  default: 'leonardo' },
+              { key: 'customStyle', label: 'Custom Art Styles',            default: 'fal' },
+            ] as const).map(({ key, label, default: def }) => (
+              <div key={key} className="flex items-center justify-between gap-4">
+                <span className="text-[12px] text-white/60 flex-1">{label}</span>
+                <select
+                  value={aiSettings.imageSpecializedProviders?.[key] ?? def}
+                  onChange={e => setAiSettings(prev => ({
+                    ...prev,
+                    imageSpecializedProviders: {
+                      ...prev.imageSpecializedProviders,
+                      [key]: e.target.value,
+                    },
+                  }))}
+                  className="bg-white/[0.07] border border-white/[0.09] rounded-lg px-3 py-2 text-[12px] text-white/80 outline-none focus:border-[#D97757]/40"
+                >
+                  {Object.entries(IMAGE_PROVIDERS).map(([pk, pi]) => (
+                    <option key={pk} value={pk}>{pi.label}</option>
+                  ))}
+                </select>
+              </div>
+            ))}
           </div>
 
           {/* Save */}
