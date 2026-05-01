@@ -4,7 +4,8 @@
    =========================================================== */
 
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Inter:wght@100..900&family=Anton&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Inter:wght@100..900&family=Anton&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700;800&display=swap');
+@import url('https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@400,500,700,800&f[]=satoshi@400,500,700&display=swap');
 
 /* ============================================================
    DESIGN TOKENS — THE ONLY PALETTE
@@ -1085,3 +1086,249 @@ a:hover, .sc-link:hover {
 [data-accent="blue"], [data-accent="terracotta"] {
   /* Intentionally empty — all theming via data-theme="dark" only */
 }
+
+/* ============================================================
+   COSMIC LANDING — "Constellation of Creativity" Theme
+   Scoped to .cosmic-page to avoid polluting the app
+   ============================================================ */
+
+.cosmic-page {
+  --c-bg:       #0B0E1A;
+  --c-bg2:      #131832;
+  --c-card:     rgba(19, 24, 50, 0.75);
+  --c-border:   rgba(165, 180, 252, 0.12);
+  --c-border2:  rgba(165, 180, 252, 0.22);
+  --c-coral:    #FF4D6D;
+  --c-gold:     #FFB347;
+  --c-cyan:     #00F5FF;
+  --c-purple:   #B347EA;
+  --c-text:     #FFFFFF;
+  --c-muted:    #A5B4FC;
+  --c-subtle:   #6472a4;
+  --c-grad1:    linear-gradient(135deg, #FF4D6D, #FFB347);
+  --c-grad2:    linear-gradient(135deg, #00F5FF, #B347EA);
+  --f-display:  'Cabinet Grotesk', 'Space Grotesk', system-ui, sans-serif;
+  --f-body:     'Satoshi', 'Inter', system-ui, sans-serif;
+  --f-mono:     'JetBrains Mono', monospace;
+  font-family: var(--f-body);
+  background:  var(--c-bg);
+  color:       var(--c-text);
+}
+
+/* Glass surface for cosmic cards */
+.cosmic-glass {
+  background:  var(--c-card);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--c-border);
+}
+
+.cosmic-glass-strong {
+  background: rgba(19, 24, 50, 0.90);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid var(--c-border2);
+}
+
+/* ── Gradient text ── */
+.text-grad-primary {
+  background: var(--c-grad1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.text-grad-secondary {
+  background: var(--c-grad2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Aurora rotating border (pricing card) ── */
+.aurora-border-wrap {
+  position: relative;
+  border-radius: 20px;
+  padding: 2px;
+  overflow: hidden;
+  isolation: isolate;
+}
+.aurora-border-wrap::before {
+  content: '';
+  position: absolute;
+  inset: -100%;
+  width: 300%;
+  height: 300%;
+  background: conic-gradient(
+    from 0deg,
+    #FF4D6D 0%,
+    #FFB347 20%,
+    #00F5FF 40%,
+    #B347EA 60%,
+    #FF4D6D 80%,
+    #FFB347 100%
+  );
+  animation: aurora-spin 4s linear infinite;
+  transform-origin: center center;
+  z-index: -1;
+}
+.aurora-border-inner {
+  background: #0d1230;
+  border-radius: 18px;
+  height: 100%;
+}
+
+/* ── Animated gradient button ── */
+.btn-cosmic {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #FF4D6D, #FFB347, #FF4D6D);
+  background-size: 200% auto;
+  color: #000;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  transition: background-position 0.4s ease, box-shadow 0.3s ease, transform 0.2s ease;
+}
+.btn-cosmic:hover {
+  background-position: right center;
+  box-shadow: 0 0 40px rgba(255,77,109,0.55), 0 0 80px rgba(255,179,71,0.25);
+  transform: translateY(-2px) scale(1.02);
+}
+.btn-cosmic:active { transform: translateY(0) scale(0.98); }
+
+.btn-cosmic-ghost {
+  background: transparent;
+  border: 1px solid rgba(165,180,252,0.3);
+  color: var(--c-muted);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+.btn-cosmic-ghost:hover {
+  border-color: rgba(165,180,252,0.7);
+  color: #fff;
+  background: rgba(165,180,252,0.06);
+}
+
+/* ── Stat flip animation ── */
+@keyframes stat-flip {
+  0%   { transform: rotateX(90deg); opacity: 0; }
+  100% { transform: rotateX(0deg);  opacity: 1; }
+}
+.stat-flip { animation: stat-flip 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+/* ── Aurora spin keyframe ── */
+@keyframes aurora-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ── Comet pulse ── */
+@keyframes comet-pulse {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50%       { opacity: 1;   transform: scale(1.12); }
+}
+.comet-pulse { animation: comet-pulse 2.5s ease-in-out infinite; }
+
+/* ── Glow ring (custom cursor) ── */
+.cosmic-cursor {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  width: 28px;
+  height: 28px;
+  border: 2px solid rgba(255, 77, 109, 0.8);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.2s ease, height 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+  mix-blend-mode: screen;
+}
+.cosmic-cursor.expanded {
+  width: 56px;
+  height: 56px;
+  border-color: rgba(0, 245, 255, 0.7);
+}
+.cosmic-cursor-dot {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  width: 5px;
+  height: 5px;
+  background: #FF4D6D;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: transform 0.05s linear;
+}
+
+/* ── Scroll reveal ── */
+.cosmic-reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.cosmic-reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Neon glow on text/border ── */
+.neon-coral  { text-shadow: 0 0 16px rgba(255,77,109,0.7); }
+.neon-cyan   { text-shadow: 0 0 16px rgba(0,245,255,0.6); }
+.glow-coral  { box-shadow: 0 0 24px rgba(255,77,109,0.45), 0 0 48px rgba(255,77,109,0.2); }
+.glow-purple { box-shadow: 0 0 24px rgba(179,71,234,0.45), 0 0 48px rgba(179,71,234,0.2); }
+.glow-cyan   { box-shadow: 0 0 24px rgba(0,245,255,0.4),   0 0 48px rgba(0,245,255,0.15); }
+
+/* ── Typing cursor blink ── */
+@keyframes blink { 50% { opacity: 0; } }
+.type-cursor { animation: blink 1s step-end infinite; }
+
+/* ── Token ring fill (pricing) ── */
+.token-ring {
+  transition: stroke-dashoffset 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ── Page loader veil ── */
+.cosmic-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: #0B0E1A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+@keyframes quill-draw {
+  0%   { stroke-dashoffset: 200; opacity: 0; }
+  30%  { opacity: 1; }
+  100% { stroke-dashoffset: 0;   opacity: 1; }
+}
+.quill-path {
+  stroke-dasharray: 200;
+  stroke-dashoffset: 200;
+  animation: quill-draw 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes loader-fade-out {
+  to { opacity: 0; pointer-events: none; }
+}
+.loader-exiting {
+  animation: loader-fade-out 0.6s ease forwards;
+}
+
+/* ── 3D card tilt helper ── */
+.card-3d {
+  transform-style: preserve-3d;
+  transition: transform 0.1s ease, box-shadow 0.2s ease;
+}
+.card-3d:hover { box-shadow: 0 24px 64px rgba(0,0,0,0.55); }
+
+/* ── Nebula section sticky ── */
+.nebula-sticky { position: sticky; top: 0; height: 100vh; overflow: hidden; }
+
+/* ── DnD drop zone glow ── */
+@keyframes drop-pulse {
+  0%, 100% { box-shadow: 0 0 0 2px rgba(0,245,255,0.3); }
+  50%       { box-shadow: 0 0 0 6px rgba(0,245,255,0.6), 0 0 40px rgba(0,245,255,0.3); }
+}
+.drop-active { animation: drop-pulse 1s ease-in-out infinite; }
