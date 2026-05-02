@@ -7,7 +7,7 @@ import { auth, db } from './firebase';
 import { UserProfile, Theme } from './types';
 import { SystemHealthService } from './services/SystemHealthService';
 import Auth from './components/Auth';
-import Dashboard from './components/Dashboard';
+import Dashboard from './app/Dashboard';
 import Admin from './components/Admin';
 import Marketplace from './components/Marketplace';
 import Landing from './components/Landing';
@@ -296,7 +296,7 @@ export default function App() {
             element={
               user
                 ? userProfile
-                  ? <Navigate to="/dashboard" replace />
+                  ? <Dashboard userProfile={userProfile} globalSettings={globalSettings} theme={theme} onToggleTheme={toggleTheme} />
                   : (
                     <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--color-bg-primary, #0A0A0F)' }}>
                       <div className="flex flex-col items-center gap-8">

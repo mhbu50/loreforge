@@ -1,60 +1,43 @@
-import React from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
+import { motion, AnimatePresence } from 'motion/react';
 import { X } from 'lucide-react';
-import { cn } from '@/src/lib/utils';
+import { cn } from '../../lib/utils';
 
 interface ModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  title?: string;
-  description?: string;
+  title: string;
   children: React.ReactNode;
-  size?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
   className?: string;
+  size?: 'sm' | 'md' | 'lg';
 }
 
-const sizes = {
-  sm:   'max-w-sm',
-  md:   'max-w-lg',
-  lg:   'max-w-2xl',
-  xl:   'max-w-4xl',
-  full: 'max-w-[95vw] max-h-[95vh]',
-};
-
-export function Modal({ open, onOpenChange, title, description, children, size = 'md', className }: ModalProps) {
+export const Modal = ({ open, onOpenChange, title, children, className, size = 'md' }: ModalProps) => {
+  const maxW = { sm: 'max-w-sm', md: 'max-w-lg', lg: 'max-w-2xl' }[size];
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
+        <Dialog.Overlay className="fixed inset-0 z-50 bg-void/80 backdrop-blur-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
         <Dialog.Content
           className={cn(
-            'fixed left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2 w-full rounded-2xl',
-            'bg-[--bg-elev] border border-[--border-strong] shadow-2xl p-6',
-            'data-[state=open]:animate-in data-[state=closed]:animate-out',
-            'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
-            'data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
-            sizes[size],
+            'fixed left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2',
+            'bg-surface-glass border border-gold/30 backdrop-blur-2xl rounded-3xl p-8 w-full max-h-[85vh] overflow-auto shadow-card-hover',
+            'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
+            maxW,
             className
           )}
         >
-          {(title || description) && (
-            <div className="mb-5">
-              {title && (
-                <Dialog.Title className="text-lg font-semibold text-[--fg]">{title}</Dialog.Title>
-              )}
-              {description && (
-                <Dialog.Description className="mt-1 text-sm text-[--fg-muted]">{description}</Dialog.Description>
-              )}
-            </div>
-          )}
+          <div className="flex items-center justify-between mb-6">
+            <Dialog.Title className="text-xl font-serif font-semibold text-starlight">{title}</Dialog.Title>
+            <Dialog.Close className="p-2 text-nebula hover:text-starlight hover:bg-surface-hover rounded-xl transition-colors">
+              <X className="w-5 h-5" />
+            </Dialog.Close>
+          </div>
           {children}
-          <Dialog.Close className="absolute right-4 top-4 rounded-lg p-1.5 text-[--fg-subtle] hover:text-[--fg] hover:bg-[--bg-sunken] transition-colors">
-            <X size={16} />
-          </Dialog.Close>
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
   );
-}
+};
 
 export const ModalTrigger = Dialog.Trigger;

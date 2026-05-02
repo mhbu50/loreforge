@@ -1,7 +1,5 @@
-import React from 'react';
 import { Bell, User } from 'lucide-react';
-import { IconButton } from '@/src/components/ui/IconButton';
-import { cn } from '@/src/lib/utils';
+import { motion } from 'motion/react';
 
 interface TopBarProps {
   title?: string;
@@ -10,25 +8,29 @@ interface TopBarProps {
   className?: string;
 }
 
-export function TopBar({ title, subtitle, actions, className }: TopBarProps) {
-  return (
-    <header className={cn('flex h-14 flex-shrink-0 items-center justify-between border-b border-border bg-bg-secondary px-6', className)}>
-      <div className="flex flex-col">
-        {title && <span className="text-sm font-semibold text-text-primary">{title}</span>}
-        {subtitle && <span className="text-xs text-text-muted">{subtitle}</span>}
+export const TopBar = ({ title, subtitle, actions }: TopBarProps) => (
+  <header className="sticky top-0 z-30 flex items-center justify-between px-6 h-16 border-b border-white/[0.04] bg-surface-glass/40 backdrop-blur-xl">
+    <div>
+      {title && <span className="font-serif font-semibold text-starlight">{title}</span>}
+      {subtitle && <p className="text-xs text-nebula mt-0.5">{subtitle}</p>}
+    </div>
+    <div className="flex items-center gap-3">
+      {actions}
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        className="relative p-2 text-nebula hover:text-starlight transition-colors rounded-xl hover:bg-white/[0.04]"
+      >
+        <Bell className="w-5 h-5" />
+        <motion.span
+          animate={{ scale: [1, 1.4, 1], opacity: [0.8, 1, 0.8] }}
+          transition={{ repeat: Infinity, duration: 2.5 }}
+          className="absolute top-1.5 right-1.5 w-2 h-2 bg-gold rounded-full"
+        />
+      </motion.button>
+      <div className="w-8 h-8 rounded-full bg-gold/15 border border-gold/30 flex items-center justify-center">
+        <User className="w-4 h-4 text-gold" />
       </div>
-
-      <div className="flex items-center gap-2">
-        {actions}
-        <div className="ml-2 flex items-center gap-1">
-          <IconButton label="Notifications" size="sm">
-            <Bell size={16} />
-          </IconButton>
-          <button className="ml-1 flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-primary)]/20 border-2 border-border text-xs font-medium text-primary hover:bg-[var(--color-primary)]/30 transition-colors">
-            <User size={14} />
-          </button>
-        </div>
-      </div>
-    </header>
-  );
-}
+    </div>
+  </header>
+);

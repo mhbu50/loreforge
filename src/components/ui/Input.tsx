@@ -1,5 +1,5 @@
-import React from 'react';
-import { cn } from '@/src/lib/utils';
+import { forwardRef } from 'react';
+import { cn } from '../../lib/utils';
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -9,40 +9,34 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   rightIcon?: React.ReactNode;
 }
 
-export const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ label, error, hint, leftIcon, rightIcon, className, id, ...props }, ref) => {
-    const inputId = id ?? label?.toLowerCase().replace(/\s+/g, '-');
+export const Input = forwardRef<HTMLInputElement, InputProps>(
+  ({ className, label, error, hint, leftIcon, rightIcon, id, ...props }, ref) => {
+    const inputId = id ?? (typeof label === 'string' ? label.toLowerCase().replace(/\s+/g, '-') : undefined);
     return (
       <div className="flex flex-col gap-1.5">
         {label && (
-          <label htmlFor={inputId} className="text-sm font-medium text-text-secondary">
-            {label}
-          </label>
+          <label htmlFor={inputId} className="text-sm font-medium text-nebula">{label}</label>
         )}
         <div className="relative flex items-center">
-          {leftIcon && (
-            <span className="absolute left-3 text-text-muted pointer-events-none">{leftIcon}</span>
-          )}
+          {leftIcon && <span className="absolute left-3.5 text-nebula pointer-events-none">{leftIcon}</span>}
           <input
             ref={ref}
             id={inputId}
             className={cn(
-              'w-full rounded-sm border border-border bg-bg-primary px-3 py-2 text-sm text-text-primary placeholder:text-text-muted',
-              'transition-colors focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20',
+              'w-full px-4 py-3 bg-void/80 border border-white/[0.08] rounded-xl text-starlight placeholder:text-nebula/60',
+              'focus:outline-none focus:border-gold focus:ring-4 focus:ring-gold/10 transition-all duration-200 backdrop-blur-sm',
               'disabled:opacity-50 disabled:cursor-not-allowed',
-              error && 'border-danger focus:border-danger focus:ring-danger/20',
-              leftIcon && 'pl-9',
-              rightIcon && 'pr-9',
+              error && 'border-magenta/60 focus:border-magenta focus:ring-magenta/10',
+              leftIcon && 'pl-10',
+              rightIcon && 'pr-10',
               className
             )}
             {...props}
           />
-          {rightIcon && (
-            <span className="absolute right-3 text-text-muted pointer-events-none">{rightIcon}</span>
-          )}
+          {rightIcon && <span className="absolute right-3.5 text-nebula pointer-events-none">{rightIcon}</span>}
         </div>
-        {error && <p className="text-xs text-red-400">{error}</p>}
-        {hint && !error && <p className="text-xs text-text-muted">{hint}</p>}
+        {error && <p className="text-xs text-magenta">{error}</p>}
+        {hint && !error && <p className="text-xs text-nebula/60">{hint}</p>}
       </div>
     );
   }

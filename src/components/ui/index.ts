@@ -9,5 +9,5 @@ export { Select, SelectGroup, SelectValue, SelectTrigger, SelectContent, SelectL
 export { Slider } from './Slider';
 export { Skeleton } from './Skeleton';
 export { IconButton } from './IconButton';
-export { Table, TableHeader, TableBody, TableFooter, TableRow, TableHead, TableCell, TableCaption } from './Table';
+export { Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TableCaption } from './Table';
 export { ToastProvider, useToast } from './Toast';
