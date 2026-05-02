@@ -296,18 +296,16 @@ export default function App() {
             element={
               user
                 ? userProfile
-                  ? <Dashboard userProfile={userProfile} globalSettings={globalSettings} theme={theme} onToggleTheme={toggleTheme} />
+                  ? <Navigate to="/dashboard" replace />
                   : (
-                    // Authenticated but profile not ready yet — self-heal is in progress
-                    <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--bg)' }}>
+                    <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--color-bg-primary, #0A0A0F)' }}>
                       <div className="flex flex-col items-center gap-8">
-                        <div className="w-16 h-16 rounded-2xl flex items-center justify-center"
-                          style={{ background: 'var(--bg-elev)', border: '1px solid var(--border-strong)' }}>
-                          <Loader2 style={{ color: 'var(--ink)' }} className="animate-spin" size={28} />
+                        <div className="w-16 h-16 rounded-2xl flex items-center justify-center border border-border bg-bg-secondary">
+                          <Loader2 className="animate-spin text-primary" size={28} />
                         </div>
                         <div className="text-center space-y-2">
-                          <p className="small-caps text-xs tracking-[0.4em]" style={{ color: 'var(--ink)' }}>Setting up your studio</p>
-                          <p className="text-[10px]" style={{ color: 'var(--fg-subtle)' }}>This only takes a moment...</p>
+                          <p className="text-xs tracking-[0.4em] uppercase text-text-muted">Setting up your studio</p>
+                          <p className="text-[10px] text-text-muted">This only takes a moment...</p>
                         </div>
                       </div>
                     </div>

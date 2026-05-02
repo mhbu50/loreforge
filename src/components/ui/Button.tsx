@@ -1,13 +1,14 @@
 import React from 'react';
 import { cn } from '@/src/lib/utils';
 
-type Variant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'outline';
+type Variant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'outline' | 'magic';
 type Size = 'sm' | 'md' | 'lg' | 'icon';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant;
   size?: Size;
   loading?: boolean;
+  glow?: boolean;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
 }
@@ -16,6 +17,7 @@ export function Button({
   variant = 'primary',
   size = 'md',
   loading = false,
+  glow = false,
   leftIcon,
   rightIcon,
   className,
@@ -23,14 +25,15 @@ export function Button({
   disabled,
   ...props
 }: ButtonProps) {
-  const base = 'inline-flex items-center justify-center gap-2 font-medium rounded-lg transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[--bg] disabled:pointer-events-none disabled:opacity-40 select-none';
+  const base = 'inline-flex items-center justify-center gap-2 font-medium rounded-sm transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-bg-primary disabled:pointer-events-none disabled:opacity-50 select-none cursor-pointer';
 
   const variants: Record<Variant, string> = {
-    primary:   'bg-violet-600 text-white hover:bg-violet-500 active:bg-violet-700 shadow-sm',
-    secondary: 'bg-[--bg-elev] text-[--fg] border border-[--border-strong] hover:bg-[--bg-sunken] active:scale-[0.98]',
-    ghost:     'text-[--fg-muted] hover:text-[--fg] hover:bg-[--ink-a-06] active:bg-[--ink-a-08]',
-    danger:    'bg-red-600 text-white hover:bg-red-500 active:bg-red-700',
-    outline:   'border border-violet-500 text-violet-400 hover:bg-violet-500/10 active:bg-violet-500/20',
+    primary:   'bg-[var(--color-primary)] text-white hover:opacity-90 active:scale-[0.98]',
+    secondary: 'bg-bg-tertiary text-text-primary border border-border hover:border-hover hover:bg-bg-hover active:scale-[0.98]',
+    ghost:     'text-text-muted hover:text-text-primary hover:bg-bg-hover active:bg-bg-tertiary',
+    danger:    'bg-[var(--color-danger)] text-white hover:opacity-90 active:scale-[0.98]',
+    outline:   'border border-[var(--color-primary)] text-primary hover:bg-[var(--color-primary)]/10 active:bg-[var(--color-primary)]/20',
+    magic:     'bg-gradient-to-r from-violet-600 to-purple-500 text-white hover:opacity-90 active:scale-[0.98] shadow-glow-sm',
   };
 
   const sizes: Record<Size, string> = {
@@ -42,7 +45,7 @@ export function Button({
 
   return (
     <button
-      className={cn(base, variants[variant], sizes[size], className)}
+      className={cn(base, variants[variant], sizes[size], glow && 'shadow-glow', className)}
       disabled={disabled || loading}
       {...props}
     >

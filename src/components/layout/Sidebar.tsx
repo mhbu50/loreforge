@@ -10,14 +10,14 @@ import { useStoryStore } from '@/src/stores/useStoryStore';
 
 const navItems = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-  { to: '/stories', icon: Library, label: 'My Stories' },
-  { to: '/editor', icon: FileText, label: 'Editor' },
-  { to: '/characters', icon: Users, label: 'Characters' },
+  { to: '/stories',   icon: Library,         label: 'My Stories' },
+  { to: '/editor',    icon: FileText,         label: 'Editor' },
+  { to: '/characters',icon: Users,            label: 'Characters' },
 ];
 
 const bottomItems = [
-  { to: '/app-settings', icon: Settings, label: 'Settings' },
-  { to: '/support', icon: HelpCircle, label: 'Help' },
+  { to: '/app-settings', icon: Settings,   label: 'Settings' },
+  { to: '/support',      icon: HelpCircle, label: 'Help' },
 ];
 
 export function Sidebar() {
@@ -36,11 +36,11 @@ export function Sidebar() {
     <motion.aside
       animate={{ width: collapsed ? 64 : 224 }}
       transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-      className="relative flex h-screen flex-col border-r border-[--border] bg-[--bg-elev] py-4 overflow-hidden flex-shrink-0"
+      className="relative flex h-screen flex-col border-r border-border bg-bg-secondary py-4 overflow-hidden flex-shrink-0"
     >
       {/* Logo */}
       <div className={cn('flex items-center gap-2.5 px-4 mb-6', collapsed && 'justify-center px-0')}>
-        <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-violet-600">
+        <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-[var(--color-primary)]">
           <BookOpen size={16} className="text-white" />
         </div>
         <AnimatePresence>
@@ -50,7 +50,7 @@ export function Sidebar() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -8 }}
               transition={{ duration: 0.15 }}
-              className="text-sm font-semibold text-[--fg] whitespace-nowrap"
+              className="text-sm font-semibold text-text-primary whitespace-nowrap"
             >
               StoryCraft
             </motion.span>
@@ -63,8 +63,8 @@ export function Sidebar() {
         <button
           onClick={handleNewStory}
           className={cn(
-            'flex w-full items-center gap-2 rounded-lg bg-violet-600 px-3 py-2 text-sm font-medium text-white',
-            'hover:bg-violet-500 transition-colors',
+            'flex w-full items-center gap-2 rounded-lg bg-[var(--color-primary)] px-3 py-2 text-sm font-medium text-white',
+            'hover:opacity-90 transition-opacity shadow-glow-sm',
             collapsed && 'justify-center px-0 py-2'
           )}
         >
@@ -87,11 +87,11 @@ export function Sidebar() {
             to={to}
             className={({ isActive }) =>
               cn(
-                'flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors',
+                'flex items-center gap-3 rounded-sm px-3 py-2.5 text-sm font-medium transition-colors',
                 isActive
-                  ? 'bg-violet-500/15 text-violet-300 font-medium'
-                  : 'text-[--fg-muted] hover:text-[--fg] hover:bg-[--bg-sunken]',
-                collapsed && 'justify-center px-0 py-2'
+                  ? 'bg-bg-tertiary text-primary border-l-[3px] border-primary'
+                  : 'text-text-muted hover:text-text-primary hover:bg-bg-hover',
+                collapsed && 'justify-center px-0 py-2.5 border-l-0'
               )
             }
           >
@@ -111,17 +111,17 @@ export function Sidebar() {
           </NavLink>
         ))}
 
-        <div className="my-2 h-px bg-[--border]" />
+        <div className="my-2 h-px bg-border" />
 
         <NavLink
           to="/ai-studio"
           className={({ isActive }) =>
             cn(
-              'flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors',
+              'flex items-center gap-3 rounded-sm px-3 py-2.5 text-sm font-medium transition-colors',
               isActive
-                ? 'bg-violet-500/15 text-violet-300 font-medium'
-                : 'text-[--fg-muted] hover:text-[--fg] hover:bg-[--bg-sunken]',
-              collapsed && 'justify-center px-0 py-2'
+                ? 'bg-bg-tertiary text-primary border-l-[3px] border-primary'
+                : 'text-text-muted hover:text-text-primary hover:bg-bg-hover',
+              collapsed && 'justify-center px-0 py-2.5 border-l-0'
             )
           }
         >
@@ -144,11 +144,11 @@ export function Sidebar() {
             to={to}
             className={({ isActive }) =>
               cn(
-                'flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors',
+                'flex items-center gap-3 rounded-sm px-3 py-2.5 text-sm font-medium transition-colors',
                 isActive
-                  ? 'bg-violet-500/15 text-violet-300 font-medium'
-                  : 'text-[--fg-muted] hover:text-[--fg] hover:bg-[--bg-sunken]',
-                collapsed && 'justify-center px-0 py-2'
+                  ? 'bg-bg-tertiary text-primary border-l-[3px] border-primary'
+                  : 'text-text-muted hover:text-text-primary hover:bg-bg-hover',
+                collapsed && 'justify-center px-0 py-2.5 border-l-0'
               )
             }
           >
@@ -167,7 +167,7 @@ export function Sidebar() {
       {/* Collapse toggle */}
       <button
         onClick={() => setCollapsed((c) => !c)}
-        className="absolute -right-3 top-20 flex h-6 w-6 items-center justify-center rounded-full border border-[--border-strong] bg-[--bg-elev] text-[--fg-subtle] hover:text-[--fg] shadow-sm transition-colors z-10"
+        className="absolute -right-3 top-20 flex h-6 w-6 items-center justify-center rounded-full border border-border bg-bg-secondary text-text-muted hover:text-text-primary shadow-card transition-colors z-10"
       >
         <motion.div animate={{ rotate: collapsed ? 180 : 0 }} transition={{ duration: 0.2 }}>
           <ChevronLeft size={12} />
