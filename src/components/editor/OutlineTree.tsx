@@ -6,7 +6,7 @@ import { IconButton } from '@/src/components/ui/IconButton';
 
 const typeIcons = { act: Layers, chapter: BookOpen, scene: Film };
 const typeColors = {
-  act:     'text-violet-400 bg-violet-500/15',
+  act:     'text-gold bg-gold/15',
   chapter: 'text-sky-400 bg-sky-500/15',
   scene:   'text-emerald-400 bg-emerald-500/15',
 };
@@ -46,16 +46,16 @@ export function OutlineTree({ storyId, className }: OutlineTreeProps) {
       <div>
         <div
           className={cn(
-            'group flex items-center gap-1.5 rounded-lg px-2 py-1.5 hover:bg-[--bg-sunken] transition-colors cursor-pointer',
+            'group flex items-center gap-1.5 rounded-lg px-2 py-1.5 hover:bg-void/60 transition-colors cursor-pointer',
           )}
           style={{ paddingLeft: `${8 + depth * 16}px` }}
           onClick={() => toggle(node.id)}
         >
-          <GripVertical size={12} className="text-[--fg-faint] opacity-0 group-hover:opacity-100 flex-shrink-0" />
+          <GripVertical size={12} className="text-nebula/40 opacity-0 group-hover:opacity-100 flex-shrink-0" />
           {children.length > 0 && (
             <ChevronRight
               size={12}
-              className={cn('flex-shrink-0 text-[--fg-subtle] transition-transform', isExpanded && 'rotate-90')}
+              className={cn('flex-shrink-0 text-nebula/60 transition-transform', isExpanded && 'rotate-90')}
             />
           )}
           {children.length === 0 && <div className="w-3" />}
@@ -66,13 +66,13 @@ export function OutlineTree({ storyId, className }: OutlineTreeProps) {
             <input
               autoFocus
               defaultValue={node.title}
-              className="flex-1 bg-transparent text-xs text-[--fg] outline-none border-b border-violet-500"
+              className="flex-1 bg-transparent text-xs text-starlight outline-none border-b border-gold"
               onBlur={(e) => { updateNode(storyId, node.id, { title: e.target.value }); setEditing(null); }}
               onKeyDown={(e) => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur(); }}
               onClick={(e) => e.stopPropagation()}
             />
           ) : (
-            <span className="flex-1 truncate text-xs text-[--fg-muted] group-hover:text-[--fg]" onDoubleClick={(e) => { e.stopPropagation(); setEditing(node.id); }}>
+            <span className="flex-1 truncate text-xs text-nebula group-hover:text-starlight" onDoubleClick={(e) => { e.stopPropagation(); setEditing(node.id); }}>
               {node.title}
             </span>
           )}
@@ -111,8 +111,8 @@ export function OutlineTree({ storyId, className }: OutlineTreeProps) {
 
   return (
     <div className={cn('flex flex-col h-full', className)}>
-      <div className="flex items-center justify-between px-3 py-2 border-b border-[--border]">
-        <span className="text-xs font-medium text-[--fg-muted] uppercase tracking-wide">Outline</span>
+      <div className="flex items-center justify-between px-3 py-2 border-b border-white/[0.06]">
+        <span className="text-xs font-medium text-nebula uppercase tracking-wide">Outline</span>
         <IconButton label="Add act" size="sm" onClick={() => addNode(storyId, { type: 'act', order: rootNodes.length + 1 })}>
           <Plus size={14} />
         </IconButton>
@@ -120,11 +120,11 @@ export function OutlineTree({ storyId, className }: OutlineTreeProps) {
       <div className="flex-1 overflow-y-auto py-1">
         {rootNodes.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full gap-3 px-4 text-center">
-            <Layers size={24} className="text-[--fg-faint]" />
-            <p className="text-xs text-[--fg-subtle]">Add acts to structure your story</p>
+            <Layers size={24} className="text-nebula/40" />
+            <p className="text-xs text-nebula/60">Add acts to structure your story</p>
             <button
               onClick={() => addNode(storyId, { type: 'act', title: 'Act 1', order: 1 })}
-              className="text-xs text-violet-400 hover:text-violet-300 transition-colors"
+              className="text-xs text-gold hover:text-gold transition-colors"
             >
               + Add first act
             </button>

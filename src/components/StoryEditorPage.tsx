@@ -82,10 +82,10 @@ export default function StoryEditorPage() {
 
   if (!story) {
     return (
-      <div className="flex h-screen items-center justify-center bg-[--bg]">
+      <div className="flex h-screen items-center justify-center bg-void">
         <div className="text-center space-y-4">
-          <BookOpen size={40} className="mx-auto text-[--fg-subtle]" />
-          <p className="text-[--fg-muted]">No story selected</p>
+          <BookOpen size={40} className="mx-auto text-nebula/60" />
+          <p className="text-nebula">No story selected</p>
           <Button onClick={() => navigate('/')} variant="primary">Back to Dashboard</Button>
         </div>
       </div>
@@ -95,7 +95,7 @@ export default function StoryEditorPage() {
   const progress = story.targetWordCount ? Math.min(100, Math.round((wordCount / story.targetWordCount) * 100)) : 0;
 
   return (
-    <div className="flex h-screen flex-col bg-[--bg] overflow-hidden">
+    <div className="flex h-screen flex-col bg-void overflow-hidden">
       {/* Top bar */}
       <AnimatePresence>
         {!zenMode && (
@@ -104,18 +104,18 @@ export default function StoryEditorPage() {
             animate={{ y: 0 }}
             exit={{ y: -48 }}
             transition={{ duration: 0.2 }}
-            className="flex h-12 flex-shrink-0 items-center justify-between border-b border-[--border] bg-[--bg-elev] px-4 z-20"
+            className="flex h-12 flex-shrink-0 items-center justify-between border-b border-white/[0.06] bg-surface-glass/60 backdrop-blur-xl px-4 z-20"
           >
             <div className="flex items-center gap-2">
               <IconButton label="Back" size="sm" onClick={() => navigate('/')}>
                 <ChevronLeft size={16} />
               </IconButton>
-              <div className="h-4 w-px bg-[--border]" />
+              <div className="h-4 w-px bg-white/[0.06]" />
               <IconButton
                 label={showLeft ? 'Hide outline' : 'Show outline'}
                 size="sm"
                 onClick={() => setShowLeft((v) => !v)}
-                className={cn(showLeft && 'bg-violet-500/15 text-violet-300')}
+                className={cn(showLeft && 'bg-gold/15 text-gold')}
               >
                 {showLeft ? <SidebarClose size={16} /> : <SidebarOpen size={16} />}
               </IconButton>
@@ -123,7 +123,7 @@ export default function StoryEditorPage() {
               <input
                 value={story.title}
                 onChange={handleTitleChange}
-                className="ml-2 bg-transparent text-sm font-medium text-[--fg] outline-none border-b border-transparent focus:border-violet-500 transition-colors px-1 min-w-0 max-w-xs"
+                className="ml-2 bg-transparent text-sm font-medium text-starlight outline-none border-b border-transparent focus:border-gold transition-colors px-1 min-w-0 max-w-xs"
                 placeholder="Story title…"
               />
 
@@ -134,21 +134,21 @@ export default function StoryEditorPage() {
 
             <div className="flex items-center gap-3">
               {/* Word count */}
-              <div className="hidden sm:flex items-center gap-2 text-xs text-[--fg-subtle]">
+              <div className="hidden sm:flex items-center gap-2 text-xs text-nebula/60">
                 <span>{wordCount.toLocaleString()} / {story.targetWordCount.toLocaleString()} words</span>
-                <div className="h-1 w-20 rounded-full bg-[--bg-sunken] overflow-hidden">
+                <div className="h-1 w-20 rounded-full bg-void/60 overflow-hidden">
                   <div
-                    className="h-full bg-violet-500 rounded-full transition-all duration-300"
+                    className="h-full bg-gold rounded-full transition-all duration-300"
                     style={{ width: `${progress}%` }}
                   />
                 </div>
-                <span className="text-violet-400">{progress}%</span>
+                <span className="text-gold">{progress}%</span>
               </div>
 
-              <div className="h-4 w-px bg-[--border]" />
+              <div className="h-4 w-px bg-white/[0.06]" />
 
               <div className="flex items-center gap-1">
-                <span className={cn('text-xs transition-colors', saveState === 'saved' ? 'text-emerald-400' : saveState === 'saving' ? 'text-amber-400' : 'text-[--fg-subtle]')}>
+                <span className={cn('text-xs transition-colors', saveState === 'saved' ? 'text-emerald-400' : saveState === 'saving' ? 'text-amber-400' : 'text-nebula/60')}>
                   {saveState === 'saved' ? 'Saved' : saveState === 'saving' ? 'Saving…' : '● Unsaved'}
                 </span>
               </div>
@@ -158,7 +158,7 @@ export default function StoryEditorPage() {
                   label="Toggle AI panel"
                   size="sm"
                   onClick={() => setShowAI((v) => !v)}
-                  className={cn(showAI && 'bg-violet-500/15 text-violet-300')}
+                  className={cn(showAI && 'bg-gold/15 text-gold')}
                 >
                   <Sparkles size={15} />
                 </IconButton>
@@ -179,7 +179,7 @@ export default function StoryEditorPage() {
       {zenMode && (
         <button
           onClick={() => setZenMode(false)}
-          className="fixed top-4 right-4 z-50 rounded-lg bg-[--bg-elev] border border-[--border] px-3 py-1.5 text-xs text-[--fg-muted] hover:text-[--fg] transition-colors shadow-lg"
+          className="fixed top-4 right-4 z-50 rounded-lg bg-surface-glass/60 backdrop-blur-xl border border-white/[0.06] px-3 py-1.5 text-xs text-nebula hover:text-starlight transition-colors shadow-lg"
         >
           Exit zen mode
         </button>
@@ -191,23 +191,23 @@ export default function StoryEditorPage() {
         {showLeft && !zenMode && (
           <>
             <Panel defaultSize={18} minSize={14} maxSize={28}>
-              <div className="flex h-full flex-col border-r border-[--border]">
-                <div className="flex border-b border-[--border] bg-[--bg-elev]">
+              <div className="flex h-full flex-col border-r border-white/[0.06]">
+                <div className="flex border-b border-white/[0.06] bg-surface-glass/60 backdrop-blur-xl">
                   <button
                     onClick={() => setLeftTab('outline')}
-                    className={cn('flex flex-1 items-center justify-center gap-1.5 py-2 text-xs transition-colors', leftTab === 'outline' ? 'text-violet-300 border-b-2 border-violet-500' : 'text-[--fg-subtle] hover:text-[--fg]')}
+                    className={cn('flex flex-1 items-center justify-center gap-1.5 py-2 text-xs transition-colors', leftTab === 'outline' ? 'text-gold border-b-2 border-gold' : 'text-nebula/60 hover:text-starlight')}
                   >
                     <List size={12} /> Outline
                   </button>
                   <button
                     onClick={() => setLeftTab('beats')}
-                    className={cn('flex flex-1 items-center justify-center gap-1.5 py-2 text-xs transition-colors', leftTab === 'beats' ? 'text-violet-300 border-b-2 border-violet-500' : 'text-[--fg-subtle] hover:text-[--fg]')}
+                    className={cn('flex flex-1 items-center justify-center gap-1.5 py-2 text-xs transition-colors', leftTab === 'beats' ? 'text-gold border-b-2 border-gold' : 'text-nebula/60 hover:text-starlight')}
                   >
                     <Target size={12} /> Beats
                   </button>
                   <button
                     onClick={() => setLeftTab('characters')}
-                    className={cn('flex flex-1 items-center justify-center gap-1.5 py-2 text-xs transition-colors', leftTab === 'characters' ? 'text-violet-300 border-b-2 border-violet-500' : 'text-[--fg-subtle] hover:text-[--fg]')}
+                    className={cn('flex flex-1 items-center justify-center gap-1.5 py-2 text-xs transition-colors', leftTab === 'characters' ? 'text-gold border-b-2 border-gold' : 'text-nebula/60 hover:text-starlight')}
                   >
                     <Users size={12} /> Cast
                   </button>
@@ -220,13 +220,13 @@ export default function StoryEditorPage() {
                 )}
               </div>
             </Panel>
-            <PanelResizeHandle className="w-0.5 bg-[--border] hover:bg-violet-500/40 transition-colors cursor-col-resize" />
+            <PanelResizeHandle className="w-0.5 bg-white/[0.06] hover:bg-gold/40 transition-colors cursor-col-resize" />
           </>
         )}
 
         {/* Editor */}
         <Panel defaultSize={showAI ? 52 : 82} minSize={30}>
-          <div className="flex h-full flex-col bg-[--bg]">
+          <div className="flex h-full flex-col bg-void">
             <TipTapEditor
               content={story.content}
               onChange={handleContentChange}
@@ -239,7 +239,7 @@ export default function StoryEditorPage() {
         {/* AI Panel */}
         {showAI && !zenMode && (
           <>
-            <PanelResizeHandle className="w-0.5 bg-[--border] hover:bg-violet-500/40 transition-colors cursor-col-resize" />
+            <PanelResizeHandle className="w-0.5 bg-white/[0.06] hover:bg-gold/40 transition-colors cursor-col-resize" />
             <Panel defaultSize={28} minSize={20} maxSize={40}>
               <AIPanel
                 storyContext={story.synopsis + '\n\n' + (story.content ? story.content.replace(/<[^>]*>/g, '') : '')}

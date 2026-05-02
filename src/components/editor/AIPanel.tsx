@@ -66,12 +66,12 @@ export function AIPanel({ storyContext, onInsert, className }: AIPanelProps) {
   const lastAssistantMsg = [...messages].reverse().find((m) => m.role === 'assistant');
 
   return (
-    <div className={cn('flex flex-col h-full bg-[--bg-elev] border-l border-[--border]', className)}>
+    <div className={cn('flex flex-col h-full bg-surface-glass/60 border-l border-white/[0.06]', className)}>
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-[--border]">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06]">
         <div className="flex items-center gap-2">
-          <Sparkles size={15} className="text-violet-400" />
-          <span className="text-sm font-medium text-[--fg]">AI Assistant</span>
+          <Sparkles size={15} className="text-gold" />
+          <span className="text-sm font-medium text-starlight">AI Assistant</span>
         </div>
         <IconButton label="Clear chat" size="sm" onClick={() => { setMessages([]); setShowQuick(true); }}>
           <RefreshCw size={14} />
@@ -82,15 +82,15 @@ export function AIPanel({ storyContext, onInsert, className }: AIPanelProps) {
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.length === 0 && showQuick && (
           <div className="space-y-3">
-            <p className="text-xs text-[--fg-subtle] font-medium uppercase tracking-wide">Quick prompts</p>
+            <p className="text-xs text-nebula/60 font-medium uppercase tracking-wide">Quick prompts</p>
             <div className="grid grid-cols-2 gap-2">
               {QUICK_PROMPTS.map(({ label, prompt }) => (
                 <button
                   key={label}
                   onClick={() => send(prompt)}
-                  className="rounded-lg border border-[--border] bg-[--bg] px-3 py-2 text-left text-xs text-[--fg-muted] hover:border-violet-500/50 hover:text-[--fg] transition-colors"
+                  className="rounded-lg border border-white/[0.06] bg-void px-3 py-2 text-left text-xs text-nebula hover:border-gold/50 hover:text-starlight transition-colors"
                 >
-                  <Wand2 size={11} className="mb-1 text-violet-400" />
+                  <Wand2 size={11} className="mb-1 text-gold" />
                   <span className="block font-medium">{label}</span>
                 </button>
               ))}
@@ -104,8 +104,8 @@ export function AIPanel({ storyContext, onInsert, className }: AIPanelProps) {
             className={cn(
               'rounded-xl px-4 py-3 text-sm leading-relaxed',
               msg.role === 'user'
-                ? 'bg-violet-500/15 text-[--fg] ml-4'
-                : 'bg-[--bg] border border-[--border] text-[--fg-muted]'
+                ? 'bg-gold/15 text-starlight ml-4'
+                : 'bg-void border border-white/[0.06] text-nebula'
             )}
           >
             {msg.content}
@@ -123,7 +123,7 @@ export function AIPanel({ storyContext, onInsert, className }: AIPanelProps) {
         ))}
 
         {loading && (
-          <div className="flex items-center gap-2 text-xs text-[--fg-subtle]">
+          <div className="flex items-center gap-2 text-xs text-nebula/60">
             <div className="flex gap-1">
               {[0, 1, 2].map((i) => (
                 <span
@@ -140,7 +140,7 @@ export function AIPanel({ storyContext, onInsert, className }: AIPanelProps) {
       </div>
 
       {/* Input */}
-      <div className="border-t border-[--border] p-3">
+      <div className="border-t border-white/[0.06] p-3">
         <div className="flex items-end gap-2">
           <textarea
             value={input}
@@ -148,7 +148,7 @@ export function AIPanel({ storyContext, onInsert, className }: AIPanelProps) {
             onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(input); } }}
             placeholder="Ask AI for help…"
             rows={2}
-            className="flex-1 resize-none rounded-lg border border-[--border-strong] bg-[--bg] px-3 py-2 text-sm text-[--fg] placeholder:text-[--fg-faint] focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500"
+            className="flex-1 resize-none rounded-lg border border-white/[0.12] bg-void px-3 py-2 text-sm text-starlight placeholder:text-nebula/40 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold/20"
           />
           <Button size="sm" variant="primary" onClick={() => send(input)} disabled={!input.trim() || loading}>
             <Send size={14} />

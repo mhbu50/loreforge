@@ -50,7 +50,7 @@ export function TipTapEditor({ content = '', onChange, placeholder = 'Begin your
       label={label}
       size="sm"
       onClick={onClick}
-      className={cn(active && 'bg-violet-500/20 text-violet-300')}
+      className={cn(active && 'bg-gold/20 text-gold')}
     >
       {children}
     </IconButton>
@@ -60,7 +60,7 @@ export function TipTapEditor({ content = '', onChange, placeholder = 'Begin your
     <div className={cn('flex flex-col h-full', className)}>
       {/* Toolbar */}
       {!readOnly && (
-        <div className="flex flex-wrap items-center gap-0.5 border-b border-[--border] px-3 py-1.5 bg-[--bg-elev]">
+        <div className="flex flex-wrap items-center gap-0.5 border-b border-white/[0.06] px-3 py-1.5 bg-surface-glass/60">
           <ToolbarBtn label="Bold" onClick={() => editor.chain().focus().toggleBold().run()} active={editor.isActive('bold')}>
             <Bold size={14} />
           </ToolbarBtn>
@@ -70,14 +70,14 @@ export function TipTapEditor({ content = '', onChange, placeholder = 'Begin your
           <ToolbarBtn label="Strikethrough" onClick={() => editor.chain().focus().toggleStrike().run()} active={editor.isActive('strike')}>
             <Strikethrough size={14} />
           </ToolbarBtn>
-          <div className="mx-1 h-4 w-px bg-[--border]" />
+          <div className="mx-1 h-4 w-px bg-white/[0.06]" />
           <ToolbarBtn label="H2" onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} active={editor.isActive('heading', { level: 2 })}>
             <Heading2 size={14} />
           </ToolbarBtn>
           <ToolbarBtn label="H3" onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()} active={editor.isActive('heading', { level: 3 })}>
             <Heading3 size={14} />
           </ToolbarBtn>
-          <div className="mx-1 h-4 w-px bg-[--border]" />
+          <div className="mx-1 h-4 w-px bg-white/[0.06]" />
           <ToolbarBtn label="Bullet list" onClick={() => editor.chain().focus().toggleBulletList().run()} active={editor.isActive('bulletList')}>
             <List size={14} />
           </ToolbarBtn>
@@ -90,14 +90,14 @@ export function TipTapEditor({ content = '', onChange, placeholder = 'Begin your
           <ToolbarBtn label="Divider" onClick={() => editor.chain().focus().setHorizontalRule().run()}>
             <Minus size={14} />
           </ToolbarBtn>
-          <div className="mx-1 h-4 w-px bg-[--border]" />
+          <div className="mx-1 h-4 w-px bg-white/[0.06]" />
           <ToolbarBtn label="Undo" onClick={() => editor.chain().focus().undo().run()}>
             <Undo size={14} />
           </ToolbarBtn>
           <ToolbarBtn label="Redo" onClick={() => editor.chain().focus().redo().run()}>
             <Redo size={14} />
           </ToolbarBtn>
-          <div className="ml-auto text-xs text-[--fg-subtle] pr-1">
+          <div className="ml-auto text-xs text-nebula/60 pr-1">
             {editor.storage.characterCount?.words() ?? 0} words
           </div>
         </div>
@@ -111,7 +111,7 @@ export function TipTapEditor({ content = '', onChange, placeholder = 'Begin your
           'prose prose-invert max-w-none prose-p:leading-7 prose-headings:font-semibold',
           '[&_.ProseMirror]:outline-none [&_.ProseMirror]:min-h-full',
           '[&_.ProseMirror_p.is-editor-empty:first-child::before]:content-[attr(data-placeholder)]',
-          '[&_.ProseMirror_p.is-editor-empty:first-child::before]:text-[--fg-faint]',
+          '[&_.ProseMirror_p.is-editor-empty:first-child::before]:text-nebula/40',
           '[&_.ProseMirror_p.is-editor-empty:first-child::before]:pointer-events-none',
           '[&_.ProseMirror_p.is-editor-empty:first-child::before]:float-left',
           '[&_.ProseMirror_p.is-editor-empty:first-child::before]:h-0',

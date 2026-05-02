@@ -7,7 +7,7 @@ import { Badge } from '@/src/components/ui/Badge';
 
 const ACT_COLORS = {
   1: 'text-sky-400 border-sky-500/30',
-  2: 'text-violet-400 border-violet-500/30',
+  2: 'text-gold border-gold/30',
   3: 'text-amber-400 border-amber-500/30',
 };
 
@@ -35,11 +35,11 @@ export function BeatSheet({ storyId, className }: BeatSheetProps) {
 
   return (
     <div className={cn('flex flex-col h-full', className)}>
-      <div className="flex items-center justify-between px-3 py-2 border-b border-[--border]">
+      <div className="flex items-center justify-between px-3 py-2 border-b border-white/[0.06]">
         <div>
-          <span className="text-xs font-medium text-[--fg-muted] uppercase tracking-wide">Beat Sheet</span>
+          <span className="text-xs font-medium text-nebula uppercase tracking-wide">Beat Sheet</span>
           {totalCount > 0 && (
-            <span className="ml-2 text-xs text-[--fg-subtle]">{completedCount}/{totalCount}</span>
+            <span className="ml-2 text-xs text-nebula/60">{completedCount}/{totalCount}</span>
           )}
         </div>
         <IconButton label="Add beat" size="sm" onClick={() => addBeat(storyId, { actNumber: 1 })}>
@@ -52,16 +52,16 @@ export function BeatSheet({ storyId, className }: BeatSheetProps) {
           <div key={act}>
             <div className="flex items-center gap-2 px-3 mb-1">
               <span className={cn('text-xs font-semibold', ACT_COLORS[act])}>Act {act}</span>
-              <div className="flex-1 h-px bg-[--border]" />
+              <div className="flex-1 h-px bg-white/[0.06]" />
               <button
                 onClick={() => addBeat(storyId, { actNumber: act })}
-                className="text-xs text-[--fg-subtle] hover:text-[--fg] transition-colors"
+                className="text-xs text-nebula/60 hover:text-starlight transition-colors"
               >
                 + add
               </button>
             </div>
             {beats.length === 0 ? (
-              <p className="px-3 text-xs text-[--fg-faint] italic">No beats yet</p>
+              <p className="px-3 text-xs text-nebula/40 italic">No beats yet</p>
             ) : (
               beats.map((beat) => (
                 <BeatRow
@@ -93,12 +93,12 @@ function BeatRow({ beat, isEditing, onEdit, onStopEdit, onToggle, onUpdate, onDe
   onDelete: () => void;
 }) {
   return (
-    <div className="group flex items-start gap-2 px-3 py-1.5 hover:bg-[--bg-sunken] rounded-lg mx-1 transition-colors">
-      <GripVertical size={12} className="mt-0.5 text-[--fg-faint] opacity-0 group-hover:opacity-100 flex-shrink-0" />
+    <div className="group flex items-start gap-2 px-3 py-1.5 hover:bg-void/60 rounded-lg mx-1 transition-colors">
+      <GripVertical size={12} className="mt-0.5 text-nebula/40 opacity-0 group-hover:opacity-100 flex-shrink-0" />
       <button onClick={onToggle} className="mt-0.5 flex-shrink-0">
         {beat.completed
           ? <CheckCircle2 size={14} className="text-emerald-400" />
-          : <Circle size={14} className="text-[--fg-subtle]" />
+          : <Circle size={14} className="text-nebula/60" />
         }
       </button>
       <div className="flex-1 min-w-0">
@@ -106,20 +106,20 @@ function BeatRow({ beat, isEditing, onEdit, onStopEdit, onToggle, onUpdate, onDe
           <input
             autoFocus
             defaultValue={beat.title}
-            className="w-full bg-transparent text-xs text-[--fg] outline-none border-b border-violet-500"
+            className="w-full bg-transparent text-xs text-starlight outline-none border-b border-gold"
             onBlur={(e) => { onUpdate({ title: e.target.value }); onStopEdit(); }}
             onKeyDown={(e) => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur(); }}
           />
         ) : (
           <p
-            className={cn('text-xs truncate cursor-text', beat.completed ? 'line-through text-[--fg-faint]' : 'text-[--fg-muted]')}
+            className={cn('text-xs truncate cursor-text', beat.completed ? 'line-through text-nebula/40' : 'text-nebula')}
             onDoubleClick={onEdit}
           >
             {beat.title}
           </p>
         )}
         {beat.description && (
-          <p className="text-xs text-[--fg-faint] line-clamp-2 mt-0.5">{beat.description}</p>
+          <p className="text-xs text-nebula/40 line-clamp-2 mt-0.5">{beat.description}</p>
         )}
       </div>
       <IconButton label="Delete beat" size="sm" className="h-5 w-5 opacity-0 group-hover:opacity-100 hover:text-red-400" onClick={onDelete}>
