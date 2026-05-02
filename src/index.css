@@ -165,6 +165,100 @@
   --shadow-xl:  0 30px 60px -12px rgba(0,0,0,0.60);
 }
 
+/* PlotCore / Editor — deep violet dark theme */
+[data-theme="editor"] {
+  --bg:         #0A0A0F;
+  --bg-elev:    #111118;
+  --bg-sunken:  #07070C;
+
+  --fg:         #F1F0FF;
+  --fg-muted:   #A8A4C8;
+  --fg-subtle:  #6B6589;
+  --fg-faint:   #3D3A55;
+  --fg-inverse: #0A0A0F;
+
+  --border:           rgba(139,92,246,0.12);
+  --border-strong:    rgba(139,92,246,0.20);
+  --border-hairline:  rgba(139,92,246,0.07);
+
+  --overlay:      rgba(0,0,0,0.85);
+  --overlay-soft: rgba(0,0,0,0.50);
+
+  --shadow-sm:  0 4px 12px rgba(0,0,0,0.60);
+  --shadow-md:  0 12px 24px -8px rgba(0,0,0,0.70);
+  --shadow-lg:  0 20px 40px -10px rgba(0,0,0,0.75);
+  --shadow-xl:  0 30px 60px -12px rgba(0,0,0,0.80);
+}
+
+/* ============================================================
+   PLOTCORE COLOR TOKENS — Tailwind-compatible utilities
+   Maps the PDF's bg-bg-primary / text-text-primary classes
+   to CSS custom properties so existing class names work.
+   ============================================================ */
+@layer base {
+  :root {
+    --color-bg-primary:   #0A0A0F;
+    --color-bg-secondary: #13131F;
+    --color-bg-tertiary:  #1E1E2E;
+    --color-bg-elevated:  #252538;
+    --color-bg-surface:   #1A1A2E;
+    --color-bg-hover:     #22223E;
+
+    --color-text-primary:   #F8F8FC;
+    --color-text-secondary: #9A9AB8;
+    --color-text-muted:     #6E6E8B;
+    --color-text-inverse:   #0A0A0F;
+
+    --color-primary:      #8B5CF6;
+    --color-primary-dark: #4F46E5;
+    --color-primary-light:#EDE9FF;
+    --color-secondary:    #1B0981;
+    --color-accent:       #F59E0B;
+    --color-danger:       #EF4444;
+
+    --color-border:       #2A2A3E;
+    --color-border-hover: #3A3A52;
+    --color-border-focus: #475569;
+
+    --shadow-card:     0 1px 3px rgba(0,0,0,0.3), 0 0 1px rgba(255,255,255,0.03);
+    --shadow-elevated: 0 8px 24px rgba(0,0,0,0.5), 0 0 1px rgba(255,255,255,0.05);
+    --shadow-glow:     0 0 20px rgba(139,92,246,0.3), 0 20px 40px rgba(139,92,246,0.15);
+    --shadow-glow-sm:  0 0 10px rgba(139,92,246,0.2);
+    --shadow-modal:    0 20px 25px -5px rgba(0,0,0,0.4), 0 10px 10px -5px rgba(0,0,0,0.2);
+  }
+}
+
+@utility bg-bg-primary   { background-color: var(--color-bg-primary); }
+@utility bg-bg-secondary { background-color: var(--color-bg-secondary); }
+@utility bg-bg-tertiary  { background-color: var(--color-bg-tertiary); }
+@utility bg-bg-elevated  { background-color: var(--color-bg-elevated); }
+@utility bg-bg-surface   { background-color: var(--color-bg-surface); }
+@utility bg-bg-hover     { background-color: var(--color-bg-hover); }
+
+@utility text-text-primary   { color: var(--color-text-primary); }
+@utility text-text-secondary { color: var(--color-text-secondary); }
+@utility text-text-muted     { color: var(--color-text-muted); }
+@utility text-text-inverse   { color: var(--color-text-inverse); }
+
+@utility text-primary   { color: var(--color-primary); }
+@utility text-danger    { color: var(--color-danger); }
+@utility text-accent    { color: var(--color-accent); }
+
+@utility bg-primary     { background-color: var(--color-primary); }
+@utility bg-danger      { background-color: var(--color-danger); }
+
+@utility border-border  { border-color: var(--color-border); }
+@utility border-hover   { border-color: var(--color-border-hover); }
+@utility border-focus   { border-color: var(--color-border-focus); }
+@utility border-primary { border-color: var(--color-primary); }
+@utility border-danger  { border-color: var(--color-danger); }
+
+@utility shadow-card     { box-shadow: var(--shadow-card); }
+@utility shadow-elevated { box-shadow: var(--shadow-elevated); }
+@utility shadow-glow     { box-shadow: var(--shadow-glow); }
+@utility shadow-glow-sm  { box-shadow: var(--shadow-glow-sm); }
+@utility shadow-modal    { box-shadow: var(--shadow-modal); }
+
 /* ============================================================
    BASE STYLES
    ============================================================ */

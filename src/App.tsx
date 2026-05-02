@@ -14,6 +14,10 @@ import Landing from './components/Landing';
 import Particles from './components/Particles';
 import CommandPalette from './components/CommandPalette';
 import ErrorBoundary from './components/ErrorBoundary';
+import StoryEditorPage from './components/StoryEditorPage';
+import AppDashboard from './components/AppDashboard';
+import AppCharacters from './components/AppCharacters';
+import AppSettings from './components/AppSettings';
 import { Toaster, toast } from 'sonner';
 import { Loader2, Hammer, Sparkles } from 'lucide-react';
 
@@ -310,6 +314,26 @@ export default function App() {
                   )
                 : <Landing globalSettings={globalSettings} />
             }
+          />
+          <Route
+            path="/editor"
+            element={user ? <StoryEditorPage /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/dashboard"
+            element={user ? <AppDashboard /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/stories"
+            element={user ? <AppDashboard /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/characters"
+            element={user ? <AppCharacters /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/app-settings"
+            element={user ? <AppSettings /> : <Navigate to="/login" />}
           />
           <Route
             path="/marketplace"
