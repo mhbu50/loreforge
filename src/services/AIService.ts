@@ -59,6 +59,7 @@ export interface ResolvedProvider {
 
 export const PROVIDER_MODELS: Record<string, { id: string; name: string; free?: boolean }[]> = {
   openrouter: [
+    { id: 'google/gemma-4-31b-it:free',                    name: 'Gemma 4 31B (Free)',           free: true },
     { id: 'meta-llama/llama-3.1-8b-instruct:free',         name: 'Llama 3.1 8B (Free)',          free: true },
     { id: 'meta-llama/llama-3.2-11b-vision-instruct:free', name: 'Llama 3.2 11B (Free)',         free: true },
     { id: 'meta-llama/llama-3.3-70b-instruct:free',        name: 'Llama 3.3 70B (Free)',         free: true },
@@ -74,6 +75,9 @@ export const PROVIDER_MODELS: Record<string, { id: string; name: string; free?: 
     { id: 'mistralai/mistral-large',                       name: 'Mistral Large (Paid)' },
   ],
   gemini: [
+    { id: 'gemini-2.5-pro',               name: 'Gemini 2.5 Pro (Stable)',        free: false },
+    { id: 'gemini-2.5-flash',             name: 'Gemini 2.5 Flash (Stable)',      free: true  },
+    { id: 'gemini-2.5-flash-lite',        name: 'Gemini 2.5 Flash Lite (Free)',   free: true  },
     { id: 'gemini-2.5-pro-preview-05-06',  name: 'Gemini 2.5 Pro',                free: false },
     { id: 'gemini-2.5-flash-preview-04-17',name: 'Gemini 2.5 Flash',              free: true },
     { id: 'gemini-2.0-flash',              name: 'Gemini 2.0 Flash (Free)',        free: true },
@@ -89,6 +93,8 @@ export const PROVIDER_MODELS: Record<string, { id: string; name: string; free?: 
     { id: 'gemma-3n-e4b-it',               name: 'Gemma 3n E4B — Nano (Free)',     free: true },
   ],
   groq: [
+    { id: 'meta-llama/llama-4-scout-17b-16e-instruct', name: 'Llama 4 Scout (Free)', free: true },
+    { id: 'qwen3-32b',                                  name: 'Qwen3 32B (Free)',     free: true },
     { id: 'llama-3.3-70b-versatile',     name: 'Llama 3.3 70B (Free)',    free: true },
     { id: 'llama-3.1-70b-versatile',     name: 'Llama 3.1 70B (Free)',    free: true },
     { id: 'llama-3.1-8b-instant',        name: 'Llama 3.1 8B Fast (Free)', free: true },
@@ -102,6 +108,12 @@ export const PROVIDER_MODELS: Record<string, { id: string; name: string; free?: 
     { id: 'meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo',          name: 'Llama 3.1 405B (Paid)' },
   ],
   openai: [
+    { id: 'gpt-4.1',      name: 'GPT-4.1' },
+    { id: 'gpt-4.1-mini', name: 'GPT-4.1 Mini' },
+    { id: 'gpt-4.1-nano', name: 'GPT-4.1 Nano' },
+    { id: 'o3',           name: 'O3' },
+    { id: 'o3-mini',      name: 'O3 Mini' },
+    { id: 'o4-mini',      name: 'O4 Mini' },
     { id: 'gpt-4o',       name: 'GPT-4o' },
     { id: 'gpt-4o-mini',  name: 'GPT-4o Mini' },
     { id: 'gpt-4-turbo',  name: 'GPT-4 Turbo' },
