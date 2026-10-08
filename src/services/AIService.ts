@@ -59,6 +59,8 @@ export interface ResolvedProvider {
 
 export const PROVIDER_MODELS: Record<string, { id: string; name: string; free?: boolean }[]> = {
   openrouter: [
+    { id: 'nvidia/nemotron-3-ultra-550b-a55b:free',        name: 'Nemotron 3 Ultra 550B (Free)', free: true },
+    { id: 'nvidia/nemotron-3-super-120b-a12b:free',        name: 'Nemotron 3 Super 120B (Free)', free: true },
     { id: 'google/gemma-4-31b-it:free',                    name: 'Gemma 4 31B (Free)',           free: true },
     { id: 'meta-llama/llama-3.1-8b-instruct:free',         name: 'Llama 3.1 8B (Free)',          free: true },
     { id: 'meta-llama/llama-3.2-11b-vision-instruct:free', name: 'Llama 3.2 11B (Free)',         free: true },
@@ -93,6 +95,9 @@ export const PROVIDER_MODELS: Record<string, { id: string; name: string; free?: 
     { id: 'gemma-3n-e4b-it',               name: 'Gemma 3n E4B — Nano (Free)',     free: true },
   ],
   groq: [
+    { id: 'openai/gpt-oss-120b',                       name: 'GPT-OSS 120B (Free)', free: true },
+    { id: 'openai/gpt-oss-20b',                        name: 'GPT-OSS 20B (Free)',  free: true },
+    { id: 'qwen/qwen3.8-27b',                          name: 'Qwen3.8 27B (Free)',  free: true },
     { id: 'meta-llama/llama-4-scout-17b-16e-instruct', name: 'Llama 4 Scout (Free)', free: true },
     { id: 'qwen3-32b',                                  name: 'Qwen3 32B (Free)',     free: true },
     { id: 'llama-3.3-70b-versatile',     name: 'Llama 3.3 70B (Free)',    free: true },
@@ -108,6 +113,9 @@ export const PROVIDER_MODELS: Record<string, { id: string; name: string; free?: 
     { id: 'meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo',          name: 'Llama 3.1 405B (Paid)' },
   ],
   openai: [
+    { id: 'gpt-5.5',      name: 'GPT-5.5' },
+    { id: 'gpt-5',        name: 'GPT-5' },
+    { id: 'gpt-5-mini',   name: 'GPT-5 Mini' },
     { id: 'gpt-4.1',      name: 'GPT-4.1' },
     { id: 'gpt-4.1-mini', name: 'GPT-4.1 Mini' },
     { id: 'gpt-4.1-nano', name: 'GPT-4.1 Nano' },
