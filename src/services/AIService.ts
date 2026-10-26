@@ -59,6 +59,8 @@ export interface ResolvedProvider {
 
 export const PROVIDER_MODELS: Record<string, { id: string; name: string; free?: boolean }[]> = {
   openrouter: [
+    { id: 'nvidia/nemotron-3.5-lightning',                  name: 'Nemotron 3.5 Lightning' },
+    { id: 'qwen/qwen3-coder:free',                          name: 'Qwen3 Coder (Free)',           free: true },
     { id: 'nvidia/nemotron-3-ultra-550b-a55b:free',        name: 'Nemotron 3 Ultra 550B (Free)', free: true },
     { id: 'nvidia/nemotron-3-super-120b-a12b:free',        name: 'Nemotron 3 Super 120B (Free)', free: true },
     { id: 'google/gemma-4-31b-it:free',                    name: 'Gemma 4 31B (Free)',           free: true },
@@ -77,6 +79,10 @@ export const PROVIDER_MODELS: Record<string, { id: string; name: string; free?: 
     { id: 'mistralai/mistral-large',                       name: 'Mistral Large (Paid)' },
   ],
   gemini: [
+    { id: 'gemini-3.8-flash',             name: 'Gemini 3.8 Flash',               free: true  },
+    { id: 'gemini-3.6-flash',             name: 'Gemini 3.6 Flash',               free: true  },
+    { id: 'gemini-3.5-flash',             name: 'Gemini 3.5 Flash',               free: true  },
+    { id: 'gemini-3.1-flash-lite',        name: 'Gemini 3.1 Flash Lite',          free: true  },
     { id: 'gemini-2.5-pro',               name: 'Gemini 2.5 Pro (Stable)',        free: false },
     { id: 'gemini-2.5-flash',             name: 'Gemini 2.5 Flash (Stable)',      free: true  },
     { id: 'gemini-2.5-flash-lite',        name: 'Gemini 2.5 Flash Lite (Free)',   free: true  },
@@ -95,6 +101,7 @@ export const PROVIDER_MODELS: Record<string, { id: string; name: string; free?: 
     { id: 'gemma-3n-e4b-it',               name: 'Gemma 3n E4B — Nano (Free)',     free: true },
   ],
   groq: [
+    { id: 'allam-2-7b',                                    name: 'Allam 2 7B (Free)',    free: true },
     { id: 'openai/gpt-oss-120b',                       name: 'GPT-OSS 120B (Free)', free: true },
     { id: 'openai/gpt-oss-20b',                        name: 'GPT-OSS 20B (Free)',  free: true },
     { id: 'qwen/qwen3.8-27b',                          name: 'Qwen3.8 27B (Free)',  free: true },
@@ -113,6 +120,10 @@ export const PROVIDER_MODELS: Record<string, { id: string; name: string; free?: 
     { id: 'meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo',          name: 'Llama 3.1 405B (Paid)' },
   ],
   openai: [
+    { id: 'gpt-5.5-pro',   name: 'GPT-5.5 Pro' },
+    { id: 'gpt-5.4',       name: 'GPT-5.4' },
+    { id: 'gpt-5.4-mini',  name: 'GPT-5.4 Mini' },
+    { id: 'gpt-5.4-nano',  name: 'GPT-5.4 Nano' },
     { id: 'gpt-5.5',      name: 'GPT-5.5' },
     { id: 'gpt-5',        name: 'GPT-5' },
     { id: 'gpt-5-mini',   name: 'GPT-5 Mini' },
