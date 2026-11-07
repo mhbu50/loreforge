@@ -59,6 +59,9 @@ export interface ResolvedProvider {
 
 export const PROVIDER_MODELS: Record<string, { id: string; name: string; free?: boolean }[]> = {
   openrouter: [
+    { id: 'nvidia/nemotron-3.5-super-vl:free',              name: 'Nemotron 3.5 Super VL (Free)',  free: true },
+    { id: 'google/gemma-4-26b-a4b-it:free',                 name: 'Gemma 4 26B A4B (Free)',        free: true },
+    { id: 'openai/gpt-oss-120b:free',                       name: 'GPT-OSS 120B (Free)',           free: true },
     { id: 'nvidia/nemotron-3.5-lightning',                  name: 'Nemotron 3.5 Lightning' },
     { id: 'qwen/qwen3-coder:free',                          name: 'Qwen3 Coder (Free)',           free: true },
     { id: 'nvidia/nemotron-3-ultra-550b-a55b:free',        name: 'Nemotron 3 Ultra 550B (Free)', free: true },
@@ -79,6 +82,9 @@ export const PROVIDER_MODELS: Record<string, { id: string; name: string; free?: 
     { id: 'mistralai/mistral-large',                       name: 'Mistral Large (Paid)' },
   ],
   gemini: [
+    { id: 'gemini-4-argon',               name: 'Gemini 4 Argon',                 free: false },
+    { id: 'gemini-3.8-live',              name: 'Gemini 3.8 Live',                free: true  },
+    { id: 'gemini-3.5-flash-lite',        name: 'Gemini 3.5 Flash Lite',          free: true  },
     { id: 'gemini-3.8-flash',             name: 'Gemini 3.8 Flash',               free: true  },
     { id: 'gemini-3.6-flash',             name: 'Gemini 3.6 Flash',               free: true  },
     { id: 'gemini-3.5-flash',             name: 'Gemini 3.5 Flash',               free: true  },
@@ -120,6 +126,8 @@ export const PROVIDER_MODELS: Record<string, { id: string; name: string; free?: 
     { id: 'meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo',          name: 'Llama 3.1 405B (Paid)' },
   ],
   openai: [
+    { id: 'gpt-6-sol',     name: 'GPT-6 Sol' },
+    { id: 'gpt-6-luna',    name: 'GPT-6 Luna' },
     { id: 'gpt-5.5-pro',   name: 'GPT-5.5 Pro' },
     { id: 'gpt-5.4',       name: 'GPT-5.4' },
     { id: 'gpt-5.4-mini',  name: 'GPT-5.4 Mini' },
