@@ -82,6 +82,10 @@ export const PROVIDER_MODELS: Record<string, { id: string; name: string; free?: 
     { id: 'mistralai/mistral-large',                       name: 'Mistral Large (Paid)' },
   ],
   gemini: [
+    { id: 'gemini-3.1-pro-preview',       name: 'Gemini 3.1 Pro (Preview)',        free: false },
+    { id: 'gemma-4-31b-it',               name: 'Gemma 4 31B (Free)',              free: true  },
+    { id: 'gemma-4-26b-a4b-it',           name: 'Gemma 4 26B A4B (Free)',          free: true  },
+    { id: 'gemma-4-12b-it',               name: 'Gemma 4 12B (Free)',              free: true  },
     { id: 'gemini-4-argon',               name: 'Gemini 4 Argon',                 free: false },
     { id: 'gemini-3.8-live',              name: 'Gemini 3.8 Live',                free: true  },
     { id: 'gemini-3.5-flash-lite',        name: 'Gemini 3.5 Flash Lite',          free: true  },
@@ -126,6 +130,9 @@ export const PROVIDER_MODELS: Record<string, { id: string; name: string; free?: 
     { id: 'meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo',          name: 'Llama 3.1 405B (Paid)' },
   ],
   openai: [
+    { id: 'gpt-6-astra',   name: 'GPT-6 Astra' },
+    { id: 'gpt-6.1-sol',   name: 'GPT-6.1 Sol' },
+    { id: 'gpt-6.1-terra', name: 'GPT-6.1 Terra' },
     { id: 'gpt-6-sol',     name: 'GPT-6 Sol' },
     { id: 'gpt-6-luna',    name: 'GPT-6 Luna' },
     { id: 'gpt-5.5-pro',   name: 'GPT-5.5 Pro' },
