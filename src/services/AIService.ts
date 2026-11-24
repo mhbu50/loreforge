@@ -59,6 +59,8 @@ export interface ResolvedProvider {
 
 export const PROVIDER_MODELS: Record<string, { id: string; name: string; free?: boolean }[]> = {
   openrouter: [
+    { id: 'openai/gpt-6.2-astra',                           name: 'GPT-6.2 Astra (Paid)' },
+    { id: 'openai/gpt-6.2-sol',                             name: 'GPT-6.2 Sol (Paid)' },
     { id: 'nvidia/nemotron-3.5-super-vl:free',              name: 'Nemotron 3.5 Super VL (Free)',  free: true },
     { id: 'google/gemma-4-26b-a4b-it:free',                 name: 'Gemma 4 26B A4B (Free)',        free: true },
     { id: 'openai/gpt-oss-120b:free',                       name: 'GPT-OSS 120B (Free)',           free: true },
@@ -82,6 +84,9 @@ export const PROVIDER_MODELS: Record<string, { id: string; name: string; free?: 
     { id: 'mistralai/mistral-large',                       name: 'Mistral Large (Paid)' },
   ],
   gemini: [
+    { id: 'gemini-4-neon',                name: 'Gemini 4 Neon',                   free: false },
+    { id: 'gemini-4-hydrogen',            name: 'Gemini 4 Hydrogen',               free: false },
+    { id: 'gemini-4-carbon',              name: 'Gemini 4 Carbon',                 free: false },
     { id: 'gemini-3.1-pro-preview',       name: 'Gemini 3.1 Pro (Preview)',        free: false },
     { id: 'gemma-4-31b-it',               name: 'Gemma 4 31B (Free)',              free: true  },
     { id: 'gemma-4-26b-a4b-it',           name: 'Gemma 4 26B A4B (Free)',          free: true  },
@@ -111,6 +116,7 @@ export const PROVIDER_MODELS: Record<string, { id: string; name: string; free?: 
     { id: 'gemma-3n-e4b-it',               name: 'Gemma 3n E4B — Nano (Free)',     free: true },
   ],
   groq: [
+    { id: 'openai/gpt-oss-safeguard-20b',                  name: 'GPT-OSS Safeguard 20B (Free)', free: true },
     { id: 'allam-2-7b',                                    name: 'Allam 2 7B (Free)',    free: true },
     { id: 'openai/gpt-oss-120b',                       name: 'GPT-OSS 120B (Free)', free: true },
     { id: 'openai/gpt-oss-20b',                        name: 'GPT-OSS 20B (Free)',  free: true },
@@ -130,6 +136,9 @@ export const PROVIDER_MODELS: Record<string, { id: string; name: string; free?: 
     { id: 'meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo',          name: 'Llama 3.1 405B (Paid)' },
   ],
   openai: [
+    { id: 'gpt-6.2-astra', name: 'GPT-6.2 Astra' },
+    { id: 'gpt-6.2-sol',   name: 'GPT-6.2 Sol' },
+    { id: 'gpt-5.3-codex', name: 'GPT-5.3 Codex' },
     { id: 'gpt-6-astra',   name: 'GPT-6 Astra' },
     { id: 'gpt-6.1-sol',   name: 'GPT-6.1 Sol' },
     { id: 'gpt-6.1-terra', name: 'GPT-6.1 Terra' },
